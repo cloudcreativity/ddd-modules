@@ -27,7 +27,7 @@ use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactoryInterface;
 class QueryDispatcher implements QueryDispatcherInterface
 {
     /**
-     * @var array
+     * @var array<string|callable>
      */
     private array $pipes = [];
 
@@ -46,12 +46,14 @@ class QueryDispatcher implements QueryDispatcherInterface
     /**
      * Dispatch messages through the provided pipes.
      *
-     * @param array $pipes
+     * @param array<string|callable> $pipes
      * @return void
      */
     public function through(array $pipes): void
     {
-        $this->pipes = array_values($pipes);
+        assert(array_is_list($pipes), 'Expecting a list of pipes.');
+
+        $this->pipes = $pipes;
     }
 
     /**
@@ -66,6 +68,10 @@ class QueryDispatcher implements QueryDispatcherInterface
             ->through([...$this->pipes, ...array_values($handler->middleware())])
             ->build(MiddlewareProcessor::wrap($handler));
 
-        return $pipeline->process($query);
+        $result = $pipeline->process($query);
+
+        assert($result instanceof ResultInterface, 'Expecting pipeline to return a result object.');
+
+        return $result;
     }
 }

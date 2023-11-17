@@ -17,49 +17,18 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Toolkit\Iterables;
+namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\DomainEventDispatching;
 
-use Generator;
+use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
+use DateTimeImmutable;
 
-trait ListTrait
+class TestDomainEvent implements DomainEventInterface
 {
     /**
      * @inheritDoc
      */
-    public function getIterator(): Generator
+    public function occurredAt(): DateTimeImmutable
     {
-        yield from $this->stack;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function all(): array
-    {
-        return $this->stack;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function count(): int
-    {
-        return count($this->stack);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function isEmpty(): bool
-    {
-        return empty($this->stack);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function isNotEmpty(): bool
-    {
-        return !empty($this->stack);
+        return new DateTimeImmutable();
     }
 }

@@ -30,6 +30,10 @@ final class CommandValidator extends AbstractValidator implements CommandValidat
      */
     public function validate(CommandInterface $command): ErrorIterableInterface
     {
-        return $this->getPipeline()->process($command) ?? new ListOfErrors();
+        $errors = $this->getPipeline()->process($command) ?? new ListOfErrors();
+
+        assert($errors instanceof ErrorIterableInterface, 'Expecting validation pipeline to return errors.');
+
+        return $errors;
     }
 }

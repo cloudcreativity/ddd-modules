@@ -50,6 +50,9 @@ class ValidateCommandTest extends TestCase
         $this->validator = $this->createMock(CommandValidatorInterface::class);
 
         $this->middleware = new class ($this->validator) extends ValidateCommand {
+            /**
+             * @return iterable<string>
+             */
             protected function rules(): iterable
             {
                 return ['foo', 'bar'];

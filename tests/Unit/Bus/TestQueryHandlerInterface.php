@@ -25,7 +25,7 @@ interface TestQueryHandlerInterface
 {
     /**
      * @param TestQuery $query
-     * @return ResultInterface
+     * @return ResultInterface<mixed>
      */
     public function execute(TestQuery $query): ResultInterface;
 }

@@ -23,7 +23,7 @@ use CloudCreativity\Modules\Infrastructure\Log\ContextProviderInterface;
 use CloudCreativity\Modules\Toolkit\ContractException;
 
 /**
- * @template TValue
+ * @template-covariant  TValue
  */
 interface ResultInterface extends ContextProviderInterface
 {
@@ -67,7 +67,7 @@ interface ResultInterface extends ContextProviderInterface
     /**
      * Return a new instance with the provided meta.
      *
-     * @param Meta|array $meta
+     * @param Meta|array<string, mixed> $meta
      * @return ResultInterface<TValue>
      */
     public function withMeta(Meta|array $meta): self;

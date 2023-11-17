@@ -81,11 +81,11 @@ final class Guid implements IdentifierInterface
      * Guid constructor.
      *
      * @param string $type
-     * @param IdentifierInterface $id
+     * @param StringId|IntegerId|Uuid $id
      */
     public function __construct(
         public readonly string $type,
-        public readonly IdentifierInterface $id,
+        public readonly StringId|IntegerId|Uuid $id,
     ) {
         Contracts::assert(!empty($this->type), 'Type must be a non-empty string.');
     }
@@ -154,7 +154,7 @@ final class Guid implements IdentifierInterface
     }
 
     /**
-     * @inheritDoc
+     * @return array<string, mixed>
      */
     public function context(): array
     {

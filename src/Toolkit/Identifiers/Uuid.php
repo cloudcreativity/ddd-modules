@@ -119,6 +119,6 @@ final class Uuid implements IdentifierInterface, JsonSerializable
      */
     public function jsonSerialize(): string
     {
-        return $this->value->jsonSerialize();
+        return $this->value->toString();
     }
 }

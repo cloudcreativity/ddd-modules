@@ -20,7 +20,6 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
 use Closure;
-use CloudCreativity\Modules\Toolkit\Contracts;
 use CloudCreativity\Modules\Toolkit\Iterables\LazyIteratorTrait;
 use Generator;
 use IteratorAggregate;
@@ -49,7 +48,7 @@ final class LazyListOfUuids implements IteratorAggregate
     public function getIterator(): Generator
     {
         foreach ($this->cursor() as $id) {
-            Contracts::assert($id instanceof Uuid, 'Expecting identifiers to only contain UUIDs.');
+            assert($id instanceof Uuid, 'Expecting identifiers to only contain UUIDs.');
             yield $id;
         }
     }

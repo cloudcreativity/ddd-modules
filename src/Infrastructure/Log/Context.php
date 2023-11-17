@@ -36,7 +36,7 @@ final class Context
      * If a class understands the values it has, it should convert them manually
      * to log context - as this will be more efficient than using this method.
      *
-     * @param iterable $input
+     * @param iterable<array-key, mixed> $input
      * @return array<array-key, mixed>
      */
     public static function parse(iterable $input): array

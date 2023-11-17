@@ -27,7 +27,7 @@ interface QueryDispatcherInterface
      * Dispatch the given query.
      *
      * @param QueryInterface $query
-     * @return ResultInterface
+     * @return ResultInterface<mixed>
      */
     public function dispatch(QueryInterface $query): ResultInterface;
 }

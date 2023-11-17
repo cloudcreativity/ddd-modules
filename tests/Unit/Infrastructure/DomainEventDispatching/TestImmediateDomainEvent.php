@@ -28,14 +28,6 @@ class TestImmediateDomainEvent implements DomainEventInterface, OccursImmediatel
     /**
      * @inheritDoc
      */
-    public function context(): array
-    {
-        return [];
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function occurredAt(): DateTimeImmutable
     {
         return new DateTimeImmutable();

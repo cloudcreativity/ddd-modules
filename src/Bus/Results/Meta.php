@@ -26,19 +26,23 @@ use CloudCreativity\Modules\Toolkit\Iterables\KeyedSetInterface;
 use CloudCreativity\Modules\Toolkit\Iterables\KeyedSetTrait;
 use LogicException;
 
+/**
+ * @implements ArrayAccess<string, mixed>
+ * @implements KeyedSetInterface<mixed>
+ */
 final class Meta implements ArrayAccess, KeyedSetInterface, ContextProviderInterface
 {
     use KeyedSetTrait;
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     private array $stack;
 
     /**
      * Cast a value to meta.
      *
-     * @param Meta|array $values
+     * @param Meta|array<string, mixed> $values
      * @return Meta
      */
     public static function cast(self|array $values): self
@@ -53,10 +57,12 @@ final class Meta implements ArrayAccess, KeyedSetInterface, ContextProviderInter
     /**
      * ResultMeta constructor.
      *
-     * @param array $values
+     * @param array<string, mixed> $values
      */
     public function __construct(array $values = [])
     {
+        assert(empty($values) || !array_is_list($values), 'Expecting meta to be a keyed array, not an array list.');
+
         $this->stack = $values;
     }
 
@@ -135,7 +141,7 @@ final class Meta implements ArrayAccess, KeyedSetInterface, ContextProviderInter
     /**
      * Merge values into the meta.
      *
-     * @param self|array $values
+     * @param self|array<string, mixed> $values
      * @return $this
      */
     public function merge(self|array $values): self
@@ -151,7 +157,7 @@ final class Meta implements ArrayAccess, KeyedSetInterface, ContextProviderInter
     }
 
     /**
-     * @return array
+     * @return array<string, mixed>
      */
     public function all(): array
     {

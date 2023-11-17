@@ -22,16 +22,21 @@ namespace CloudCreativity\Modules\Toolkit\Pipeline;
 final class Pipeline implements PipelineInterface
 {
     /**
+     * @var ProcessorInterface
+     */
+    private readonly ProcessorInterface $processor;
+
+    /**
      * Pipeline constructor.
      *
      * @param ProcessorInterface|null $processor
      * @param callable[] $stages
      */
     public function __construct(
-        private ?ProcessorInterface $processor,
+        ?ProcessorInterface $processor,
         private array $stages,
     ) {
-        $this->processor ??= new SimpleProcessor();
+        $this->processor = $processor ?? new SimpleProcessor();
     }
 
     /**

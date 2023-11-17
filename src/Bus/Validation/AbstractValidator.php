@@ -34,7 +34,7 @@ abstract class AbstractValidator implements ValidatorInterface
     private readonly PipelineBuilderFactoryInterface $pipelineFactory;
 
     /**
-     * @var iterable
+     * @var iterable<string|callable>
      */
     private iterable $rules = [];
 
@@ -50,7 +50,8 @@ abstract class AbstractValidator implements ValidatorInterface
     }
 
     /**
-     * @inheritDoc
+     * @param iterable<string|callable> $rules
+     * @return $this
      */
     public function using(iterable $rules): self
     {

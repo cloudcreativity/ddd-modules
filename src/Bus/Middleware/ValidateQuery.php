@@ -30,7 +30,7 @@ abstract class ValidateQuery implements QueryMiddlewareInterface
     /**
      * Get the rules for the validation.
      *
-     * @return iterable
+     * @return iterable<string|callable>
      */
     abstract protected function rules(): iterable;
 

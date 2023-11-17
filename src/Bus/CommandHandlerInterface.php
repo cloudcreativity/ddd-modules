@@ -27,7 +27,7 @@ interface CommandHandlerInterface extends DispatchThroughMiddleware
      * Execute the command.
      *
      * @param CommandInterface $command
-     * @return ResultInterface
+     * @return ResultInterface<mixed>
      */
     public function __invoke(CommandInterface $command): ResultInterface;
 }

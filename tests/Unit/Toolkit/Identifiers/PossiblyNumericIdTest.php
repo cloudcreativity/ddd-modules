@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
 class PossiblyNumericIdTest extends TestCase
 {
     /**
-     * @return array
+     * @return array<array<int, mixed>>
      */
     public static function valueProvider(): array
     {
@@ -57,8 +57,8 @@ class PossiblyNumericIdTest extends TestCase
         $this->assertSame((string) $expected, $actual->toString());
         $this->assertObjectEquals($expectedId, $actual->toId());
         $this->assertJsonStringEqualsJsonString(
-            json_encode(['value' => $expected]),
-            json_encode(['value' => $actual]),
+            json_encode(['value' => $expected], JSON_THROW_ON_ERROR),
+            json_encode(['value' => $actual], JSON_THROW_ON_ERROR),
         );
     }
 }

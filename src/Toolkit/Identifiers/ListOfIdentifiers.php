@@ -23,14 +23,14 @@ use CloudCreativity\Modules\Toolkit\Iterables\ListInterface;
 use CloudCreativity\Modules\Toolkit\Iterables\ListTrait;
 
 /**
- * @implements ListInterface<int, IdentifierInterface>
+ * @implements ListInterface<IdentifierInterface>
  */
 final class ListOfIdentifiers implements ListInterface
 {
     use ListTrait;
 
     /**
-     * @var array<int, IdentifierInterface>
+     * @var array<IdentifierInterface>
      */
     private readonly array $stack;
 

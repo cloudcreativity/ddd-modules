@@ -29,6 +29,9 @@ use PHPUnit\Framework\TestCase;
 
 class CommandValidatorTest extends TestCase
 {
+    /**
+     * @return void
+     */
     public function test(): void
     {
         $command = $this->createMock(CommandInterface::class);
@@ -55,6 +58,9 @@ class CommandValidatorTest extends TestCase
         $this->assertSame([$error1, $error2, $error3], $actual->all());
     }
 
+    /**
+     * @return void
+     */
     public function testKeyedSet(): void
     {
         $command = $this->createMock(CommandInterface::class);
@@ -81,10 +87,13 @@ class CommandValidatorTest extends TestCase
         $this->assertSame([$error1, $error2, $error3], $actual->all());
     }
 
+    /**
+     * @return void
+     */
     public function testNoRules(): void
     {
         $command = $this->createMock(CommandInterface::class);
-        $validator = new CommandValidator(new PipelineBuilderFactory(), []);
+        $validator = new CommandValidator(new PipelineBuilderFactory());
 
         $this->assertEquals(new ListOfErrors(), $validator->validate($command));
     }

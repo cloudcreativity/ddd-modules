@@ -50,6 +50,9 @@ class ValidateQueryTest extends TestCase
         $this->validator = $this->createMock(QueryValidatorInterface::class);
 
         $this->middleware = new class ($this->validator) extends ValidateQuery {
+            /**
+             * @return iterable<string>
+             */
             protected function rules(): iterable
             {
                 return ['foobar', 'bazbat'];

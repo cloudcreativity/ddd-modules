@@ -26,7 +26,7 @@ use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactoryInterface;
 class Queue implements QueueInterface
 {
     /**
-     * @var array
+     * @var array<string|callable>
      */
     private array $pipes = [];
 
@@ -45,7 +45,7 @@ class Queue implements QueueInterface
     /**
      * Push jobs through the provided pipes when queuing them.
      *
-     * @param array $pipes
+     * @param array<string|callable> $pipes
      * @return void
      */
     public function through(array $pipes): void

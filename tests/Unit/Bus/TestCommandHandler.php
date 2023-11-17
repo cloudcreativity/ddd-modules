@@ -20,6 +20,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Bus;
 
 use CloudCreativity\Modules\Bus\DispatchThroughMiddleware;
+use CloudCreativity\Modules\Bus\Results\Result;
 use CloudCreativity\Modules\Bus\Results\ResultInterface;
 
 class TestCommandHandler implements TestCommandHandlerInterface, DispatchThroughMiddleware
@@ -29,7 +30,7 @@ class TestCommandHandler implements TestCommandHandlerInterface, DispatchThrough
      */
     public function execute(TestCommand $command): ResultInterface
     {
-        // TODO: Implement execute() method.
+        return Result::ok();
     }
 
     /**

@@ -30,7 +30,7 @@ abstract class ValidateCommand implements CommandMiddlewareInterface
     /**
      * Get the rules for the validation.
      *
-     * @return iterable
+     * @return iterable<string|callable>
      */
     abstract protected function rules(): iterable;
 

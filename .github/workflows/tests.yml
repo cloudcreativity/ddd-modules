@@ -39,5 +39,8 @@ jobs:
       - name: Execute style
         run: vendor/bin/pint --test
 
+      - name: Execute static analysis
+        run: vendor/bin/phpstan analyse src tests -c phpstan.neon
+
       - name: Execute tests
         run: vendor/bin/phpunit

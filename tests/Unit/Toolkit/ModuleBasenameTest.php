@@ -25,7 +25,7 @@ use PHPUnit\Framework\TestCase;
 class ModuleBasenameTest extends TestCase
 {
     /**
-     * @return array
+     * @return array<array<string>>
      */
     public static function nameProvider(): array
     {
@@ -111,10 +111,12 @@ class ModuleBasenameTest extends TestCase
      */
     public function testJsonSerialize(ModuleBasename $value): void
     {
-        $this->assertJsonStringEqualsJsonString(json_encode([
+        $expected = json_encode([
             'module' => $value->module,
             'name' => $value->name,
-        ]), json_encode($value));
+        ], JSON_THROW_ON_ERROR);
+
+        $this->assertJsonStringEqualsJsonString($expected, json_encode($value, JSON_THROW_ON_ERROR));
     }
 
     /**

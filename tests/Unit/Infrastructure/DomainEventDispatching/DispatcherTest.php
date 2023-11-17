@@ -85,6 +85,7 @@ class DispatcherTest extends TestCase
                 'Listener4' => $listener4,
                 'Listener5' => $listener5,
                 'Listener6' => $listener6,
+                default => throw new \RuntimeException('Unexpected name: ' . $name),
             });
 
         $listener1
@@ -188,7 +189,7 @@ class DispatcherTest extends TestCase
      */
     public function testItDispatchesEventInAfterCommitCallback(): void
     {
-        $event = $this->createMock(DomainEventInterface::class);
+        $event = new TestDomainEvent();
 
         $listener1 = $this->createMock(TestListener::class);
         $listener2 = $this->createMock(TestListener::class);
@@ -199,6 +200,7 @@ class DispatcherTest extends TestCase
             ->willReturnCallback(static fn (string $name) => match ($name) {
                 'Listener1' => $listener1,
                 'Listener2' => $listener2,
+                default => throw new \RuntimeException('Unexpected name: ' . $name),
             });
 
         $listener1

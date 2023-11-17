@@ -25,7 +25,7 @@ use RuntimeException;
 final class CommandHandlerContainer implements CommandHandlerContainerInterface
 {
     /**
-     * @var array<string,Closure>
+     * @var array<string, Closure>
      */
     private array $bindings = [];
 

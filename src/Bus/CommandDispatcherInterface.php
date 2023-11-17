@@ -27,7 +27,7 @@ interface CommandDispatcherInterface
      * Dispatch the given command.
      *
      * @param CommandInterface $command
-     * @return ResultInterface
+     * @return ResultInterface<mixed>
      */
     public function dispatch(CommandInterface $command): ResultInterface;
 }

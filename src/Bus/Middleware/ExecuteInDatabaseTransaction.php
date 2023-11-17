@@ -29,11 +29,11 @@ final class ExecuteInDatabaseTransaction implements CommandMiddlewareInterface
     /**
      * ExecuteInDatabaseTransaction constructor.
      *
-     * @param UnitOfWorkManagerInterface $transactions
+     * @param UnitOfWorkManagerInterface $unitOfWorkManager
      * @param int $attempts
      */
     public function __construct(
-        private readonly UnitOfWorkManagerInterface $transactions,
+        private readonly UnitOfWorkManagerInterface $unitOfWorkManager,
         private readonly int $attempts = 1,
     ) {
     }
@@ -43,9 +43,13 @@ final class ExecuteInDatabaseTransaction implements CommandMiddlewareInterface
      */
     public function __invoke(CommandInterface $command, Closure $next): ResultInterface
     {
-        return $this->transactions->execute(
+        $result = $this->unitOfWorkManager->execute(
             static fn () => $next($command),
             $this->attempts,
         );
+
+        assert($result instanceof ResultInterface, 'Expecting a result object.');
+
+        return $result;
     }
 }

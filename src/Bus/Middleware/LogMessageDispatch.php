@@ -55,7 +55,7 @@ final class LogMessageDispatch implements MessageMiddlewareInterface
             $message->context(),
         );
 
-        /** @var ResultInterface $result */
+        /** @var ResultInterface<mixed> $result */
         $result = $next($message);
 
         $this->logger->log(

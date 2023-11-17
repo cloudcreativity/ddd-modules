@@ -48,7 +48,7 @@ final class LazyListOfGuids implements IteratorAggregate
     public function getIterator(): Generator
     {
         foreach ($this->cursor() as $id) {
-            Contracts::assert($id instanceof Guid, 'Expecting identifiers to only contain GUIDs.');
+            assert($id instanceof Guid, 'Expecting identifiers to only contain GUIDs.');
             yield $id;
         }
     }

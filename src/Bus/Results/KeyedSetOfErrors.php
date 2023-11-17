@@ -22,6 +22,9 @@ namespace CloudCreativity\Modules\Bus\Results;
 use CloudCreativity\Modules\Toolkit\Iterables\KeyedSetInterface;
 use CloudCreativity\Modules\Toolkit\Iterables\KeyedSetTrait;
 
+/**
+ * @implements KeyedSetInterface<ListOfErrors>
+ */
 final class KeyedSetOfErrors implements ErrorIterableInterface, KeyedSetInterface
 {
     use KeyedSetTrait;
@@ -32,7 +35,7 @@ final class KeyedSetOfErrors implements ErrorIterableInterface, KeyedSetInterfac
     public const DEFAULT_KEY = '_base';
 
     /**
-     * @var array<string,ListOfErrors>
+     * @var array<string, ListOfErrors>
      */
     private array $stack = [];
 
@@ -78,6 +81,7 @@ final class KeyedSetOfErrors implements ErrorIterableInterface, KeyedSetInterfac
         $copy = clone $this;
 
         foreach ($other->toKeyedSet() as $key => $errors) {
+            assert(is_string($key) && $errors instanceof ErrorIterableInterface);
             $copy->stack[$key] = $copy->get($key)->merge($errors);
         }
 
@@ -87,7 +91,7 @@ final class KeyedSetOfErrors implements ErrorIterableInterface, KeyedSetInterfac
     }
 
     /**
-     * @return array
+     * @return array<string>
      */
     public function keys(): array
     {

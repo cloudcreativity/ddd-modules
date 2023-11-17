@@ -24,8 +24,8 @@ interface ValidatorInterface
     /**
      * Set the rules for the validation.
      *
-     * @param iterable $rules
-     * @return static
+     * @param iterable<string|callable> $rules
+     * @return $this
      */
     public function using(iterable $rules): self;
 }

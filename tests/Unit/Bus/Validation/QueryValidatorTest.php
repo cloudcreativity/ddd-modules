@@ -29,6 +29,9 @@ use PHPUnit\Framework\TestCase;
 
 class QueryValidatorTest extends TestCase
 {
+    /**
+     * @return void
+     */
     public function test(): void
     {
         $query = $this->createMock(QueryInterface::class);
@@ -55,6 +58,9 @@ class QueryValidatorTest extends TestCase
         $this->assertSame([$error1, $error2, $error3], $actual->all());
     }
 
+    /**
+     * @return void
+     */
     public function testKeyedSet(): void
     {
         $query = $this->createMock(QueryInterface::class);
@@ -81,10 +87,13 @@ class QueryValidatorTest extends TestCase
         $this->assertSame([$error1, $error2, $error3], $actual->all());
     }
 
+    /**
+     * @return void
+     */
     public function testNoRules(): void
     {
         $query = $this->createMock(QueryInterface::class);
-        $validator = new QueryValidator(new PipelineBuilderFactory(), []);
+        $validator = new QueryValidator(new PipelineBuilderFactory());
 
         $this->assertEquals(new ListOfErrors(), $validator->validate($query));
     }

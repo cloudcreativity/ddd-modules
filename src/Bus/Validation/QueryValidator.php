@@ -30,6 +30,10 @@ final class QueryValidator extends AbstractValidator implements QueryValidatorIn
      */
     public function validate(QueryInterface $query): ErrorIterableInterface
     {
-        return $this->getPipeline()->process($query) ?? new ListOfErrors();
+        $errors = $this->getPipeline()->process($query) ?? new ListOfErrors();
+
+        assert($errors instanceof ErrorIterableInterface, 'Expecting validation pipeline to return errors.');
+
+        return $errors;
     }
 }

@@ -20,6 +20,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Bus;
 
 use CloudCreativity\Modules\Bus\DispatchThroughMiddleware;
+use CloudCreativity\Modules\Bus\Results\Result;
 use CloudCreativity\Modules\Bus\Results\ResultInterface;
 
 class TestQueryHandler implements TestQueryHandlerInterface, DispatchThroughMiddleware
@@ -29,7 +30,7 @@ class TestQueryHandler implements TestQueryHandlerInterface, DispatchThroughMidd
      */
     public function execute(TestQuery $query): ResultInterface
     {
-        // TODO: Implement execute() method.
+        return Result::ok();
     }
 
     /**

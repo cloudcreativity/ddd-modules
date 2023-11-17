@@ -19,7 +19,6 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Identifiers;
 
-use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
 use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
@@ -61,7 +60,7 @@ class ListOfIdentifiersTest extends TestCase
             Guid::fromString('SomeOtherType', '3'),
         );
 
-        $this->expectException(ContractException::class);
+        $this->expectException(\AssertionError::class);
         $this->expectExceptionMessage('Expecting identifiers to only contain GUIDs.');
 
         iterator_to_array($ids->guids());
@@ -98,7 +97,7 @@ class ListOfIdentifiersTest extends TestCase
             IntegerId::from(3),
         );
 
-        $this->expectException(ContractException::class);
+        $this->expectException(\AssertionError::class);
         $this->expectExceptionMessage('Expecting identifiers to only contain integer ids.');
 
         iterator_to_array($ids->integerIds());
@@ -135,7 +134,7 @@ class ListOfIdentifiersTest extends TestCase
             StringId::from('3'),
         );
 
-        $this->expectException(ContractException::class);
+        $this->expectException(\AssertionError::class);
         $this->expectExceptionMessage('Expecting identifiers to only contain string ids.');
 
         iterator_to_array($ids->stringIds());
@@ -172,7 +171,7 @@ class ListOfIdentifiersTest extends TestCase
             Uuid::from(RamseyUuid::uuid4()),
         );
 
-        $this->expectException(ContractException::class);
+        $this->expectException(\AssertionError::class);
         $this->expectExceptionMessage('Expecting identifiers to only contain UUIDs.');
 
         iterator_to_array($ids->uuids());

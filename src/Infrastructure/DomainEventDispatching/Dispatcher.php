@@ -32,12 +32,12 @@ use InvalidArgumentException;
 class Dispatcher implements DispatcherInterface
 {
     /**
-     * @var array
+     * @var array<string, array<string|callable>>
      */
     private array $bindings = [];
 
     /**
-     * @var array
+     * @var array<string|callable>
      */
     private array $pipes = [];
 
@@ -58,11 +58,13 @@ class Dispatcher implements DispatcherInterface
     /**
      * Dispatch events through the provided pipes.
      *
-     * @param array $pipes
+     * @param array<string|callable> $pipes
      * @return void
      */
     public function through(array $pipes): void
     {
+        assert(array_is_list($pipes));
+
         $this->pipes = $pipes;
     }
 
@@ -174,7 +176,7 @@ class Dispatcher implements DispatcherInterface
      * Get a cursor to iterate through all listeners for the event.
      *
      * @param string $eventName
-     * @return Generator
+     * @return Generator<EventHandler>
      */
     private function cursor(string $eventName): Generator
     {
@@ -182,6 +184,8 @@ class Dispatcher implements DispatcherInterface
             if (is_string($listener)) {
                 $listener = $this->listeners->get($listener);
             }
+
+            assert(is_object($listener), 'Expecting listener to be an object.');
 
             yield new EventHandler($listener);
         }

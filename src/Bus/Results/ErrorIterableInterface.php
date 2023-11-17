@@ -22,6 +22,9 @@ namespace CloudCreativity\Modules\Bus\Results;
 use CloudCreativity\Modules\Infrastructure\Log\ContextProviderInterface;
 use CloudCreativity\Modules\Toolkit\Iterables\IterableInterface;
 
+/**
+ * @extends IterableInterface<array-key, ErrorInterface|ListOfErrors>
+ */
 interface ErrorIterableInterface extends IterableInterface, ContextProviderInterface
 {
     /**

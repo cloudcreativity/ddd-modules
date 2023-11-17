@@ -30,7 +30,7 @@ final class ModuleBasename implements Stringable
     /**
      * Create a message name from a class string.
      *
-     * @param object|class-string $class
+     * @param object|string $class
      * @return static
      */
     public static function from(object|string $class): self
@@ -43,9 +43,9 @@ final class ModuleBasename implements Stringable
     }
 
     /**
-     * Try to create a message name from a class string.
+     * Try to create a message name from a class.
      *
-     * @param object|class-string $class
+     * @param object|string $class
      * @return static|null
      */
     public static function tryFrom(object|string $class): ?self

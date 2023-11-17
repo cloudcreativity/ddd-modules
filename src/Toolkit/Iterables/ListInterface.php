@@ -26,7 +26,7 @@ namespace CloudCreativity\Modules\Toolkit\Iterables;
 interface ListInterface extends IterableInterface
 {
     /**
-     * @return array<TValue>
+     * @return array<int, TValue>
      */
     public function all(): array;
 }

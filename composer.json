@@ -28,6 +28,7 @@
     },
     "require-dev": {
         "laravel/pint": "^1.13",
+        "phpstan/phpstan": "^1.10",
         "phpunit/phpunit": "^10.4"
     },
     "autoload": {
@@ -39,6 +40,17 @@
         "psr-4": {
             "CloudCreativity\\Modules\\Tests\\": "tests/"
         }
+    },
+    "scripts": {
+        "all": [
+            "@static",
+            "@style",
+            "@test"
+        ],
+        "static": "phpstan analyse src tests -c phpstan.neon",
+        "style": "pint --test",
+        "style:fix": "pint",
+        "test": "phpunit"
     },
     "extra": {
         "branch-alias": {

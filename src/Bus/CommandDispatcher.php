@@ -27,7 +27,7 @@ use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactoryInterface;
 class CommandDispatcher implements CommandDispatcherInterface
 {
     /**
-     * @var array
+     * @var array<string|callable>
      */
     private array $pipes = [];
 
@@ -46,12 +46,14 @@ class CommandDispatcher implements CommandDispatcherInterface
     /**
      * Dispatch messages through the provided pipes.
      *
-     * @param array $pipes
+     * @param array<string|callable> $pipes
      * @return void
      */
     public function through(array $pipes): void
     {
-        $this->pipes = array_values($pipes);
+        assert(array_is_list($pipes), 'Expecting a list of pipes.');
+
+        $this->pipes = $pipes;
     }
 
     /**
@@ -66,6 +68,10 @@ class CommandDispatcher implements CommandDispatcherInterface
             ->through([...$this->pipes, ...array_values($handler->middleware())])
             ->build(MiddlewareProcessor::wrap($handler));
 
-        return $pipeline->process($command);
+        $result = $pipeline->process($command);
+
+        assert($result instanceof ResultInterface, 'Expecting pipeline to return a result object.');
+
+        return $result;
     }
 }

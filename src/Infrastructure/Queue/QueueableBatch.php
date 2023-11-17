@@ -25,12 +25,15 @@ use CloudCreativity\Modules\Infrastructure\Log\ContextProviderInterface;
 use CloudCreativity\Modules\Toolkit\Iterables\ListInterface;
 use CloudCreativity\Modules\Toolkit\Iterables\ListTrait;
 
+/**
+ * @implements ListInterface<QueueableInterface>
+ */
 final class QueueableBatch implements ListInterface, ContextProviderInterface
 {
     use ListTrait;
 
     /**
-     * @var array
+     * @var array<QueueableInterface>
      */
     private array $stack;
 

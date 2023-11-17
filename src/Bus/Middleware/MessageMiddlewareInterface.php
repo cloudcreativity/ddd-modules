@@ -30,7 +30,7 @@ interface MessageMiddlewareInterface
      *
      * @param MessageInterface $message
      * @param Closure $next
-     * @return ResultInterface
+     * @return ResultInterface<mixed>
      */
     public function __invoke(MessageInterface $message, Closure $next): ResultInterface;
 }

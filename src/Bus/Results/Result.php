@@ -35,8 +35,8 @@ final class Result implements ResultInterface
     /**
      * Return a success result.
      *
-     * @param TValue|null $value
-     * @return Result
+     * @param TValue $value
+     * @return Result<TValue>
      */
     public static function ok(mixed $value = null): self
     {
@@ -47,7 +47,7 @@ final class Result implements ResultInterface
      * Return a failed result.
      *
      * @param ErrorIterableInterface|ErrorInterface|array<ErrorInterface>|string $errorOrErrors
-     * @return Result
+     * @return Result<null>
      */
     public static function failed(ErrorIterableInterface|ErrorInterface|array|string $errorOrErrors): self
     {
@@ -67,7 +67,7 @@ final class Result implements ResultInterface
      * Result constructor.
      *
      * @param bool $success
-     * @param TValue|null $value
+     * @param TValue $value
      * @param ErrorIterableInterface $errors
      */
     private function __construct(
@@ -118,10 +118,9 @@ final class Result implements ResultInterface
      */
     public function error(): ?string
     {
-        $error = $this
-            ->errors
-            ?->toList()
-            ?->first();
+        $error = $this->errors
+            ->toList()
+            ->first();
 
         return $error?->message();
     }
@@ -139,7 +138,8 @@ final class Result implements ResultInterface
     }
 
     /**
-     * @inheritDoc
+     * @param Meta|array<string, mixed> $meta
+     * @return Result<TValue>
      */
     public function withMeta(Meta|array $meta): self
     {
@@ -157,7 +157,7 @@ final class Result implements ResultInterface
     public function context(): array
     {
         return array_filter([
-            'errors' => $this->errors?->context() ?: null,
+            'errors' => $this->errors->context() ?: null,
             'meta' => $this->meta?->context() ?: null,
             'success' => $this->success,
         ], static fn ($value) => $value !== null);

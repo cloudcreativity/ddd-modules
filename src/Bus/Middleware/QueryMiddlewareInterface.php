@@ -30,7 +30,7 @@ interface QueryMiddlewareInterface
      *
      * @param QueryInterface $query
      * @param Closure $next
-     * @return ResultInterface
+     * @return ResultInterface<mixed>
      */
     public function __invoke(QueryInterface $query, Closure $next): ResultInterface;
 }

@@ -32,7 +32,7 @@ interface PipelineBuilderInterface
     /**
      * Add the provided stages.
      *
-     * @param iterable $stages
+     * @param iterable<string|callable> $stages
      * @return $this
      */
     public function through(iterable $stages): self;

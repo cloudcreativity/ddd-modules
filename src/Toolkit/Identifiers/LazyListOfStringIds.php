@@ -20,7 +20,6 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
 use Closure;
-use CloudCreativity\Modules\Toolkit\Contracts;
 use CloudCreativity\Modules\Toolkit\Iterables\LazyIteratorTrait;
 use Generator;
 use IteratorAggregate;
@@ -48,7 +47,7 @@ final class LazyListOfStringIds implements IteratorAggregate
     public function getIterator(): Generator
     {
         foreach ($this->cursor() as $id) {
-            Contracts::assert($id instanceof StringId, 'Expecting identifiers to only contain string ids.');
+            assert($id instanceof StringId, 'Expecting identifiers to only contain string ids.');
             yield $id;
         }
     }

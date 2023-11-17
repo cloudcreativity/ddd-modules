@@ -19,6 +19,10 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Iterables;
 
+/**
+ * @template TValue
+ * @extends IterableInterface<string,TValue>
+ */
 interface KeyedSetInterface extends IterableInterface
 {
 }

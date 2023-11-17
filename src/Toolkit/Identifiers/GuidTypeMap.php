@@ -24,7 +24,7 @@ final class GuidTypeMap
     /**
      * GuidTypeMap constructor
      *
-     * @param array<string,string> $map
+     * @param array<string, mixed> $map
      */
     public function __construct(private readonly array $map)
     {
