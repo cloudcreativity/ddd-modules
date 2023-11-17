@@ -60,11 +60,15 @@ class LogMessageDispatchTest extends TestCase
         $expected = $this->createMock(ResultInterface::class);
         $expected->method('context')->willReturn(['baz' => 'bat']);
         $name = $this->message::class;
+        $logs = [];
 
-        $this->logger->expects($this->exactly(2))->method('log')->withConsecutive(
-            [LogLevel::DEBUG, "Bus dispatching {$name}.", $this->message->context()],
-            [LogLevel::INFO, "Bus dispatched {$name}.", $expected->context()],
-        );
+        $this->logger
+            ->expects($this->exactly(2))
+            ->method('log')
+            ->willReturnCallback(function ($level, $message, $context) use (&$logs): bool {
+                $logs[] = [$level, $message, $context];
+                return true;
+            });
 
         $middleware = new LogMessageDispatch($this->logger);
         $actual = $middleware($this->message, function (MessageInterface $received) use ($expected) {
@@ -73,6 +77,10 @@ class LogMessageDispatchTest extends TestCase
         });
 
         $this->assertSame($expected, $actual);
+        $this->assertSame([
+            [LogLevel::DEBUG, "Bus dispatching {$name}.", $this->message->context()],
+            [LogLevel::INFO, "Bus dispatched {$name}.", $expected->context()],
+        ], $logs);
     }
 
     /**
@@ -83,11 +91,15 @@ class LogMessageDispatchTest extends TestCase
         $expected = $this->createMock(ResultInterface::class);
         $expected->method('context')->willReturn(['baz' => 'bat']);
         $name = $this->message::class;
+        $logs = [];
 
-        $this->logger->expects($this->exactly(2))->method('log')->withConsecutive(
-            [LogLevel::NOTICE, "Bus dispatching {$name}.", $this->message->context()],
-            [LogLevel::WARNING, "Bus dispatched {$name}.", $expected->context()],
-        );
+        $this->logger
+            ->expects($this->exactly(2))
+            ->method('log')
+            ->willReturnCallback(function ($level, $message, $context) use (&$logs): bool {
+                $logs[] = [$level, $message, $context];
+                return true;
+            });
 
         $middleware = new LogMessageDispatch($this->logger, LogLevel::NOTICE, LogLevel::WARNING);
         $actual = $middleware($this->message, function (MessageInterface $received) use ($expected) {
@@ -96,6 +108,10 @@ class LogMessageDispatchTest extends TestCase
         });
 
         $this->assertSame($expected, $actual);
+        $this->assertSame([
+            [LogLevel::NOTICE, "Bus dispatching {$name}.", $this->message->context()],
+            [LogLevel::WARNING, "Bus dispatched {$name}.", $expected->context()],
+        ], $logs);
     }
 
     /**

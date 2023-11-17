@@ -90,6 +90,10 @@ class ErrorIterableFactoryTest extends TestCase
 
     public function testMakeWithIterable(): void
     {
+        $expected1 = $this->createMock(ErrorInterface::class);
+        $expected2 = $this->createMock(ErrorInterface::class);
+        $expected3 = $this->createMock(ErrorInterface::class);
+
         $iterable = new class implements IteratorAggregate
         {
             public function getIterator(): \Generator
@@ -105,12 +109,15 @@ class ErrorIterableFactoryTest extends TestCase
         $this->errorFactory
             ->expects($this->exactly(3))
             ->method('make')
-            ->withConsecutive(['one'], ['two'], ['three'])
-            ->willReturn($expected = $this->createMock(ErrorInterface::class));
+            ->willReturnCallback(fn ($message) => match ($message) {
+                'one' => $expected1,
+                'two' => $expected2,
+                'three' => $expected3,
+            });
 
         $actual = $this->errorIterableFactory->make($iterable);
 
-        $this->assertEquals(new ListOfErrors($expected, $expected, $expected), $actual);
+        $this->assertEquals(new ListOfErrors($expected1, $expected2, $expected3), $actual);
     }
 
     public function testMakeWithString(): void

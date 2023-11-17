@@ -76,7 +76,7 @@ class UuidTest extends TestCase
     /**
      * @return array<int, array<IdentifierInterface>>
      */
-    public function notUuidProvider(): array
+    public static function notUuidProvider(): array
     {
         return [
             [new IntegerId(1)],

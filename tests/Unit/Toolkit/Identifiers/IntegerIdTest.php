@@ -80,7 +80,7 @@ class IntegerIdTest extends TestCase
     /**
      * @return array<int, array<IdentifierInterface>>
      */
-    public function notIntegerIdProvider(): array
+    public static function notIntegerIdProvider(): array
     {
         return [
             [new StringId('1')],

@@ -51,36 +51,62 @@ class LogPushedToQueueTest extends TestCase
         $this->message->method('context')->willReturn(['foo' => 'bar']);
     }
 
+    /**
+     * @return void
+     */
     public function test(): void
     {
         $messageName = get_class($this->message);
 
-        $this->logger->expects($this->exactly(2))->method('log')->withConsecutive(
-            [LogLevel::DEBUG, "Queuing message {$messageName}.", $this->message->context()],
-            [LogLevel::INFO, "Queued message {$messageName}.", $this->message->context()],
-        );
+        $this->logger
+            ->expects($this->exactly(2))
+            ->method('log')
+            ->willReturnCallback(function ($level, $message, $context) use (&$logs): bool {
+                $logs[] = [$level, $message, $context];
+                return true;
+            });
 
         $middleware = new LogPushedToQueue($this->logger);
         $middleware($this->message, function (QueueableInterface $received) {
             $this->assertSame($this->message, $received);
         });
+
+        $this->assertSame([
+            [LogLevel::DEBUG, "Queuing message {$messageName}.", $this->message->context()],
+            [LogLevel::INFO, "Queued message {$messageName}.", $this->message->context()],
+        ], $logs);
     }
 
+    /**
+     * @return void
+     */
     public function testWithCustomLevels(): void
     {
         $messageName = get_class($this->message);
+        $logs = [];
 
-        $this->logger->expects($this->exactly(2))->method('log')->withConsecutive(
-            [LogLevel::NOTICE, "Queuing message {$messageName}.", $this->message->context()],
-            [LogLevel::WARNING, "Queued message {$messageName}.", $this->message->context()],
-        );
+        $this->logger
+            ->expects($this->exactly(2))
+            ->method('log')
+            ->willReturnCallback(function ($level, $message, $context) use (&$logs): bool {
+                $logs[] = [$level, $message, $context];
+                return true;
+            });
 
         $middleware = new LogPushedToQueue($this->logger, LogLevel::NOTICE, LogLevel::WARNING);
         $middleware($this->message, function (QueueableInterface $received) {
             $this->assertSame($this->message, $received);
         });
+
+        $this->assertSame([
+            [LogLevel::NOTICE, "Queuing message {$messageName}.", $this->message->context()],
+            [LogLevel::WARNING, "Queued message {$messageName}.", $this->message->context()],
+        ], $logs);
     }
 
+    /**
+     * @return void
+     */
     public function testItLogsAfterTheNextClosureIsInvoked(): void
     {
         $expected = new LogicException();

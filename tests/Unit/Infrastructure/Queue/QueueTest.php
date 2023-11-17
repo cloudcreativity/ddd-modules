@@ -129,6 +129,7 @@ class QueueTest extends TestCase
         $message1 = $this->createMock(QueueableInterface::class);
         $message2 = $this->createMock(QueueableInterface::class);
         $batch = new QueueableBatch($message1, $message2);
+        $invoked = [];
 
         $this->container
             ->expects($this->once())
@@ -149,9 +150,13 @@ class QueueTest extends TestCase
         $handler
             ->expects($this->exactly(2))
             ->method('__invoke')
-            ->withConsecutive([$this->identicalTo($message1)], [$this->identicalTo($message2)]);
+            ->willReturnCallback(function ($message) use (&$invoked): bool {
+                $invoked[] = $message;
+                return true;
+            });
 
         $this->queue->pushBatch($batch);
+        $this->assertSame([$message1, $message2], $invoked);
     }
 
     /**
@@ -163,6 +168,7 @@ class QueueTest extends TestCase
         $message2 = $this->createMock(QueueableInterface::class);
         $actual = [];
         $batch = new QueueableBatch($message1, $message2);
+        $invoked = [];
 
         $middleware1 = function ($job, Closure $next) use (&$actual) {
             $actual['m1'] ??= [];
@@ -194,12 +200,16 @@ class QueueTest extends TestCase
         $handler
             ->expects($this->exactly(2))
             ->method('__invoke')
-            ->withConsecutive([$this->identicalTo($message1)], [$this->identicalTo($message2)]);
+            ->willReturnCallback(function ($message) use (&$invoked): bool {
+                $invoked[] = $message;
+                return true;
+            });
 
         $this->queue->through([$middleware1]);
         $this->queue->pushBatch($batch);
 
         $this->assertCount(2, $actual);
         $this->assertSame(['m1' => [$message1, $message2], 'm2' => [$message1, $message2]], $actual);
+        $this->assertSame([$message1, $message2], $invoked);
     }
 }

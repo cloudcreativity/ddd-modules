@@ -56,16 +56,25 @@ class LogDomainEventDispatchTest extends TestCase
     public function testWithDefaultLevels(): void
     {
         $eventName = $this->event::class;
+        $logs = [];
 
-        $this->logger->expects($this->exactly(2))->method('log')->withConsecutive(
-            [LogLevel::DEBUG, "Dispatching event {$eventName}."],
-            [LogLevel::INFO, "Dispatched event {$eventName}."],
-        );
+        $this->logger
+            ->expects($this->exactly(2))
+            ->method('log')
+            ->willReturnCallback(function ($level, $message) use (&$logs): bool {
+                $logs[] = [$level, $message];
+                return true;
+            });
 
         $middleware = new LogDomainEventDispatch($this->logger);
         $middleware($this->event, function (DomainEventInterface $received) {
             $this->assertSame($this->event, $received);
         });
+
+        $this->assertSame([
+            [LogLevel::DEBUG, "Dispatching event {$eventName}."],
+            [LogLevel::INFO, "Dispatched event {$eventName}."],
+        ], $logs);
     }
 
     /**
@@ -74,16 +83,25 @@ class LogDomainEventDispatchTest extends TestCase
     public function testWithCustomLevels(): void
     {
         $eventName = $this->event::class;
+        $logs = [];
 
-        $this->logger->expects($this->exactly(2))->method('log')->withConsecutive(
-            [LogLevel::NOTICE, "Dispatching event {$eventName}."],
-            [LogLevel::WARNING, "Dispatched event {$eventName}."],
-        );
+        $this->logger
+            ->expects($this->exactly(2))
+            ->method('log')
+            ->willReturnCallback(function ($level, $message) use (&$logs): bool {
+                $logs[] = [$level, $message];
+                return true;
+            });
 
         $middleware = new LogDomainEventDispatch($this->logger, LogLevel::NOTICE, LogLevel::WARNING);
         $middleware($this->event, function (DomainEventInterface $received) {
             $this->assertSame($this->event, $received);
         });
+
+        $this->assertSame([
+            [LogLevel::NOTICE, "Dispatching event {$eventName}."],
+            [LogLevel::WARNING, "Dispatched event {$eventName}."],
+        ], $logs);
     }
 
     /**

@@ -89,7 +89,7 @@ class StringIdTest extends TestCase
     /**
      * @return array<int, array<IdentifierInterface>>
      */
-    public function notStringIdProvider(): array
+    public static function notStringIdProvider(): array
     {
         return [
             [new IntegerId(1)],
