@@ -19,6 +19,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\DomainEventDispatching;
 
+use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\ListenerContainer;
 use PHPUnit\Framework\TestCase;
 
 class ListenerContainerTest extends TestCase
@@ -26,8 +27,35 @@ class ListenerContainerTest extends TestCase
     /**
      * @return void
      */
-    public function test(): void
+    public function testItCreatesListener(): void
     {
-        $this->markTestIncomplete('@TODO');
+        $container = new ListenerContainer();
+        $listener = new TestListener();
+
+        $container->bind('bar', fn () => new TestListener());
+        $container->bind('foo', fn () => $listener);
+
+        $this->assertSame($listener, $container->get('foo'));
+    }
+
+    /**
+     * @return void
+     */
+    public function testItDoesNotRecogniseListenerName(): void
+    {
+        $container = new ListenerContainer();
+        $this->expectExceptionMessage('Unrecognised listener name: foo');
+        $container->get('foo');
+    }
+
+    /**
+     * @return void
+     */
+    public function testItHandlesBindingNotReturningAnObject(): void
+    {
+        $container = new ListenerContainer();
+        $container->bind('foo', fn () => 'bar');
+        $this->expectExceptionMessage('Listener binding for foo must return an object.');
+        $container->get('foo');
     }
 }
