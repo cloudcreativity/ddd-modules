@@ -20,7 +20,6 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Bus\Results;
 
 use CloudCreativity\Modules\Toolkit\ContractException;
-use InvalidArgumentException;
 
 /**
  * @template TValue
@@ -47,16 +46,19 @@ final class Result implements ResultInterface
     /**
      * Return a failed result.
      *
-     * @param ErrorIterableInterface|ErrorInterface|iterable|string $errorOrErrors
+     * @param ErrorIterableInterface|ErrorInterface|array<ErrorInterface>|string $errorOrErrors
      * @return Result
      */
-    public static function failed(ErrorIterableInterface|ErrorInterface|iterable|string $errorOrErrors): self
+    public static function failed(ErrorIterableInterface|ErrorInterface|array|string $errorOrErrors): self
     {
-        $errors = ErrorIterableFactory::getInstance()->make($errorOrErrors);
+        $errors = match(true) {
+            $errorOrErrors instanceof ErrorIterableInterface => $errorOrErrors,
+            $errorOrErrors instanceof ErrorInterface => new ListOfErrors($errorOrErrors),
+            is_array($errorOrErrors) => new ListOfErrors(...$errorOrErrors),
+            is_string($errorOrErrors) => new ListOfErrors(new Error(null, $errorOrErrors)),
+        };
 
-        if ($errors->isEmpty()) {
-            throw new InvalidArgumentException('Expecting at least one error message for a failed result.');
-        }
+        assert($errors->isNotEmpty(), 'Expecting at least one error message for a failed result.');
 
         return new self(success: false, errors: $errors);
     }

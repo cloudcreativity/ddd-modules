@@ -30,6 +30,9 @@ use PHPUnit\Framework\TestCase;
 
 class ResultTest extends TestCase
 {
+    /**
+     * @return void
+     */
     public function testOk(): void
     {
         $result = Result::ok();
@@ -42,6 +45,9 @@ class ResultTest extends TestCase
         $this->assertNull($result->error());
     }
 
+    /**
+     * @return void
+     */
     public function testFailed(): void
     {
         $errors = new ListOfErrors(new Error(null, 'Something went wrong.'));
@@ -54,6 +60,9 @@ class ResultTest extends TestCase
         $this->assertSame('Something went wrong.', $result->error());
     }
 
+    /**
+     * @return void
+     */
     public function testFailedWithError(): void
     {
         $error = new Error(null, 'Something went wrong.');
@@ -62,6 +71,9 @@ class ResultTest extends TestCase
         $this->assertEquals(new ListOfErrors($error), $result->errors());
     }
 
+    /**
+     * @return void
+     */
     public function testFailedWithString(): void
     {
         $error = new Error(null, 'Something went wrong.');
@@ -70,6 +82,9 @@ class ResultTest extends TestCase
         $this->assertEquals(new ListOfErrors($error), $result->errors());
     }
 
+    /**
+     * @return void
+     */
     public function testFailedWithArray(): void
     {
         $error = new Error(null, 'Something went wrong.');
@@ -78,12 +93,18 @@ class ResultTest extends TestCase
         $this->assertEquals(new ListOfErrors($error), $result->errors());
     }
 
+    /**
+     * @return void
+     */
     public function testFailedWithoutErrors(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(\AssertionError::class);
         Result::failed(new ListOfErrors());
     }
 
+    /**
+     * @return void
+     */
     public function testWithMeta(): void
     {
         $meta = new Meta(['foo' => 'bar']);
@@ -92,6 +113,9 @@ class ResultTest extends TestCase
         $this->assertEquals($meta, $result->meta());
     }
 
+    /**
+     * @return void
+     */
     public function testWithMetaArray(): void
     {
         $meta = new Meta(['foo' => 'bar']);
@@ -100,6 +124,9 @@ class ResultTest extends TestCase
         $this->assertEquals($meta, $result->meta());
     }
 
+    /**
+     * @return void
+     */
     public function testWithMetaMergesValues(): void
     {
         $result1 = Result::ok()
@@ -118,6 +145,9 @@ class ResultTest extends TestCase
         ], $result2->meta()->all());
     }
 
+    /**
+     * @return void
+     */
     public function testSuccessContext(): void
     {
         $result = Result::ok();
@@ -129,6 +159,9 @@ class ResultTest extends TestCase
         $this->assertEquals($expected, $result->context());
     }
 
+    /**
+     * @return void
+     */
     public function testSuccessContextWithMeta(): void
     {
         $object = $this->createMock(ContextProviderInterface::class);
@@ -148,10 +181,14 @@ class ResultTest extends TestCase
         $this->assertEquals($expected, $result->context());
     }
 
-    public function testFailureToArray(): void
+    /**
+     * @return void
+     */
+    public function testFailureContext(): void
     {
         $errors = $this->createMock(ErrorIterableInterface::class);
         $errors->method('context')->willReturn([['foo' => 'bar']]);
+        $errors->method('isNotEmpty')->willReturn(true);
 
         $result = Result::failed($errors);
 
@@ -163,10 +200,14 @@ class ResultTest extends TestCase
         $this->assertEquals($expected, $result->context());
     }
 
-    public function testFailureToArrayWithMeta(): void
+    /**
+     * @return void
+     */
+    public function testFailureContextWithMeta(): void
     {
         $errors = $this->createMock(ErrorIterableInterface::class);
         $errors->method('context')->willReturn([['foo' => 'bar']]);
+        $errors->method('isNotEmpty')->willReturn(true);
 
         $object = $this->createMock(ContextProviderInterface::class);
         $object->method('context')->willReturn(['baz' => 'bat']);
