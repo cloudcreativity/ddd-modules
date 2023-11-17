@@ -76,7 +76,7 @@ abstract class AbstractValidator implements ValidatorInterface
     private function processor(): AccumulationProcessor
     {
         return new AccumulationProcessor(
-            static fn(?ErrorIterableInterface $carry, ErrorIterableInterface $errors): ErrorIterableInterface =>
+            static fn (?ErrorIterableInterface $carry, ErrorIterableInterface $errors): ErrorIterableInterface =>
                 $carry ? $carry->merge($errors) : $errors,
         );
     }

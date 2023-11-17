@@ -104,7 +104,7 @@ final class ListOfErrors implements ErrorIterableInterface, ListInterface
     public function context(): array
     {
         return array_map(
-            static fn(ErrorInterface $error) => $error->context(),
+            static fn (ErrorInterface $error) => $error->context(),
             $this->stack,
         );
     }

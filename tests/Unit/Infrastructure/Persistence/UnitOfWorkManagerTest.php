@@ -239,13 +239,13 @@ class UnitOfWorkManagerTest extends TestCase
             ->willReturnCallback(fn (\Closure $callback) => $callback());
 
         $result1 = $this->manager->execute(function () {
-            $this->manager->beforeCommit(fn() => null);
-            $this->manager->afterCommit(fn() => null);
+            $this->manager->beforeCommit(fn () => null);
+            $this->manager->afterCommit(fn () => null);
             return 1;
         });
 
         // this would error if the manager is not empty at this point (tests below prove that).
-        $result2 = $this->manager->execute(fn() => 2);
+        $result2 = $this->manager->execute(fn () => 2);
 
         $this->assertSame(1, $result1);
         $this->assertSame(2, $result2);
@@ -270,8 +270,8 @@ class UnitOfWorkManagerTest extends TestCase
 
         try {
             $this->manager->execute(function () {
-                $this->manager->beforeCommit(fn() => null);
-                $this->manager->afterCommit(fn() => null);
+                $this->manager->beforeCommit(fn () => null);
+                $this->manager->afterCommit(fn () => null);
             });
             $this->fail('No exception thrown.');
         } catch (\RuntimeException $ex) {
@@ -279,7 +279,7 @@ class UnitOfWorkManagerTest extends TestCase
         }
 
         // this would error if the manager is not empty at this point (tests below prove that).
-        $result = $this->manager->execute(fn() => true, 2);
+        $result = $this->manager->execute(fn () => true, 2);
 
         $this->assertTrue($result);
     }
@@ -296,7 +296,7 @@ class UnitOfWorkManagerTest extends TestCase
         $this->expectException(InfrastructureException::class);
         $this->expectExceptionMessage('Cannot queue a before commit callback when not executing a unit of work.');
 
-        $this->manager->beforeCommit(fn() => null);
+        $this->manager->beforeCommit(fn () => null);
     }
 
     /**
@@ -307,7 +307,7 @@ class UnitOfWorkManagerTest extends TestCase
         $this->expectException(InfrastructureException::class);
         $this->expectExceptionMessage('Cannot queue an after commit callback when not executing a unit of work.');
 
-        $this->manager->afterCommit(fn() => null);
+        $this->manager->afterCommit(fn () => null);
     }
 
     /**
@@ -326,7 +326,7 @@ class UnitOfWorkManagerTest extends TestCase
         );
 
         $this->manager->execute(function () {
-            $this->manager->execute(fn() => null);
+            $this->manager->execute(fn () => null);
         });
     }
 
@@ -344,7 +344,7 @@ class UnitOfWorkManagerTest extends TestCase
 
         $this->manager->execute(function () {
             $this->manager->afterCommit(function () {
-                $this->manager->beforeCommit(fn() => null);
+                $this->manager->beforeCommit(fn () => null);
             });
         });
     }

@@ -36,7 +36,7 @@ final class MiddlewareProcessor implements ProcessorInterface
      */
     public static function wrap(callable $destination): self
     {
-        return new self(static fn($passable) => $destination($passable));
+        return new self(static fn ($passable) => $destination($passable));
     }
 
     /**
@@ -46,7 +46,7 @@ final class MiddlewareProcessor implements ProcessorInterface
      */
     public function __construct(?Closure $destination = null)
     {
-        $this->destination = $destination ?? static fn($payload) => $payload;
+        $this->destination = $destination ?? static fn ($payload) => $payload;
     }
 
     /**
@@ -55,7 +55,9 @@ final class MiddlewareProcessor implements ProcessorInterface
     public function process(mixed $payload, callable ...$stages): mixed
     {
         $pipeline = array_reduce(
-            array_reverse($stages), $this->carry(), $this->destination
+            array_reverse($stages),
+            $this->carry(),
+            $this->destination,
         );
 
         return $pipeline($payload);

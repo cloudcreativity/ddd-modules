@@ -28,9 +28,9 @@ class SimpleProcessorTest extends TestCase
     {
         $processor = new SimpleProcessor();
 
-        $a = static fn(int $value): int => $value * 2;
-        $b = static fn(int $value): int => $value + 1;
-        $c = static fn(int $value): int => $value * 3;
+        $a = static fn (int $value): int => $value * 2;
+        $b = static fn (int $value): int => $value + 1;
+        $c = static fn (int $value): int => $value * 3;
 
         $result = $processor->process(10, $a, $b, $c);
 

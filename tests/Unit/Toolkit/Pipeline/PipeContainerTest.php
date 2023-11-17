@@ -29,12 +29,12 @@ class PipeContainerTest extends TestCase
      */
     public function test(): void
     {
-        $a = fn() => 1;
-        $b = fn() => 2;
+        $a = fn () => 1;
+        $b = fn () => 2;
 
         $container = new PipeContainer();
-        $container->bind('PipeA', fn() => $a);
-        $container->bind('PipeB', fn() => $b);
+        $container->bind('PipeA', fn () => $a);
+        $container->bind('PipeB', fn () => $b);
 
         $this->assertSame($a, $container->get('PipeA'));
         $this->assertSame($b, $container->get('PipeB'));

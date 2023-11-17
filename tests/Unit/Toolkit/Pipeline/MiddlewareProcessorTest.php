@@ -60,7 +60,7 @@ class MiddlewareProcessorTest extends TestCase
     public function testWithDestination(): void
     {
         $processor = new MiddlewareProcessor(
-            static fn(array $values): array => array_map('strtolower', $values)
+            static fn (array $values): array => array_map('strtolower', $values),
         );
 
         $result = $processor->process(
@@ -85,7 +85,7 @@ class MiddlewareProcessorTest extends TestCase
     public function testNoStagesWithDestination(): void
     {
         $processor = new MiddlewareProcessor(
-            static fn(string $value): string => strtoupper($value),
+            static fn (string $value): string => strtoupper($value),
         );
 
         $result = $processor->process('foo');

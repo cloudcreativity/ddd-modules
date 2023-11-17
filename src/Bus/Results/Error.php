@@ -97,6 +97,6 @@ final class Error implements ErrorInterface
             'key' => $this->key,
             'message' => $this->message,
             'code' => $this->code,
-        ], static fn($value) => $value !== null);
+        ], static fn ($value) => $value !== null);
     }
 }

@@ -33,12 +33,12 @@ class QueueHandlerContainerTest extends TestCase
     {
         $a = new TestQueueHandler();
         $b = $this->createMock(TestQueueHandler::class);
-        $c = fn() => true;
-        $d = fn() => false;
+        $c = fn () => true;
+        $d = fn () => false;
 
         $container = new QueueHandlerContainer();
-        $container->bind('QueueableClassA', fn() => $a);
-        $container->bind('QueueableClassB', fn() => $b);
+        $container->bind('QueueableClassA', fn () => $a);
+        $container->bind('QueueableClassB', fn () => $b);
         $container->register('QueueableClassC', $c);
         $container->register('QueueableClassD', $d);
 

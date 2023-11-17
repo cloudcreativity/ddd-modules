@@ -38,7 +38,7 @@ class Queue implements QueueInterface
      */
     public function __construct(
         private readonly QueueHandlerContainerInterface $handlers,
-        private readonly PipelineBuilderFactoryInterface $pipelineFactory = new PipelineBuilderFactory()
+        private readonly PipelineBuilderFactoryInterface $pipelineFactory = new PipelineBuilderFactory(),
     ) {
     }
 
@@ -67,7 +67,7 @@ class Queue implements QueueInterface
     public function pushBatch(QueueableBatch $batch): void
     {
         $handler = $this->handlers->get(
-            $batch->first()::class
+            $batch->first()::class,
         );
 
         $pipeline = $this->pipelineFactory

@@ -34,8 +34,8 @@ class QueryHandlerContainerTest extends TestCase
         $b = $this->createMock(TestQueryHandler::class);
 
         $container = new QueryHandlerContainer();
-        $container->bind('QueryClassA', fn() => $a);
-        $container->bind('QueryClassB', fn() => $b);
+        $container->bind('QueryClassA', fn () => $a);
+        $container->bind('QueryClassB', fn () => $b);
 
         $this->assertEquals(new QueryHandler($a), $container->get('QueryClassA'));
         $this->assertEquals(new QueryHandler($b), $container->get('QueryClassB'));

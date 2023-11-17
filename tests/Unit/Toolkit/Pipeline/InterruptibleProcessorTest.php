@@ -27,12 +27,12 @@ class InterruptibleProcessorTest extends TestCase
     public function test(): void
     {
         $processor = new InterruptibleProcessor(
-            static fn($value): bool => 0 === (intval($value) % 10),
+            static fn ($value): bool => 0 === (intval($value) % 10),
         );
 
-        $a = static fn(int $value): int => $value * 10;
-        $b = static fn(int $value): int => $value * 20;
-        $c = static fn(int $value): float => $value / 3;
+        $a = static fn (int $value): int => $value * 10;
+        $b = static fn (int $value): int => $value * 20;
+        $c = static fn (int $value): float => $value / 3;
         $d = function () {
             $this->fail('Processor did not interrupt execution.');
         };

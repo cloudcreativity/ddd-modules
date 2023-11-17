@@ -68,9 +68,9 @@ class PipelineTest extends TestCase
     public function testDefaultProcessor(): void
     {
         $pipeline = new Pipeline(null, [
-            static fn(int $value): int => $value * 5,
-            static fn(int $value): int => $value + 2,
-            static fn(int $value): int => $value - 3,
+            static fn (int $value): int => $value * 5,
+            static fn (int $value): int => $value + 2,
+            static fn (int $value): int => $value - 3,
         ]);
 
         $result = $pipeline->process(3);
@@ -81,12 +81,12 @@ class PipelineTest extends TestCase
     public function testPipe(): void
     {
         $pipeline1 = new Pipeline(null, [
-            static fn(int $value): int => $value * 5,
-            static fn(int $value): int => $value + 2,
+            static fn (int $value): int => $value * 5,
+            static fn (int $value): int => $value + 2,
         ]);
 
         $pipeline2 = $pipeline1->pipe(
-            static fn(int $value): int => $value - 3,
+            static fn (int $value): int => $value - 3,
         );
 
         $this->assertNotSame($pipeline1, $pipeline2);

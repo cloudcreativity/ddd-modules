@@ -97,7 +97,7 @@ final class QueueableBatch implements ListInterface, ContextProviderInterface
     public function context(): array
     {
         return array_map(
-            fn(QueueableInterface $queueable) => $queueable->context(),
+            fn (QueueableInterface $queueable) => $queueable->context(),
             $this->stack,
         );
     }

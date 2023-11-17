@@ -27,6 +27,7 @@
         "ramsey/uuid": "^4.7"
     },
     "require-dev": {
+        "laravel/pint": "^1.13",
         "phpunit/phpunit": "^10.4"
     },
     "autoload": {

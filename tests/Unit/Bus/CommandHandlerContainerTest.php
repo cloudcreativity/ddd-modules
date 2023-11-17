@@ -34,8 +34,8 @@ class CommandHandlerContainerTest extends TestCase
         $b = $this->createMock(TestCommandHandler::class);
 
         $container = new CommandHandlerContainer();
-        $container->bind('CommandClassA', fn() => $a);
-        $container->bind('CommandClassB', fn() => $b);
+        $container->bind('CommandClassA', fn () => $a);
+        $container->bind('CommandClassB', fn () => $b);
 
         $this->assertEquals(new CommandHandler($a), $container->get('CommandClassA'));
         $this->assertEquals(new CommandHandler($b), $container->get('CommandClassB'));

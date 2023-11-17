@@ -29,7 +29,7 @@ final class Pipeline implements PipelineInterface
      */
     public function __construct(
         private ?ProcessorInterface $processor,
-        private array $stages
+        private array $stages,
     ) {
         $this->processor ??= new SimpleProcessor();
     }

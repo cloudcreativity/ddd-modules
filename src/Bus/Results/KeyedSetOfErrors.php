@@ -140,7 +140,7 @@ final class KeyedSetOfErrors implements ErrorIterableInterface, KeyedSetInterfac
     {
         return array_reduce(
             $this->stack,
-            static fn(int $carry, ListOfErrors $errors) => $carry + $errors->count(),
+            static fn (int $carry, ListOfErrors $errors) => $carry + $errors->count(),
             0,
         );
     }
@@ -151,7 +151,7 @@ final class KeyedSetOfErrors implements ErrorIterableInterface, KeyedSetInterfac
     public function context(): array
     {
         return array_map(
-            static fn(ListOfErrors $errors) => $errors->context(),
+            static fn (ListOfErrors $errors) => $errors->context(),
             $this->stack,
         );
     }

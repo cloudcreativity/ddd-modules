@@ -91,7 +91,7 @@ class KeyedSetOfErrorsTest extends TestCase
         $this->assertEquals([
             'foo' => new ListOfErrors($a, $c),
             'bar' => new ListOfErrors($b),
-            'baz' => new ListOfErrors($d)
+            'baz' => new ListOfErrors($d),
         ], iterator_to_array($actual));
         $this->assertSame(['bar', 'baz', 'foo'], $actual->keys());
     }

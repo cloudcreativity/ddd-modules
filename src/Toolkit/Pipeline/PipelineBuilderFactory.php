@@ -27,8 +27,7 @@ final class PipelineBuilderFactory implements PipelineBuilderFactoryInterface
      */
     public static function cast(
         PipelineBuilderFactoryInterface|PipeContainerInterface $factoryOrContainer,
-    ): PipelineBuilderFactoryInterface
-    {
+    ): PipelineBuilderFactoryInterface {
         if ($factoryOrContainer instanceof PipeContainerInterface) {
             return new self($factoryOrContainer);
         }

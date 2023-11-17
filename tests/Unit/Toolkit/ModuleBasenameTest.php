@@ -93,7 +93,7 @@ class ModuleBasenameTest extends TestCase
     public function testToArray(): ModuleBasename
     {
         $value = ModuleBasename::from(
-            'CloudCreativity\Application\Modules\WaitList\BoundedContext\Application\Commands\ScheduleDelayedProcess\ScheduleDelayedProcessCommand'
+            'CloudCreativity\Application\Modules\WaitList\BoundedContext\Application\Commands\ScheduleDelayedProcess\ScheduleDelayedProcessCommand',
         );
 
         $this->assertSame([

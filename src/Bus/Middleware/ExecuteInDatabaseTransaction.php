@@ -34,7 +34,7 @@ final class ExecuteInDatabaseTransaction implements CommandMiddlewareInterface
      */
     public function __construct(
         private readonly UnitOfWorkManagerInterface $transactions,
-        private readonly int $attempts = 1
+        private readonly int $attempts = 1,
     ) {
     }
 
@@ -44,7 +44,7 @@ final class ExecuteInDatabaseTransaction implements CommandMiddlewareInterface
     public function __invoke(CommandInterface $command, Closure $next): ResultInterface
     {
         return $this->transactions->execute(
-            static fn() => $next($command),
+            static fn () => $next($command),
             $this->attempts,
         );
     }

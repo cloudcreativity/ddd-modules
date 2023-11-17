@@ -74,7 +74,7 @@ class DispatcherTest extends TestCase
         $listener5 = $this->createMock(TestListenerAfterCommit::class);
         $listener6 = $this->createMock(TestListenerAfterCommit::class);
 
-        $listener2Closure = static fn($event) => $listener2->handle($event);
+        $listener2Closure = static fn ($event) => $listener2->handle($event);
 
         $this->container
             ->expects($this->exactly(5))
@@ -367,7 +367,7 @@ class DispatcherTest extends TestCase
      */
     public function testListenerCannotImplementBothBeforeAndAfterCommit(): void
     {
-        $listener = new class implements DispatchBeforeCommit, DispatchAfterCommit {
+        $listener = new class () implements DispatchBeforeCommit, DispatchAfterCommit {
             public function handle(): void
             {
                 // no-op

@@ -74,8 +74,7 @@ final class Result implements ResultInterface
         private readonly bool $success,
         private readonly mixed $value = null,
         private readonly ErrorIterableInterface $errors = new ListOfErrors(),
-    )
-    {
+    ) {
     }
 
     /**
@@ -161,6 +160,6 @@ final class Result implements ResultInterface
             'errors' => $this->errors?->context() ?: null,
             'meta' => $this->meta?->context() ?: null,
             'success' => $this->success,
-        ], static fn($value) => $value !== null);
+        ], static fn ($value) => $value !== null);
     }
 }
