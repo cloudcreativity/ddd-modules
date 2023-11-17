@@ -19,7 +19,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Pipeline;
 
-class SimpleProcessor implements ProcessorInterface
+final class SimpleProcessor implements ProcessorInterface
 {
     /**
      * @inheritDoc

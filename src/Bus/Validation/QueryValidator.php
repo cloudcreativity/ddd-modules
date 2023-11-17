@@ -23,7 +23,7 @@ use CloudCreativity\Modules\Bus\QueryInterface;
 use CloudCreativity\Modules\Bus\Results\ErrorIterableInterface;
 use CloudCreativity\Modules\Bus\Results\ListOfErrors;
 
-class QueryValidator extends AbstractValidator implements QueryValidatorInterface
+final class QueryValidator extends AbstractValidator implements QueryValidatorInterface
 {
     /**
      * @inheritDoc

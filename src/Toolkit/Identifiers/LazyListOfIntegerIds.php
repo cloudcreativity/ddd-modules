@@ -28,7 +28,7 @@ use IteratorAggregate;
 /**
  * @implements IteratorAggregate<int, IntegerId>
  */
-class LazyListOfIntegerIds implements IteratorAggregate
+final class LazyListOfIntegerIds implements IteratorAggregate
 {
     use LazyIteratorTrait;
 

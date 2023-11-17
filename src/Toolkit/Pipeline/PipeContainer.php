@@ -22,7 +22,7 @@ namespace CloudCreativity\Modules\Toolkit\Pipeline;
 use Closure;
 use RuntimeException;
 
-class PipeContainer implements PipeContainerInterface
+final class PipeContainer implements PipeContainerInterface
 {
     /**
      * @var array<string,Closure>

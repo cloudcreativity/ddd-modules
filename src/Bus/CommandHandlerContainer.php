@@ -22,7 +22,7 @@ namespace CloudCreativity\Modules\Bus;
 use Closure;
 use RuntimeException;
 
-class CommandHandlerContainer implements CommandHandlerContainerInterface
+final class CommandHandlerContainer implements CommandHandlerContainerInterface
 {
     /**
      * @var array<string,Closure>

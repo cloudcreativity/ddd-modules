@@ -29,7 +29,7 @@ use Ramsey\Uuid\UuidInterface;
 /**
  * @implements IteratorAggregate<int, Uuid>
  */
-class LazyListOfUuids implements IteratorAggregate
+final class LazyListOfUuids implements IteratorAggregate
 {
     use LazyIteratorTrait;
 

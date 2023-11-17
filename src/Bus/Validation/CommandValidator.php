@@ -23,7 +23,7 @@ use CloudCreativity\Modules\Bus\CommandInterface;
 use CloudCreativity\Modules\Bus\Results\ErrorIterableInterface;
 use CloudCreativity\Modules\Bus\Results\ListOfErrors;
 
-class CommandValidator extends AbstractValidator implements CommandValidatorInterface
+final class CommandValidator extends AbstractValidator implements CommandValidatorInterface
 {
     /**
      * @inheritDoc

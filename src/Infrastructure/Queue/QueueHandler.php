@@ -21,7 +21,7 @@ namespace CloudCreativity\Modules\Infrastructure\Queue;
 
 use Closure;
 
-class QueueHandler implements QueueHandlerInterface
+final class QueueHandler implements QueueHandlerInterface
 {
     /**
      * QueueHandler constructor.

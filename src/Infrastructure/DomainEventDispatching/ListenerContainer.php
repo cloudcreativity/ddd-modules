@@ -22,7 +22,7 @@ namespace CloudCreativity\Modules\Infrastructure\DomainEventDispatching;
 use Closure;
 use RuntimeException;
 
-class ListenerContainer implements ListenerContainerInterface
+final class ListenerContainer implements ListenerContainerInterface
 {
     /**
      * @var array<string,Closure>

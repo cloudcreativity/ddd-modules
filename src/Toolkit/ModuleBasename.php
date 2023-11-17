@@ -22,7 +22,7 @@ namespace CloudCreativity\Modules\Toolkit;
 use Stringable;
 use UnexpectedValueException;
 
-readonly class ModuleBasename implements Stringable
+final class ModuleBasename implements Stringable
 {
     /** @var string  */
     private const REGEX_MODULES = '/Modules\\\\(\w+)\\\\[\w\\\\]+\\\\(\w+)$/m';
@@ -68,8 +68,8 @@ readonly class ModuleBasename implements Stringable
      * @param string $name
      */
     private function __construct(
-        public string $module,
-        public string $name,
+        public readonly string $module,
+        public readonly string $name,
     ) {
     }
 

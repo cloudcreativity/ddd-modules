@@ -19,7 +19,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Pipeline;
 
-readonly class PipelineBuilderFactory implements PipelineBuilderFactoryInterface
+final class PipelineBuilderFactory implements PipelineBuilderFactoryInterface
 {
     /**
      * @param PipelineBuilderFactoryInterface|PipeContainerInterface $factoryOrContainer
@@ -41,7 +41,7 @@ readonly class PipelineBuilderFactory implements PipelineBuilderFactoryInterface
      *
      * @param PipeContainerInterface|null $container
      */
-    public function __construct(private ?PipeContainerInterface $container = null)
+    public function __construct(private readonly ?PipeContainerInterface $container = null)
     {
     }
 

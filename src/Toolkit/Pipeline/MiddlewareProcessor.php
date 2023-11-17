@@ -21,7 +21,7 @@ namespace CloudCreativity\Modules\Toolkit\Pipeline;
 
 use Closure;
 
-class MiddlewareProcessor implements ProcessorInterface
+final class MiddlewareProcessor implements ProcessorInterface
 {
     /**
      * @var Closure

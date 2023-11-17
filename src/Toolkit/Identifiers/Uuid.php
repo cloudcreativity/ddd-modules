@@ -24,7 +24,7 @@ use JsonSerializable;
 use Ramsey\Uuid\Uuid as BaseUuid;
 use Ramsey\Uuid\UuidInterface;
 
-final readonly class Uuid implements IdentifierInterface, JsonSerializable
+final class Uuid implements IdentifierInterface, JsonSerializable
 {
     /**
      * @param IdentifierInterface|UuidInterface $value
@@ -56,7 +56,7 @@ final readonly class Uuid implements IdentifierInterface, JsonSerializable
      *
      * @param UuidInterface $value
      */
-    public function __construct(public UuidInterface $value)
+    public function __construct(public readonly UuidInterface $value)
     {
     }
 

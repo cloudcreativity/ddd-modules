@@ -22,7 +22,7 @@ namespace CloudCreativity\Modules\Bus;
 use Closure;
 use RuntimeException;
 
-class QueryHandlerContainer implements QueryHandlerContainerInterface
+final class QueryHandlerContainer implements QueryHandlerContainerInterface
 {
     /**
      * @var array<string,Closure>

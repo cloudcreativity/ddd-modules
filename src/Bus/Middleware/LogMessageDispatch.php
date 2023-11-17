@@ -26,7 +26,7 @@ use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-readonly class LogMessageDispatch implements MessageMiddlewareInterface
+final class LogMessageDispatch implements MessageMiddlewareInterface
 {
     /**
      * LogMessageDispatch constructor.
@@ -36,9 +36,9 @@ readonly class LogMessageDispatch implements MessageMiddlewareInterface
      * @param string $dispatchedLevel
      */
     public function __construct(
-        private LoggerInterface $logger,
-        private string $dispatchLevel = LogLevel::DEBUG,
-        private string $dispatchedLevel = LogLevel::INFO,
+        private readonly LoggerInterface $logger,
+        private readonly string $dispatchLevel = LogLevel::DEBUG,
+        private readonly string $dispatchedLevel = LogLevel::INFO,
     ) {
     }
 

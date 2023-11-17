@@ -22,7 +22,7 @@ namespace CloudCreativity\Modules\Bus\Results;
 use CloudCreativity\Modules\Toolkit\Iterables\KeyedSetInterface;
 use CloudCreativity\Modules\Toolkit\Iterables\KeyedSetTrait;
 
-class KeyedSetOfErrors implements ErrorIterableInterface, KeyedSetInterface
+final class KeyedSetOfErrors implements ErrorIterableInterface, KeyedSetInterface
 {
     use KeyedSetTrait;
 

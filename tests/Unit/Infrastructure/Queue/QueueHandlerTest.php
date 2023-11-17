@@ -32,7 +32,7 @@ class QueueHandlerTest extends TestCase
     public function testItInvokesMethodsOnInnerHandler(): void
     {
         $queueable = $this->createMock(QueueableInterface::class);
-        $batch = $this->createMock(QueueableBatch::class);
+        $batch = new QueueableBatch(new TestQueueable());
         $innerHandler = $this->createMock(TestQueueHandler::class);
 
         $innerHandler

@@ -22,17 +22,17 @@ namespace CloudCreativity\Modules\Domain;
 use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
 
-final readonly class IdentifierOrEntity
+final class IdentifierOrEntity
 {
     /**
      * @var IdentifierInterface|null
      */
-    public ?IdentifierInterface $id;
+    public readonly ?IdentifierInterface $id;
 
     /**
      * @var EntityInterface|null
      */
-    public ?EntityInterface $entity;
+    public readonly ?EntityInterface $entity;
 
     /**
      * @param IdentifierInterface|EntityInterface $idOrEntity

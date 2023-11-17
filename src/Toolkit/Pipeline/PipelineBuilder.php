@@ -21,7 +21,7 @@ namespace CloudCreativity\Modules\Toolkit\Pipeline;
 
 use RuntimeException;
 
-class PipelineBuilder implements PipelineBuilderInterface
+final class PipelineBuilder implements PipelineBuilderInterface
 {
     /**
      * @var callable[]

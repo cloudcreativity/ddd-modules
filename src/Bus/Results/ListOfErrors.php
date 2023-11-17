@@ -22,7 +22,7 @@ namespace CloudCreativity\Modules\Bus\Results;
 use CloudCreativity\Modules\Toolkit\Iterables\ListInterface;
 use CloudCreativity\Modules\Toolkit\Iterables\ListTrait;
 
-class ListOfErrors implements ErrorIterableInterface, ListInterface
+final class ListOfErrors implements ErrorIterableInterface, ListInterface
 {
     use ListTrait;
 

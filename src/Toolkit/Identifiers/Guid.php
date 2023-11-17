@@ -22,7 +22,7 @@ namespace CloudCreativity\Modules\Toolkit\Identifiers;
 use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Contracts;
 
-final readonly class Guid implements IdentifierInterface
+final class Guid implements IdentifierInterface
 {
     /**
      * @param IdentifierInterface $value
@@ -84,8 +84,8 @@ final readonly class Guid implements IdentifierInterface
      * @param IdentifierInterface $id
      */
     public function __construct(
-        public string $type,
-        public IdentifierInterface $id,
+        public readonly string $type,
+        public readonly IdentifierInterface $id,
     ) {
         Contracts::assert(!empty($this->type), 'Type must be a non-empty string.');
     }

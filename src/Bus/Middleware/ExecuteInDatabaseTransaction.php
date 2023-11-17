@@ -24,7 +24,7 @@ use CloudCreativity\Modules\Bus\CommandInterface;
 use CloudCreativity\Modules\Bus\Results\ResultInterface;
 use CloudCreativity\Modules\Infrastructure\Persistence\UnitOfWorkManagerInterface;
 
-class ExecuteInDatabaseTransaction implements CommandMiddlewareInterface
+final class ExecuteInDatabaseTransaction implements CommandMiddlewareInterface
 {
     /**
      * ExecuteInDatabaseTransaction constructor.

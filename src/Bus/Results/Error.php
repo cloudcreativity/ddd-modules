@@ -21,7 +21,7 @@ namespace CloudCreativity\Modules\Bus\Results;
 
 use InvalidArgumentException;
 
-class Error implements ErrorInterface
+final class Error implements ErrorInterface
 {
     /**
      * @var string|null

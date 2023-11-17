@@ -22,7 +22,7 @@ namespace CloudCreativity\Modules\Infrastructure\DomainEventDispatching;
 use Closure;
 use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
 
-class EventHandler
+final class EventHandler
 {
     /**
      * EventHandler constructor.

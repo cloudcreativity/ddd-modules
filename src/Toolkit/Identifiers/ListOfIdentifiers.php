@@ -25,7 +25,7 @@ use CloudCreativity\Modules\Toolkit\Iterables\ListTrait;
 /**
  * @implements ListInterface<int, IdentifierInterface>
  */
-class ListOfIdentifiers implements ListInterface
+final class ListOfIdentifiers implements ListInterface
 {
     use ListTrait;
 

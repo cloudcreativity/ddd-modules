@@ -22,13 +22,8 @@ namespace CloudCreativity\Modules\Infrastructure\Persistence;
 use Closure;
 use CloudCreativity\Modules\Infrastructure\InfrastructureException;
 
-class UnitOfWorkManager implements UnitOfWorkManagerInterface
+final class UnitOfWorkManager implements UnitOfWorkManagerInterface
 {
-    /**
-     * @var UnitOfWorkInterface
-     */
-    private UnitOfWorkInterface $unitOfWork;
-
     /**
      * @var callable[]
      */
@@ -52,11 +47,10 @@ class UnitOfWorkManager implements UnitOfWorkManagerInterface
     /**
      * UnitOfWorkManager constructor.
      *
-     * @param UnitOfWorkInterface $transaction
+     * @param UnitOfWorkInterface $unitOfWork
      */
-    public function __construct(UnitOfWorkInterface $transaction)
+    public function __construct(private readonly UnitOfWorkInterface $unitOfWork)
     {
-        $this->unitOfWork = $transaction;
     }
 
     /**

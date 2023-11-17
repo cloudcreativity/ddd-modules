@@ -23,7 +23,7 @@ use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Contracts;
 use JsonSerializable;
 
-final readonly class IntegerId implements IdentifierInterface, JsonSerializable
+final class IntegerId implements IdentifierInterface, JsonSerializable
 {
     /**
      * @param IdentifierInterface|int $value
@@ -45,7 +45,7 @@ final readonly class IntegerId implements IdentifierInterface, JsonSerializable
      *
      * @param int $value
      */
-    public function __construct(public int $value)
+    public function __construct(public readonly int $value)
     {
         Contracts::assert($this->value > 0, 'Identifier value must be greater than zero.');
     }

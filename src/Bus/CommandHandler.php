@@ -21,7 +21,7 @@ namespace CloudCreativity\Modules\Bus;
 
 use CloudCreativity\Modules\Bus\Results\ResultInterface;
 
-class CommandHandler implements CommandHandlerInterface
+final class CommandHandler implements CommandHandlerInterface
 {
     /**
      * CommandHandler constructor.

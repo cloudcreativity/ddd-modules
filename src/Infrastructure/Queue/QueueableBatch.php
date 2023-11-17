@@ -25,7 +25,7 @@ use CloudCreativity\Modules\Infrastructure\Log\ContextProviderInterface;
 use CloudCreativity\Modules\Toolkit\Iterables\ListInterface;
 use CloudCreativity\Modules\Toolkit\Iterables\ListTrait;
 
-class QueueableBatch implements ListInterface, ContextProviderInterface
+final class QueueableBatch implements ListInterface, ContextProviderInterface
 {
     use ListTrait;
 

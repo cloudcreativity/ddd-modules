@@ -17,15 +17,17 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Bus\Validation;
+namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\DomainEventDispatching;
 
-interface ValidatorInterface
+use PHPUnit\Framework\TestCase;
+
+class ListenerContainerTest extends TestCase
 {
     /**
-     * Set the rules for the validation.
-     *
-     * @param iterable $rules
-     * @return static
+     * @return void
      */
-    public function using(iterable $rules): self;
+    public function test(): void
+    {
+        $this->markTestIncomplete('@TODO');
+    }
 }

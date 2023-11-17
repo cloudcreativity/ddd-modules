@@ -19,14 +19,14 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
-readonly class GuidTypeMap
+final class GuidTypeMap
 {
     /**
      * GuidTypeMap constructor
      *
      * @param array<string,string> $map
      */
-    public function __construct(private array $map)
+    public function __construct(private readonly array $map)
     {
     }
 

@@ -26,7 +26,7 @@ use CloudCreativity\Modules\Toolkit\Iterables\KeyedSetInterface;
 use CloudCreativity\Modules\Toolkit\Iterables\KeyedSetTrait;
 use LogicException;
 
-class Meta implements ArrayAccess, KeyedSetInterface, ContextProviderInterface
+final class Meta implements ArrayAccess, KeyedSetInterface, ContextProviderInterface
 {
     use KeyedSetTrait;
 

@@ -22,7 +22,7 @@ namespace CloudCreativity\Modules\Infrastructure\Queue;
 use Closure;
 use CloudCreativity\Modules\Infrastructure\InfrastructureException;
 
-class QueueHandlerContainer implements QueueHandlerContainerInterface
+final class QueueHandlerContainer implements QueueHandlerContainerInterface
 {
     /**
      * @var array<string,Closure>

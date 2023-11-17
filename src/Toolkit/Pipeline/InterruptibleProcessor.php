@@ -19,7 +19,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Pipeline;
 
-class InterruptibleProcessor implements ProcessorInterface
+final class InterruptibleProcessor implements ProcessorInterface
 {
     /**
      * @var callable

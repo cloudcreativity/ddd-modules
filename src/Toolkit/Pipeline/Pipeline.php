@@ -19,7 +19,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Pipeline;
 
-class Pipeline implements PipelineInterface
+final class Pipeline implements PipelineInterface
 {
     /**
      * Pipeline constructor.

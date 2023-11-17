@@ -22,12 +22,12 @@ namespace CloudCreativity\Modules\Toolkit\Identifiers;
 use JsonSerializable;
 use Stringable;
 
-readonly class PossiblyNumericId implements JsonSerializable, Stringable
+final class PossiblyNumericId implements JsonSerializable, Stringable
 {
     /**
      * @var string|int
      */
-    public string|int $value;
+    public readonly string|int $value;
 
     /**
      * @param string|int $value

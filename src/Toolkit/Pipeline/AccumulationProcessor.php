@@ -19,7 +19,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Pipeline;
 
-class AccumulationProcessor implements ProcessorInterface
+final class AccumulationProcessor implements ProcessorInterface
 {
     /**
      * @var callable

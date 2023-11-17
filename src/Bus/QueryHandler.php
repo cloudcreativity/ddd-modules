@@ -21,7 +21,7 @@ namespace CloudCreativity\Modules\Bus;
 
 use CloudCreativity\Modules\Bus\Results\ResultInterface;
 
-class QueryHandler implements QueryHandlerInterface
+final class QueryHandler implements QueryHandlerInterface
 {
     /**
      * QueryHandler constructor.

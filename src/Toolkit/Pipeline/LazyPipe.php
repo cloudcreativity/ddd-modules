@@ -22,7 +22,7 @@ namespace CloudCreativity\Modules\Toolkit\Pipeline;
 use RuntimeException;
 use Throwable;
 
-class LazyPipe
+final class LazyPipe
 {
     /**
      * LazyPipe constructor.
