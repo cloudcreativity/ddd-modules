@@ -1,0 +1,132 @@
+<?php
+/*
+ * Copyright (C) Cloud Creativity Ltd - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ *
+ * Written by Cloud Creativity Ltd <info@cloudcreativity.co.uk>, 2023
+ */
+
+declare(strict_types=1);
+
+namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Bus;
+
+use CloudCreativity\BalancedEvent\Common\Bus\CommandDispatcher;
+use CloudCreativity\BalancedEvent\Common\Bus\CommandHandlerContainerInterface;
+use CloudCreativity\BalancedEvent\Common\Bus\CommandHandlerInterface;
+use CloudCreativity\BalancedEvent\Common\Bus\CommandInterface;
+use CloudCreativity\BalancedEvent\Common\Bus\Results\ResultInterface;
+use CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline\PipeContainerInterface;
+use CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline\PipelineBuilderFactory;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
+
+class CommandDispatcherTest extends TestCase
+{
+    /**
+     * @var CommandHandlerContainerInterface&MockObject
+     */
+    private CommandHandlerContainerInterface $container;
+
+    /**
+     * @var PipeContainerInterface&MockObject
+     */
+    private PipeContainerInterface $pipeContainer;
+
+    /**
+     * @var CommandDispatcher
+     */
+    private CommandDispatcher $dispatcher;
+
+    /**
+     * @return void
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->dispatcher = new CommandDispatcher(
+            $this->container = $this->createMock(CommandHandlerContainerInterface::class),
+            new PipelineBuilderFactory(
+                $this->pipeContainer = $this->createMock(PipeContainerInterface::class),
+            ),
+        );
+    }
+
+    /**
+     * @return void
+     */
+    public function test(): void
+    {
+        $command = $this->createMock(CommandInterface::class);
+
+        $this->container
+            ->expects($this->once())
+            ->method('get')
+            ->with($command::class)
+            ->willReturn($handler = $this->createMock(CommandHandlerInterface::class));
+
+        $handler
+            ->expects($this->once())
+            ->method('__invoke')
+            ->with($this->identicalTo($command))
+            ->willReturn($expected = $this->createMock(ResultInterface::class));
+
+        $actual = $this->dispatcher->dispatch($command);
+
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @return void
+     */
+    public function testWithMiddleware(): void
+    {
+        $command1 = new TestCommand();
+        $command2 = new TestCommand();
+        $command3 = new TestCommand();
+        $command4 = new TestCommand();
+
+        $middleware1 = function (TestCommand $command, \Closure $next) use ($command1, $command2) {
+            $this->assertSame($command1, $command);
+            return $next($command2);
+        };
+
+        $middleware2 = function (TestCommand $command, \Closure $next) use ($command2, $command3) {
+            $this->assertSame($command2, $command);
+            return $next($command3);
+        };
+
+        $middleware3 = function (TestCommand $command, \Closure $next) use ($command3, $command4) {
+            $this->assertSame($command3, $command);
+            return $next($command4);
+        };
+
+        $this->container
+            ->method('get')
+            ->with($command1::class)
+            ->willReturn($handler = $this->createMock(CommandHandlerInterface::class));
+
+        $this->pipeContainer
+            ->expects($this->once())
+            ->method('get')
+            ->with('MySecondMiddleware')
+            ->willReturn($middleware2);
+
+        $handler
+            ->expects($this->once())
+            ->method('middleware')
+            ->willReturn(['MySecondMiddleware', $middleware3]);
+
+        $handler
+            ->expects($this->once())
+            ->method('__invoke')
+            ->with($this->identicalTo($command4))
+            ->willReturn($expected = $this->createMock(ResultInterface::class));
+
+        $this->dispatcher->through([$middleware1]);
+        $actual = $this->dispatcher->dispatch($command1);
+
+        $this->assertSame($expected, $actual);
+    }
+}
