@@ -17,11 +17,11 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Infrastructure\Queue\Middleware;
+namespace CloudCreativity\Modules\Infrastructure\Queue\Middleware;
 
 use Closure;
-use CloudCreativity\BalancedEvent\Common\Infrastructure\Queue\QueueableInterface;
-use CloudCreativity\BalancedEvent\Common\Toolkit\ModuleBasename;
+use CloudCreativity\Modules\Infrastructure\Queue\QueueableInterface;
+use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 

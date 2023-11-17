@@ -17,9 +17,9 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Bus;
+namespace CloudCreativity\Modules\Bus;
 
-use CloudCreativity\BalancedEvent\Common\Infrastructure\Log\ContextProviderInterface;
+use CloudCreativity\Modules\Infrastructure\Log\ContextProviderInterface;
 
 interface MessageInterface extends ContextProviderInterface
 {

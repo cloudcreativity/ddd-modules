@@ -17,11 +17,11 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Infrastructure\Queue;
+namespace CloudCreativity\Modules\Infrastructure\Queue;
 
-use CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline\MiddlewareProcessor;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline\PipelineBuilderFactory;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline\PipelineBuilderFactoryInterface;
+use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactoryInterface;
 
 class Queue implements QueueInterface
 {

@@ -17,7 +17,7 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Infrastructure\DomainEventDispatching;
+namespace CloudCreativity\Modules\Infrastructure\DomainEventDispatching;
 
 interface ListenerContainerInterface
 {

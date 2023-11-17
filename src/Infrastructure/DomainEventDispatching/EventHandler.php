@@ -17,10 +17,10 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Infrastructure\DomainEventDispatching;
+namespace CloudCreativity\Modules\Infrastructure\DomainEventDispatching;
 
 use Closure;
-use CloudCreativity\BalancedEvent\Common\Domain\Events\DomainEventInterface;
+use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
 
 class EventHandler
 {

@@ -17,15 +17,15 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Bus\Results;
+namespace CloudCreativity\Modules\Tests\Unit\Bus\Results;
 
-use CloudCreativity\BalancedEvent\Common\Bus\Results\Error;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\ErrorIterableInterface;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\ListOfErrors;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\Meta;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\Result;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\ResultInterface;
-use CloudCreativity\BalancedEvent\Common\Infrastructure\Log\ContextProviderInterface;
+use CloudCreativity\Modules\Bus\Results\Error;
+use CloudCreativity\Modules\Bus\Results\ErrorIterableInterface;
+use CloudCreativity\Modules\Bus\Results\ListOfErrors;
+use CloudCreativity\Modules\Bus\Results\Meta;
+use CloudCreativity\Modules\Bus\Results\Result;
+use CloudCreativity\Modules\Bus\Results\ResultInterface;
+use CloudCreativity\Modules\Infrastructure\Log\ContextProviderInterface;
 use PHPUnit\Framework\TestCase;
 
 class ResultTest extends TestCase

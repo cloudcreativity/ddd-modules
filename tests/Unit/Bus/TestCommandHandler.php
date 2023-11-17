@@ -17,10 +17,10 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Bus;
+namespace CloudCreativity\Modules\Tests\Unit\Bus;
 
-use CloudCreativity\BalancedEvent\Common\Bus\DispatchThroughMiddleware;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\ResultInterface;
+use CloudCreativity\Modules\Bus\DispatchThroughMiddleware;
+use CloudCreativity\Modules\Bus\Results\ResultInterface;
 
 class TestCommandHandler implements TestCommandHandlerInterface, DispatchThroughMiddleware
 {

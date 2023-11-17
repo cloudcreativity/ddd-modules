@@ -17,14 +17,14 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Bus\Results;
+namespace CloudCreativity\Modules\Tests\Unit\Bus\Results;
 
-use CloudCreativity\BalancedEvent\Common\Bus\Results\ErrorFactoryInterface;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\ErrorInterface;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\ErrorIterableFactory;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\ErrorIterableFactoryInterface;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\ErrorIterableInterface;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\ListOfErrors;
+use CloudCreativity\Modules\Bus\Results\ErrorFactoryInterface;
+use CloudCreativity\Modules\Bus\Results\ErrorInterface;
+use CloudCreativity\Modules\Bus\Results\ErrorIterableFactory;
+use CloudCreativity\Modules\Bus\Results\ErrorIterableFactoryInterface;
+use CloudCreativity\Modules\Bus\Results\ErrorIterableInterface;
+use CloudCreativity\Modules\Bus\Results\ListOfErrors;
 use IteratorAggregate;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;

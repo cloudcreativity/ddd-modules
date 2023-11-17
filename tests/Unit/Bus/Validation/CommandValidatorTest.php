@@ -17,14 +17,14 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Bus\Validation;
+namespace CloudCreativity\Modules\Tests\Unit\Bus\Validation;
 
-use CloudCreativity\BalancedEvent\Common\Bus\CommandInterface;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\Error;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\KeyedSetOfErrors;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\ListOfErrors;
-use CloudCreativity\BalancedEvent\Common\Bus\Validation\CommandValidator;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline\PipelineBuilderFactory;
+use CloudCreativity\Modules\Bus\CommandInterface;
+use CloudCreativity\Modules\Bus\Results\Error;
+use CloudCreativity\Modules\Bus\Results\KeyedSetOfErrors;
+use CloudCreativity\Modules\Bus\Results\ListOfErrors;
+use CloudCreativity\Modules\Bus\Validation\CommandValidator;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
 use PHPUnit\Framework\TestCase;
 
 class CommandValidatorTest extends TestCase

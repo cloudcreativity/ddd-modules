@@ -17,14 +17,14 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Bus\Validation;
+namespace CloudCreativity\Modules\Tests\Unit\Bus\Validation;
 
-use CloudCreativity\BalancedEvent\Common\Bus\QueryInterface;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\Error;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\KeyedSetOfErrors;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\ListOfErrors;
-use CloudCreativity\BalancedEvent\Common\Bus\Validation\QueryValidator;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline\PipelineBuilderFactory;
+use CloudCreativity\Modules\Bus\QueryInterface;
+use CloudCreativity\Modules\Bus\Results\Error;
+use CloudCreativity\Modules\Bus\Results\KeyedSetOfErrors;
+use CloudCreativity\Modules\Bus\Results\ListOfErrors;
+use CloudCreativity\Modules\Bus\Validation\QueryValidator;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
 use PHPUnit\Framework\TestCase;
 
 class QueryValidatorTest extends TestCase

@@ -17,9 +17,9 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Domain;
+namespace CloudCreativity\Modules\Domain;
 
-use CloudCreativity\BalancedEvent\Common\Toolkit\Identifiers\IdentifierInterface;
+use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
 
 interface EntityInterface
 {

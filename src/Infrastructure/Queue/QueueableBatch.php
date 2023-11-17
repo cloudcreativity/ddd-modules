@@ -17,13 +17,13 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Infrastructure\Queue;
+namespace CloudCreativity\Modules\Infrastructure\Queue;
 
-use CloudCreativity\BalancedEvent\Common\Infrastructure\Infrastructure;
-use CloudCreativity\BalancedEvent\Common\Infrastructure\InfrastructureException;
-use CloudCreativity\BalancedEvent\Common\Infrastructure\Log\ContextProviderInterface;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Iterables\ListInterface;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Iterables\ListTrait;
+use CloudCreativity\Modules\Infrastructure\Infrastructure;
+use CloudCreativity\Modules\Infrastructure\InfrastructureException;
+use CloudCreativity\Modules\Infrastructure\Log\ContextProviderInterface;
+use CloudCreativity\Modules\Toolkit\Iterables\ListInterface;
+use CloudCreativity\Modules\Toolkit\Iterables\ListTrait;
 
 class QueueableBatch implements ListInterface, ContextProviderInterface
 {

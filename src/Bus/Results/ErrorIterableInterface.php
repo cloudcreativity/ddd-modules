@@ -17,10 +17,10 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Bus\Results;
+namespace CloudCreativity\Modules\Bus\Results;
 
-use CloudCreativity\BalancedEvent\Common\Infrastructure\Log\ContextProviderInterface;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Iterables\IterableInterface;
+use CloudCreativity\Modules\Infrastructure\Log\ContextProviderInterface;
+use CloudCreativity\Modules\Toolkit\Iterables\IterableInterface;
 
 interface ErrorIterableInterface extends IterableInterface, ContextProviderInterface
 {

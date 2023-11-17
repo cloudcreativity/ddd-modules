@@ -17,9 +17,9 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Toolkit\Pipeline;
+namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Pipeline;
 
-use CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline\PipeContainer;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 use PHPUnit\Framework\TestCase;
 
 class PipeContainerTest extends TestCase

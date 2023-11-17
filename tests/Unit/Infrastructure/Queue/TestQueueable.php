@@ -17,10 +17,10 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Infrastructure\Queue;
+namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue;
 
-use CloudCreativity\BalancedEvent\Common\Infrastructure\Queue\QueueableInterface;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Identifiers\Guid;
+use CloudCreativity\Modules\Infrastructure\Queue\QueueableInterface;
+use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
 
 class TestQueueable implements QueueableInterface
 {

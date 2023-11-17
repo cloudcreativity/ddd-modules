@@ -17,10 +17,10 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Bus\Results;
+namespace CloudCreativity\Modules\Bus\Results;
 
-use CloudCreativity\BalancedEvent\Common\Infrastructure\Log\ContextProviderInterface;
-use CloudCreativity\BalancedEvent\Common\Toolkit\ContractException;
+use CloudCreativity\Modules\Infrastructure\Log\ContextProviderInterface;
+use CloudCreativity\Modules\Toolkit\ContractException;
 
 /**
  * @template TValue

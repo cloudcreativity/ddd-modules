@@ -17,10 +17,10 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Infrastructure\Persistence;
+namespace CloudCreativity\Modules\Infrastructure\Persistence;
 
 use Closure;
-use CloudCreativity\BalancedEvent\Common\Infrastructure\InfrastructureException;
+use CloudCreativity\Modules\Infrastructure\InfrastructureException;
 
 class UnitOfWorkManager implements UnitOfWorkManagerInterface
 {

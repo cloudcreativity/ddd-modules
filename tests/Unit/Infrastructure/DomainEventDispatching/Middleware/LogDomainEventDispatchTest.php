@@ -17,10 +17,10 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Infrastructure\DomainEventDispatching\Middleware;
+namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\DomainEventDispatching\Middleware;
 
-use CloudCreativity\BalancedEvent\Common\Domain\Events\DomainEventInterface;
-use CloudCreativity\BalancedEvent\Common\Infrastructure\DomainEventDispatching\Middleware\LogDomainEventDispatch;
+use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
+use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\Middleware\LogDomainEventDispatch;
 use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;

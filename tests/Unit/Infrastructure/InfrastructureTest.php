@@ -17,10 +17,10 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Infrastructure;
+namespace CloudCreativity\Modules\Tests\Unit\Infrastructure;
 
-use CloudCreativity\BalancedEvent\Common\Infrastructure\Infrastructure;
-use CloudCreativity\BalancedEvent\Common\Infrastructure\InfrastructureException;
+use CloudCreativity\Modules\Infrastructure\Infrastructure;
+use CloudCreativity\Modules\Infrastructure\InfrastructureException;
 use PHPUnit\Framework\TestCase;
 
 class InfrastructureTest extends TestCase

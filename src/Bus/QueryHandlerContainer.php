@@ -17,7 +17,7 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Bus;
+namespace CloudCreativity\Modules\Bus;
 
 use Closure;
 use RuntimeException;

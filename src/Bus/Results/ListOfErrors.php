@@ -17,10 +17,10 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Bus\Results;
+namespace CloudCreativity\Modules\Bus\Results;
 
-use CloudCreativity\BalancedEvent\Common\Toolkit\Iterables\ListInterface;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Iterables\ListTrait;
+use CloudCreativity\Modules\Toolkit\Iterables\ListInterface;
+use CloudCreativity\Modules\Toolkit\Iterables\ListTrait;
 
 class ListOfErrors implements ErrorIterableInterface, ListInterface
 {

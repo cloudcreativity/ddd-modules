@@ -17,7 +17,7 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline;
+namespace CloudCreativity\Modules\Toolkit\Pipeline;
 
 class AccumulationProcessor implements ProcessorInterface
 {

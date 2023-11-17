@@ -17,11 +17,11 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Domain;
+namespace CloudCreativity\Modules\Tests\Unit\Domain;
 
-use CloudCreativity\BalancedEvent\Common\Domain\EntityInterface;
-use CloudCreativity\BalancedEvent\Common\Domain\EntityTrait;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Identifiers\IdentifierInterface;
+use CloudCreativity\Modules\Domain\EntityInterface;
+use CloudCreativity\Modules\Domain\EntityTrait;
+use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
 
 class TestEntity implements EntityInterface
 {

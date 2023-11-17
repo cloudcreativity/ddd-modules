@@ -17,10 +17,10 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Bus\Results;
+namespace CloudCreativity\Modules\Bus\Results;
 
-use CloudCreativity\BalancedEvent\Common\Toolkit\Iterables\KeyedSetInterface;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Iterables\KeyedSetTrait;
+use CloudCreativity\Modules\Toolkit\Iterables\KeyedSetInterface;
+use CloudCreativity\Modules\Toolkit\Iterables\KeyedSetTrait;
 
 class KeyedSetOfErrors implements ErrorIterableInterface, KeyedSetInterface
 {

@@ -17,23 +17,10 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Tests\Unit\Domain;
+namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Log;
 
-use CloudCreativity\Modules\Domain\EntityInterface;
-use CloudCreativity\Modules\Domain\EntityWithNullableIdTrait;
-use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
-
-class TestEntityWithNullableId implements EntityInterface
+enum TestEnum: string
 {
-    use EntityWithNullableIdTrait;
-
-    /**
-     * TestEntityWithNullableGuid constructor.
-     *
-     * @param IdentifierInterface|null $id
-     */
-    public function __construct(IdentifierInterface $id = null)
-    {
-        $this->id = $id;
-    }
+    case Foo = 'foo';
+    case Bar = 'bar';
 }

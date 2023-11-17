@@ -17,11 +17,11 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Infrastructure\Queue;
+namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue;
 
-use CloudCreativity\BalancedEvent\Common\Infrastructure\Queue\QueueableBatch;
-use CloudCreativity\BalancedEvent\Common\Infrastructure\Queue\QueueableInterface;
-use CloudCreativity\BalancedEvent\Common\Infrastructure\Queue\QueueHandler;
+use CloudCreativity\Modules\Infrastructure\Queue\QueueableBatch;
+use CloudCreativity\Modules\Infrastructure\Queue\QueueableInterface;
+use CloudCreativity\Modules\Infrastructure\Queue\QueueHandler;
 use PHPUnit\Framework\TestCase;
 
 class QueueHandlerTest extends TestCase

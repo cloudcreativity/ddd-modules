@@ -17,15 +17,15 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Bus;
+namespace CloudCreativity\Modules\Tests\Unit\Bus;
 
-use CloudCreativity\BalancedEvent\Common\Bus\QueryDispatcher;
-use CloudCreativity\BalancedEvent\Common\Bus\QueryHandlerContainerInterface;
-use CloudCreativity\BalancedEvent\Common\Bus\QueryHandlerInterface;
-use CloudCreativity\BalancedEvent\Common\Bus\QueryInterface;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\ResultInterface;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline\PipeContainerInterface;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline\PipelineBuilderFactory;
+use CloudCreativity\Modules\Bus\QueryDispatcher;
+use CloudCreativity\Modules\Bus\QueryHandlerContainerInterface;
+use CloudCreativity\Modules\Bus\QueryHandlerInterface;
+use CloudCreativity\Modules\Bus\QueryInterface;
+use CloudCreativity\Modules\Bus\Results\ResultInterface;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

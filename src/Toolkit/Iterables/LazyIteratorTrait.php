@@ -17,7 +17,7 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Toolkit\Iterables;
+namespace CloudCreativity\Modules\Toolkit\Iterables;
 
 use Closure;
 use Generator;

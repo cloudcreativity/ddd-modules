@@ -17,7 +17,7 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Domain;
+namespace CloudCreativity\Modules\Domain;
 
 interface AggregateInterface extends EntityInterface
 {

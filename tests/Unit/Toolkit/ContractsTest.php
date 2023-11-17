@@ -17,20 +17,26 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Toolkit;
+namespace CloudCreativity\Modules\Tests\Unit\Toolkit;
 
-use CloudCreativity\BalancedEvent\Common\Toolkit\ContractException;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Contracts;
+use CloudCreativity\Modules\Toolkit\ContractException;
+use CloudCreativity\Modules\Toolkit\Contracts;
 use PHPUnit\Framework\TestCase;
 
 class ContractsTest extends TestCase
 {
+    /**
+     * @return void
+     */
     public function testItDoesNotThrowWhenPreconditionIsTrue(): void
     {
         Contracts::assert(true, 'Not expected error.');
         $this->assertTrue(true);
     }
 
+    /**
+     * @return void
+     */
     public function testItThrowsWhenPreconditionIsFalse(): void
     {
         $this->expectException(ContractException::class);

@@ -17,10 +17,10 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Infrastructure\EventBus;
+namespace CloudCreativity\Modules\Infrastructure\EventBus;
 
-use CloudCreativity\BalancedEvent\Common\IntegrationEvents\IntegrationEventInterface;
-use CloudCreativity\BalancedEvent\Common\IntegrationEvents\PublisherInterface;
+use CloudCreativity\Modules\IntegrationEvents\IntegrationEventInterface;
+use CloudCreativity\Modules\IntegrationEvents\PublisherInterface;
 
 interface EventBusInterface extends PublisherInterface
 {

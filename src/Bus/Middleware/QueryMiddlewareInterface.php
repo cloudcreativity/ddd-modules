@@ -17,11 +17,11 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Bus\Middleware;
+namespace CloudCreativity\Modules\Bus\Middleware;
 
 use Closure;
-use CloudCreativity\BalancedEvent\Common\Bus\QueryInterface;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\ResultInterface;
+use CloudCreativity\Modules\Bus\QueryInterface;
+use CloudCreativity\Modules\Bus\Results\ResultInterface;
 
 interface QueryMiddlewareInterface
 {

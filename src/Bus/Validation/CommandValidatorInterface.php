@@ -17,10 +17,10 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Bus\Validation;
+namespace CloudCreativity\Modules\Bus\Validation;
 
-use CloudCreativity\BalancedEvent\Common\Bus\CommandInterface;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\ErrorIterableInterface;
+use CloudCreativity\Modules\Bus\CommandInterface;
+use CloudCreativity\Modules\Bus\Results\ErrorIterableInterface;
 
 interface CommandValidatorInterface extends ValidatorInterface
 {

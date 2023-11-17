@@ -17,11 +17,11 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Bus\Middleware;
+namespace CloudCreativity\Modules\Tests\Unit\Bus\Middleware;
 
-use CloudCreativity\BalancedEvent\Common\Bus\MessageInterface;
-use CloudCreativity\BalancedEvent\Common\Bus\Middleware\LogMessageDispatch;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\ResultInterface;
+use CloudCreativity\Modules\Bus\MessageInterface;
+use CloudCreativity\Modules\Bus\Middleware\LogMessageDispatch;
+use CloudCreativity\Modules\Bus\Results\ResultInterface;
 use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;

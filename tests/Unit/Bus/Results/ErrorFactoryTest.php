@@ -17,12 +17,12 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Bus\Results;
+namespace CloudCreativity\Modules\Tests\Unit\Bus\Results;
 
-use CloudCreativity\BalancedEvent\Common\Bus\Results\Error;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\ErrorFactory;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\ErrorFactoryInterface;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\ErrorInterface;
+use CloudCreativity\Modules\Bus\Results\Error;
+use CloudCreativity\Modules\Bus\Results\ErrorFactory;
+use CloudCreativity\Modules\Bus\Results\ErrorFactoryInterface;
+use CloudCreativity\Modules\Bus\Results\ErrorInterface;
 use PHPUnit\Framework\TestCase;
 
 class ErrorFactoryTest extends TestCase

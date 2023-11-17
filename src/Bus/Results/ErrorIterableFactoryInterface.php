@@ -17,7 +17,7 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Bus\Results;
+namespace CloudCreativity\Modules\Bus\Results;
 
 interface ErrorIterableFactoryInterface
 {

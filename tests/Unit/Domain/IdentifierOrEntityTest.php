@@ -17,11 +17,11 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Domain;
+namespace CloudCreativity\Modules\Tests\Unit\Domain;
 
-use CloudCreativity\BalancedEvent\Common\Domain\EntityInterface;
-use CloudCreativity\BalancedEvent\Common\Domain\IdentifierOrEntity;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Identifiers\Guid;
+use CloudCreativity\Modules\Domain\EntityInterface;
+use CloudCreativity\Modules\Domain\IdentifierOrEntity;
+use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
 use PHPUnit\Framework\TestCase;
 
 class IdentifierOrEntityTest extends TestCase

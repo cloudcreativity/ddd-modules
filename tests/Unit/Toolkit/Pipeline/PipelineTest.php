@@ -17,10 +17,10 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Toolkit\Pipeline;
+namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Pipeline;
 
-use CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline\Pipeline;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline\ProcessorInterface;
+use CloudCreativity\Modules\Toolkit\Pipeline\Pipeline;
+use CloudCreativity\Modules\Toolkit\Pipeline\ProcessorInterface;
 use PHPUnit\Framework\TestCase;
 
 class PipelineTest extends TestCase

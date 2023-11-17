@@ -17,10 +17,10 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Infrastructure\Queue;
+namespace CloudCreativity\Modules\Infrastructure\Queue;
 
 use Closure;
-use CloudCreativity\BalancedEvent\Common\Infrastructure\InfrastructureException;
+use CloudCreativity\Modules\Infrastructure\InfrastructureException;
 
 class QueueHandlerContainer implements QueueHandlerContainerInterface
 {

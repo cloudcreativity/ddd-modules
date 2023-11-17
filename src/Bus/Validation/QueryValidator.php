@@ -17,11 +17,11 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Bus\Validation;
+namespace CloudCreativity\Modules\Bus\Validation;
 
-use CloudCreativity\BalancedEvent\Common\Bus\QueryInterface;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\ErrorIterableInterface;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\ListOfErrors;
+use CloudCreativity\Modules\Bus\QueryInterface;
+use CloudCreativity\Modules\Bus\Results\ErrorIterableInterface;
+use CloudCreativity\Modules\Bus\Results\ListOfErrors;
 
 class QueryValidator extends AbstractValidator implements QueryValidatorInterface
 {

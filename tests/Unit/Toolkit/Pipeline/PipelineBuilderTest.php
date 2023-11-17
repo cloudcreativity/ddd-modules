@@ -17,13 +17,13 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Toolkit\Pipeline;
+namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Pipeline;
 
-use CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline\LazyPipe;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline\PipeContainerInterface;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline\Pipeline;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline\PipelineBuilder;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline\ProcessorInterface;
+use CloudCreativity\Modules\Toolkit\Pipeline\LazyPipe;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
+use CloudCreativity\Modules\Toolkit\Pipeline\Pipeline;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
+use CloudCreativity\Modules\Toolkit\Pipeline\ProcessorInterface;
 use PHPUnit\Framework\TestCase;
 
 class PipelineBuilderTest extends TestCase

@@ -17,10 +17,10 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Toolkit\Identifiers;
+namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
-use CloudCreativity\BalancedEvent\Common\Toolkit\ContractException;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Contracts;
+use CloudCreativity\Modules\Toolkit\ContractException;
+use CloudCreativity\Modules\Toolkit\Contracts;
 use JsonSerializable;
 
 final readonly class IntegerId implements IdentifierInterface, JsonSerializable

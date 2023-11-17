@@ -17,7 +17,7 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Infrastructure;
+namespace CloudCreativity\Modules\Infrastructure;
 
 final class Infrastructure
 {

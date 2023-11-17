@@ -17,7 +17,7 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\IntegrationEvents;
+namespace CloudCreativity\Modules\IntegrationEvents;
 
 interface PublisherInterface
 {

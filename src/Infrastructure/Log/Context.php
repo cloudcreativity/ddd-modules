@@ -17,10 +17,10 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Infrastructure\Log;
+namespace CloudCreativity\Modules\Infrastructure\Log;
 
 use BackedEnum;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Identifiers\IdentifierInterface;
+use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
 use DateTimeInterface;
 use Ramsey\Uuid\UuidInterface;
 use Stringable;

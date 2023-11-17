@@ -17,12 +17,12 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Domain;
+namespace CloudCreativity\Modules\Tests\Unit\Domain;
 
-use CloudCreativity\BalancedEvent\Common\Domain\EntityInterface;
-use CloudCreativity\BalancedEvent\Common\Toolkit\ContractException;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Identifiers\Guid;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Identifiers\IdentifierInterface;
+use CloudCreativity\Modules\Domain\EntityInterface;
+use CloudCreativity\Modules\Toolkit\ContractException;
+use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
+use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
 use PHPUnit\Framework\TestCase;
 
 class EntityWithNullableGuidTest extends TestCase

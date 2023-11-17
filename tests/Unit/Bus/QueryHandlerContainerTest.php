@@ -17,10 +17,10 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Bus;
+namespace CloudCreativity\Modules\Tests\Unit\Bus;
 
-use CloudCreativity\BalancedEvent\Common\Bus\QueryHandler;
-use CloudCreativity\BalancedEvent\Common\Bus\QueryHandlerContainer;
+use CloudCreativity\Modules\Bus\QueryHandler;
+use CloudCreativity\Modules\Bus\QueryHandlerContainer;
 use PHPUnit\Framework\TestCase;
 
 class QueryHandlerContainerTest extends TestCase

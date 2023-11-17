@@ -17,10 +17,10 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Infrastructure\Queue\Middleware;
+namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue\Middleware;
 
-use CloudCreativity\BalancedEvent\Common\Infrastructure\Queue\Middleware\LogPushedToQueue;
-use CloudCreativity\BalancedEvent\Common\Infrastructure\Queue\QueueableInterface;
+use CloudCreativity\Modules\Infrastructure\Queue\Middleware\LogPushedToQueue;
+use CloudCreativity\Modules\Infrastructure\Queue\QueueableInterface;
 use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;

@@ -17,11 +17,11 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Infrastructure\DomainEventDispatching\Middleware;
+namespace CloudCreativity\Modules\Infrastructure\DomainEventDispatching\Middleware;
 
 use Closure;
-use CloudCreativity\BalancedEvent\Common\Domain\Events\DomainEventInterface;
-use CloudCreativity\BalancedEvent\Common\Toolkit\ModuleBasename;
+use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
+use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 

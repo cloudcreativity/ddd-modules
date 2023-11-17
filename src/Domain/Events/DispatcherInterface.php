@@ -17,7 +17,7 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Domain\Events;
+namespace CloudCreativity\Modules\Domain\Events;
 
 interface DispatcherInterface
 {

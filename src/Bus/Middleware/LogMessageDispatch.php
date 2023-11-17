@@ -17,12 +17,12 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Bus\Middleware;
+namespace CloudCreativity\Modules\Bus\Middleware;
 
 use Closure;
-use CloudCreativity\BalancedEvent\Common\Bus\MessageInterface;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\ResultInterface;
-use CloudCreativity\BalancedEvent\Common\Toolkit\ModuleBasename;
+use CloudCreativity\Modules\Bus\MessageInterface;
+use CloudCreativity\Modules\Bus\Results\ResultInterface;
+use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 

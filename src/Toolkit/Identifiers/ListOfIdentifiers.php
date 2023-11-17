@@ -17,10 +17,10 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Toolkit\Identifiers;
+namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
-use CloudCreativity\BalancedEvent\Common\Toolkit\Iterables\ListInterface;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Iterables\ListTrait;
+use CloudCreativity\Modules\Toolkit\Iterables\ListInterface;
+use CloudCreativity\Modules\Toolkit\Iterables\ListTrait;
 
 /**
  * @implements ListInterface<int, IdentifierInterface>

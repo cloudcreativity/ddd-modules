@@ -17,14 +17,14 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Infrastructure\Queue;
+namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue;
 
 use Closure;
-use CloudCreativity\BalancedEvent\Common\Infrastructure\Queue\Queue;
-use CloudCreativity\BalancedEvent\Common\Infrastructure\Queue\QueueableBatch;
-use CloudCreativity\BalancedEvent\Common\Infrastructure\Queue\QueueableInterface;
-use CloudCreativity\BalancedEvent\Common\Infrastructure\Queue\QueueHandlerContainerInterface;
-use CloudCreativity\BalancedEvent\Common\Infrastructure\Queue\QueueHandlerInterface;
+use CloudCreativity\Modules\Infrastructure\Queue\Queue;
+use CloudCreativity\Modules\Infrastructure\Queue\QueueableBatch;
+use CloudCreativity\Modules\Infrastructure\Queue\QueueableInterface;
+use CloudCreativity\Modules\Infrastructure\Queue\QueueHandlerContainerInterface;
+use CloudCreativity\Modules\Infrastructure\Queue\QueueHandlerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

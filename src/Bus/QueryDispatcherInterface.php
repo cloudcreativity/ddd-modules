@@ -17,9 +17,9 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Bus;
+namespace CloudCreativity\Modules\Bus;
 
-use CloudCreativity\BalancedEvent\Common\Bus\Results\ResultInterface;
+use CloudCreativity\Modules\Bus\Results\ResultInterface;
 
 interface QueryDispatcherInterface
 {

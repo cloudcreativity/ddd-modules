@@ -17,9 +17,9 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Bus;
+namespace CloudCreativity\Modules\Tests\Unit\Bus;
 
-use CloudCreativity\BalancedEvent\Common\Bus\QueryInterface;
+use CloudCreativity\Modules\Bus\QueryInterface;
 
 class TestQuery implements QueryInterface
 {

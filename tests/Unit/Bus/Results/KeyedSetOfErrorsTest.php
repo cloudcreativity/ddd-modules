@@ -17,12 +17,12 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Bus\Results;
+namespace CloudCreativity\Modules\Tests\Unit\Bus\Results;
 
-use CloudCreativity\BalancedEvent\Common\Bus\Results\Error;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\ErrorIterableInterface;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\KeyedSetOfErrors;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\ListOfErrors;
+use CloudCreativity\Modules\Bus\Results\Error;
+use CloudCreativity\Modules\Bus\Results\ErrorIterableInterface;
+use CloudCreativity\Modules\Bus\Results\KeyedSetOfErrors;
+use CloudCreativity\Modules\Bus\Results\ListOfErrors;
 use PHPUnit\Framework\TestCase;
 
 class KeyedSetOfErrorsTest extends TestCase

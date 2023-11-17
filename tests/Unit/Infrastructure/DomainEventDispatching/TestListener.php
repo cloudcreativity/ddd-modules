@@ -17,9 +17,9 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Infrastructure\DomainEventDispatching;
+namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\DomainEventDispatching;
 
-use CloudCreativity\BalancedEvent\Common\Domain\Events\DomainEventInterface;
+use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
 
 class TestListener
 {

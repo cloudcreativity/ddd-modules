@@ -17,14 +17,14 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Bus\Middleware;
+namespace CloudCreativity\Modules\Tests\Unit\Bus\Middleware;
 
-use CloudCreativity\BalancedEvent\Common\Bus\CommandInterface;
-use CloudCreativity\BalancedEvent\Common\Bus\Middleware\ValidateCommand;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\Error;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\ListOfErrors;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\ResultInterface;
-use CloudCreativity\BalancedEvent\Common\Bus\Validation\CommandValidatorInterface;
+use CloudCreativity\Modules\Bus\CommandInterface;
+use CloudCreativity\Modules\Bus\Middleware\ValidateCommand;
+use CloudCreativity\Modules\Bus\Results\Error;
+use CloudCreativity\Modules\Bus\Results\ListOfErrors;
+use CloudCreativity\Modules\Bus\Results\ResultInterface;
+use CloudCreativity\Modules\Bus\Validation\CommandValidatorInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

@@ -17,11 +17,11 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Toolkit\Pipeline;
+namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Pipeline;
 
-use CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline\LazyPipe;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline\PipeContainerInterface;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline\PipelineInterface;
+use CloudCreativity\Modules\Toolkit\Pipeline\LazyPipe;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipelineInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

@@ -17,12 +17,12 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Bus;
+namespace CloudCreativity\Modules\Bus;
 
-use CloudCreativity\BalancedEvent\Common\Bus\Results\ResultInterface;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline\MiddlewareProcessor;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline\PipelineBuilderFactory;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline\PipelineBuilderFactoryInterface;
+use CloudCreativity\Modules\Bus\Results\ResultInterface;
+use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactoryInterface;
 
 class CommandDispatcher implements CommandDispatcherInterface
 {

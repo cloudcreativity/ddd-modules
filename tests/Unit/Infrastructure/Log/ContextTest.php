@@ -17,15 +17,14 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Infrastructure\Log;
+namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Log;
 
-use CloudCreativity\BalancedEvent\Common\Infrastructure\Log\Context;
-use CloudCreativity\BalancedEvent\Common\Infrastructure\Log\ContextProviderInterface;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Identifiers\Guid;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Identifiers\IntegerId;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Identifiers\StringId;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Identifiers\Uuid;
-use CloudCreativity\BalancedEvent\Modules\BatchMailer\Shared\Enums\BatchTypeEnum;
+use CloudCreativity\Modules\Infrastructure\Log\Context;
+use CloudCreativity\Modules\Infrastructure\Log\ContextProviderInterface;
+use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
+use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
+use CloudCreativity\Modules\Toolkit\Identifiers\StringId;
+use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid as RamseyUuid;
 
@@ -45,7 +44,7 @@ class ContextTest extends TestCase
 
         $values = [
             'foobar' => $provider,
-            'enum' => BatchTypeEnum::Attendee,
+            'enum' => TestEnum::Foo,
             'uuid' => $uuid = RamseyUuid::uuid4(),
             'identifiers' => [
                 new IntegerId(1),
@@ -61,7 +60,7 @@ class ContextTest extends TestCase
             'stringable' => $stringable,
             'nested' => [
                 $provider,
-                BatchTypeEnum::Attendee,
+                TestEnum::Bar,
                 $uuid,
                 $date,
                 $stringable,
@@ -70,7 +69,7 @@ class ContextTest extends TestCase
 
         $expected = [
             'foobar' => ['foo' => 'bar'],
-            'enum' => 'attendee',
+            'enum' => 'foo',
             'uuid' => $uuid->toString(),
             'identifiers' => [
                 1,
@@ -83,7 +82,7 @@ class ContextTest extends TestCase
             'stringable' => 'some string!',
             'nested' => [
                 ['foo' => 'bar'],
-                'attendee',
+                'bar',
                 $uuid->toString(),
                 '2021-01-01T12:13:14.123456+11:00',
                 'some string!',

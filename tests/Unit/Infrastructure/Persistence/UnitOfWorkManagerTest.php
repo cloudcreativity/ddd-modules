@@ -17,11 +17,11 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Infrastructure\Persistence;
+namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Persistence;
 
-use CloudCreativity\BalancedEvent\Common\Infrastructure\InfrastructureException;
-use CloudCreativity\BalancedEvent\Common\Infrastructure\Persistence\UnitOfWorkInterface;
-use CloudCreativity\BalancedEvent\Common\Infrastructure\Persistence\UnitOfWorkManager;
+use CloudCreativity\Modules\Infrastructure\InfrastructureException;
+use CloudCreativity\Modules\Infrastructure\Persistence\UnitOfWorkInterface;
+use CloudCreativity\Modules\Infrastructure\Persistence\UnitOfWorkManager;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

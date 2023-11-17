@@ -17,13 +17,13 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Bus\Results;
+namespace CloudCreativity\Modules\Bus\Results;
 
 use ArrayAccess;
-use CloudCreativity\BalancedEvent\Common\Infrastructure\Log\Context;
-use CloudCreativity\BalancedEvent\Common\Infrastructure\Log\ContextProviderInterface;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Iterables\KeyedSetInterface;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Iterables\KeyedSetTrait;
+use CloudCreativity\Modules\Infrastructure\Log\Context;
+use CloudCreativity\Modules\Infrastructure\Log\ContextProviderInterface;
+use CloudCreativity\Modules\Toolkit\Iterables\KeyedSetInterface;
+use CloudCreativity\Modules\Toolkit\Iterables\KeyedSetTrait;
 use LogicException;
 
 class Meta implements ArrayAccess, KeyedSetInterface, ContextProviderInterface

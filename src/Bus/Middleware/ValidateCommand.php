@@ -17,13 +17,13 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Bus\Middleware;
+namespace CloudCreativity\Modules\Bus\Middleware;
 
 use Closure;
-use CloudCreativity\BalancedEvent\Common\Bus\CommandInterface;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\Result;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\ResultInterface;
-use CloudCreativity\BalancedEvent\Common\Bus\Validation\CommandValidatorInterface;
+use CloudCreativity\Modules\Bus\CommandInterface;
+use CloudCreativity\Modules\Bus\Results\Result;
+use CloudCreativity\Modules\Bus\Results\ResultInterface;
+use CloudCreativity\Modules\Bus\Validation\CommandValidatorInterface;
 
 abstract class ValidateCommand implements CommandMiddlewareInterface
 {

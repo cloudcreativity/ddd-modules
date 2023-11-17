@@ -17,12 +17,12 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Bus\Middleware;
+namespace CloudCreativity\Modules\Tests\Unit\Bus\Middleware;
 
-use CloudCreativity\BalancedEvent\Common\Bus\CommandInterface;
-use CloudCreativity\BalancedEvent\Common\Bus\Middleware\ExecuteInDatabaseTransaction;
-use CloudCreativity\BalancedEvent\Common\Bus\Results\ResultInterface;
-use CloudCreativity\BalancedEvent\Common\Infrastructure\Persistence\UnitOfWorkManagerInterface;
+use CloudCreativity\Modules\Bus\CommandInterface;
+use CloudCreativity\Modules\Bus\Middleware\ExecuteInDatabaseTransaction;
+use CloudCreativity\Modules\Bus\Results\ResultInterface;
+use CloudCreativity\Modules\Infrastructure\Persistence\UnitOfWorkManagerInterface;
 use PHPUnit\Framework\TestCase;
 
 class ExecuteInDatabaseTransactionTest extends TestCase

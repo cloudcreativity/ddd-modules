@@ -17,14 +17,14 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Bus\Validation;
+namespace CloudCreativity\Modules\Bus\Validation;
 
-use CloudCreativity\BalancedEvent\Common\Bus\Results\ErrorIterableInterface;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline\AccumulationProcessor;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline\PipeContainerInterface;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline\PipelineBuilderFactory;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline\PipelineBuilderFactoryInterface;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline\PipelineInterface;
+use CloudCreativity\Modules\Bus\Results\ErrorIterableInterface;
+use CloudCreativity\Modules\Toolkit\Pipeline\AccumulationProcessor;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactoryInterface;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipelineInterface;
 
 abstract class AbstractValidator implements ValidatorInterface
 {

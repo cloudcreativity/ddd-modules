@@ -17,12 +17,12 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Toolkit\Identifiers;
+namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Identifiers;
 
-use CloudCreativity\BalancedEvent\Common\Toolkit\ContractException;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Identifiers\Guid;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Identifiers\IntegerId;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Identifiers\StringId;
+use CloudCreativity\Modules\Toolkit\ContractException;
+use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
+use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
+use CloudCreativity\Modules\Toolkit\Identifiers\StringId;
 use PHPUnit\Framework\TestCase;
 
 class GuidTest extends TestCase

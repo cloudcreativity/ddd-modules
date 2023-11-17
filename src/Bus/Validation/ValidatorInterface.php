@@ -17,7 +17,7 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Bus\Validation;
+namespace CloudCreativity\Modules\Bus\Validation;
 
 interface ValidatorInterface
 {

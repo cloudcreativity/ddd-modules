@@ -17,11 +17,11 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Toolkit\Identifiers;
+namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
 use Closure;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Contracts;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Iterables\LazyIteratorTrait;
+use CloudCreativity\Modules\Toolkit\Contracts;
+use CloudCreativity\Modules\Toolkit\Iterables\LazyIteratorTrait;
 use Generator;
 use IteratorAggregate;
 

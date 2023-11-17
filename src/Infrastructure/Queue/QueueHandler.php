@@ -17,7 +17,7 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Infrastructure\Queue;
+namespace CloudCreativity\Modules\Infrastructure\Queue;
 
 use Closure;
 

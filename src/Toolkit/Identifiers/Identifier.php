@@ -17,9 +17,9 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Toolkit\Identifiers;
+namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
-use CloudCreativity\BalancedEvent\Common\Toolkit\ContractException;
+use CloudCreativity\Modules\Toolkit\ContractException;
 use Ramsey\Uuid\UuidInterface;
 
 final class Identifier

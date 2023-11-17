@@ -17,10 +17,10 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Infrastructure\DomainEventDispatching;
+namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\DomainEventDispatching;
 
-use CloudCreativity\BalancedEvent\Common\Domain\Events\DomainEventInterface;
-use CloudCreativity\BalancedEvent\Common\Infrastructure\DomainEventDispatching\DispatchBeforeCommit;
+use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
+use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\DispatchBeforeCommit;
 
 class TestListenerBeforeCommit implements DispatchBeforeCommit
 {

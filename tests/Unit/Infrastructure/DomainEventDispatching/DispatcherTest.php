@@ -17,15 +17,15 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Infrastructure\DomainEventDispatching;
+namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\DomainEventDispatching;
 
 use Closure;
-use CloudCreativity\BalancedEvent\Common\Domain\Events\DomainEventInterface;
-use CloudCreativity\BalancedEvent\Common\Infrastructure\DomainEventDispatching\DispatchAfterCommit;
-use CloudCreativity\BalancedEvent\Common\Infrastructure\DomainEventDispatching\DispatchBeforeCommit;
-use CloudCreativity\BalancedEvent\Common\Infrastructure\DomainEventDispatching\Dispatcher;
-use CloudCreativity\BalancedEvent\Common\Infrastructure\DomainEventDispatching\ListenerContainerInterface;
-use CloudCreativity\BalancedEvent\Common\Infrastructure\Persistence\UnitOfWorkManagerInterface;
+use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
+use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\DispatchAfterCommit;
+use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\DispatchBeforeCommit;
+use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\Dispatcher;
+use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\ListenerContainerInterface;
+use CloudCreativity\Modules\Infrastructure\Persistence\UnitOfWorkManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

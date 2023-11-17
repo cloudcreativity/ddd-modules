@@ -17,15 +17,15 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Common\Infrastructure\DomainEventDispatching;
+namespace CloudCreativity\Modules\Infrastructure\DomainEventDispatching;
 
 use Closure;
-use CloudCreativity\BalancedEvent\Common\Domain\Events\DomainEventInterface;
-use CloudCreativity\BalancedEvent\Common\Domain\Events\OccursImmediately;
-use CloudCreativity\BalancedEvent\Common\Infrastructure\Persistence\UnitOfWorkManagerInterface;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline\MiddlewareProcessor;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline\PipelineBuilderFactory;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Pipeline\PipelineBuilderFactoryInterface;
+use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
+use CloudCreativity\Modules\Domain\Events\OccursImmediately;
+use CloudCreativity\Modules\Infrastructure\Persistence\UnitOfWorkManagerInterface;
+use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactoryInterface;
 use Generator;
 use InvalidArgumentException;
 

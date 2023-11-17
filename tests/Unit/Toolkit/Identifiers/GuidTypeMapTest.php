@@ -17,11 +17,11 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Toolkit\Identifiers;
+namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Identifiers;
 
 use AssertionError;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Identifiers\Guid;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Identifiers\GuidTypeMap;
+use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
+use CloudCreativity\Modules\Toolkit\Identifiers\GuidTypeMap;
 use PHPUnit\Framework\TestCase;
 
 class GuidTypeMapTest extends TestCase

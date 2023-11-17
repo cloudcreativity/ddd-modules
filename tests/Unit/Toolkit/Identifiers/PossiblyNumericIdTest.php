@@ -17,10 +17,10 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\BalancedEvent\Tests\Unit\Common\Toolkit\Identifiers;
+namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Identifiers;
 
-use CloudCreativity\BalancedEvent\Common\Toolkit\Identifiers\Identifier;
-use CloudCreativity\BalancedEvent\Common\Toolkit\Identifiers\PossiblyNumericId;
+use CloudCreativity\Modules\Toolkit\Identifiers\Identifier;
+use CloudCreativity\Modules\Toolkit\Identifiers\PossiblyNumericId;
 use PHPUnit\Framework\TestCase;
 
 class PossiblyNumericIdTest extends TestCase
