@@ -20,19 +20,22 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Bus\Middleware;
 
 use CloudCreativity\Modules\Bus\CommandInterface;
-use CloudCreativity\Modules\Bus\Middleware\ExecuteInDatabaseTransaction;
+use CloudCreativity\Modules\Bus\Middleware\ExecuteInUnitOfWork;
 use CloudCreativity\Modules\Bus\Results\ResultInterface;
 use CloudCreativity\Modules\Infrastructure\Persistence\UnitOfWorkManagerInterface;
 use PHPUnit\Framework\TestCase;
 
-class ExecuteInDatabaseTransactionTest extends TestCase
+class ExecuteInUnitOfWorkTest extends TestCase
 {
+    /**
+     * @return void
+     */
     public function test(): void
     {
         $command = $this->createMock(CommandInterface::class);
         $expected = $this->createMock(ResultInterface::class);
 
-        $middleware = new ExecuteInDatabaseTransaction(
+        $middleware = new ExecuteInUnitOfWork(
             $transactions = $this->createMock(UnitOfWorkManagerInterface::class),
             2,
         );
