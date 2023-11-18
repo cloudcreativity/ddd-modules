@@ -43,10 +43,12 @@
     },
     "scripts": {
         "all": [
+            "@deptrac",
             "@static",
             "@style",
             "@test"
         ],
+        "deptrac": "deptrac analyse --report-uncovered --fail-on-uncovered",
         "static": "phpstan analyse src tests -c phpstan.neon",
         "style": "pint --test",
         "style:fix": "pint",

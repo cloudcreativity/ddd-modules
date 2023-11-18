@@ -1,0 +1,32 @@
+imports:
+  - deptrac-layers.yaml
+deptrac:
+  paths:
+    - ./src
+  layers:
+    - name: PSR Log
+      collectors:
+        - type: className
+          value: Psr\\Log.*
+    - name: Ramsey UUID
+      collectors:
+        - type: className
+          value: Ramsey\\Uuid.*
+  ruleset:
+    Toolkit:
+      - Ramsey UUID
+    Application Bus:
+      - Toolkit
+      - Infrastructure (Common)
+      - PSR Log
+    Domain (Common):
+      - Toolkit
+    Integration Events (Common):
+      - Toolkit
+      - Ramsey UUID
+    Infrastructure (Common):
+      - Toolkit
+      - Domain (Common)
+      - Integration Events (Common)
+      - Ramsey UUID
+      - PSR Log
