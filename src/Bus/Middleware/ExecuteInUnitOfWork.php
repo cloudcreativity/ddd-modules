@@ -27,7 +27,7 @@ use CloudCreativity\Modules\Infrastructure\Persistence\UnitOfWorkManagerInterfac
 final class ExecuteInUnitOfWork implements CommandMiddlewareInterface
 {
     /**
-     * ExecuteInDatabaseTransaction constructor.
+     * ExecuteInUnitOfWork constructor.
      *
      * @param UnitOfWorkManagerInterface $unitOfWorkManager
      * @param int $attempts
