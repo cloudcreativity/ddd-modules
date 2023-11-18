@@ -46,7 +46,6 @@ jobs:
         run: vendor/bin/phpunit
 
   deptrac:
-    name: Deptrac
 
     runs-on: ubuntu-latest
 
@@ -54,7 +53,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: deptrac
+      - name: Run Deptrac
         uses: docker://smoench/deptrac-action:latest
         with:
           args: analyse --report-uncovered --fail-on-uncovered
