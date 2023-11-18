@@ -118,4 +118,14 @@ class UuidTest extends TestCase
         $this->expectExceptionMessage('Unexpected identifier type, received: ' . get_debug_type($other));
         Uuid::from($other);
     }
+
+    /**
+     * @return void
+     */
+    public function testFromWithString(): void
+    {
+        $expected = Uuid::random();
+
+        $this->assertObjectEquals($expected, Uuid::from($expected->toString()));
+    }
 }

@@ -27,14 +27,15 @@ use Ramsey\Uuid\UuidInterface;
 final class Uuid implements IdentifierInterface, JsonSerializable
 {
     /**
-     * @param IdentifierInterface|UuidInterface $value
+     * @param IdentifierInterface|UuidInterface|string $value
      * @return self
      */
-    public static function from(IdentifierInterface|UuidInterface $value): self
+    public static function from(IdentifierInterface|UuidInterface|string $value): self
     {
         return match(true) {
             $value instanceof self => $value,
             $value instanceof UuidInterface => new self($value),
+            is_string($value) => new self(BaseUuid::fromString($value)),
             default => throw new ContractException(
                 'Unexpected identifier type, received: ' . get_debug_type($value),
             ),

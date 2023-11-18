@@ -44,3 +44,16 @@ jobs:
 
       - name: Execute tests
         run: vendor/bin/phpunit
+
+  deptrac:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Run Deptrac
+        uses: docker://smoench/deptrac-action:latest
+        with:
+          args: analyse --report-uncovered --fail-on-uncovered
