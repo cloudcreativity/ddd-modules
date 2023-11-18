@@ -57,4 +57,4 @@ jobs:
       - name: deptrac
         uses: docker://smoench/deptrac-action:latest
         with:
-          args: analyse deptrac.yaml
+          args: analyse --report-uncovered --fail-on-uncovered
