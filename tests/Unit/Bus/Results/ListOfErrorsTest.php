@@ -23,6 +23,7 @@ use CloudCreativity\Modules\Bus\Results\Error;
 use CloudCreativity\Modules\Bus\Results\ErrorIterableInterface;
 use CloudCreativity\Modules\Bus\Results\KeyedSetOfErrors;
 use CloudCreativity\Modules\Bus\Results\ListOfErrors;
+use CloudCreativity\Modules\Tests\Unit\Infrastructure\Log\TestEnum;
 use PHPUnit\Framework\TestCase;
 
 class ListOfErrorsTest extends TestCase
@@ -109,7 +110,7 @@ class ListOfErrorsTest extends TestCase
     {
         $errors = new ListOfErrors(
             $a = new Error(null, 'Message A'),
-            $b = new Error('foo', 'Message B', 10),
+            $b = new Error('foo', 'Message B', TestEnum::Bar),
         );
 
         $this->assertSame([$a->context(), $b->context()], $errors->context());

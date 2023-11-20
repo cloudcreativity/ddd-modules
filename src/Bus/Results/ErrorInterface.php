@@ -19,10 +19,10 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Bus\Results;
 
+use BackedEnum;
 use CloudCreativity\Modules\Infrastructure\Log\ContextProviderInterface;
-use Stringable;
 
-interface ErrorInterface extends Stringable, ContextProviderInterface
+interface ErrorInterface extends ContextProviderInterface
 {
     /**
      * Get the error key.
@@ -41,7 +41,7 @@ interface ErrorInterface extends Stringable, ContextProviderInterface
     /**
      * Get the error code.
      *
-     * @return mixed|null
+     * @return BackedEnum|null
      */
-    public function code(): mixed;
+    public function code(): BackedEnum|null;
 }

@@ -19,49 +19,31 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Bus\Results;
 
-use InvalidArgumentException;
+use BackedEnum;
+use CloudCreativity\Modules\Toolkit\Contracts;
 
 final class Error implements ErrorInterface
 {
     /**
      * @var string|null
      */
-    private ?string $key;
-
-    /**
-     * @var string
-     */
-    private string $message;
-
-    /**
-     * @var mixed|null
-     */
-    private mixed $code;
+    private readonly ?string $key;
 
     /**
      * Error constructor.
      *
      * @param string|null $key
      * @param string $message
-     * @param mixed|null $code
+     * @param BackedEnum|null $code
      */
-    public function __construct(?string $key, string $message, mixed $code = null)
-    {
-        if (empty($message)) {
-            throw new InvalidArgumentException('Expecting a non-empty error message.');
-        }
+    public function __construct(
+        ?string $key,
+        private readonly string $message,
+        private readonly ?BackedEnum $code = null,
+    ) {
+        Contracts::assert(!empty($message), 'Expecting a non-empty error message.');
 
         $this->key = $key ?: null;
-        $this->message = $message;
-        $this->code = $code;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function __toString(): string
-    {
-        return $this->message();
     }
 
     /**
@@ -83,7 +65,7 @@ final class Error implements ErrorInterface
     /**
      * @inheritDoc
      */
-    public function code(): mixed
+    public function code(): BackedEnum|null
     {
         return $this->code;
     }
@@ -96,7 +78,7 @@ final class Error implements ErrorInterface
         return array_filter([
             'key' => $this->key,
             'message' => $this->message,
-            'code' => $this->code,
+            'code' => $this->code?->value,
         ], static fn ($value) => $value !== null);
     }
 }

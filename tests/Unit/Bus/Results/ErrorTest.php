@@ -21,27 +21,33 @@ namespace CloudCreativity\Modules\Tests\Unit\Bus\Results;
 
 use CloudCreativity\Modules\Bus\Results\Error;
 use CloudCreativity\Modules\Bus\Results\ErrorInterface;
+use CloudCreativity\Modules\Tests\Unit\Infrastructure\Log\TestEnum;
 use PHPUnit\Framework\TestCase;
 
 class ErrorTest extends TestCase
 {
+    /**
+     * @return void
+     */
     public function test(): void
     {
-        $error = new Error('foo', 'Bar', 10);
+        $error = new Error('foo', 'Bar', TestEnum::Foo);
 
         $this->assertInstanceOf(ErrorInterface::class, $error);
         $this->assertSame('foo', $error->key());
         $this->assertSame('Bar', $error->message());
-        $this->assertSame('Bar', (string) $error);
-        $this->assertSame(10, $error->code());
+        $this->assertSame(TestEnum::Foo, $error->code());
         $this->assertSame([
             'key' => 'foo',
             'message' => 'Bar',
-            'code' => 10,
+            'code' => TestEnum::Foo->value,
         ], $error->context());
     }
 
-    public function testWithoutKeyAndCode(): void
+    /**
+     * @return void
+     */
+    public function testWithoutOptionalValues(): void
     {
         $error = new Error(null, 'Hello World');
 
