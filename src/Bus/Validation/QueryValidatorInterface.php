@@ -20,7 +20,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Bus\Validation;
 
 use CloudCreativity\Modules\Bus\QueryInterface;
-use CloudCreativity\Modules\Bus\Results\ErrorIterableInterface;
+use CloudCreativity\Modules\Bus\Results\ListOfErrorsInterface;
 
 interface QueryValidatorInterface extends ValidatorInterface
 {
@@ -28,7 +28,7 @@ interface QueryValidatorInterface extends ValidatorInterface
      * Validate the provided query.
      *
      * @param QueryInterface $query
-     * @return ErrorIterableInterface
+     * @return ListOfErrorsInterface
      */
-    public function validate(QueryInterface $query): ErrorIterableInterface;
+    public function validate(QueryInterface $query): ListOfErrorsInterface;
 }

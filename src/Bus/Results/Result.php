@@ -46,13 +46,13 @@ final class Result implements ResultInterface
     /**
      * Return a failed result.
      *
-     * @param ErrorIterableInterface|ErrorInterface|array<ErrorInterface>|string $errorOrErrors
+     * @param ListOfErrorsInterface|ErrorInterface|array<ErrorInterface>|string $errorOrErrors
      * @return Result<null>
      */
-    public static function failed(ErrorIterableInterface|ErrorInterface|array|string $errorOrErrors): self
+    public static function failed(ListOfErrorsInterface|ErrorInterface|array|string $errorOrErrors): self
     {
         $errors = match(true) {
-            $errorOrErrors instanceof ErrorIterableInterface => $errorOrErrors,
+            $errorOrErrors instanceof ListOfErrorsInterface => $errorOrErrors,
             $errorOrErrors instanceof ErrorInterface => new ListOfErrors($errorOrErrors),
             is_array($errorOrErrors) => new ListOfErrors(...$errorOrErrors),
             is_string($errorOrErrors) => new ListOfErrors(new Error(null, $errorOrErrors)),
@@ -68,12 +68,12 @@ final class Result implements ResultInterface
      *
      * @param bool $success
      * @param TValue $value
-     * @param ErrorIterableInterface $errors
+     * @param ListOfErrorsInterface $errors
      */
     private function __construct(
         private readonly bool $success,
         private readonly mixed $value = null,
-        private readonly ErrorIterableInterface $errors = new ListOfErrors(),
+        private readonly ListOfErrorsInterface $errors = new ListOfErrors(),
     ) {
     }
 
@@ -108,7 +108,7 @@ final class Result implements ResultInterface
     /**
      * @inheritDoc
      */
-    public function errors(): ErrorIterableInterface
+    public function errors(): ListOfErrorsInterface
     {
         return $this->errors;
     }
@@ -118,11 +118,7 @@ final class Result implements ResultInterface
      */
     public function error(): ?string
     {
-        $error = $this->errors
-            ->toList()
-            ->first();
-
-        return $error?->message();
+        return $this->errors->first()?->message();
     }
 
     /**

@@ -65,7 +65,7 @@ final class Error implements ErrorInterface
     /**
      * @inheritDoc
      */
-    public function code(): BackedEnum|null
+    public function code(): ?BackedEnum
     {
         return $this->code;
     }

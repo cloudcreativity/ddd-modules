@@ -20,7 +20,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Bus\Validation;
 
 use CloudCreativity\Modules\Bus\CommandInterface;
-use CloudCreativity\Modules\Bus\Results\ErrorIterableInterface;
+use CloudCreativity\Modules\Bus\Results\ListOfErrorsInterface;
 
 interface CommandValidatorInterface extends ValidatorInterface
 {
@@ -28,7 +28,7 @@ interface CommandValidatorInterface extends ValidatorInterface
      * Validate the provided command.
      *
      * @param CommandInterface $command
-     * @return ErrorIterableInterface
+     * @return ListOfErrorsInterface
      */
-    public function validate(CommandInterface $command): ErrorIterableInterface;
+    public function validate(CommandInterface $command): ListOfErrorsInterface;
 }

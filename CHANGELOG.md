@@ -7,6 +7,10 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Changed
 
+- BREAKING: changed the `ErrorIterableInterface` to `ListOfErrorsInterface`. Result objects now only accept list of
+  errors. The `KeyedSetOfErrors` class can be used to convert a list into a keyed set if needed. This helps simplify
+  the error handling logic, which was overly complex by having a generic error iterable interface that could either be
+  a list or a keyed set.
 - BREAKING: The error interface no longer extends `Stringable`. Use `$error->message()` instead, or compose a string
   from multiple properties of the error object.
 - BREAKING: The code on an error object is now type-hinted as a `BackedEnum` or `null` - previously it was `mixed`.

@@ -20,7 +20,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Bus\Validation;
 
 use CloudCreativity\Modules\Bus\QueryInterface;
-use CloudCreativity\Modules\Bus\Results\ErrorIterableInterface;
+use CloudCreativity\Modules\Bus\Results\ListOfErrorsInterface;
 use CloudCreativity\Modules\Bus\Results\ListOfErrors;
 
 final class QueryValidator extends AbstractValidator implements QueryValidatorInterface
@@ -28,11 +28,11 @@ final class QueryValidator extends AbstractValidator implements QueryValidatorIn
     /**
      * @inheritDoc
      */
-    public function validate(QueryInterface $query): ErrorIterableInterface
+    public function validate(QueryInterface $query): ListOfErrorsInterface
     {
         $errors = $this->getPipeline()->process($query) ?? new ListOfErrors();
 
-        assert($errors instanceof ErrorIterableInterface, 'Expecting validation pipeline to return errors.');
+        assert($errors instanceof ListOfErrorsInterface, 'Expecting validation pipeline to return errors.');
 
         return $errors;
     }

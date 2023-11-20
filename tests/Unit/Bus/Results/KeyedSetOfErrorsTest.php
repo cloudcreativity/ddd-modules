@@ -20,7 +20,6 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Bus\Results;
 
 use CloudCreativity\Modules\Bus\Results\Error;
-use CloudCreativity\Modules\Bus\Results\ErrorIterableInterface;
 use CloudCreativity\Modules\Bus\Results\KeyedSetOfErrors;
 use CloudCreativity\Modules\Bus\Results\ListOfErrors;
 use PHPUnit\Framework\TestCase;
@@ -46,13 +45,11 @@ class KeyedSetOfErrorsTest extends TestCase
             'foo' => new ListOfErrors($a, $c),
         ];
 
-        $this->assertInstanceOf(ErrorIterableInterface::class, $errors);
         $this->assertEquals($expected, iterator_to_array($errors));
         $this->assertEquals($expected, iterator_to_array($errors));
         $this->assertSame(['_base', 'bar', 'foo'], $errors->keys());
         $this->assertSame($list = [$d, $e, $b, $a, $c], $errors->all());
         $this->assertEquals(new ListOfErrors(...$list), $errors->toList());
-        $this->assertSame($errors, $errors->toKeyedSet());
         $this->assertCount(5, $errors);
         $this->assertTrue($errors->isNotEmpty());
         $this->assertFalse($errors->isEmpty());

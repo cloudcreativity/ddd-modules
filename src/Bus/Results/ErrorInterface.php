@@ -43,5 +43,5 @@ interface ErrorInterface extends ContextProviderInterface
      *
      * @return BackedEnum|null
      */
-    public function code(): BackedEnum|null;
+    public function code(): ?BackedEnum;
 }

@@ -19,13 +19,9 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Bus\Results;
 
-use CloudCreativity\Modules\Toolkit\Iterables\ListInterface;
 use CloudCreativity\Modules\Toolkit\Iterables\ListTrait;
 
-/**
- * @implements ListInterface<ErrorInterface>
- */
-final class ListOfErrors implements ErrorIterableInterface, ListInterface
+final class ListOfErrors implements ListOfErrorsInterface
 {
     use ListTrait;
 
@@ -43,9 +39,7 @@ final class ListOfErrors implements ErrorIterableInterface, ListInterface
     }
 
     /**
-     * Get the first error.
-     *
-     * @return ErrorInterface|null
+     * @inheritDoc
      */
     public function first(): ?ErrorInterface
     {
@@ -53,10 +47,7 @@ final class ListOfErrors implements ErrorIterableInterface, ListInterface
     }
 
     /**
-     * Return a new instance with the provided error pushed on to the end of the stack.
-     *
-     * @param ErrorInterface $error
-     * @return ListOfErrors
+     * @inheritDoc
      */
     public function push(ErrorInterface $error): self
     {
@@ -69,32 +60,19 @@ final class ListOfErrors implements ErrorIterableInterface, ListInterface
     /**
      * @inheritDoc
      */
-    public function merge(ErrorIterableInterface $other): self
+    public function merge(ListOfErrorsInterface $other): self
     {
         $copy = clone $this;
-        $copy->stack = array_merge($copy->stack, $other->all());
+        $copy->stack = [
+            ...$copy->stack,
+            ...$other,
+        ];
 
         return $copy;
     }
 
     /**
-     * @return ErrorInterface[]
-     */
-    public function all(): array
-    {
-        return $this->stack;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function toList(): ListOfErrors
-    {
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
+     * @return KeyedSetOfErrors
      */
     public function toKeyedSet(): KeyedSetOfErrors
     {

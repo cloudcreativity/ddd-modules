@@ -23,7 +23,7 @@ use CloudCreativity\Modules\Infrastructure\Log\ContextProviderInterface;
 use CloudCreativity\Modules\Toolkit\ContractException;
 
 /**
- * @template-covariant  TValue
+ * @template-covariant TValue
  */
 interface ResultInterface extends ContextProviderInterface
 {
@@ -46,9 +46,9 @@ interface ResultInterface extends ContextProviderInterface
     /**
      * Get the errors.
      *
-     * @return ErrorIterableInterface
+     * @return ListOfErrorsInterface
      */
-    public function errors(): ErrorIterableInterface;
+    public function errors(): ListOfErrorsInterface;
 
     /**
      * Get a error message string.
