@@ -19,10 +19,33 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Iterables;
 
+use Countable;
+use IteratorAggregate;
+
 /**
  * @template TValue
- * @extends IterableInterface<string,TValue>
+ * @extends IteratorAggregate<string,TValue>
  */
-interface KeyedSetInterface extends IterableInterface
+interface KeyedSetInterface extends IteratorAggregate, Countable
 {
+    /**
+     * Get the keyed set as an array.
+     *
+     * @return array<string, TValue>
+     */
+    public function all(): array;
+
+    /**
+     * Is the set empty?
+     *
+     * @return bool
+     */
+    public function isEmpty(): bool;
+
+    /**
+     * Is the set not empty?
+     *
+     * @return bool
+     */
+    public function isNotEmpty(): bool;
 }

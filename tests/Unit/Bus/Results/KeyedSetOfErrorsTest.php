@@ -46,10 +46,9 @@ class KeyedSetOfErrorsTest extends TestCase
         ];
 
         $this->assertEquals($expected, iterator_to_array($errors));
-        $this->assertEquals($expected, iterator_to_array($errors));
+        $this->assertEquals($expected, $errors->all());
         $this->assertSame(['_base', 'bar', 'foo'], $errors->keys());
-        $this->assertSame($list = [$d, $e, $b, $a, $c], $errors->all());
-        $this->assertEquals(new ListOfErrors(...$list), $errors->toList());
+        $this->assertEquals(new ListOfErrors($d, $e, $b, $a, $c), $errors->toList());
         $this->assertCount(5, $errors);
         $this->assertTrue($errors->isNotEmpty());
         $this->assertFalse($errors->isEmpty());

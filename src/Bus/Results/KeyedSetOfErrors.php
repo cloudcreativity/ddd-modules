@@ -137,11 +137,11 @@ final class KeyedSetOfErrors implements KeyedSetInterface, ContextProviderInterf
     }
 
     /**
-     * @return array<int, ErrorInterface>
+     * @inheritDoc
      */
     public function all(): array
     {
-        return $this->toList()->all();
+        return $this->stack;
     }
 
     /**

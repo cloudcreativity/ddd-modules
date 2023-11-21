@@ -16,6 +16,11 @@ All notable changes to this project will be documented in this file. This projec
 - BREAKING: The code on an error object is now type-hinted as a `BackedEnum` or `null` - previously it was `mixed`.
   Error codes should be from a defined list, therefore an enum is the correctly defined type.
 
+### Removed
+
+- BREAKING: removed the `IterableInterface` as there is no need for a list and a keyed set to inherit from the same
+  interface.
+
 ## [0.1.0] - 2023-11-18
 
 Initial release.

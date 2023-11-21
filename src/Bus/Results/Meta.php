@@ -157,7 +157,7 @@ final class Meta implements ArrayAccess, KeyedSetInterface, ContextProviderInter
     }
 
     /**
-     * @return array<string, mixed>
+     * @inheritDoc
      */
     public function all(): array
     {

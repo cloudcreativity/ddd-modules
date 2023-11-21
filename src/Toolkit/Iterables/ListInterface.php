@@ -19,14 +19,33 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Iterables;
 
+use Countable;
+use IteratorAggregate;
+
 /**
  * @template TValue
- * @extends IterableInterface<int,TValue>
+ * @extends IteratorAggregate<TValue>
  */
-interface ListInterface extends IterableInterface
+interface ListInterface extends IteratorAggregate, Countable
 {
     /**
-     * @return array<int, TValue>
+     * Get the list as an array.
+     *
+     * @return array<TValue>
      */
     public function all(): array;
+
+    /**
+     * Is the list empty?
+     *
+     * @return bool
+     */
+    public function isEmpty(): bool;
+
+    /**
+     * Is the list not empty?
+     *
+     * @return bool
+     */
+    public function isNotEmpty(): bool;
 }
