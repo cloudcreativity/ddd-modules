@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [0.2.0] - 2023-11-22
+
 ### Added
 
 - The command and query validators now allow rules to return `null` to indicate no errors.
