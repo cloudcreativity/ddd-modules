@@ -40,13 +40,13 @@ class Queue implements QueueInterface
      * Queue constructor.
      *
      * @param QueueHandlerContainerInterface $handlers
-     * @param PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipelineFactory
+     * @param PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipeline
      */
     public function __construct(
         private readonly QueueHandlerContainerInterface $handlers,
-        PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipelineFactory = null,
+        PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipeline = null,
     ) {
-        $this->pipelineFactory = PipelineBuilderFactory::make($pipelineFactory);
+        $this->pipelineFactory = PipelineBuilderFactory::make($pipeline);
     }
 
     /**

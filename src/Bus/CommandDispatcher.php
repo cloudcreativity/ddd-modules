@@ -41,13 +41,13 @@ class CommandDispatcher implements CommandDispatcherInterface
      * CommandDispatcher constructor.
      *
      * @param CommandHandlerContainerInterface $handlers
-     * @param PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipelineFactory
+     * @param PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipeline
      */
     public function __construct(
         private readonly CommandHandlerContainerInterface $handlers,
-        PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipelineFactory = null,
+        PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipeline = null,
     ) {
-        $this->pipelineFactory = PipelineBuilderFactory::make($pipelineFactory);
+        $this->pipelineFactory = PipelineBuilderFactory::make($pipeline);
     }
 
     /**

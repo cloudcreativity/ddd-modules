@@ -52,14 +52,14 @@ class Dispatcher implements DispatcherInterface
      *
      * @param ListenerContainerInterface $listeners
      * @param UnitOfWorkManagerInterface $unitOfWorkManager
-     * @param PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipelineFactory
+     * @param PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipeline
      */
     public function __construct(
         private readonly ListenerContainerInterface $listeners,
         private readonly UnitOfWorkManagerInterface $unitOfWorkManager,
-        PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipelineFactory = null,
+        PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipeline = null,
     ) {
-        $this->pipelineFactory = PipelineBuilderFactory::make($pipelineFactory);
+        $this->pipelineFactory = PipelineBuilderFactory::make($pipeline);
     }
 
     /**
