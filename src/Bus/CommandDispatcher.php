@@ -21,11 +21,17 @@ namespace CloudCreativity\Modules\Bus;
 
 use CloudCreativity\Modules\Bus\Results\ResultInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactoryInterface;
 
 class CommandDispatcher implements CommandDispatcherInterface
 {
+    /**
+     * @var PipelineBuilderFactoryInterface
+     */
+    private readonly PipelineBuilderFactoryInterface $pipelineFactory;
+
     /**
      * @var array<string|callable>
      */
@@ -35,12 +41,13 @@ class CommandDispatcher implements CommandDispatcherInterface
      * CommandDispatcher constructor.
      *
      * @param CommandHandlerContainerInterface $handlers
-     * @param PipelineBuilderFactoryInterface $pipelineFactory
+     * @param PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipelineFactory
      */
     public function __construct(
         private readonly CommandHandlerContainerInterface $handlers,
-        private readonly PipelineBuilderFactoryInterface $pipelineFactory = new PipelineBuilderFactory(),
+        PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipelineFactory = null,
     ) {
+        $this->pipelineFactory = PipelineBuilderFactory::make($pipelineFactory);
     }
 
     /**

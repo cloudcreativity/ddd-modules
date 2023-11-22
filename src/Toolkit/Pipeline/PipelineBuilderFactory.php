@@ -22,17 +22,17 @@ namespace CloudCreativity\Modules\Toolkit\Pipeline;
 final class PipelineBuilderFactory implements PipelineBuilderFactoryInterface
 {
     /**
-     * @param PipelineBuilderFactoryInterface|PipeContainerInterface $factoryOrContainer
+     * @param PipelineBuilderFactoryInterface|PipeContainerInterface|null $factoryOrContainer
      * @return PipelineBuilderFactoryInterface
      */
-    public static function cast(
-        PipelineBuilderFactoryInterface|PipeContainerInterface $factoryOrContainer,
+    public static function make(
+        PipelineBuilderFactoryInterface|PipeContainerInterface|null $factoryOrContainer,
     ): PipelineBuilderFactoryInterface {
-        if ($factoryOrContainer instanceof PipeContainerInterface) {
-            return new self($factoryOrContainer);
+        if ($factoryOrContainer instanceof PipelineBuilderFactoryInterface) {
+            return $factoryOrContainer;
         }
 
-        return $factoryOrContainer;
+        return new self($factoryOrContainer);
     }
 
     /**

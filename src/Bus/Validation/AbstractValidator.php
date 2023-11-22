@@ -47,7 +47,7 @@ abstract class AbstractValidator implements ValidatorInterface
     public function __construct(
         PipelineBuilderFactoryInterface|PipeContainerInterface $pipelineFactory = new PipelineBuilderFactory(),
     ) {
-        $this->pipelineFactory = PipelineBuilderFactory::cast($pipelineFactory);
+        $this->pipelineFactory = PipelineBuilderFactory::make($pipelineFactory);
     }
 
     /**

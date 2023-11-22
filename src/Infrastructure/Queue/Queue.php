@@ -20,11 +20,17 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Infrastructure\Queue;
 
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactoryInterface;
 
 class Queue implements QueueInterface
 {
+    /**
+     * @var PipelineBuilderFactoryInterface
+     */
+    private readonly PipelineBuilderFactoryInterface $pipelineFactory;
+
     /**
      * @var array<string|callable>
      */
@@ -34,12 +40,13 @@ class Queue implements QueueInterface
      * Queue constructor.
      *
      * @param QueueHandlerContainerInterface $handlers
-     * @param PipelineBuilderFactoryInterface $pipelineFactory
+     * @param PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipelineFactory
      */
     public function __construct(
         private readonly QueueHandlerContainerInterface $handlers,
-        private readonly PipelineBuilderFactoryInterface $pipelineFactory = new PipelineBuilderFactory(),
+        PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipelineFactory = null,
     ) {
+        $this->pipelineFactory = PipelineBuilderFactory::make($pipelineFactory);
     }
 
     /**

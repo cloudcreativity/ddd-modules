@@ -8,6 +8,12 @@ All notable changes to this project will be documented in this file. This projec
 ### Added
 
 - The command and query validators now allow rules to return `null` to indicate no errors.
+- The following dispatchers now accept pipeline builder factories or pipeline containers into their constructor. This
+  simplifies creating them, as in most cases a pipeline container can be provided from a dependency helper.
+    - `CommandDispatcher`
+    - `QueryDispatcher`
+    - `DomainEventDispatching\Dispatcher`
+    - `Queue`
 
 ### Changed
 
@@ -19,6 +25,7 @@ All notable changes to this project will be documented in this file. This projec
   from multiple properties of the error object.
 - BREAKING: The code on an error object is now type-hinted as a `BackedEnum` or `null` - previously it was `mixed`.
   Error codes should be from a defined list, therefore an enum is the correctly defined type.
+- BREAKING: The `PipelineBuilderFactory::cast()` method has been renamed `make()`.
 
 ### Removed
 

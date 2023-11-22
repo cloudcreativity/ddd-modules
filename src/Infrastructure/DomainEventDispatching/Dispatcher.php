@@ -24,6 +24,7 @@ use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
 use CloudCreativity\Modules\Domain\Events\OccursImmediately;
 use CloudCreativity\Modules\Infrastructure\Persistence\UnitOfWorkManagerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactoryInterface;
 use Generator;
@@ -31,6 +32,11 @@ use InvalidArgumentException;
 
 class Dispatcher implements DispatcherInterface
 {
+    /**
+     * @var PipelineBuilderFactoryInterface
+     */
+    private readonly PipelineBuilderFactoryInterface $pipelineFactory;
+
     /**
      * @var array<string, array<string|callable>>
      */
@@ -46,13 +52,14 @@ class Dispatcher implements DispatcherInterface
      *
      * @param ListenerContainerInterface $listeners
      * @param UnitOfWorkManagerInterface $unitOfWorkManager
-     * @param PipelineBuilderFactoryInterface $pipelineFactory
+     * @param PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipelineFactory
      */
     public function __construct(
         private readonly ListenerContainerInterface $listeners,
         private readonly UnitOfWorkManagerInterface $unitOfWorkManager,
-        private readonly PipelineBuilderFactoryInterface $pipelineFactory = new PipelineBuilderFactory(),
+        PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipelineFactory = null,
     ) {
+        $this->pipelineFactory = PipelineBuilderFactory::make($pipelineFactory);
     }
 
     /**
