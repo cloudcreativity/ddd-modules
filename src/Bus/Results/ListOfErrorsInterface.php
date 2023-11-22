@@ -20,33 +20,33 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Bus\Results;
 
 use CloudCreativity\Modules\Infrastructure\Log\ContextProviderInterface;
-use CloudCreativity\Modules\Toolkit\Iterables\IterableInterface;
+use CloudCreativity\Modules\Toolkit\Iterables\ListInterface;
 
 /**
- * @extends IterableInterface<array-key, ErrorInterface|ListOfErrors>
+ * @extends ListInterface<ErrorInterface>
  */
-interface ErrorIterableInterface extends IterableInterface, ContextProviderInterface
+interface ListOfErrorsInterface extends ListInterface, ContextProviderInterface
 {
+    /**
+     * Get the first error in the list.
+     *
+     * @return ErrorInterface|null
+     */
+    public function first(): ?ErrorInterface;
+
+    /**
+     * Return a new instance with the provided error pushed on to the end of the list.
+     *
+     * @param ErrorInterface $error
+     * @return static
+     */
+    public function push(ErrorInterface $error): self;
+
     /**
      * Return a new instance with the provided errors merged in.
      *
-     * @param ErrorIterableInterface $other
-     * @return ErrorIterableInterface
+     * @param ListOfErrorsInterface $other
+     * @return static
      */
-    public function merge(ErrorIterableInterface $other): self;
-
-    /**
-     * @return ListOfErrors
-     */
-    public function toList(): ListOfErrors;
-
-    /**
-     * @return KeyedSetOfErrors
-     */
-    public function toKeyedSet(): KeyedSetOfErrors;
-
-    /**
-     * @return ErrorInterface[]
-     */
-    public function all(): array;
+    public function merge(ListOfErrorsInterface $other): self;
 }

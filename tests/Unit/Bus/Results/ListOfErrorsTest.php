@@ -20,9 +20,10 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Bus\Results;
 
 use CloudCreativity\Modules\Bus\Results\Error;
-use CloudCreativity\Modules\Bus\Results\ErrorIterableInterface;
+use CloudCreativity\Modules\Bus\Results\ListOfErrorsInterface;
 use CloudCreativity\Modules\Bus\Results\KeyedSetOfErrors;
 use CloudCreativity\Modules\Bus\Results\ListOfErrors;
+use CloudCreativity\Modules\Tests\Unit\Infrastructure\Log\TestEnum;
 use PHPUnit\Framework\TestCase;
 
 class ListOfErrorsTest extends TestCase
@@ -37,10 +38,9 @@ class ListOfErrorsTest extends TestCase
             $b = new Error(null, 'Message B'),
         );
 
-        $this->assertInstanceOf(ErrorIterableInterface::class, $errors);
+        $this->assertInstanceOf(ListOfErrorsInterface::class, $errors);
         $this->assertSame([$a, $b], iterator_to_array($errors));
         $this->assertSame([$a, $b], $errors->all());
-        $this->assertSame($errors, $errors->toList());
         $this->assertEquals(new KeyedSetOfErrors($a, $b), $errors->toKeyedSet());
         $this->assertCount(2, $errors);
         $this->assertTrue($errors->isNotEmpty());
@@ -109,7 +109,7 @@ class ListOfErrorsTest extends TestCase
     {
         $errors = new ListOfErrors(
             $a = new Error(null, 'Message A'),
-            $b = new Error('foo', 'Message B', 10),
+            $b = new Error('foo', 'Message B', TestEnum::Bar),
         );
 
         $this->assertSame([$a->context(), $b->context()], $errors->context());

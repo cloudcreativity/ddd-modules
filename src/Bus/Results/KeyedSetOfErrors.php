@@ -19,13 +19,14 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Bus\Results;
 
+use CloudCreativity\Modules\Infrastructure\Log\ContextProviderInterface;
 use CloudCreativity\Modules\Toolkit\Iterables\KeyedSetInterface;
 use CloudCreativity\Modules\Toolkit\Iterables\KeyedSetTrait;
 
 /**
  * @implements KeyedSetInterface<ListOfErrors>
  */
-final class KeyedSetOfErrors implements ErrorIterableInterface, KeyedSetInterface
+final class KeyedSetOfErrors implements KeyedSetInterface, ContextProviderInterface
 {
     use KeyedSetTrait;
 
@@ -38,6 +39,19 @@ final class KeyedSetOfErrors implements ErrorIterableInterface, KeyedSetInterfac
      * @var array<string, ListOfErrors>
      */
     private array $stack = [];
+
+    /**
+     * @param KeyedSetOfErrors|ListOfErrorsInterface|ErrorInterface $value
+     * @return self
+     */
+    public static function from(self|ListOfErrorsInterface|ErrorInterface $value): self
+    {
+        return match(true) {
+            $value instanceof self => $value,
+            $value instanceof ListOfErrorsInterface => new self(...$value),
+            $value instanceof ErrorInterface => new self($value),
+        };
+    }
 
     /**
      * KeyedSetOfErrors constructor.
@@ -74,14 +88,15 @@ final class KeyedSetOfErrors implements ErrorIterableInterface, KeyedSetInterfac
     }
 
     /**
-     * @inheritDoc
+     * @param ListOfErrorsInterface|self $other
+     * @return self
      */
-    public function merge(ErrorIterableInterface $other): self
+    public function merge(ListOfErrorsInterface|self $other): self
     {
         $copy = clone $this;
 
-        foreach ($other->toKeyedSet() as $key => $errors) {
-            assert(is_string($key) && $errors instanceof ErrorIterableInterface);
+        foreach (self::from($other) as $key => $errors) {
+            assert(is_string($key) && $errors instanceof ListOfErrorsInterface);
             $copy->stack[$key] = $copy->get($key)->merge($errors);
         }
 
@@ -110,7 +125,7 @@ final class KeyedSetOfErrors implements ErrorIterableInterface, KeyedSetInterfac
     }
 
     /**
-     * @inheritDoc
+     * @return ListOfErrors
      */
     public function toList(): ListOfErrors
     {
@@ -124,17 +139,9 @@ final class KeyedSetOfErrors implements ErrorIterableInterface, KeyedSetInterfac
     /**
      * @inheritDoc
      */
-    public function toKeyedSet(): KeyedSetOfErrors
-    {
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function all(): array
     {
-        return $this->toList()->all();
+        return $this->stack;
     }
 
     /**

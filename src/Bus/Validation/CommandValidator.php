@@ -20,7 +20,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Bus\Validation;
 
 use CloudCreativity\Modules\Bus\CommandInterface;
-use CloudCreativity\Modules\Bus\Results\ErrorIterableInterface;
+use CloudCreativity\Modules\Bus\Results\ListOfErrorsInterface;
 use CloudCreativity\Modules\Bus\Results\ListOfErrors;
 
 final class CommandValidator extends AbstractValidator implements CommandValidatorInterface
@@ -28,11 +28,11 @@ final class CommandValidator extends AbstractValidator implements CommandValidat
     /**
      * @inheritDoc
      */
-    public function validate(CommandInterface $command): ErrorIterableInterface
+    public function validate(CommandInterface $command): ListOfErrorsInterface
     {
         $errors = $this->getPipeline()->process($command) ?? new ListOfErrors();
 
-        assert($errors instanceof ErrorIterableInterface, 'Expecting validation pipeline to return errors.');
+        assert($errors instanceof ListOfErrorsInterface, 'Expecting validation pipeline to return errors.');
 
         return $errors;
     }

@@ -21,7 +21,6 @@ namespace CloudCreativity\Modules\Tests\Unit\Bus\Validation;
 
 use CloudCreativity\Modules\Bus\QueryInterface;
 use CloudCreativity\Modules\Bus\Results\Error;
-use CloudCreativity\Modules\Bus\Results\KeyedSetOfErrors;
 use CloudCreativity\Modules\Bus\Results\ListOfErrors;
 use CloudCreativity\Modules\Bus\Validation\QueryValidator;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
@@ -44,46 +43,22 @@ class QueryValidatorTest extends TestCase
             return new ListOfErrors($error1);
         };
 
-        $b = function ($actual) use ($query, $error2, $error3): KeyedSetOfErrors {
+        $b = function ($actual) use ($query): ?ListOfErrors {
             $this->assertSame($query, $actual);
-            return new KeyedSetOfErrors($error2, $error3);
+            return null;
         };
 
-        $validator = new QueryValidator(new PipelineBuilderFactory());
-        $actual = $validator
-            ->using([$a, $b])
-            ->validate($query);
-
-        $this->assertInstanceOf(ListOfErrors::class, $actual);
-        $this->assertSame([$error1, $error2, $error3], $actual->all());
-    }
-
-    /**
-     * @return void
-     */
-    public function testKeyedSet(): void
-    {
-        $query = $this->createMock(QueryInterface::class);
-        $error1 = new Error(null, 'Message 1');
-        $error2 = new Error(null, 'Message 2');
-        $error3 = new Error(null, 'Message 3');
-
-        $a = function ($actual) use ($query, $error1): KeyedSetOfErrors {
-            $this->assertSame($query, $actual);
-            return new KeyedSetOfErrors($error1);
-        };
-
-        $b = function ($actual) use ($query, $error2, $error3): ListOfErrors {
+        $c = function ($actual) use ($query, $error2, $error3): ListOfErrors {
             $this->assertSame($query, $actual);
             return new ListOfErrors($error2, $error3);
         };
 
         $validator = new QueryValidator(new PipelineBuilderFactory());
         $actual = $validator
-            ->using([$a, $b])
+            ->using([$a, $b, $c])
             ->validate($query);
 
-        $this->assertInstanceOf(KeyedSetOfErrors::class, $actual);
+        $this->assertInstanceOf(ListOfErrors::class, $actual);
         $this->assertSame([$error1, $error2, $error3], $actual->all());
     }
 

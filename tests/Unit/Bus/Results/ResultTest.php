@@ -20,7 +20,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Bus\Results;
 
 use CloudCreativity\Modules\Bus\Results\Error;
-use CloudCreativity\Modules\Bus\Results\ErrorIterableInterface;
+use CloudCreativity\Modules\Bus\Results\ListOfErrorsInterface;
 use CloudCreativity\Modules\Bus\Results\ListOfErrors;
 use CloudCreativity\Modules\Bus\Results\Meta;
 use CloudCreativity\Modules\Bus\Results\Result;
@@ -186,7 +186,7 @@ class ResultTest extends TestCase
      */
     public function testFailureContext(): void
     {
-        $errors = $this->createMock(ErrorIterableInterface::class);
+        $errors = $this->createMock(ListOfErrorsInterface::class);
         $errors->method('context')->willReturn([['foo' => 'bar']]);
         $errors->method('isNotEmpty')->willReturn(true);
 
@@ -205,7 +205,7 @@ class ResultTest extends TestCase
      */
     public function testFailureContextWithMeta(): void
     {
-        $errors = $this->createMock(ErrorIterableInterface::class);
+        $errors = $this->createMock(ListOfErrorsInterface::class);
         $errors->method('context')->willReturn([['foo' => 'bar']]);
         $errors->method('isNotEmpty')->willReturn(true);
 

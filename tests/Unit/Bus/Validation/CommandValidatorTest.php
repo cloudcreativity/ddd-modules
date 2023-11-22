@@ -21,7 +21,6 @@ namespace CloudCreativity\Modules\Tests\Unit\Bus\Validation;
 
 use CloudCreativity\Modules\Bus\CommandInterface;
 use CloudCreativity\Modules\Bus\Results\Error;
-use CloudCreativity\Modules\Bus\Results\KeyedSetOfErrors;
 use CloudCreativity\Modules\Bus\Results\ListOfErrors;
 use CloudCreativity\Modules\Bus\Validation\CommandValidator;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
@@ -44,46 +43,22 @@ class CommandValidatorTest extends TestCase
             return new ListOfErrors($error1);
         };
 
-        $b = function ($actual) use ($command, $error2, $error3): KeyedSetOfErrors {
+        $b = function ($actual) use ($command): ?ListOfErrors {
             $this->assertSame($command, $actual);
-            return new KeyedSetOfErrors($error2, $error3);
+            return null;
         };
 
-        $validator = new CommandValidator(new PipelineBuilderFactory());
-        $actual = $validator
-            ->using([$a, $b])
-            ->validate($command);
-
-        $this->assertInstanceOf(ListOfErrors::class, $actual);
-        $this->assertSame([$error1, $error2, $error3], $actual->all());
-    }
-
-    /**
-     * @return void
-     */
-    public function testKeyedSet(): void
-    {
-        $command = $this->createMock(CommandInterface::class);
-        $error1 = new Error(null, 'Message 1');
-        $error2 = new Error(null, 'Message 2');
-        $error3 = new Error(null, 'Message 3');
-
-        $a = function ($actual) use ($command, $error1): KeyedSetOfErrors {
-            $this->assertSame($command, $actual);
-            return new KeyedSetOfErrors($error1);
-        };
-
-        $b = function ($actual) use ($command, $error2, $error3): ListOfErrors {
+        $c = function ($actual) use ($command, $error2, $error3): ListOfErrors {
             $this->assertSame($command, $actual);
             return new ListOfErrors($error2, $error3);
         };
 
         $validator = new CommandValidator(new PipelineBuilderFactory());
         $actual = $validator
-            ->using([$a, $b])
+            ->using([$a, $b, $c])
             ->validate($command);
 
-        $this->assertInstanceOf(KeyedSetOfErrors::class, $actual);
+        $this->assertInstanceOf(ListOfErrors::class, $actual);
         $this->assertSame([$error1, $error2, $error3], $actual->all());
     }
 

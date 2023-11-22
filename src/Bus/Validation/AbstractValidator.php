@@ -19,7 +19,8 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Bus\Validation;
 
-use CloudCreativity\Modules\Bus\Results\ErrorIterableInterface;
+use CloudCreativity\Modules\Bus\Results\ListOfErrors;
+use CloudCreativity\Modules\Bus\Results\ListOfErrorsInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\AccumulationProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
@@ -46,7 +47,7 @@ abstract class AbstractValidator implements ValidatorInterface
     public function __construct(
         PipelineBuilderFactoryInterface|PipeContainerInterface $pipelineFactory = new PipelineBuilderFactory(),
     ) {
-        $this->pipelineFactory = PipelineBuilderFactory::cast($pipelineFactory);
+        $this->pipelineFactory = PipelineBuilderFactory::make($pipelineFactory);
     }
 
     /**
@@ -77,8 +78,10 @@ abstract class AbstractValidator implements ValidatorInterface
     private function processor(): AccumulationProcessor
     {
         return new AccumulationProcessor(
-            static fn (?ErrorIterableInterface $carry, ErrorIterableInterface $errors): ErrorIterableInterface =>
-                $carry ? $carry->merge($errors) : $errors,
+            static function (?ListOfErrorsInterface $carry, ?ListOfErrorsInterface $errors): ListOfErrorsInterface {
+                $errors ??= new ListOfErrors();
+                return $carry ? $carry->merge($errors) : $errors;
+            },
         );
     }
 }
