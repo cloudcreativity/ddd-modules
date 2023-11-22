@@ -43,14 +43,19 @@ class CommandValidatorTest extends TestCase
             return new ListOfErrors($error1);
         };
 
-        $b = function ($actual) use ($command, $error2, $error3): ListOfErrors {
+        $b = function ($actual) use ($command): ?ListOfErrors {
+            $this->assertSame($command, $actual);
+            return null;
+        };
+
+        $c = function ($actual) use ($command, $error2, $error3): ListOfErrors {
             $this->assertSame($command, $actual);
             return new ListOfErrors($error2, $error3);
         };
 
         $validator = new CommandValidator(new PipelineBuilderFactory());
         $actual = $validator
-            ->using([$a, $b])
+            ->using([$a, $b, $c])
             ->validate($command);
 
         $this->assertInstanceOf(ListOfErrors::class, $actual);

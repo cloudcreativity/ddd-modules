@@ -43,14 +43,19 @@ class QueryValidatorTest extends TestCase
             return new ListOfErrors($error1);
         };
 
-        $b = function ($actual) use ($query, $error2, $error3): ListOfErrors {
+        $b = function ($actual) use ($query): ?ListOfErrors {
+            $this->assertSame($query, $actual);
+            return null;
+        };
+
+        $c = function ($actual) use ($query, $error2, $error3): ListOfErrors {
             $this->assertSame($query, $actual);
             return new ListOfErrors($error2, $error3);
         };
 
         $validator = new QueryValidator(new PipelineBuilderFactory());
         $actual = $validator
-            ->using([$a, $b])
+            ->using([$a, $b, $c])
             ->validate($query);
 
         $this->assertInstanceOf(ListOfErrors::class, $actual);
