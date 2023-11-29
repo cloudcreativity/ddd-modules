@@ -31,7 +31,7 @@ trait EntityTrait
     /**
      * @inheritDoc
      */
-    public function getId(): ?IdentifierInterface
+    public function getId(): IdentifierInterface
     {
         return $this->id;
     }
