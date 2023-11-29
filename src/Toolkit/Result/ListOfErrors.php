@@ -17,7 +17,7 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Bus\Results;
+namespace CloudCreativity\Modules\Toolkit\Result;
 
 use CloudCreativity\Modules\Toolkit\Iterables\ListTrait;
 
@@ -77,16 +77,5 @@ final class ListOfErrors implements ListOfErrorsInterface
     public function toKeyedSet(): KeyedSetOfErrors
     {
         return new KeyedSetOfErrors(...$this->stack);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function context(): array
-    {
-        return array_map(
-            static fn (ErrorInterface $error) => $error->context(),
-            $this->stack,
-        );
     }
 }

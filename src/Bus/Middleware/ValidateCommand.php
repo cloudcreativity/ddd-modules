@@ -21,9 +21,9 @@ namespace CloudCreativity\Modules\Bus\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Bus\CommandInterface;
-use CloudCreativity\Modules\Bus\Results\Result;
-use CloudCreativity\Modules\Bus\Results\ResultInterface;
 use CloudCreativity\Modules\Bus\Validation\CommandValidatorInterface;
+use CloudCreativity\Modules\Toolkit\Result\Result;
+use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
 abstract class ValidateCommand implements CommandMiddlewareInterface
 {

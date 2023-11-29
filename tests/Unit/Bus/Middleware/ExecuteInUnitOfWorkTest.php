@@ -21,8 +21,8 @@ namespace CloudCreativity\Modules\Tests\Unit\Bus\Middleware;
 
 use CloudCreativity\Modules\Bus\CommandInterface;
 use CloudCreativity\Modules\Bus\Middleware\ExecuteInUnitOfWork;
-use CloudCreativity\Modules\Bus\Results\ResultInterface;
 use CloudCreativity\Modules\Infrastructure\Persistence\UnitOfWorkManagerInterface;
+use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 use PHPUnit\Framework\TestCase;
 
 class ExecuteInUnitOfWorkTest extends TestCase

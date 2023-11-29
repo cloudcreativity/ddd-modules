@@ -23,11 +23,4 @@ use CloudCreativity\Modules\Bus\CommandInterface;
 
 class TestCommand implements CommandInterface
 {
-    /**
-     * @inheritDoc
-     */
-    public function context(): array
-    {
-        return [];
-    }
 }

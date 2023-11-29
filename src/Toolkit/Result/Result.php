@@ -17,7 +17,7 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Bus\Results;
+namespace CloudCreativity\Modules\Toolkit\Result;
 
 use CloudCreativity\Modules\Toolkit\ContractException;
 
@@ -145,17 +145,5 @@ final class Result implements ResultInterface
         $copy->meta = $existing->merge($meta);
 
         return $copy;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function context(): array
-    {
-        return array_filter([
-            'errors' => $this->errors->context() ?: null,
-            'meta' => $this->meta?->context() ?: null,
-            'success' => $this->success,
-        ], static fn ($value) => $value !== null);
     }
 }

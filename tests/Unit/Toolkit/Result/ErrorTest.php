@@ -17,11 +17,11 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Tests\Unit\Bus\Results;
+namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Result;
 
-use CloudCreativity\Modules\Bus\Results\Error;
-use CloudCreativity\Modules\Bus\Results\ErrorInterface;
 use CloudCreativity\Modules\Tests\Unit\Infrastructure\Log\TestEnum;
+use CloudCreativity\Modules\Toolkit\Result\Error;
+use CloudCreativity\Modules\Toolkit\Result\ErrorInterface;
 use PHPUnit\Framework\TestCase;
 
 class ErrorTest extends TestCase
@@ -37,11 +37,6 @@ class ErrorTest extends TestCase
         $this->assertSame('foo', $error->key());
         $this->assertSame('Bar', $error->message());
         $this->assertSame(TestEnum::Foo, $error->code());
-        $this->assertSame([
-            'key' => 'foo',
-            'message' => 'Bar',
-            'code' => TestEnum::Foo->value,
-        ], $error->context());
     }
 
     /**
@@ -54,8 +49,5 @@ class ErrorTest extends TestCase
         $this->assertNull($error->key());
         $this->assertSame('Hello World', $error->message());
         $this->assertNull($error->code());
-        $this->assertSame([
-            'message' => 'Hello World',
-        ], $error->context());
     }
 }

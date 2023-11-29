@@ -17,31 +17,37 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Bus\Results;
+namespace CloudCreativity\Modules\Infrastructure\Log;
 
-use BackedEnum;
-use CloudCreativity\Modules\Infrastructure\Log\ContextProviderInterface;
-
-interface ErrorInterface extends ContextProviderInterface
+final class ObjectContext implements ContextProviderInterface
 {
     /**
-     * Get the error key.
-     *
-     * @return string|null
+     * @param object $source
+     * @return self
      */
-    public function key(): ?string;
+    public static function from(object $source): self
+    {
+        return new self($source);
+    }
 
     /**
-     * Get the error detail.
+     * ObjectContext constructor.
      *
-     * @return string
+     * @param object $source
      */
-    public function message(): string;
+    public function __construct(private readonly object $source)
+    {
+    }
 
     /**
-     * Get the error code.
-     *
-     * @return BackedEnum|null
+     * @inheritDoc
      */
-    public function code(): ?BackedEnum;
+    public function context(): array
+    {
+        if ($this->source instanceof ContextProviderInterface) {
+            return $this->source->context();
+        }
+
+        return get_object_vars($this->source);
+    }
 }

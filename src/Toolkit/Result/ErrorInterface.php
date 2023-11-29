@@ -17,17 +17,30 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Bus;
+namespace CloudCreativity\Modules\Toolkit\Result;
 
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
+use BackedEnum;
 
-interface CommandHandlerInterface extends DispatchThroughMiddleware
+interface ErrorInterface
 {
     /**
-     * Execute the command.
+     * Get the error key.
      *
-     * @param CommandInterface $command
-     * @return ResultInterface<mixed>
+     * @return string|null
      */
-    public function __invoke(CommandInterface $command): ResultInterface;
+    public function key(): ?string;
+
+    /**
+     * Get the error detail.
+     *
+     * @return string
+     */
+    public function message(): string;
+
+    /**
+     * Get the error code.
+     *
+     * @return BackedEnum|null
+     */
+    public function code(): ?BackedEnum;
 }

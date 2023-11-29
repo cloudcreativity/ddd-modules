@@ -20,7 +20,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Bus\Validation;
 
 use CloudCreativity\Modules\Bus\QueryInterface;
-use CloudCreativity\Modules\Bus\Results\ListOfErrorsInterface;
+use CloudCreativity\Modules\Toolkit\Result\ListOfErrorsInterface;
 
 interface QueryValidatorInterface extends ValidatorInterface
 {

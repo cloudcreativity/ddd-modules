@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+### Changed
+
+- BREAKING: moved the `Bus\Results` namespace to `Toolkit\Result`. As part of this move, the interfaces and classes in
+  this namespace no longer implement the log `ContextProviderInterface`, as this is an infrastructure dependency.
+  Instead, the new `Infrastructure\Log\ObjectContext` and `Infrastructure\Log\ResultContext` class can be used to create
+  context for either a result or an object.
+
 ## [0.2.0] - 2023-11-22
 
 ### Added

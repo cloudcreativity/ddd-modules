@@ -19,8 +19,6 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Bus;
 
-use CloudCreativity\Modules\Infrastructure\Log\ContextProviderInterface;
-
-interface MessageInterface extends ContextProviderInterface
+interface MessageInterface
 {
 }

@@ -17,13 +17,12 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Tests\Unit\Bus\Results;
+namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Result;
 
-use CloudCreativity\Modules\Bus\Results\Error;
-use CloudCreativity\Modules\Bus\Results\ListOfErrorsInterface;
-use CloudCreativity\Modules\Bus\Results\KeyedSetOfErrors;
-use CloudCreativity\Modules\Bus\Results\ListOfErrors;
-use CloudCreativity\Modules\Tests\Unit\Infrastructure\Log\TestEnum;
+use CloudCreativity\Modules\Toolkit\Result\Error;
+use CloudCreativity\Modules\Toolkit\Result\KeyedSetOfErrors;
+use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
+use CloudCreativity\Modules\Toolkit\Result\ListOfErrorsInterface;
 use PHPUnit\Framework\TestCase;
 
 class ListOfErrorsTest extends TestCase
@@ -100,18 +99,5 @@ class ListOfErrorsTest extends TestCase
         $this->assertSame([$a, $b], $stack1->all());
         $this->assertSame([$c, $d], $stack2->all());
         $this->assertSame([$a, $b, $c, $d], $actual->all());
-    }
-
-    /**
-     * @return void
-     */
-    public function testToArray(): void
-    {
-        $errors = new ListOfErrors(
-            $a = new Error(null, 'Message A'),
-            $b = new Error('foo', 'Message B', TestEnum::Bar),
-        );
-
-        $this->assertSame([$a->context(), $b->context()], $errors->context());
     }
 }

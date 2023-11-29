@@ -17,11 +17,11 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Tests\Unit\Bus\Results;
+namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Result;
 
-use CloudCreativity\Modules\Bus\Results\Error;
-use CloudCreativity\Modules\Bus\Results\KeyedSetOfErrors;
-use CloudCreativity\Modules\Bus\Results\ListOfErrors;
+use CloudCreativity\Modules\Toolkit\Result\Error;
+use CloudCreativity\Modules\Toolkit\Result\KeyedSetOfErrors;
+use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
 use PHPUnit\Framework\TestCase;
 
 class KeyedSetOfErrorsTest extends TestCase
@@ -210,27 +210,5 @@ class KeyedSetOfErrorsTest extends TestCase
         ], iterator_to_array($actual));
         $this->assertSame(['_base', 'bar', 'baz', 'foo'], $actual->keys());
         $this->assertCount($set1->count() + $set2->count(), $actual);
-    }
-
-    /**
-     * @return void
-     */
-    public function testContext(): void
-    {
-        $errors = new KeyedSetOfErrors(
-            $a = new Error('foo', 'Message A'),
-            $b = new Error('bar', 'Message B'),
-            $c = new Error('foo', 'Message C'),
-            $d = new Error(null, 'Message D'),
-            $e = new Error(null, 'Message E'),
-        );
-
-        $expected = [
-            '_base' => (new ListOfErrors($d, $e))->context(),
-            'bar' => (new ListOfErrors($b))->context(),
-            'foo' => (new ListOfErrors($a, $c))->context(),
-        ];
-
-        $this->assertSame($expected, $errors->context());
     }
 }

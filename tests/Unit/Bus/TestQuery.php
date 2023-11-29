@@ -23,11 +23,4 @@ use CloudCreativity\Modules\Bus\QueryInterface;
 
 class TestQuery implements QueryInterface
 {
-    /**
-     * @inheritDoc
-     */
-    public function context(): array
-    {
-        return [];
-    }
 }

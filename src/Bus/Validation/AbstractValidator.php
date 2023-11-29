@@ -19,13 +19,13 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Bus\Validation;
 
-use CloudCreativity\Modules\Bus\Results\ListOfErrors;
-use CloudCreativity\Modules\Bus\Results\ListOfErrorsInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\AccumulationProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactoryInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineInterface;
+use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
+use CloudCreativity\Modules\Toolkit\Result\ListOfErrorsInterface;
 
 abstract class AbstractValidator implements ValidatorInterface
 {

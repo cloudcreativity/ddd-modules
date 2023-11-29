@@ -17,7 +17,7 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Bus\Results;
+namespace CloudCreativity\Modules\Toolkit\Result;
 
 use BackedEnum;
 use CloudCreativity\Modules\Toolkit\Contracts;
@@ -68,17 +68,5 @@ final class Error implements ErrorInterface
     public function code(): ?BackedEnum
     {
         return $this->code;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function context(): array
-    {
-        return array_filter([
-            'key' => $this->key,
-            'message' => $this->message,
-            'code' => $this->code?->value,
-        ], static fn ($value) => $value !== null);
     }
 }

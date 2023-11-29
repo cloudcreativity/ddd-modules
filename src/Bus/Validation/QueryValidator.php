@@ -20,8 +20,8 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Bus\Validation;
 
 use CloudCreativity\Modules\Bus\QueryInterface;
-use CloudCreativity\Modules\Bus\Results\ListOfErrorsInterface;
-use CloudCreativity\Modules\Bus\Results\ListOfErrors;
+use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
+use CloudCreativity\Modules\Toolkit\Result\ListOfErrorsInterface;
 
 final class QueryValidator extends AbstractValidator implements QueryValidatorInterface
 {

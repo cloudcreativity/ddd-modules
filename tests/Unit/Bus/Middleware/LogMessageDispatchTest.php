@@ -21,7 +21,9 @@ namespace CloudCreativity\Modules\Tests\Unit\Bus\Middleware;
 
 use CloudCreativity\Modules\Bus\MessageInterface;
 use CloudCreativity\Modules\Bus\Middleware\LogMessageDispatch;
-use CloudCreativity\Modules\Bus\Results\ResultInterface;
+use CloudCreativity\Modules\Infrastructure\Log\ObjectContext;
+use CloudCreativity\Modules\Infrastructure\Log\ResultContext;
+use CloudCreativity\Modules\Toolkit\Result\Result;
 use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -48,8 +50,10 @@ class LogMessageDispatchTest extends TestCase
         parent::setUp();
 
         $this->logger = $this->createMock(LoggerInterface::class);
-        $this->message = $this->createMock(MessageInterface::class);
-        $this->message->method('context')->willReturn(['foo' => 'bar']);
+        $this->message = new class () implements MessageInterface {
+            public string $foo = 'bar';
+            public string $baz = 'bat';
+        };
     }
 
     /**
@@ -57,8 +61,7 @@ class LogMessageDispatchTest extends TestCase
      */
     public function testWithDefaultLevels(): void
     {
-        $expected = $this->createMock(ResultInterface::class);
-        $expected->method('context')->willReturn(['baz' => 'bat']);
+        $expected = Result::ok()->withMeta(['foobar' => 'bazbat']);
         $name = $this->message::class;
         $logs = [];
 
@@ -78,8 +81,8 @@ class LogMessageDispatchTest extends TestCase
 
         $this->assertSame($expected, $actual);
         $this->assertSame([
-            [LogLevel::DEBUG, "Bus dispatching {$name}.", $this->message->context()],
-            [LogLevel::INFO, "Bus dispatched {$name}.", $expected->context()],
+            [LogLevel::DEBUG, "Bus dispatching {$name}.", ObjectContext::from($this->message)->context()],
+            [LogLevel::INFO, "Bus dispatched {$name}.", ResultContext::from($expected)->context()],
         ], $logs);
     }
 
@@ -88,8 +91,7 @@ class LogMessageDispatchTest extends TestCase
      */
     public function testWithCustomLevels(): void
     {
-        $expected = $this->createMock(ResultInterface::class);
-        $expected->method('context')->willReturn(['baz' => 'bat']);
+        $expected = Result::failed('Something went wrong.');
         $name = $this->message::class;
         $logs = [];
 
@@ -109,8 +111,8 @@ class LogMessageDispatchTest extends TestCase
 
         $this->assertSame($expected, $actual);
         $this->assertSame([
-            [LogLevel::NOTICE, "Bus dispatching {$name}.", $this->message->context()],
-            [LogLevel::WARNING, "Bus dispatched {$name}.", $expected->context()],
+            [LogLevel::NOTICE, "Bus dispatching {$name}.", ObjectContext::from($this->message)->context()],
+            [LogLevel::WARNING, "Bus dispatched {$name}.", ResultContext::from($expected)->context()],
         ], $logs);
     }
 
@@ -125,7 +127,7 @@ class LogMessageDispatchTest extends TestCase
         $this->logger
             ->expects($this->once())
             ->method('log')
-            ->with(LogLevel::DEBUG, "Bus dispatching {$name}.", $this->message->context());
+            ->with(LogLevel::DEBUG, "Bus dispatching {$name}.", ObjectContext::from($this->message)->context());
 
         $middleware = new LogMessageDispatch($this->logger);
 

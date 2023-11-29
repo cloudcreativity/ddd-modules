@@ -17,11 +17,9 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Bus\Results;
+namespace CloudCreativity\Modules\Toolkit\Result;
 
 use ArrayAccess;
-use CloudCreativity\Modules\Infrastructure\Log\Context;
-use CloudCreativity\Modules\Infrastructure\Log\ContextProviderInterface;
 use CloudCreativity\Modules\Toolkit\Iterables\KeyedSetInterface;
 use CloudCreativity\Modules\Toolkit\Iterables\KeyedSetTrait;
 use LogicException;
@@ -30,7 +28,7 @@ use LogicException;
  * @implements ArrayAccess<string, mixed>
  * @implements KeyedSetInterface<mixed>
  */
-final class Meta implements ArrayAccess, KeyedSetInterface, ContextProviderInterface
+final class Meta implements ArrayAccess, KeyedSetInterface
 {
     use KeyedSetTrait;
 
@@ -162,13 +160,5 @@ final class Meta implements ArrayAccess, KeyedSetInterface, ContextProviderInter
     public function all(): array
     {
         return $this->stack;
-    }
-
-    /**
-     * @return array<array-key, mixed>
-     */
-    public function context(): array
-    {
-        return Context::parse($this->stack);
     }
 }
