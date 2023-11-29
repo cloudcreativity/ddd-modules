@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [0.3.0] - 2023-11-29
+
 ### Changed
 
 - BREAKING: moved the `Bus\Results` namespace to `Toolkit\Result`. As part of this move, the interfaces and classes in
