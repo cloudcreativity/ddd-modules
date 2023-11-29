@@ -5,9 +5,5 @@
         "trailing_comma_in_multiline": {
             "elements": ["arguments", "arrays", "match", "parameters"]
         }
-    },
-    "exclude": [
-        "bootstrap",
-        "public"
-    ]
+    }
 }
