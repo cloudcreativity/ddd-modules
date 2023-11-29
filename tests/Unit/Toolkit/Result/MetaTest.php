@@ -17,10 +17,9 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Tests\Unit\Bus\Results;
+namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Result;
 
-use CloudCreativity\Modules\Bus\Results\Meta;
-use CloudCreativity\Modules\Infrastructure\Log\ContextProviderInterface;
+use CloudCreativity\Modules\Toolkit\Result\Meta;
 use PHPUnit\Framework\TestCase;
 
 class MetaTest extends TestCase
@@ -132,25 +131,5 @@ class MetaTest extends TestCase
         $this->assertNotSame($original, $actual);
         $this->assertSame(['foo' => 'bar', 'baz' => 'bat'], $original->all());
         $this->assertSame(['foo' => null, 'baz' => 'bat', 'foobar' => 'bazbat'], $actual->all());
-    }
-
-    /**
-     * @return void
-     */
-    public function testContext(): void
-    {
-        $serializable = $this->createMock(ContextProviderInterface::class);
-        $serializable->method('context')->willReturn(['foo' => 'bar']);
-
-        $meta = new Meta([
-            'foo' => $serializable,
-            'baz' => 'bat',
-        ]);
-
-        $this->assertInstanceOf(ContextProviderInterface::class, $meta);
-        $this->assertSame([
-            'foo' => ['foo' => 'bar'],
-            'baz' => 'bat',
-        ], $meta->context());
     }
 }

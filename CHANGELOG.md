@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [0.3.0] - 2023-11-29
+
+### Changed
+
+- BREAKING: moved the `Bus\Results` namespace to `Toolkit\Result`. As part of this move, the interfaces and classes in
+  this namespace no longer implement the log `ContextProviderInterface`, as this is an infrastructure dependency.
+  Instead, the new `Infrastructure\Log\ObjectContext` and `Infrastructure\Log\ResultContext` class can be used to create
+  context for either a result or an object.
+- All constructor arguments for the `Toolkit\Result\Error` object are now optional. This allows named arguments to be
+  used when creating an error object.
+- The `Toolkit\Result\Error` object can now accept only a code, previously it had to have a message.
+- The following interfaces no longer extend the log `ContextProviderInterface`. Instead classes only need to implement
+  that log interface if they need to customise how that class is logged.
+    - `Bus\MessageInterface`
+    - `Infrastructure\Queue\QueueableInterface`
+
 ## [0.2.0] - 2023-11-22
 
 ### Added

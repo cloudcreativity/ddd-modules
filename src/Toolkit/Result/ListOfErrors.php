@@ -17,8 +17,9 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Bus\Results;
+namespace CloudCreativity\Modules\Toolkit\Result;
 
+use BackedEnum;
 use CloudCreativity\Modules\Toolkit\Iterables\ListTrait;
 
 final class ListOfErrors implements ListOfErrorsInterface
@@ -29,6 +30,21 @@ final class ListOfErrors implements ListOfErrorsInterface
      * @var ErrorInterface[]
      */
     private array $stack;
+
+    /**
+     * @param ListOfErrorsInterface|ErrorInterface|BackedEnum|array<ErrorInterface>|string $value
+     * @return self
+     */
+    public static function from(ListOfErrorsInterface|ErrorInterface|BackedEnum|array|string $value): self
+    {
+        return match(true) {
+            $value instanceof self => $value,
+            $value instanceof ListOfErrorsInterface, is_array($value) => new self(...$value),
+            $value instanceof ErrorInterface => new self($value),
+            is_string($value) => new self(new Error(message: $value)),
+            $value instanceof BackedEnum => new self(new Error(code: $value)),
+        };
+    }
 
     /**
      * @param ErrorInterface ...$errors
@@ -77,16 +93,5 @@ final class ListOfErrors implements ListOfErrorsInterface
     public function toKeyedSet(): KeyedSetOfErrors
     {
         return new KeyedSetOfErrors(...$this->stack);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function context(): array
-    {
-        return array_map(
-            static fn (ErrorInterface $error) => $error->context(),
-            $this->stack,
-        );
     }
 }

@@ -21,9 +21,9 @@ namespace CloudCreativity\Modules\Bus\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Bus\QueryInterface;
-use CloudCreativity\Modules\Bus\Results\Result;
-use CloudCreativity\Modules\Bus\Results\ResultInterface;
 use CloudCreativity\Modules\Bus\Validation\QueryValidatorInterface;
+use CloudCreativity\Modules\Toolkit\Result\Result;
+use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
 abstract class ValidateQuery implements QueryMiddlewareInterface
 {

@@ -20,8 +20,8 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Bus;
 
 use CloudCreativity\Modules\Bus\DispatchThroughMiddleware;
-use CloudCreativity\Modules\Bus\Results\Result;
-use CloudCreativity\Modules\Bus\Results\ResultInterface;
+use CloudCreativity\Modules\Toolkit\Result\Result;
+use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
 class TestCommandHandler implements TestCommandHandlerInterface, DispatchThroughMiddleware
 {

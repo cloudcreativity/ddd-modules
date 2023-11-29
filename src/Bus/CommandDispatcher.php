@@ -19,11 +19,11 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Bus;
 
-use CloudCreativity\Modules\Bus\Results\ResultInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactoryInterface;
+use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
 class CommandDispatcher implements CommandDispatcherInterface
 {

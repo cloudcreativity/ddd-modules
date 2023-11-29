@@ -19,7 +19,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Bus;
 
-use CloudCreativity\Modules\Bus\Results\ResultInterface;
+use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
 final class CommandHandler implements CommandHandlerInterface
 {

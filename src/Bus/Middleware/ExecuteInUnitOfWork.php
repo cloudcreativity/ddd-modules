@@ -21,8 +21,8 @@ namespace CloudCreativity\Modules\Bus\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Bus\CommandInterface;
-use CloudCreativity\Modules\Bus\Results\ResultInterface;
 use CloudCreativity\Modules\Infrastructure\Persistence\UnitOfWorkManagerInterface;
+use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
 final class ExecuteInUnitOfWork implements CommandMiddlewareInterface
 {

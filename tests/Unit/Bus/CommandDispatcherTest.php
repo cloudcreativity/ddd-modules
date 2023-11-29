@@ -23,9 +23,9 @@ use CloudCreativity\Modules\Bus\CommandDispatcher;
 use CloudCreativity\Modules\Bus\CommandHandlerContainerInterface;
 use CloudCreativity\Modules\Bus\CommandHandlerInterface;
 use CloudCreativity\Modules\Bus\CommandInterface;
-use CloudCreativity\Modules\Bus\Results\ResultInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
+use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

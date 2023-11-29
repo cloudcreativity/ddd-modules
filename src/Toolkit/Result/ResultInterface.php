@@ -17,15 +17,14 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Bus\Results;
+namespace CloudCreativity\Modules\Toolkit\Result;
 
-use CloudCreativity\Modules\Infrastructure\Log\ContextProviderInterface;
 use CloudCreativity\Modules\Toolkit\ContractException;
 
 /**
  * @template-covariant TValue
  */
-interface ResultInterface extends ContextProviderInterface
+interface ResultInterface
 {
     /**
      * @return bool

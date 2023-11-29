@@ -17,11 +17,12 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Tests\Unit\Bus\Results;
+namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Result;
 
-use CloudCreativity\Modules\Bus\Results\Error;
-use CloudCreativity\Modules\Bus\Results\ErrorInterface;
 use CloudCreativity\Modules\Tests\Unit\Infrastructure\Log\TestEnum;
+use CloudCreativity\Modules\Toolkit\ContractException;
+use CloudCreativity\Modules\Toolkit\Result\Error;
+use CloudCreativity\Modules\Toolkit\Result\ErrorInterface;
 use PHPUnit\Framework\TestCase;
 
 class ErrorTest extends TestCase
@@ -31,31 +32,46 @@ class ErrorTest extends TestCase
      */
     public function test(): void
     {
-        $error = new Error('foo', 'Bar', TestEnum::Foo);
+        $error = new Error(key: 'foo', message: 'Bar', code: TestEnum::Foo);
 
         $this->assertInstanceOf(ErrorInterface::class, $error);
         $this->assertSame('foo', $error->key());
         $this->assertSame('Bar', $error->message());
         $this->assertSame(TestEnum::Foo, $error->code());
-        $this->assertSame([
-            'key' => 'foo',
-            'message' => 'Bar',
-            'code' => TestEnum::Foo->value,
-        ], $error->context());
     }
 
     /**
      * @return void
      */
-    public function testWithoutOptionalValues(): void
+    public function testOnlyMessage(): void
     {
-        $error = new Error(null, 'Hello World');
+        $error = new Error(message: 'Hello World');
 
         $this->assertNull($error->key());
         $this->assertSame('Hello World', $error->message());
         $this->assertNull($error->code());
-        $this->assertSame([
-            'message' => 'Hello World',
-        ], $error->context());
+    }
+
+    /**
+     * @return void
+     */
+    public function testOnlyCode(): void
+    {
+        $error = new Error(code: TestEnum::Foo);
+
+        $this->assertNull($error->key());
+        $this->assertSame('', $error->message());
+        $this->assertSame(TestEnum::Foo, $error->code());
+    }
+
+    /**
+     * @return void
+     */
+    public function testNoMessageOrCode(): void
+    {
+        $this->expectException(ContractException::class);
+        $this->expectExceptionMessage('Error must have a message or a code.');
+
+        new Error(key: 'foo');
     }
 }

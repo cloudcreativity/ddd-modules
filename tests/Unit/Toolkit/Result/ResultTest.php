@@ -17,15 +17,15 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Tests\Unit\Bus\Results;
+namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Result;
 
-use CloudCreativity\Modules\Bus\Results\Error;
-use CloudCreativity\Modules\Bus\Results\ListOfErrorsInterface;
-use CloudCreativity\Modules\Bus\Results\ListOfErrors;
-use CloudCreativity\Modules\Bus\Results\Meta;
-use CloudCreativity\Modules\Bus\Results\Result;
-use CloudCreativity\Modules\Bus\Results\ResultInterface;
-use CloudCreativity\Modules\Infrastructure\Log\ContextProviderInterface;
+use CloudCreativity\Modules\Tests\Unit\Infrastructure\Log\TestEnum;
+use CloudCreativity\Modules\Toolkit\Result\Error;
+use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
+use CloudCreativity\Modules\Toolkit\Result\ListOfErrorsInterface;
+use CloudCreativity\Modules\Toolkit\Result\Meta;
+use CloudCreativity\Modules\Toolkit\Result\Result;
+use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 use PHPUnit\Framework\TestCase;
 
 class ResultTest extends TestCase
@@ -63,6 +63,20 @@ class ResultTest extends TestCase
     /**
      * @return void
      */
+    public function testFailedWithListOfErrorsInterface(): void
+    {
+        $errors = $this->createMock(ListOfErrorsInterface::class);
+        $errors->method('isNotEmpty')->willReturn(true);
+        $result = Result::failed($errors);
+
+        $this->assertFalse($result->didSucceed());
+        $this->assertTrue($result->didFail());
+        $this->assertSame($errors, $result->errors());
+    }
+
+    /**
+     * @return void
+     */
     public function testFailedWithError(): void
     {
         $error = new Error(null, 'Something went wrong.');
@@ -89,6 +103,17 @@ class ResultTest extends TestCase
     {
         $error = new Error(null, 'Something went wrong.');
         $result = Result::failed([$error]);
+
+        $this->assertEquals(new ListOfErrors($error), $result->errors());
+    }
+
+    /**
+     * @return void
+     */
+    public function testFailedWithBackedEnum(): void
+    {
+        $error = new Error(code: $code = TestEnum::Foo);
+        $result = Result::failed($code);
 
         $this->assertEquals(new ListOfErrors($error), $result->errors());
     }
@@ -143,87 +168,5 @@ class ResultTest extends TestCase
             'baz' => 'blah',
             'foobar' => 'bazbat',
         ], $result2->meta()->all());
-    }
-
-    /**
-     * @return void
-     */
-    public function testSuccessContext(): void
-    {
-        $result = Result::ok();
-
-        $expected = [
-            'success' => true,
-        ];
-
-        $this->assertEquals($expected, $result->context());
-    }
-
-    /**
-     * @return void
-     */
-    public function testSuccessContextWithMeta(): void
-    {
-        $object = $this->createMock(ContextProviderInterface::class);
-        $object->method('context')->willReturn(['foo' => 'bar']);
-
-        $result = Result::ok()->withMeta(['values' => $object]);
-
-        $expected = [
-            'success' => true,
-            'meta' => [
-                'values' => [
-                    'foo' => 'bar',
-                ],
-            ],
-        ];
-
-        $this->assertEquals($expected, $result->context());
-    }
-
-    /**
-     * @return void
-     */
-    public function testFailureContext(): void
-    {
-        $errors = $this->createMock(ListOfErrorsInterface::class);
-        $errors->method('context')->willReturn([['foo' => 'bar']]);
-        $errors->method('isNotEmpty')->willReturn(true);
-
-        $result = Result::failed($errors);
-
-        $expected = [
-            'success' => false,
-            'errors' => [['foo' => 'bar']],
-        ];
-
-        $this->assertEquals($expected, $result->context());
-    }
-
-    /**
-     * @return void
-     */
-    public function testFailureContextWithMeta(): void
-    {
-        $errors = $this->createMock(ListOfErrorsInterface::class);
-        $errors->method('context')->willReturn([['foo' => 'bar']]);
-        $errors->method('isNotEmpty')->willReturn(true);
-
-        $object = $this->createMock(ContextProviderInterface::class);
-        $object->method('context')->willReturn(['baz' => 'bat']);
-
-        $result = Result::failed($errors)->withMeta(['values' => $object]);
-
-        $expected = [
-            'success' => false,
-            'meta' => [
-                'values' => [
-                    'baz' => 'bat',
-                ],
-            ],
-            'errors' => [['foo' => 'bar']],
-        ];
-
-        $this->assertEquals($expected, $result->context());
     }
 }

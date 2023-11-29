@@ -17,16 +17,15 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Bus\Results;
+namespace CloudCreativity\Modules\Toolkit\Result;
 
-use CloudCreativity\Modules\Infrastructure\Log\ContextProviderInterface;
 use CloudCreativity\Modules\Toolkit\Iterables\KeyedSetInterface;
 use CloudCreativity\Modules\Toolkit\Iterables\KeyedSetTrait;
 
 /**
  * @implements KeyedSetInterface<ListOfErrors>
  */
-final class KeyedSetOfErrors implements KeyedSetInterface, ContextProviderInterface
+final class KeyedSetOfErrors implements KeyedSetInterface
 {
     use KeyedSetTrait;
 
@@ -153,17 +152,6 @@ final class KeyedSetOfErrors implements KeyedSetInterface, ContextProviderInterf
             $this->stack,
             static fn (int $carry, ListOfErrors $errors) => $carry + $errors->count(),
             0,
-        );
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function context(): array
-    {
-        return array_map(
-            static fn (ListOfErrors $errors) => $errors->context(),
-            $this->stack,
         );
     }
 

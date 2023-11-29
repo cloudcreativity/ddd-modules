@@ -17,7 +17,7 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Bus\Results;
+namespace CloudCreativity\Modules\Toolkit\Result;
 
 use BackedEnum;
 use CloudCreativity\Modules\Toolkit\Contracts;
@@ -37,17 +37,16 @@ final class Error implements ErrorInterface
      * @param BackedEnum|null $code
      */
     public function __construct(
-        ?string $key,
-        private readonly string $message,
+        string|null $key = null,
+        private readonly string $message = '',
         private readonly ?BackedEnum $code = null,
     ) {
-        Contracts::assert(!empty($message), 'Expecting a non-empty error message.');
-
+        Contracts::assert(!empty($message) || $code !== null, 'Error must have a message or a code.');
         $this->key = $key ?: null;
     }
 
     /**
-     * @return string|null
+     * @inheritDoc
      */
     public function key(): ?string
     {
@@ -68,17 +67,5 @@ final class Error implements ErrorInterface
     public function code(): ?BackedEnum
     {
         return $this->code;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function context(): array
-    {
-        return array_filter([
-            'key' => $this->key,
-            'message' => $this->message,
-            'code' => $this->code?->value,
-        ], static fn ($value) => $value !== null);
     }
 }

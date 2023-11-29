@@ -17,34 +17,30 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue;
+namespace CloudCreativity\Modules\Toolkit\Result;
 
-use CloudCreativity\Modules\Infrastructure\Queue\QueueableInterface;
-use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
+use BackedEnum;
 
-class TestQueueable implements QueueableInterface
+interface ErrorInterface
 {
     /**
-     * @var Guid|null
+     * Get the error key.
+     *
+     * @return string|null
      */
-    private ?Guid $guid = null;
+    public function key(): ?string;
 
     /**
-     * @return Guid|null
+     * Get the error detail.
+     *
+     * @return string
      */
-    public function getGuid(): ?Guid
-    {
-        return $this->guid;
-    }
+    public function message(): string;
 
     /**
-     * @param Guid|null $guid
-     * @return $this
+     * Get the error code.
+     *
+     * @return BackedEnum|null
      */
-    public function setGuid(?Guid $guid): self
-    {
-        $this->guid = $guid;
-
-        return $this;
-    }
+    public function code(): ?BackedEnum;
 }

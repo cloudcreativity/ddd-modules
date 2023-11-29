@@ -21,8 +21,10 @@ namespace CloudCreativity\Modules\Bus\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Bus\MessageInterface;
-use CloudCreativity\Modules\Bus\Results\ResultInterface;
+use CloudCreativity\Modules\Infrastructure\Log\ObjectContext;
+use CloudCreativity\Modules\Infrastructure\Log\ResultContext;
 use CloudCreativity\Modules\Toolkit\ModuleBasename;
+use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
@@ -52,7 +54,7 @@ final class LogMessageDispatch implements MessageMiddlewareInterface
         $this->logger->log(
             $this->dispatchLevel,
             "Bus dispatching {$name}.",
-            $message->context(),
+            ObjectContext::from($message)->context(),
         );
 
         /** @var ResultInterface<mixed> $result */
@@ -61,7 +63,7 @@ final class LogMessageDispatch implements MessageMiddlewareInterface
         $this->logger->log(
             $this->dispatchedLevel,
             "Bus dispatched {$name}.",
-            $result->context(),
+            ResultContext::from($result)->context(),
         );
 
         return $result;

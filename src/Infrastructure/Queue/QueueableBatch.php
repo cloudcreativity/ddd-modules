@@ -21,14 +21,13 @@ namespace CloudCreativity\Modules\Infrastructure\Queue;
 
 use CloudCreativity\Modules\Infrastructure\Infrastructure;
 use CloudCreativity\Modules\Infrastructure\InfrastructureException;
-use CloudCreativity\Modules\Infrastructure\Log\ContextProviderInterface;
 use CloudCreativity\Modules\Toolkit\Iterables\ListInterface;
 use CloudCreativity\Modules\Toolkit\Iterables\ListTrait;
 
 /**
  * @implements ListInterface<QueueableInterface>
  */
-final class QueueableBatch implements ListInterface, ContextProviderInterface
+final class QueueableBatch implements ListInterface
 {
     use ListTrait;
 
@@ -92,16 +91,5 @@ final class QueueableBatch implements ListInterface, ContextProviderInterface
     public function all(): array
     {
         return $this->stack;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function context(): array
-    {
-        return array_map(
-            fn (QueueableInterface $queueable) => $queueable->context(),
-            $this->stack,
-        );
     }
 }

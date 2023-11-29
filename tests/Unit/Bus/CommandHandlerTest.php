@@ -20,7 +20,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Bus;
 
 use CloudCreativity\Modules\Bus\CommandHandler;
-use CloudCreativity\Modules\Bus\Results\ResultInterface;
+use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 use PHPUnit\Framework\TestCase;
 
 class CommandHandlerTest extends TestCase

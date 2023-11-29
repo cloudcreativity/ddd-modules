@@ -21,6 +21,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\DomainEventDispatchi
 
 use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
 use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\Middleware\LogDomainEventDispatch;
+use DateTimeImmutable;
 use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -47,7 +48,23 @@ class LogDomainEventDispatchTest extends TestCase
         parent::setUp();
 
         $this->logger = $this->createMock(LoggerInterface::class);
-        $this->event = $this->createMock(DomainEventInterface::class);
+
+        /**
+         * Do not expect any public properties to be logged as context.
+         * This is because the event is in the domain layer, so cannot implement the
+         * log context provider interface to override any context logging. That means
+         * if we automatically logged context there would be no way for the developer
+         * to prevent sensitive properties from being logged.
+         */
+        $this->event = new class () implements DomainEventInterface {
+            public string $foo = 'foo';
+            public string $bar = 'bar';
+
+            public function occurredAt(): DateTimeImmutable
+            {
+                return new DateTimeImmutable();
+            }
+        };
     }
 
     /**
@@ -61,8 +78,8 @@ class LogDomainEventDispatchTest extends TestCase
         $this->logger
             ->expects($this->exactly(2))
             ->method('log')
-            ->willReturnCallback(function ($level, $message) use (&$logs): bool {
-                $logs[] = [$level, $message];
+            ->willReturnCallback(function ($level, $message, $context) use (&$logs): bool {
+                $logs[] = [$level, $message, $context];
                 return true;
             });
 
@@ -72,8 +89,8 @@ class LogDomainEventDispatchTest extends TestCase
         });
 
         $this->assertSame([
-            [LogLevel::DEBUG, "Dispatching event {$eventName}."],
-            [LogLevel::INFO, "Dispatched event {$eventName}."],
+            [LogLevel::DEBUG, "Dispatching event {$eventName}.", []],
+            [LogLevel::INFO, "Dispatched event {$eventName}.", []],
         ], $logs);
     }
 

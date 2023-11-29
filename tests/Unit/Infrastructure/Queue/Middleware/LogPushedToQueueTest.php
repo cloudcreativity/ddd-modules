@@ -47,8 +47,10 @@ class LogPushedToQueueTest extends TestCase
         parent::setUp();
 
         $this->logger = $this->createMock(LoggerInterface::class);
-        $this->message = $this->createMock(QueueableInterface::class);
-        $this->message->method('context')->willReturn(['foo' => 'bar']);
+        $this->message = new class () implements QueueableInterface {
+            public string $foo = 'baz';
+            public string $bar = 'bat';
+        };
     }
 
     /**
@@ -71,9 +73,11 @@ class LogPushedToQueueTest extends TestCase
             $this->assertSame($this->message, $received);
         });
 
+        $context = ['foo' => 'baz', 'bar' => 'bat'];
+
         $this->assertSame([
-            [LogLevel::DEBUG, "Queuing message {$messageName}.", $this->message->context()],
-            [LogLevel::INFO, "Queued message {$messageName}.", $this->message->context()],
+            [LogLevel::DEBUG, "Queuing message {$messageName}.", $context],
+            [LogLevel::INFO, "Queued message {$messageName}.", $context],
         ], $logs);
     }
 
@@ -98,9 +102,11 @@ class LogPushedToQueueTest extends TestCase
             $this->assertSame($this->message, $received);
         });
 
+        $context = ['foo' => 'baz', 'bar' => 'bat'];
+
         $this->assertSame([
-            [LogLevel::NOTICE, "Queuing message {$messageName}.", $this->message->context()],
-            [LogLevel::WARNING, "Queued message {$messageName}.", $this->message->context()],
+            [LogLevel::NOTICE, "Queuing message {$messageName}.", $context],
+            [LogLevel::WARNING, "Queued message {$messageName}.", $context],
         ], $logs);
     }
 
@@ -110,12 +116,13 @@ class LogPushedToQueueTest extends TestCase
     public function testItLogsAfterTheNextClosureIsInvoked(): void
     {
         $expected = new LogicException();
-        $messageName = get_class($this->message);
+        $messageName = $this->message::class;
+        $context = ['foo' => 'baz', 'bar' => 'bat'];
 
         $this->logger
             ->expects($this->once())
             ->method('log')
-            ->with(LogLevel::DEBUG, "Queuing message {$messageName}.", $this->message->context());
+            ->with(LogLevel::DEBUG, "Queuing message {$messageName}.", $context);
 
         $middleware = new LogPushedToQueue($this->logger);
 

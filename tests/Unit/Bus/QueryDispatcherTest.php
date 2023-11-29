@@ -23,9 +23,9 @@ use CloudCreativity\Modules\Bus\QueryDispatcher;
 use CloudCreativity\Modules\Bus\QueryHandlerContainerInterface;
 use CloudCreativity\Modules\Bus\QueryHandlerInterface;
 use CloudCreativity\Modules\Bus\QueryInterface;
-use CloudCreativity\Modules\Bus\Results\ResultInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
+use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
