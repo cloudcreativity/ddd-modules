@@ -92,22 +92,4 @@ class QueueableBatchTest extends TestCase
 
         $batch->ofOneType($expected);
     }
-
-    /**
-     * @return void
-     */
-    public function testContext(): void
-    {
-        $message1 = $this->createMock(QueueableInterface::class);
-        $message1->method('context')->willReturn(['foo' => 'bar']);
-        $message2 = $this->createMock(QueueableInterface::class);
-        $message2->method('context')->willReturn(['baz' => 'bat']);
-
-        $batch = new QueueableBatch($message1, $message2);
-
-        $this->assertSame([
-            ['foo' => 'bar'],
-            ['baz' => 'bat'],
-        ], $batch->context());
-    }
 }

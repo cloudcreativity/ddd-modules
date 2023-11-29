@@ -14,6 +14,10 @@ All notable changes to this project will be documented in this file. This projec
 - All constructor arguments for the `Toolkit\Result\Error` object are now optional. This allows named arguments to be
   used when creating an error object.
 - The `Toolkit\Result\Error` object can now accept only a code, previously it had to have a message.
+- The following interfaces no longer extend the log `ContextProviderInterface`. Instead classes only need to implement
+  that log interface if they need to customise how that class is logged.
+    - `Bus\MessageInterface`
+    - `Infrastructure\Queue\QueueableInterface`
 
 ## [0.2.0] - 2023-11-22
 

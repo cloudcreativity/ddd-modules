@@ -19,8 +19,6 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\Queue;
 
-use CloudCreativity\Modules\Infrastructure\Log\ContextProviderInterface;
-
-interface QueueableInterface extends ContextProviderInterface
+interface QueueableInterface
 {
 }

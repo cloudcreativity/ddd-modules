@@ -47,12 +47,4 @@ class TestQueueable implements QueueableInterface
 
         return $this;
     }
-
-    /**
-     * @inheritDoc
-     */
-    public function context(): array
-    {
-        return [];
-    }
 }
