@@ -19,6 +19,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Result;
 
+use BackedEnum;
 use CloudCreativity\Modules\Toolkit\ContractException;
 
 /**
@@ -46,16 +47,15 @@ final class Result implements ResultInterface
     /**
      * Return a failed result.
      *
-     * @param ListOfErrorsInterface|ErrorInterface|array<ErrorInterface>|string $errorOrErrors
+     * @param ListOfErrorsInterface|ErrorInterface|BackedEnum|array<ErrorInterface>|string $errorOrErrors
      * @return Result<null>
      */
-    public static function failed(ListOfErrorsInterface|ErrorInterface|array|string $errorOrErrors): self
-    {
+    public static function failed(
+        ListOfErrorsInterface|ErrorInterface|BackedEnum|array|string $errorOrErrors,
+    ): self {
         $errors = match(true) {
             $errorOrErrors instanceof ListOfErrorsInterface => $errorOrErrors,
-            $errorOrErrors instanceof ErrorInterface => new ListOfErrors($errorOrErrors),
-            is_array($errorOrErrors) => new ListOfErrors(...$errorOrErrors),
-            is_string($errorOrErrors) => new ListOfErrors(new Error(null, $errorOrErrors)),
+            default => ListOfErrors::from($errorOrErrors),
         };
 
         assert($errors->isNotEmpty(), 'Expecting at least one error message for a failed result.');

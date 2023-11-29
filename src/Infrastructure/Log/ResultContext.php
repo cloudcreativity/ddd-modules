@@ -54,8 +54,12 @@ final class ResultContext implements ContextProviderInterface
         $errors = $this->errors();
         $error = null;
 
-        if (count($errors) === 1 && count($errors[0]) === 1 && isset($errors[0]['message'])) {
-            $error = $errors[0]['message'];
+        if (
+            count($errors) === 1 &&
+            count($errors[0]) === 1 &&
+            (isset($errors[0]['message']) || isset($errors[0]['code']))
+        ) {
+            $error = $errors[0]['message'] ?? $errors[0]['code'];
             $errors = null;
         }
 

@@ -19,6 +19,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Log;
 
+use BackedEnum;
 use CloudCreativity\Modules\Infrastructure\Log\ContextProviderInterface;
 use CloudCreativity\Modules\Infrastructure\Log\ResultContext;
 use CloudCreativity\Modules\Toolkit\Result\Error;
@@ -74,26 +75,54 @@ class ResultContextTest extends TestCase
     /**
      * @return array<array<string|ErrorInterface>>
      */
-    public static function errorProvider(): array
+    public static function onlyMessageProvider(): array
     {
         return [
             ['Something went wrong.'],
-            [new Error(null, 'Something went wrong.')],
+            [new Error(message: 'Something went wrong.')],
         ];
     }
 
     /**
      * @param string|ErrorInterface $error
      * @return void
-     * @dataProvider errorProvider
+     * @dataProvider onlyMessageProvider
      */
-    public function testFailureContext(string|ErrorInterface $error): void
+    public function testFailureContextWithErrorThatOnlyHasMessage(string|ErrorInterface $error): void
     {
         $result = Result::failed($error);
 
         $expected = [
             'success' => false,
             'error' => is_string($error) ? $error : $error->message(),
+        ];
+
+        $this->assertSame($expected, ResultContext::from($result)->context());
+    }
+
+    /**
+     * @return array<array<BackedEnum|ErrorInterface>>
+     */
+    public static function onlyCodeProvider(): array
+    {
+        return [
+            [TestEnum::Foo],
+            [new Error(code: TestEnum::Bar)],
+        ];
+    }
+
+    /**
+     * @param BackedEnum|ErrorInterface $error
+     * @return void
+     * @dataProvider onlyCodeProvider
+     */
+    public function testFailureContextWithErrorThatOnlyHasCode(BackedEnum|ErrorInterface $error): void
+    {
+        $result = Result::failed($error);
+
+        $expected = [
+            'success' => false,
+            'error' => $error instanceof BackedEnum ? $error->value : $error->code()?->value,
         ];
 
         $this->assertSame($expected, ResultContext::from($result)->context());

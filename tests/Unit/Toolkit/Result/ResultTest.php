@@ -19,8 +19,10 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Result;
 
+use CloudCreativity\Modules\Tests\Unit\Infrastructure\Log\TestEnum;
 use CloudCreativity\Modules\Toolkit\Result\Error;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
+use CloudCreativity\Modules\Toolkit\Result\ListOfErrorsInterface;
 use CloudCreativity\Modules\Toolkit\Result\Meta;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
@@ -61,6 +63,20 @@ class ResultTest extends TestCase
     /**
      * @return void
      */
+    public function testFailedWithListOfErrorsInterface(): void
+    {
+        $errors = $this->createMock(ListOfErrorsInterface::class);
+        $errors->method('isNotEmpty')->willReturn(true);
+        $result = Result::failed($errors);
+
+        $this->assertFalse($result->didSucceed());
+        $this->assertTrue($result->didFail());
+        $this->assertSame($errors, $result->errors());
+    }
+
+    /**
+     * @return void
+     */
     public function testFailedWithError(): void
     {
         $error = new Error(null, 'Something went wrong.');
@@ -87,6 +103,17 @@ class ResultTest extends TestCase
     {
         $error = new Error(null, 'Something went wrong.');
         $result = Result::failed([$error]);
+
+        $this->assertEquals(new ListOfErrors($error), $result->errors());
+    }
+
+    /**
+     * @return void
+     */
+    public function testFailedWithBackedEnum(): void
+    {
+        $error = new Error(code: $code = TestEnum::Foo);
+        $result = Result::failed($code);
 
         $this->assertEquals(new ListOfErrors($error), $result->errors());
     }

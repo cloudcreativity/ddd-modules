@@ -37,17 +37,16 @@ final class Error implements ErrorInterface
      * @param BackedEnum|null $code
      */
     public function __construct(
-        ?string $key,
-        private readonly string $message,
+        string|null $key = null,
+        private readonly string $message = '',
         private readonly ?BackedEnum $code = null,
     ) {
-        Contracts::assert(!empty($message), 'Expecting a non-empty error message.');
-
+        Contracts::assert(!empty($message) || $code !== null, 'Error must have a message or a code.');
         $this->key = $key ?: null;
     }
 
     /**
-     * @return string|null
+     * @inheritDoc
      */
     public function key(): ?string
     {

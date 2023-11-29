@@ -10,7 +10,9 @@
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.4/phpunit.xsd"
          cacheDirectory=".phpunit.cache"
          backupStaticProperties="false"
-         displayDetailsOnTestsThatTriggerWarnings="true"
+         failOnWarning="true"
+         failOnDeprecation="true"
+         failOnNotice="true"
 >
     <coverage/>
     <testsuites>

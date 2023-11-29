@@ -11,6 +11,9 @@ All notable changes to this project will be documented in this file. This projec
   this namespace no longer implement the log `ContextProviderInterface`, as this is an infrastructure dependency.
   Instead, the new `Infrastructure\Log\ObjectContext` and `Infrastructure\Log\ResultContext` class can be used to create
   context for either a result or an object.
+- All constructor arguments for the `Toolkit\Result\Error` object are now optional. This allows named arguments to be
+  used when creating an error object.
+- The `Toolkit\Result\Error` object can now accept only a code, previously it had to have a message.
 
 ## [0.2.0] - 2023-11-22
 
