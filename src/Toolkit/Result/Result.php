@@ -20,7 +20,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Toolkit\Result;
 
 use BackedEnum;
-use CloudCreativity\Modules\Toolkit\ContractException;
+use CloudCreativity\Modules\Toolkit\Contracts;
 
 /**
  * @template TValue
@@ -36,8 +36,9 @@ final class Result implements ResultInterface
     /**
      * Return a success result.
      *
-     * @param TValue $value
-     * @return Result<TValue>
+     * @template TSuccess
+     * @param TSuccess $value
+     * @return Result<TSuccess>
      */
     public static function ok(mixed $value = null): self
     {
@@ -98,11 +99,17 @@ final class Result implements ResultInterface
      */
     public function value(): mixed
     {
-        if ($this->success === true) {
-            return $this->value;
-        }
+        Contracts::assert($this->success, 'Result did not succeed.');
 
-        throw new ContractException('Result did not succeed.');
+        return $this->value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function safe(): mixed
+    {
+        return $this->success ? $this->value : null;
     }
 
     /**

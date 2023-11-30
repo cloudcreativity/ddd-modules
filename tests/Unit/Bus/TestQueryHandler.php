@@ -30,7 +30,7 @@ class TestQueryHandler implements TestQueryHandlerInterface, DispatchThroughMidd
      */
     public function execute(TestQuery $query): ResultInterface
     {
-        return Result::ok();
+        return Result::ok(99);
     }
 
     /**

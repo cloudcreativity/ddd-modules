@@ -25,7 +25,7 @@ interface TestCommandHandlerInterface
 {
     /**
      * @param TestCommand $command
-     * @return ResultInterface<mixed>
+     * @return ResultInterface<null>
      */
     public function execute(TestCommand $command): ResultInterface;
 }

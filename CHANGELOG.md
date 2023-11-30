@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [0.4.0] - 2023-11-30
+
+### Added
+
+- Log context for a result now includes the value if it implements `ContextProviderInterface` or `IdentifierInterface`.
+- BREAKING: added a `safe` method to the `ResultInterface`, that gives access to the result value without throwing an
+  exception if the result is an error.
+
+### Fixed
+
+- Remove `EntityTrait::getId()` nullable return type as it is always set.
+- Fix generic return type on `Result::ok()` method.
+
 ## [0.3.0] - 2023-11-29
 
 ### Changed

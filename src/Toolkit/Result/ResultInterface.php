@@ -37,10 +37,19 @@ interface ResultInterface
     public function didFail(): bool;
 
     /**
+     * Get the result value, if the result was successful.
+     *
      * @return TValue
      * @throws ContractException if the result was not successful.
      */
     public function value(): mixed;
+
+    /**
+     * Get the result value, regardless of whether the result was successful.
+     *
+     * @return TValue|null
+     */
+    public function safe(): mixed;
 
     /**
      * Get the errors.
