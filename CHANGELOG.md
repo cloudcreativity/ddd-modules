@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [0.4.0] - 2023-11-30
+
 ### Added
 
 - Log context for a result now includes the value if it implements `ContextProviderInterface` or `IdentifierInterface`.
