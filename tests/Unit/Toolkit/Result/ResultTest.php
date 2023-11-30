@@ -20,6 +20,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Result;
 
 use CloudCreativity\Modules\Tests\Unit\Infrastructure\Log\TestEnum;
+use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Result\Error;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrorsInterface;
@@ -38,6 +39,8 @@ class ResultTest extends TestCase
         $result = Result::ok();
 
         $this->assertInstanceOf(ResultInterface::class, $result);
+        $this->assertNull($result->value());
+        $this->assertNull($result->safe());
         $this->assertTrue($result->didSucceed());
         $this->assertFalse($result->didFail());
         $this->assertTrue($result->errors()->isEmpty());
@@ -48,16 +51,49 @@ class ResultTest extends TestCase
     /**
      * @return void
      */
-    public function testFailed(): void
+    public function testOkWithValue(): void
+    {
+        $result = Result::ok($value = 99);
+
+        $this->assertInstanceOf(ResultInterface::class, $result);
+        $this->assertSame($value, $result->value());
+        $this->assertSame($value, $result->safe());
+        $this->assertTrue($result->didSucceed());
+        $this->assertFalse($result->didFail());
+        $this->assertTrue($result->errors()->isEmpty());
+        $this->assertTrue($result->meta()->isEmpty());
+        $this->assertNull($result->error());
+    }
+
+    /**
+     * @return Result<null>
+     */
+    public function testFailed(): Result
     {
         $errors = new ListOfErrors(new Error(null, 'Something went wrong.'));
         $result = Result::failed($errors);
 
         $this->assertFalse($result->didSucceed());
         $this->assertTrue($result->didFail());
+        $this->assertNull($result->safe());
         $this->assertSame($errors, $result->errors());
         $this->assertTrue($result->meta()->isEmpty());
         $this->assertSame('Something went wrong.', $result->error());
+
+        return $result;
+    }
+
+    /**
+     * @param Result<null> $result
+     * @return void
+     * @depends testFailed
+     */
+    public function testItThrowsWhenGettingValueOnFailedResult(Result $result): void
+    {
+        $this->expectException(ContractException::class);
+        $this->expectExceptionMessage('Result did not succeed.');
+
+        $result->value();
     }
 
     /**

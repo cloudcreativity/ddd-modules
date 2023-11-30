@@ -19,6 +19,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\Log;
 
+use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
 use CloudCreativity\Modules\Toolkit\Result\ErrorInterface;
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
@@ -51,6 +52,7 @@ final class ResultContext implements ContextProviderInterface
             return $this->result->context();
         }
 
+        $value = $this->result->safe();
         $errors = $this->errors();
         $error = null;
 
@@ -65,6 +67,11 @@ final class ResultContext implements ContextProviderInterface
 
         return array_filter([
             'success' => $this->result->didSucceed(),
+            'value' => match(true) {
+                $value instanceof ContextProviderInterface => $value->context(),
+                $value instanceof IdentifierInterface => $value->context(),
+                default => null,
+            },
             'error' => $error,
             'errors' => $errors ?: null,
             'meta' => $this->result->meta()->all() ?: null,

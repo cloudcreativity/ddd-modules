@@ -22,6 +22,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Log;
 use BackedEnum;
 use CloudCreativity\Modules\Infrastructure\Log\ContextProviderInterface;
 use CloudCreativity\Modules\Infrastructure\Log\ResultContext;
+use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
 use CloudCreativity\Modules\Toolkit\Result\Error;
 use CloudCreativity\Modules\Toolkit\Result\ErrorInterface;
 use CloudCreativity\Modules\Toolkit\Result\Result;
@@ -44,13 +45,52 @@ class ResultContextTest extends TestCase
     /**
      * @return void
      */
-    public function testSuccessContext(): void
+    public function testSuccess(): void
     {
         $result = Result::ok();
 
         $expected = [
             'success' => true,
         ];
+
+        $this->assertSame($expected, ResultContext::from($result)->context());
+    }
+
+    /**
+     * @return void
+     */
+    public function testSuccessWithContextProvider(): void
+    {
+        $expected = [
+            'success' => true,
+            'value' => [
+                'foo' => 'bar',
+                'blah!' => 'blah!!',
+            ],
+        ];
+
+        $value = $this->createMock(ContextProviderInterface::class);
+        $value->method('context')->willReturn($expected['value']);
+
+        $result = Result::ok($value);
+
+        $this->assertSame($expected, ResultContext::from($result)->context());
+    }
+
+    /**
+     * @return void
+     */
+    public function testSuccessWithIdentifier(): void
+    {
+        $expected = [
+            'success' => true,
+            'value' => 99,
+        ];
+
+        $value = $this->createMock(IdentifierInterface::class);
+        $value->method('context')->willReturn($expected['value']);
+
+        $result = Result::ok($value);
 
         $this->assertSame($expected, ResultContext::from($result)->context());
     }
