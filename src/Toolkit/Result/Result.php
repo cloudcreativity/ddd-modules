@@ -36,8 +36,9 @@ final class Result implements ResultInterface
     /**
      * Return a success result.
      *
-     * @param TValue $value
-     * @return Result<TValue>
+     * @template TSuccess
+     * @param TSuccess $value
+     * @return Result<TSuccess>
      */
     public static function ok(mixed $value = null): self
     {

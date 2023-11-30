@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+### Fixed
+
+- Remove `EntityTrait::getId()` nullable return type as it is always set.
+- Fix generic return type on `Result::ok()` method.
+
 ## [0.3.0] - 2023-11-29
 
 ### Changed
