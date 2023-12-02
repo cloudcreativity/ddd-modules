@@ -22,26 +22,25 @@ namespace CloudCreativity\Modules\Toolkit\Iterables;
 use Closure;
 use Generator;
 
-trait LazyIteratorTrait
+/**
+ * @template T
+ */
+trait LazyListTrait
 {
     /**
-     * @var Closure|null
+     * @var Closure(): Generator<T>|null
      */
     private ?Closure $source = null;
 
     /**
-     * @return Generator<mixed>
+     * @return Generator<T>
      */
-    private function cursor(): Generator
+    public function getIterator(): Generator
     {
         if ($this->source === null) {
             return;
         }
 
-        $iterator = ($this->source)();
-
-        assert(is_iterable($iterator), 'Expecting source to yield an iterable.');
-
-        yield from $iterator;
+        yield from ($this->source)();
     }
 }

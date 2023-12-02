@@ -20,36 +20,26 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
 use Closure;
-use CloudCreativity\Modules\Toolkit\Iterables\LazyIteratorTrait;
+use CloudCreativity\Modules\Toolkit\Iterables\LazyListTrait;
 use Generator;
 use IteratorAggregate;
 
 /**
- * @implements IteratorAggregate<int, StringId>
+ * @implements IteratorAggregate<StringId>
  */
 final class LazyListOfStringIds implements IteratorAggregate
 {
-    use LazyIteratorTrait;
+    /** @use LazyListTrait<StringId> */
+    use LazyListTrait;
 
     /**
      * LazyListOfStringIds constructor.
      *
-     * @param Closure|null $source
+     * @param Closure(): Generator<StringId>|null $source
      */
     public function __construct(Closure $source = null)
     {
         $this->source = $source;
-    }
-
-    /**
-     * @return Generator<int, StringId>
-     */
-    public function getIterator(): Generator
-    {
-        foreach ($this->cursor() as $id) {
-            assert($id instanceof StringId, 'Expecting identifiers to only contain string ids.');
-            yield $id;
-        }
     }
 
     /**

@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file. This projec
 
 - BREAKING: add the `$stack` property to the `ListTrait` and `KeyedSetTrait` traits, and use generics to indicate the
   value they hold. This is breaking because it will cause PHPStan to fail for existing classes the use these traits.
+- BREAKING: renamed the `LazyIteratorTrait` to `LazyListTrait` and defined its values using generics.
 
 ## [0.4.0] - 2023-11-30
 

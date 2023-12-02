@@ -37,13 +37,13 @@ jobs:
           command: composer update --prefer-dist --no-interaction --no-progress
 
       - name: Execute style
-        run: vendor/bin/pint --test
+        run: composer run style
 
       - name: Execute static analysis
-        run: vendor/bin/phpstan analyse src tests -c phpstan.neon
+        run: composer run static
 
       - name: Execute tests
-        run: vendor/bin/phpunit
+        run: composer run test
 
   deptrac:
 

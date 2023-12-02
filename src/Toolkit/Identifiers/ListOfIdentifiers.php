@@ -46,7 +46,9 @@ final class ListOfIdentifiers implements ListInterface
     public function guids(): LazyListOfGuids
     {
         return new LazyListOfGuids(function () {
-            yield from $this->stack;
+            foreach ($this as $identifier) {
+                yield Guid::from($identifier);
+            }
         });
     }
 
@@ -56,7 +58,9 @@ final class ListOfIdentifiers implements ListInterface
     public function integerIds(): LazyListOfIntegerIds
     {
         return new LazyListOfIntegerIds(function () {
-            yield from $this->stack;
+            foreach ($this as $identifier) {
+                yield IntegerId::from($identifier);
+            }
         });
     }
 
@@ -66,7 +70,9 @@ final class ListOfIdentifiers implements ListInterface
     public function stringIds(): LazyListOfStringIds
     {
         return new LazyListOfStringIds(function () {
-            yield from $this->stack;
+            foreach ($this as $identifier) {
+                yield StringId::from($identifier);
+            }
         });
     }
 
@@ -76,7 +82,9 @@ final class ListOfIdentifiers implements ListInterface
     public function uuids(): LazyListOfUuids
     {
         return new LazyListOfUuids(function () {
-            yield from $this->stack;
+            foreach ($this as $identifier) {
+                yield Uuid::from($identifier);
+            }
         });
     }
 }
