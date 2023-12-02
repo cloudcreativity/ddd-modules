@@ -21,36 +21,26 @@ namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
 use Closure;
 use CloudCreativity\Modules\Toolkit\Contracts;
-use CloudCreativity\Modules\Toolkit\Iterables\LazyIteratorTrait;
+use CloudCreativity\Modules\Toolkit\Iterables\LazyListInterface;
+use CloudCreativity\Modules\Toolkit\Iterables\LazyListTrait;
 use Generator;
-use IteratorAggregate;
 
 /**
- * @implements IteratorAggregate<int, Guid>
+ * @implements LazyListInterface<Guid>
  */
-final class LazyListOfGuids implements IteratorAggregate
+final class LazyListOfGuids implements LazyListInterface
 {
-    use LazyIteratorTrait;
+    /** @use LazyListTrait<Guid> */
+    use LazyListTrait;
 
     /**
      * LazyListOfGuids constructor.
      *
-     * @param Closure|null $source
+     * @param Closure(): Generator<Guid>|null $source
      */
     public function __construct(Closure $source = null)
     {
         $this->source = $source;
-    }
-
-    /**
-     * @return Generator<int, Guid>
-     */
-    public function getIterator(): Generator
-    {
-        foreach ($this->cursor() as $id) {
-            assert($id instanceof Guid, 'Expecting identifiers to only contain GUIDs.');
-            yield $id;
-        }
     }
 
     /**

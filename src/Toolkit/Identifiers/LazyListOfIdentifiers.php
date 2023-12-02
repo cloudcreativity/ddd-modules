@@ -19,25 +19,27 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
-use CloudCreativity\Modules\Toolkit\Iterables\ListInterface;
-use CloudCreativity\Modules\Toolkit\Iterables\ListTrait;
+use Closure;
+use CloudCreativity\Modules\Toolkit\Iterables\LazyListInterface;
+use CloudCreativity\Modules\Toolkit\Iterables\LazyListTrait;
+use Generator;
 
 /**
- * @implements ListInterface<IdentifierInterface>
+ * @implements LazyListInterface<IdentifierInterface>
  */
-final class ListOfIdentifiers implements ListInterface
+final class LazyListOfIdentifiers implements LazyListInterface
 {
-    /** @use ListTrait<IdentifierInterface> */
-    use ListTrait;
+    /** @use LazyListTrait<IdentifierInterface> */
+    use LazyListTrait;
 
     /**
-     * ListOfIdentifiers constructor.
+     * LazyListOfIdentifiers constructor.
      *
-     * @param IdentifierInterface ...$identifiers
+     * @param Closure(): Generator<IdentifierInterface>|null $source
      */
-    public function __construct(IdentifierInterface ...$identifiers)
+    public function __construct(Closure $source = null)
     {
-        $this->stack = $identifiers;
+        $this->source = $source;
     }
 
     /**

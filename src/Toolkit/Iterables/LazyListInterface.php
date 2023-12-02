@@ -19,29 +19,18 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Iterables;
 
-use Closure;
-use Generator;
+use IteratorAggregate;
 
-trait LazyIteratorTrait
+/**
+ * @template TValue
+ * @extends IteratorAggregate<TValue>
+ */
+interface LazyListInterface extends IteratorAggregate
 {
     /**
-     * @var Closure|null
+     * Eagerly load all values into an array.
+     *
+     * @return array<TValue>
      */
-    private ?Closure $source = null;
-
-    /**
-     * @return Generator<mixed>
-     */
-    private function cursor(): Generator
-    {
-        if ($this->source === null) {
-            return;
-        }
-
-        $iterator = ($this->source)();
-
-        assert(is_iterable($iterator), 'Expecting source to yield an iterable.');
-
-        yield from $iterator;
-    }
+    public function all(): array;
 }

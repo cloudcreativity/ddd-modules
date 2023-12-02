@@ -3,7 +3,18 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/) and [this changelog format](http://keepachangelog.com/).
 
-## Unreleased
+## [0.5.0] - 2023-12-02
+
+### Added
+
+- New `LazyListOfIdentifiers` class for lazy iteration over a list of identifiers.
+- Log context for a result now includes the value if it is a scalar value (string, integer, float, or boolean).
+
+### Changed
+
+- BREAKING: add the `$stack` property to the `ListTrait` and `KeyedSetTrait` traits, and use generics to indicate the
+  value they hold. This is breaking because it will cause PHPStan to fail for existing classes the use these traits.
+- BREAKING: renamed the `LazyIteratorTrait` to `LazyListTrait` and defined its values using generics.
 
 ## [0.4.0] - 2023-11-30
 

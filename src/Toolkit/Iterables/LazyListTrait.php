@@ -17,42 +17,40 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Toolkit\Identifiers;
+namespace CloudCreativity\Modules\Toolkit\Iterables;
 
 use Closure;
-use CloudCreativity\Modules\Toolkit\Iterables\LazyListInterface;
-use CloudCreativity\Modules\Toolkit\Iterables\LazyListTrait;
 use Generator;
 
 /**
- * @implements LazyListInterface<IntegerId>
+ * @template T
  */
-final class LazyListOfIntegerIds implements LazyListInterface
+trait LazyListTrait
 {
-    /** @use LazyListTrait<IntegerId> */
-    use LazyListTrait;
+    /**
+     * @var Closure(): Generator<T>|null
+     */
+    private ?Closure $source = null;
 
     /**
-     * LazyListOfIntegerIds constructor.
-     *
-     * @param Closure(): Generator<IntegerId>|null $source
+     * @return Generator<T>
      */
-    public function __construct(Closure $source = null)
+    public function getIterator(): Generator
     {
-        $this->source = $source;
+        if ($this->source === null) {
+            return;
+        }
+
+        foreach(($this->source)() as $value) {
+            yield $value;
+        }
     }
 
     /**
-     * @return array<int>
+     * @return array<T>
      */
-    public function toBase(): array
+    public function all(): array
     {
-        $ids = [];
-
-        foreach ($this as $id) {
-            $ids[] = $id->value;
-        }
-
-        return $ids;
+        return iterator_to_array($this->getIterator());
     }
 }

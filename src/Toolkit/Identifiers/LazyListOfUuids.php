@@ -20,37 +20,27 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
 use Closure;
-use CloudCreativity\Modules\Toolkit\Iterables\LazyIteratorTrait;
+use CloudCreativity\Modules\Toolkit\Iterables\LazyListInterface;
+use CloudCreativity\Modules\Toolkit\Iterables\LazyListTrait;
 use Generator;
-use IteratorAggregate;
 use Ramsey\Uuid\UuidInterface;
 
 /**
- * @implements IteratorAggregate<int, Uuid>
+ * @implements LazyListInterface<Uuid>
  */
-final class LazyListOfUuids implements IteratorAggregate
+final class LazyListOfUuids implements LazyListInterface
 {
-    use LazyIteratorTrait;
+    /** @use LazyListTrait<Uuid> */
+    use LazyListTrait;
 
     /**
      * LazyListOfUuids constructor.
      *
-     * @param Closure|null $source
+     * @param Closure(): Generator<Uuid>|null $source
      */
     public function __construct(Closure $source = null)
     {
         $this->source = $source;
-    }
-
-    /**
-     * @return Generator<int, Uuid>
-     */
-    public function getIterator(): Generator
-    {
-        foreach ($this->cursor() as $id) {
-            assert($id instanceof Uuid, 'Expecting identifiers to only contain UUIDs.');
-            yield $id;
-        }
     }
 
     /**

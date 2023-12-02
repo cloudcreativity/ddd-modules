@@ -27,17 +27,13 @@ use CloudCreativity\Modules\Toolkit\Iterables\KeyedSetTrait;
  */
 final class KeyedSetOfErrors implements KeyedSetInterface
 {
+    /** @use KeyedSetTrait<ListOfErrors> */
     use KeyedSetTrait;
 
     /**
      * @var string
      */
     public const DEFAULT_KEY = '_base';
-
-    /**
-     * @var array<string, ListOfErrors>
-     */
-    private array $stack = [];
 
     /**
      * @param KeyedSetOfErrors|ListOfErrorsInterface|ErrorInterface $value

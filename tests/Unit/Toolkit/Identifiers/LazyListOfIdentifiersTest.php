@@ -23,30 +23,31 @@ use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
 use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
-use CloudCreativity\Modules\Toolkit\Identifiers\ListOfIdentifiers;
+use CloudCreativity\Modules\Toolkit\Identifiers\LazyListOfIdentifiers;
 use CloudCreativity\Modules\Toolkit\Identifiers\StringId;
 use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
 use PHPUnit\Framework\TestCase;
-use Ramsey\Uuid\Uuid as RamseyUuid;
 
-class ListOfIdentifiersTest extends TestCase
+class LazyListOfIdentifiersTest extends TestCase
 {
     /**
      * @return void
      */
     public function testItIsListOfGuids(): void
     {
-        $ids = new ListOfIdentifiers(
-            $a = Guid::fromInteger('SomeType', 1),
-            $b = Guid::fromInteger('SomeType', 2),
-            $c = Guid::fromString('SomeOtherType', '3'),
-        );
+        $a = Guid::fromInteger('SomeType', 1);
+        $b = Guid::fromInteger('SomeType', 2);
+        $c = Guid::fromString('SomeOtherType', '3');
+
+        $ids = new LazyListOfIdentifiers(function () use ($a, $b, $c) {
+            yield $a;
+            yield $b;
+            yield $c;
+        });
 
         $expected = [$a, $b, $c];
 
-        $this->assertCount(3, $ids);
         $this->assertSame($expected, iterator_to_array($ids));
-        $this->assertSame($expected, $ids->all());
         $this->assertSame($expected, iterator_to_array($ids->guids()));
     }
 
@@ -55,11 +56,11 @@ class ListOfIdentifiersTest extends TestCase
      */
     public function testItContainsIdsThatAreNotGuids(): void
     {
-        $ids = new ListOfIdentifiers(
-            Guid::fromInteger('SomeType', 1),
-            $this->createMock(IdentifierInterface::class),
-            Guid::fromString('SomeOtherType', '3'),
-        );
+        $ids = new LazyListOfIdentifiers(function () {
+            yield Guid::fromInteger('SomeType', 1);
+            yield $this->createMock(IdentifierInterface::class);
+            yield Guid::fromString('SomeOtherType', '3');
+        });
 
         $this->expectException(ContractException::class);
         $this->expectExceptionMessage('Unexpected identifier type');
@@ -72,17 +73,19 @@ class ListOfIdentifiersTest extends TestCase
      */
     public function testItIsListOfIntegerIds(): void
     {
-        $ids = new ListOfIdentifiers(
-            $a = IntegerId::from(1),
-            $b = IntegerId::from(2),
-            $c = IntegerId::from(3),
-        );
+        $a = IntegerId::from(1);
+        $b = IntegerId::from(2);
+        $c = IntegerId::from(3);
+
+        $ids = new LazyListOfIdentifiers(function () use ($a, $b, $c) {
+            yield $a;
+            yield $b;
+            yield $c;
+        });
 
         $expected = [$a, $b, $c];
 
-        $this->assertCount(3, $ids);
         $this->assertSame($expected, iterator_to_array($ids));
-        $this->assertSame($expected, $ids->all());
         $this->assertSame($expected, iterator_to_array($ids->integerIds()));
         $this->assertSame([1, 2, 3], $ids->integerIds()->toBase());
     }
@@ -92,11 +95,11 @@ class ListOfIdentifiersTest extends TestCase
      */
     public function testItContainsIdsThatAreNotIntegerIds(): void
     {
-        $ids = new ListOfIdentifiers(
-            IntegerId::from(1),
-            $this->createMock(IdentifierInterface::class),
-            IntegerId::from(3),
-        );
+        $ids = new LazyListOfIdentifiers(function () {
+            yield IntegerId::from(1);
+            yield $this->createMock(IdentifierInterface::class);
+            yield IntegerId::from(3);
+        });
 
         $this->expectException(ContractException::class);
         $this->expectExceptionMessage('Unexpected identifier type');
@@ -109,17 +112,19 @@ class ListOfIdentifiersTest extends TestCase
      */
     public function testItIsListOfStringIds(): void
     {
-        $ids = new ListOfIdentifiers(
-            $a = StringId::from('1'),
-            $b = StringId::from('2'),
-            $c = StringId::from('3'),
-        );
+        $a = StringId::from('1');
+        $b = StringId::from('2');
+        $c = StringId::from('3');
+
+        $ids = new LazyListOfIdentifiers(function () use ($a, $b, $c) {
+            yield $a;
+            yield $b;
+            yield $c;
+        });
 
         $expected = [$a, $b, $c];
 
-        $this->assertCount(3, $ids);
         $this->assertSame($expected, iterator_to_array($ids));
-        $this->assertSame($expected, $ids->all());
         $this->assertSame($expected, iterator_to_array($ids->stringIds()));
         $this->assertSame(['1', '2', '3'], $ids->stringIds()->toBase());
     }
@@ -129,11 +134,11 @@ class ListOfIdentifiersTest extends TestCase
      */
     public function testItContainsIdsThatAreNotStringIds(): void
     {
-        $ids = new ListOfIdentifiers(
-            StringId::from('1'),
-            $this->createMock(IdentifierInterface::class),
-            StringId::from('3'),
-        );
+        $ids = new LazyListOfIdentifiers(function () {
+            yield StringId::from('1');
+            yield $this->createMock(IdentifierInterface::class);
+            yield StringId::from('3');
+        });
 
         $this->expectException(ContractException::class);
         $this->expectExceptionMessage('Unexpected identifier type');
@@ -146,19 +151,21 @@ class ListOfIdentifiersTest extends TestCase
      */
     public function testItIsListOfUuids(): void
     {
-        $ids = new ListOfIdentifiers(
-            $a = Uuid::from($uuid1 = RamseyUuid::uuid4()),
-            $b = Uuid::from($uuid2 = RamseyUuid::uuid4()),
-            $c = Uuid::from($uuid3 = RamseyUuid::uuid4()),
-        );
+        $a = Uuid::random();
+        $b = Uuid::random();
+        $c = Uuid::random();
+
+        $ids = new LazyListOfIdentifiers(function () use ($a, $b, $c) {
+            yield $a;
+            yield $b;
+            yield $c;
+        });
 
         $expected = [$a, $b, $c];
 
-        $this->assertCount(3, $ids);
         $this->assertSame($expected, iterator_to_array($ids));
-        $this->assertSame($expected, $ids->all());
         $this->assertSame($expected, iterator_to_array($ids->uuids()));
-        $this->assertSame([$uuid1, $uuid2, $uuid3], $ids->uuids()->toBase());
+        $this->assertSame([$a->value, $b->value, $c->value], $ids->uuids()->toBase());
     }
 
     /**
@@ -166,43 +173,15 @@ class ListOfIdentifiersTest extends TestCase
      */
     public function testItContainsIdsThatAreNotUuids(): void
     {
-        $ids = new ListOfIdentifiers(
-            Uuid::from(RamseyUuid::uuid4()),
-            $this->createMock(IdentifierInterface::class),
-            Uuid::from(RamseyUuid::uuid4()),
-        );
+        $ids = new LazyListOfIdentifiers(function () {
+            yield Uuid::random();
+            yield $this->createMock(IdentifierInterface::class);
+            yield Uuid::random();
+        });
 
         $this->expectException(ContractException::class);
         $this->expectExceptionMessage('Unexpected identifier type');
 
         iterator_to_array($ids->uuids());
-    }
-
-    /**
-     * @return void
-     */
-    public function testItIsNotEmpty(): void
-    {
-        $ids = new ListOfIdentifiers(
-            Guid::fromInteger('SomeType', 1),
-            Guid::fromInteger('SomeType', 2),
-            Guid::fromString('SomeOtherType', '3'),
-        );
-
-        $this->assertCount(3, $ids);
-        $this->assertFalse($ids->isEmpty());
-        $this->assertTrue($ids->isNotEmpty());
-    }
-
-    /**
-     * @return void
-     */
-    public function testItIsEmpty(): void
-    {
-        $ids = new ListOfIdentifiers();
-
-        $this->assertCount(0, $ids);
-        $this->assertTrue($ids->isEmpty());
-        $this->assertFalse($ids->isNotEmpty());
     }
 }

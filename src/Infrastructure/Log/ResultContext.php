@@ -70,6 +70,7 @@ final class ResultContext implements ContextProviderInterface
             'value' => match(true) {
                 $value instanceof ContextProviderInterface => $value->context(),
                 $value instanceof IdentifierInterface => $value->context(),
+                is_scalar($value) => $value,
                 default => null,
             },
             'error' => $error,
