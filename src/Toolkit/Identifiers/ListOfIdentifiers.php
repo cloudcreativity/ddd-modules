@@ -27,21 +27,17 @@ use CloudCreativity\Modules\Toolkit\Iterables\ListTrait;
  */
 final class ListOfIdentifiers implements ListInterface
 {
+    /** @use ListTrait<IdentifierInterface> */
     use ListTrait;
-
-    /**
-     * @var array<IdentifierInterface>
-     */
-    private readonly array $stack;
 
     /**
      * ListOfIdentifiers constructor.
      *
-     * @param IdentifierInterface ...$guids
+     * @param IdentifierInterface ...$identifiers
      */
-    public function __construct(IdentifierInterface ...$guids)
+    public function __construct(IdentifierInterface ...$identifiers)
     {
-        $this->stack = $guids;
+        $this->stack = $identifiers;
     }
 
     /**

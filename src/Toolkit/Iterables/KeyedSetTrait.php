@@ -21,14 +21,30 @@ namespace CloudCreativity\Modules\Toolkit\Iterables;
 
 use Generator;
 
+/**
+ * @template T
+ */
 trait KeyedSetTrait
 {
     /**
-     * @return Generator
+     * @var array<string, T>
+     */
+    private array $stack = [];
+
+    /**
+     * @return Generator<string, T>
      */
     public function getIterator(): Generator
     {
         yield from $this->stack;
+    }
+
+    /**
+     * @return array<string, T>
+     */
+    public function all(): array
+    {
+        return $this->stack;
     }
 
     /**

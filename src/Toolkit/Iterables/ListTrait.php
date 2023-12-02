@@ -21,10 +21,18 @@ namespace CloudCreativity\Modules\Toolkit\Iterables;
 
 use Generator;
 
+/**
+ * @template T
+ */
 trait ListTrait
 {
     /**
-     * @inheritDoc
+     * @var array<T>
+     */
+    private array $stack = [];
+
+    /**
+     * @return Generator<T>
      */
     public function getIterator(): Generator
     {
@@ -32,7 +40,7 @@ trait ListTrait
     }
 
     /**
-     * @inheritDoc
+     * @return array<T>
      */
     public function all(): array
     {
@@ -40,7 +48,7 @@ trait ListTrait
     }
 
     /**
-     * @inheritDoc
+     * @return int
      */
     public function count(): int
     {
@@ -48,7 +56,7 @@ trait ListTrait
     }
 
     /**
-     * @inheritDoc
+     * @return bool
      */
     public function isEmpty(): bool
     {
@@ -56,7 +64,7 @@ trait ListTrait
     }
 
     /**
-     * @inheritDoc
+     * @return bool
      */
     public function isNotEmpty(): bool
     {

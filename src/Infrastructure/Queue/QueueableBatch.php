@@ -29,12 +29,8 @@ use CloudCreativity\Modules\Toolkit\Iterables\ListTrait;
  */
 final class QueueableBatch implements ListInterface
 {
+    /** @use ListTrait<QueueableInterface> */
     use ListTrait;
-
-    /**
-     * @var array<QueueableInterface>
-     */
-    private array $stack;
 
     /**
      * MessageBatch constructor.

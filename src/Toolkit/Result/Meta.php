@@ -30,12 +30,8 @@ use LogicException;
  */
 final class Meta implements ArrayAccess, KeyedSetInterface
 {
+    /** @use KeyedSetTrait<mixed> */
     use KeyedSetTrait;
-
-    /**
-     * @var array<string, mixed>
-     */
-    private array $stack;
 
     /**
      * Cast a value to meta.

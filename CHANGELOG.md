@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+### Changed
+
+- BREAKING: add the `$stack` property to the `ListTrait` and `KeyedSetTrait` traits, and use generics to indicate the
+  value they hold. This is breaking because it will cause PHPStan to fail for existing classes the use these traits.
+
 ## [0.4.0] - 2023-11-30
 
 ### Added

@@ -24,12 +24,8 @@ use CloudCreativity\Modules\Toolkit\Iterables\ListTrait;
 
 final class ListOfErrors implements ListOfErrorsInterface
 {
+    /** @use ListTrait<ErrorInterface> */
     use ListTrait;
-
-    /**
-     * @var ErrorInterface[]
-     */
-    private array $stack;
 
     /**
      * @param ListOfErrorsInterface|ErrorInterface|BackedEnum|array<ErrorInterface>|string $value
