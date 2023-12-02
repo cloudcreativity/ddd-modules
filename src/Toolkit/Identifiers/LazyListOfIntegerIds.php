@@ -20,14 +20,14 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
 use Closure;
+use CloudCreativity\Modules\Toolkit\Iterables\LazyListInterface;
 use CloudCreativity\Modules\Toolkit\Iterables\LazyListTrait;
 use Generator;
-use IteratorAggregate;
 
 /**
- * @implements IteratorAggregate<IntegerId>
+ * @implements LazyListInterface<IntegerId>
  */
-final class LazyListOfIntegerIds implements IteratorAggregate
+final class LazyListOfIntegerIds implements LazyListInterface
 {
     /** @use LazyListTrait<IntegerId> */
     use LazyListTrait;

@@ -21,14 +21,14 @@ namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
 use Closure;
 use CloudCreativity\Modules\Toolkit\Contracts;
+use CloudCreativity\Modules\Toolkit\Iterables\LazyListInterface;
 use CloudCreativity\Modules\Toolkit\Iterables\LazyListTrait;
 use Generator;
-use IteratorAggregate;
 
 /**
- * @implements IteratorAggregate<Guid>
+ * @implements LazyListInterface<Guid>
  */
-final class LazyListOfGuids implements IteratorAggregate
+final class LazyListOfGuids implements LazyListInterface
 {
     /** @use LazyListTrait<Guid> */
     use LazyListTrait;

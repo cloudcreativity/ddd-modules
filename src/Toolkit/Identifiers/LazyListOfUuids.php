@@ -20,15 +20,15 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
 use Closure;
+use CloudCreativity\Modules\Toolkit\Iterables\LazyListInterface;
 use CloudCreativity\Modules\Toolkit\Iterables\LazyListTrait;
 use Generator;
-use IteratorAggregate;
 use Ramsey\Uuid\UuidInterface;
 
 /**
- * @implements IteratorAggregate<Uuid>
+ * @implements LazyListInterface<Uuid>
  */
-final class LazyListOfUuids implements IteratorAggregate
+final class LazyListOfUuids implements LazyListInterface
 {
     /** @use LazyListTrait<Uuid> */
     use LazyListTrait;
