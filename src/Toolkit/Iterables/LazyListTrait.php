@@ -41,6 +41,16 @@ trait LazyListTrait
             return;
         }
 
-        yield from ($this->source)();
+        foreach(($this->source)() as $value) {
+            yield $value;
+        }
+    }
+
+    /**
+     * @return array<T>
+     */
+    public function all(): array
+    {
+        return iterator_to_array($this->getIterator());
     }
 }
