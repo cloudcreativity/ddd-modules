@@ -96,6 +96,37 @@ class ResultContextTest extends TestCase
     }
 
     /**
+     * @return array<array<scalar>>
+     */
+    public static function scalarProvider(): array
+    {
+        return [
+            [true],
+            [false],
+            [1],
+            [1.1],
+            ['foo'],
+        ];
+    }
+
+    /**
+     * @param mixed $value
+     * @return void
+     * @dataProvider scalarProvider
+     */
+    public function testSuccessWithScalarOrNull(mixed $value): void
+    {
+        $expected = [
+            'success' => true,
+            'value' => $value,
+        ];
+
+        $result = Result::ok($value);
+
+        $this->assertSame($expected, ResultContext::from($result)->context());
+    }
+
+    /**
      * @return void
      */
     public function testSuccessContextWithMeta(): void

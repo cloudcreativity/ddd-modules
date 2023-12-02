@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file. This projec
 ### Added
 
 - New `LazyListOfIdentifiers` class for lazy iteration over a list of identifiers.
+- Log context for a result now includes the value if it is a scalar value (string, integer, float, or boolean).
 
 ### Changed
 
