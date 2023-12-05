@@ -35,7 +35,9 @@ final class Uuid implements IdentifierInterface, JsonSerializable
         return match(true) {
             $value instanceof self => $value,
             $value instanceof UuidInterface => new self($value),
-            is_string($value) => new self(BaseUuid::fromString($value)),
+            is_string($value) => new self(
+                BaseUuid::getFactory()->fromString($value),
+            ),
             default => throw new ContractException(
                 'Unexpected identifier type, received: ' . get_debug_type($value),
             ),
@@ -49,7 +51,7 @@ final class Uuid implements IdentifierInterface, JsonSerializable
      */
     public static function random(): self
     {
-        return new self(BaseUuid::uuid4());
+        return new self(BaseUuid::getFactory()->uuid4());
     }
 
     /**
