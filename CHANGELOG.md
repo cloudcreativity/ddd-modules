@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/) and [this changelog format](http://keepachangelog.com/).
 
+## Unreleased
+
+### Added
+
+- GUIDs that wrap UUIDs can now be created via the static `Guid::fromUuid()` method.
+
+### Changed
+
+- The UUID factory from the `ramsey/uuid` package is now used when creating new UUID identifiers.
+
 ## [0.5.0] - 2023-12-02
 
 ### Added

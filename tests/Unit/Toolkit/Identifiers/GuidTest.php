@@ -23,10 +23,15 @@ use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
 use CloudCreativity\Modules\Toolkit\Identifiers\StringId;
+use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid as BaseUuid;
 
 class GuidTest extends TestCase
 {
+    /**
+     * @return void
+     */
     public function testStringId(): void
     {
         $guid = Guid::fromString('SomeType', '123');
@@ -49,6 +54,9 @@ class GuidTest extends TestCase
         $this->assertFalse($guid->equals(Guid::fromInteger('SomeType', 123)));
     }
 
+    /**
+     * @return void
+     */
     public function testIntegerId(): void
     {
         $guid = Guid::fromInteger('SomeType', 123);
@@ -70,30 +78,69 @@ class GuidTest extends TestCase
         $this->assertFalse($guid->equals(Guid::fromString('SomeType', '123')));
     }
 
+    /**
+     * @return void
+     */
+    public function testUuid(): void
+    {
+        $uuid = Uuid::random();
+        $guid = Guid::fromUuid('SomeType', $uuid->value);
+
+        $this->assertSame('SomeType', $guid->type);
+        $this->assertObjectEquals($uuid, $guid->id);
+        $this->assertSame('SomeType:' . $uuid->toString(), $guid->toString());
+        $this->assertSame('SomeType:' . $uuid->toString(), (string) $guid);
+        $this->assertTrue($guid->isType('SomeType'));
+        $this->assertTrue($guid->is($guid));
+        $this->assertTrue($guid->is(clone $guid));
+        $this->assertFalse($guid->is(Guid::fromUuid('SomeOtherType', $uuid->value)));
+        $this->assertFalse($guid->is(Guid::fromUuid('SomeType', BaseUuid::uuid4())));
+        $this->assertFalse($guid->is(Guid::fromString('SomeType', $uuid->toString())));
+        $this->assertFalse($guid->is(Guid::fromInteger('SomeType', 234)));
+        $this->assertFalse($guid->is(null));
+        $this->assertSame(['type' => 'SomeType', 'id' => $uuid->toString()], $guid->context());
+        $this->assertObjectEquals($guid, Guid::fromUuid('SomeType', $uuid->value));
+    }
+
+    /**
+     * @return void
+     */
     public function testEmptyType(): void
     {
         $this->expectException(ContractException::class);
         Guid::fromString('', '123');
     }
 
+    /**
+     * @return void
+     */
     public function testEmptyStringId(): void
     {
         $this->expectException(ContractException::class);
         Guid::fromString('SomeType', '');
     }
 
+    /**
+     * @return void
+     */
     public function testNegativeIntegerId(): void
     {
         $this->expectException(ContractException::class);
         Guid::fromInteger('SomeType', -1);
     }
 
+    /**
+     * @return void
+     */
     public function testFromInteger(): void
     {
         $guid = Guid::fromInteger('SomeType', 1);
         $this->assertObjectEquals(new IntegerId(1), $guid->id);
     }
 
+    /**
+     * @return void
+     */
     public function testFromString(): void
     {
         $guid = Guid::fromString('SomeType', '1');

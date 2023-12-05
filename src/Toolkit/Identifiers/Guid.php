@@ -21,6 +21,7 @@ namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
 use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Contracts;
+use Ramsey\Uuid\UuidInterface;
 
 final class Guid implements IdentifierInterface
 {
@@ -59,6 +60,18 @@ final class Guid implements IdentifierInterface
     public static function fromString(string $type, string $id): self
     {
         return new self($type, new StringId($id));
+    }
+
+    /**
+     * Create a GUID for a UUID.
+     *
+     * @param string $type
+     * @param UuidInterface|string $uuid
+     * @return self
+     */
+    public static function fromUuid(string $type, UuidInterface|string $uuid): self
+    {
+        return new self($type, Uuid::from($uuid));
     }
 
     /**
