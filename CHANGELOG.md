@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Added
 
+- New UUID factory interface and class, that wraps the `ramsey/uuid` factory to return UUID identifiers.
 - GUIDs that wrap UUIDs can now be created via the static `Guid::fromUuid()` method.
 
 ### Changed

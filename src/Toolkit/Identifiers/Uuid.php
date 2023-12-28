@@ -21,11 +21,36 @@ namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
 use CloudCreativity\Modules\Toolkit\ContractException;
 use JsonSerializable;
-use Ramsey\Uuid\Uuid as BaseUuid;
 use Ramsey\Uuid\UuidInterface;
 
 final class Uuid implements IdentifierInterface, JsonSerializable
 {
+    /**
+     * @var UuidFactoryInterface|null
+     */
+    private static ?UuidFactoryInterface $factory = null;
+
+    /**
+     * @param UuidFactoryInterface|null $factory
+     * @return void
+     */
+    public static function setFactory(?UuidFactoryInterface $factory): void
+    {
+        self::$factory = $factory;
+    }
+
+    /**
+     * @return UuidFactoryInterface
+     */
+    public static function getFactory(): UuidFactoryInterface
+    {
+        if (self::$factory) {
+            return self::$factory;
+        }
+
+        return self::$factory = new UuidFactory();
+    }
+
     /**
      * @param IdentifierInterface|UuidInterface|string $value
      * @return self
@@ -34,10 +59,8 @@ final class Uuid implements IdentifierInterface, JsonSerializable
     {
         return match(true) {
             $value instanceof self => $value,
-            $value instanceof UuidInterface => new self($value),
-            is_string($value) => new self(
-                BaseUuid::getFactory()->fromString($value),
-            ),
+            $value instanceof UuidInterface => self::getFactory()->from($value),
+            is_string($value) => self::getFactory()->fromString($value),
             default => throw new ContractException(
                 'Unexpected identifier type, received: ' . get_debug_type($value),
             ),
@@ -51,7 +74,7 @@ final class Uuid implements IdentifierInterface, JsonSerializable
      */
     public static function random(): self
     {
-        return new self(BaseUuid::getFactory()->uuid4());
+        return self::getFactory()->uuid4();
     }
 
     /**
