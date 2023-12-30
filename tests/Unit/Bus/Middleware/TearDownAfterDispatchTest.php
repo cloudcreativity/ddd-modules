@@ -40,8 +40,9 @@ class TearDownAfterDispatchTest extends TestCase
             $sequence[] = 'teardown';
         });
 
-        $actual = $middleware($message, function () use ($result, &$sequence): Result {
+        $actual = $middleware($message, function ($in) use ($message, $result, &$sequence): Result {
             $sequence[] = 'next';
+            $this->assertSame($message, $in);
             return $result;
         });
 
@@ -62,8 +63,9 @@ class TearDownAfterDispatchTest extends TestCase
             $sequence[] = 'teardown';
         });
 
-        $actual = $middleware($message, function () use ($result, &$sequence): Result {
+        $actual = $middleware($message, function ($in) use ($message, $result, &$sequence): Result {
             $sequence[] = 'next';
+            $this->assertSame($message, $in);
             return $result;
         });
 
@@ -86,8 +88,9 @@ class TearDownAfterDispatchTest extends TestCase
         });
 
         try {
-            $middleware($message, function () use ($exception, &$sequence): Result {
+            $middleware($message, function ($in) use ($message, $exception, &$sequence): Result {
                 $sequence[] = 'next';
+                $this->assertSame($message, $in);
                 throw $exception;
             });
             $this->fail('No exception thrown.');
