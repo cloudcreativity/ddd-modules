@@ -9,8 +9,8 @@ All notable changes to this project will be documented in this file. This projec
 
 - New UUID factory interface and class, that wraps the `ramsey/uuid` factory to return UUID identifiers.
 - GUIDs that wrap UUIDs can now be created via the static `Guid::fromUuid()` method.
-- New `TearDownAfterDispatch` bus middleware, that can be used to tear down any state after a command or query has been
-  dispatched.
+- New `SetupBeforeDispatch` and `TearDownAfterDispatch` bus middleware, that can be used either to setup (and optionally
+  tear down) application state around the dispatching of a message, or to just do tear down work.
 
 ### Changed
 
