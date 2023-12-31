@@ -30,7 +30,7 @@ use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactoryInterface;
 use Generator;
 use InvalidArgumentException;
 
-class Dispatcher implements DispatcherInterface
+class UnitOfWorkAwareDispatcher implements DispatcherInterface
 {
     /**
      * @var PipelineBuilderFactoryInterface
@@ -48,7 +48,7 @@ class Dispatcher implements DispatcherInterface
     private array $pipes = [];
 
     /**
-     * Dispatcher constructor.
+     * UnitOfWorkAwareDispatcher constructor.
      *
      * @param ListenerContainerInterface $listeners
      * @param UnitOfWorkManagerInterface $unitOfWorkManager

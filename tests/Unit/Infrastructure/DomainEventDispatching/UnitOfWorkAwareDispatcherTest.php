@@ -23,13 +23,13 @@ use Closure;
 use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
 use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\DispatchAfterCommit;
 use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\DispatchBeforeCommit;
-use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\Dispatcher;
+use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\UnitOfWorkAwareDispatcher;
 use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\ListenerContainerInterface;
 use CloudCreativity\Modules\Infrastructure\Persistence\UnitOfWorkManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class DispatcherTest extends TestCase
+class UnitOfWorkAwareDispatcherTest extends TestCase
 {
     /**
      * @var ListenerContainerInterface&MockObject
@@ -42,9 +42,9 @@ class DispatcherTest extends TestCase
     private UnitOfWorkManagerInterface $unitOfWorkManager;
 
     /**
-     * @var Dispatcher
+     * @var UnitOfWorkAwareDispatcher
      */
-    private Dispatcher $dispatcher;
+    private UnitOfWorkAwareDispatcher $dispatcher;
 
     /**
      * @return void
@@ -53,7 +53,7 @@ class DispatcherTest extends TestCase
     {
         parent::setUp();
 
-        $this->dispatcher = new Dispatcher(
+        $this->dispatcher = new UnitOfWorkAwareDispatcher(
             $this->container = $this->createMock(ListenerContainerInterface::class),
             $this->unitOfWorkManager = $this->createMock(UnitOfWorkManagerInterface::class),
         );

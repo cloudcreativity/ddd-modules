@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Changed
 
+- **BREAKING** - renamed the domain event `Dispatcher` class to `UnitOfWorkAwareDispatcher`.
 - The UUID factory from the `ramsey/uuid` package is now used when creating new UUID identifiers.
 
 ### Fixed
