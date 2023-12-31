@@ -20,7 +20,6 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Infrastructure\Persistence;
 
 use Closure;
-use CloudCreativity\Modules\Infrastructure\Infrastructure;
 use CloudCreativity\Modules\Infrastructure\InfrastructureException;
 use CloudCreativity\Modules\Infrastructure\Log\ExceptionReporterInterface;
 use Throwable;
@@ -64,11 +63,15 @@ final class UnitOfWorkManager implements UnitOfWorkManagerInterface
      */
     public function execute(Closure $callback, int $attempts = 1): mixed
     {
-        Infrastructure::assert($attempts > 0, 'Attempts must be greater than zero.');
-        Infrastructure::assert(
-            $this->active === false,
-            'Not expecting unit of work manager to start a unit of work within an existing one.',
-        );
+        if ($this->active) {
+            throw new InfrastructureException(
+                'Not expecting unit of work manager to start a unit of work within an existing one.',
+            );
+        }
+
+        if ($attempts < 1) {
+            throw new InfrastructureException('Attempts must be greater than zero.');
+        }
 
         return $this->retry($callback, $attempts);
     }

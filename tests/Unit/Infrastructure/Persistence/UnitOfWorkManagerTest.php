@@ -540,4 +540,23 @@ class UnitOfWorkManagerTest extends TestCase
             });
         });
     }
+
+    /**
+     * @return void
+     */
+    public function testAttemptsMustBeGreaterThanZero(): void
+    {
+        $this->expectException(InfrastructureException::class);
+        $this->expectExceptionMessage('Attempts must be greater than zero.');
+
+        /**
+         * Simulates an infinite loop if the zero attempts is not rejected.
+         */
+        $this->unitOfWork
+            ->expects($this->never()) // ensure we do not attempt it once
+            ->method('execute')
+            ->willReturnCallback(fn (Closure $callback) => $callback());
+
+        $this->manager->execute(fn () => throw new \LogicException('Boom!'), 0);
+    }
 }
