@@ -35,7 +35,7 @@ interface UnitOfWorkManagerInterface
     /**
      * Register a callback to be executed before the unit of work is committed.
      *
-     * @param callable $callback
+     * @param callable(): void $callback
      * @return void
      */
     public function beforeCommit(callable $callback): void;
@@ -43,7 +43,7 @@ interface UnitOfWorkManagerInterface
     /**
      * Register a callback to be executed after the unit of work is committed.
      *
-     * @param callable $callback
+     * @param callable(): void $callback
      * @return void
      */
     public function afterCommit(callable $callback): void;

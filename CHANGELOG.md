@@ -16,6 +16,10 @@ All notable changes to this project will be documented in this file. This projec
 
 - The UUID factory from the `ramsey/uuid` package is now used when creating new UUID identifiers.
 
+### Fixed
+
+- The unit of work manager now correctly handles re-attempts so that deferred events are not dispatched multiple times.
+
 ## [0.5.0] - 2023-12-02
 
 ### Added
