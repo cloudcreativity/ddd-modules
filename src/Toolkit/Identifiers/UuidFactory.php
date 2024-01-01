@@ -19,6 +19,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
+use CloudCreativity\Modules\Toolkit\ContractException;
 use DateTimeInterface;
 use Ramsey\Uuid\Type\Hexadecimal;
 use Ramsey\Uuid\Type\Integer as IntegerObject;
@@ -46,9 +47,15 @@ final class UuidFactory implements UuidFactoryInterface
     /**
      * @inheritDoc
      */
-    public function from(UuidInterface $uuid): Uuid
+    public function from(IdentifierInterface|UuidInterface $uuid): Uuid
     {
-        return new Uuid($uuid);
+        return match(true) {
+            $uuid instanceof Uuid => $uuid,
+            $uuid instanceof UuidInterface => new Uuid($uuid),
+            default => throw new ContractException(
+                'Unexpected identifier type, received: ' . get_debug_type($uuid),
+            ),
+        };
     }
 
     /**

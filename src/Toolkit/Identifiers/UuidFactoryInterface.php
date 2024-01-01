@@ -27,12 +27,12 @@ use Ramsey\Uuid\UuidInterface;
 interface UuidFactoryInterface
 {
     /**
-     * Create a UUID identifier from a base UUID interface.
+     * Create a UUID identifier from an identifier or a base UUID interface.
      *
-     * @param UuidInterface $uuid
+     * @param IdentifierInterface|UuidInterface $uuid
      * @return Uuid
      */
-    public function from(UuidInterface $uuid): Uuid;
+    public function from(IdentifierInterface|UuidInterface $uuid): Uuid;
 
     /**
      * Creates a UUID from a byte string

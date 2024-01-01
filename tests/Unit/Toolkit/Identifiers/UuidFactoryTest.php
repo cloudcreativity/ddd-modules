@@ -19,6 +19,8 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Identifiers;
 
+use CloudCreativity\Modules\Toolkit\ContractException;
+use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
 use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
 use CloudCreativity\Modules\Toolkit\Identifiers\UuidFactory;
 use DateTimeImmutable;
@@ -56,7 +58,7 @@ class UuidFactoryTest extends TestCase
     /**
      * @return void
      */
-    public function testFrom(): void
+    public function testFromWithBaseUuid(): void
     {
         $this->baseFactory
             ->expects($this->never())
@@ -65,7 +67,37 @@ class UuidFactoryTest extends TestCase
         $uuid = $this->factory->from($base = BaseUuid::uuid4());
 
         $this->assertInstanceOf(Uuid::class, $uuid);
-        $this->assertSame($uuid->value, $base);
+        $this->assertSame($base, $uuid->value);
+    }
+
+    /**
+     * @return void
+     */
+    public function testFromWithUuid(): void
+    {
+        $this->baseFactory
+            ->expects($this->never())
+            ->method($this->anything());
+
+        $actual = $this->factory->from($expected = Uuid::random());
+
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @return void
+     */
+    public function testFromWithIdentifierInterface(): void
+    {
+        $this->baseFactory
+            ->expects($this->never())
+            ->method($this->anything());
+
+        $this->expectException(ContractException::class);
+
+        $this->factory->from(
+            $this->createMock(IdentifierInterface::class),
+        );
     }
 
     /**
