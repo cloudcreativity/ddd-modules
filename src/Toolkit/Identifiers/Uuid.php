@@ -19,7 +19,6 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
-use CloudCreativity\Modules\Toolkit\ContractException;
 use JsonSerializable;
 use Ramsey\Uuid\UuidInterface;
 
@@ -57,13 +56,11 @@ final class Uuid implements IdentifierInterface, JsonSerializable
      */
     public static function from(IdentifierInterface|UuidInterface|string $value): self
     {
+        $factory = self::getFactory();
+
         return match(true) {
-            $value instanceof self => $value,
-            $value instanceof UuidInterface => self::getFactory()->from($value),
-            is_string($value) => self::getFactory()->fromString($value),
-            default => throw new ContractException(
-                'Unexpected identifier type, received: ' . get_debug_type($value),
-            ),
+            $value instanceof IdentifierInterface, $value instanceof UuidInterface => $factory->from($value),
+            is_string($value) => $factory->fromString($value),
         };
     }
 
