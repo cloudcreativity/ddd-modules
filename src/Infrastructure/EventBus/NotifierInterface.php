@@ -19,8 +19,24 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\EventBus;
 
-use CloudCreativity\Modules\IntegrationEvents\PublisherInterface;
+use CloudCreativity\Modules\IntegrationEvents\IntegrationEventInterface;
 
-interface EventBusInterface extends PublisherInterface, NotifierInterface
+interface NotifierInterface
 {
+    /**
+     * Notify receivers of an inbound integration event.
+     *
+     * @param IntegrationEventInterface $event
+     * @return void
+     */
+    public function notify(IntegrationEventInterface $event): void;
+
+    /**
+     * Subscribe a receiver to an integration event.
+     *
+     * @param class-string<IntegrationEventInterface> $event
+     * @param string|array<string> $receiver
+     * @return void
+     */
+    public function subscribe(string $event, string|array $receiver): void;
 }

@@ -19,8 +19,12 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\EventBus;
 
-use CloudCreativity\Modules\IntegrationEvents\PublisherInterface;
-
-interface EventBusInterface extends PublisherInterface, NotifierInterface
+interface PublishThroughMiddleware
 {
+    /**
+     * Get the middleware for integration event publisher.
+     *
+     * @return array<callable|string>
+     */
+    public function middleware(): array;
 }

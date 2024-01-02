@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file. This projec
 - GUIDs that wrap UUIDs can now be created via the static `Guid::fromUuid()` method.
 - New `SetupBeforeDispatch` and `TearDownAfterDispatch` bus middleware, that can be used either to setup (and optionally
   tear down) application state around the dispatching of a message, or to just do tear down work.
+- The `EventBus` namespace now has a working implementation for publishing integration events.
 
 ### Changed
 

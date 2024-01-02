@@ -19,8 +19,16 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\EventBus;
 
+use CloudCreativity\Modules\IntegrationEvents\IntegrationEventInterface;
 use CloudCreativity\Modules\IntegrationEvents\PublisherInterface;
 
-interface EventBusInterface extends PublisherInterface, NotifierInterface
+interface PublisherContainerInterface
 {
+    /**
+     * Get a publisher for the specified integration event.
+     *
+     * @param class-string<IntegrationEventInterface> $eventName
+     * @return PublisherInterface
+     */
+    public function get(string $eventName): PublisherInterface;
 }

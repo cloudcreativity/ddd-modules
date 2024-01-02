@@ -17,10 +17,19 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Infrastructure\EventBus;
+namespace CloudCreativity\Modules\Infrastructure\EventBus\Middleware;
 
-use CloudCreativity\Modules\IntegrationEvents\PublisherInterface;
+use Closure;
+use CloudCreativity\Modules\IntegrationEvents\IntegrationEventInterface;
 
-interface EventBusInterface extends PublisherInterface, NotifierInterface
+interface IntegrationEventMiddlewareInterface
 {
+    /**
+     * Handle the event being published or notified.
+     *
+     * @param IntegrationEventInterface $event
+     * @param Closure(IntegrationEventInterface): void $next
+     * @return void
+     */
+    public function __invoke(IntegrationEventInterface $event, Closure $next): void;
 }

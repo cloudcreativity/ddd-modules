@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2023 Cloud Creativity Limited
+ * Copyright 2024 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,46 +17,46 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Infrastructure\Queue\Middleware;
+namespace CloudCreativity\Modules\Infrastructure\EventBus\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Infrastructure\Log\ObjectContext;
-use CloudCreativity\Modules\Infrastructure\Queue\QueueableInterface;
+use CloudCreativity\Modules\IntegrationEvents\IntegrationEventInterface;
 use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-class LogPushedToQueue implements QueueMiddlewareInterface
+class LogIntegrationEventOutbound implements IntegrationEventMiddlewareInterface
 {
     /**
-     * LogPushedToQueue constructor.
+     * LogIntegrationEventOutbound constructor.
      *
      * @param LoggerInterface $log
-     * @param string $queueLevel
-     * @param string $queuedLevel
+     * @param string $publishLevel
+     * @param string $publishedLevel
      */
     public function __construct(
         private readonly LoggerInterface $log,
-        private readonly string $queueLevel = LogLevel::DEBUG,
-        private readonly string $queuedLevel = LogLevel::INFO,
+        private readonly string $publishLevel = LogLevel::DEBUG,
+        private readonly string $publishedLevel = LogLevel::INFO,
     ) {
     }
 
     /**
      * @inheritDoc
      */
-    public function __invoke(QueueableInterface $queueable, Closure $next): void
+    public function __invoke(IntegrationEventInterface $event, Closure $next): void
     {
-        $name = ModuleBasename::tryFrom($queueable)?->toString() ?? $queueable::class;
+        $name = ModuleBasename::tryFrom($event)?->toString() ?? $event::class;
 
         $this->log->log(
-            $this->queueLevel,
-            "Queuing message {$name}.",
-            $context = ObjectContext::from($queueable)->context(),
+            $this->publishLevel,
+            "Publishing integration event {$name}.",
+            $context = ObjectContext::from($event)->context(),
         );
 
-        $next($queueable);
+        $next($event);
 
-        $this->log->log($this->queuedLevel, "Queued message {$name}.", $context);
+        $this->log->log($this->publishedLevel, "Published integration event {$name}.", $context);
     }
 }
