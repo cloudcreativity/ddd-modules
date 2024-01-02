@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2023 Cloud Creativity Limited
+ * Copyright 2024 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,20 +17,21 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Bus\Middleware;
+namespace CloudCreativity\Modules\Infrastructure\DomainEventDispatching;
 
-use Closure;
-use CloudCreativity\Modules\Bus\QueryInterface;
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
-
-interface QueryMiddlewareInterface
+interface DeferredDispatcherInterface extends DispatcherInterface
 {
     /**
-     * Handle the query.
+     * Dispatch any deferred events.
      *
-     * @param QueryInterface $query
-     * @param Closure(QueryInterface): ResultInterface<mixed> $next
-     * @return ResultInterface<mixed>
+     * @return void
      */
-    public function __invoke(QueryInterface $query, Closure $next): ResultInterface;
+    public function flush(): void;
+
+    /**
+     * Clear deferred events without dispatching them.
+     *
+     * @return void
+     */
+    public function forget(): void;
 }

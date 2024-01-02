@@ -29,7 +29,7 @@ interface CommandMiddlewareInterface
      * Handle the command.
      *
      * @param CommandInterface $command
-     * @param Closure $next
+     * @param Closure(CommandInterface): ResultInterface<mixed> $next
      * @return ResultInterface<mixed>
      */
     public function __invoke(CommandInterface $command, Closure $next): ResultInterface;

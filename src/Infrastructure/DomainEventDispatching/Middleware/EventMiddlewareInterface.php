@@ -28,7 +28,7 @@ interface EventMiddlewareInterface
      * Handle the event.
      *
      * @param DomainEventInterface $event
-     * @param Closure $next
+     * @param Closure(DomainEventInterface): void $next
      * @return void
      */
     public function __invoke(DomainEventInterface $event, Closure $next): void;

@@ -61,7 +61,7 @@ final class EventHandler
     }
 
     /**
-     * Execute the handler.
+     * Execute the listener.
      *
      * @param DomainEventInterface $event
      * @return void

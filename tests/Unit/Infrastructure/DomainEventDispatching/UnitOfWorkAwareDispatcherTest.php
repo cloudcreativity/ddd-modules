@@ -23,8 +23,8 @@ use Closure;
 use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
 use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\DispatchAfterCommit;
 use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\DispatchBeforeCommit;
-use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\UnitOfWorkAwareDispatcher;
 use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\ListenerContainerInterface;
+use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\UnitOfWorkAwareDispatcher;
 use CloudCreativity\Modules\Infrastructure\Persistence\UnitOfWorkManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -73,6 +73,7 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
         $listener4 = $this->createMock(TestListenerBeforeCommit::class);
         $listener5 = $this->createMock(TestListenerAfterCommit::class);
         $listener6 = $this->createMock(TestListenerAfterCommit::class);
+        $listener7 = $this->createMock(TestListener::class);
 
         $listener2Closure = static fn ($event) => $listener2->handle($event);
 
@@ -85,6 +86,7 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
                 'Listener4' => $listener4,
                 'Listener5' => $listener5,
                 'Listener6' => $listener6,
+                'Listener7' => $listener7,
                 default => throw new \RuntimeException('Unexpected name: ' . $name),
             });
 
@@ -124,6 +126,10 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
             ->expects($this->never())
             ->method('handle');
 
+        $listener7
+            ->expects($this->never())
+            ->method('handle');
+
         $this->unitOfWorkManager
             ->expects($this->once())
             ->method('beforeCommit');
@@ -140,6 +146,7 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
             'Listener5',
             'Listener6',
         ]);
+        $this->dispatcher->listen(TestDomainEvent::class, 'Listener7');
 
         $this->dispatcher->dispatch($event);
         $this->assertSame($sequence, ['Listener1', 'Listener2', 'Listener3']);
