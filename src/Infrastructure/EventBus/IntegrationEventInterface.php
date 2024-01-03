@@ -19,15 +19,15 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\EventBus;
 
+use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
 use DateTimeImmutable;
-use Ramsey\Uuid\UuidInterface;
 
 interface IntegrationEventInterface
 {
     /**
-     * @return UuidInterface
+     * @return Uuid
      */
-    public function uuid(): UuidInterface;
+    public function uuid(): Uuid;
 
     /**
      * @return DateTimeImmutable

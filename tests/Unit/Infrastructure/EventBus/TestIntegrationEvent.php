@@ -20,16 +20,15 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\EventBus;
 
 use CloudCreativity\Modules\Infrastructure\EventBus\IntegrationEventInterface;
+use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
 use DateTimeImmutable;
-use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\UuidInterface;
 
 class TestIntegrationEvent implements IntegrationEventInterface
 {
     /**
-     * @var UuidInterface
+     * @var Uuid
      */
-    public readonly UuidInterface $uuid;
+    public readonly Uuid $uuid;
 
     /**
      * @var DateTimeImmutable
@@ -41,14 +40,14 @@ class TestIntegrationEvent implements IntegrationEventInterface
      */
     public function __construct()
     {
-        $this->uuid = Uuid::uuid4();
+        $this->uuid = Uuid::random();
         $this->occurredAt = new DateTimeImmutable();
     }
 
     /**
      * @inheritDoc
      */
-    public function uuid(): UuidInterface
+    public function uuid(): Uuid
     {
         return $this->uuid;
     }
