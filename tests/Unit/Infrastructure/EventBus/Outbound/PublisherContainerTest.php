@@ -17,11 +17,13 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\EventBus;
+namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\EventBus\Outbound;
 
-use CloudCreativity\Modules\Infrastructure\EventBus\DelegatedPublisher;
-use CloudCreativity\Modules\Infrastructure\EventBus\PublisherContainer;
+use CloudCreativity\Modules\Infrastructure\EventBus\Outbound\PublisherContainer;
+use CloudCreativity\Modules\Infrastructure\EventBus\Outbound\PublisherHandler;
 use CloudCreativity\Modules\Infrastructure\InfrastructureException;
+use CloudCreativity\Modules\Tests\Unit\Infrastructure\EventBus\TestIntegrationEvent;
+use CloudCreativity\Modules\Tests\Unit\Infrastructure\EventBus\TestPublisher;
 use PHPUnit\Framework\TestCase;
 
 class PublisherContainerTest extends TestCase
@@ -48,10 +50,10 @@ class PublisherContainerTest extends TestCase
         $container->register($event3::class, $c);
         $container->register($event4::class, $d);
 
-        $this->assertEquals(new DelegatedPublisher($a), $container->get($event1::class));
-        $this->assertEquals(new DelegatedPublisher($b), $container->get($event2::class));
-        $this->assertEquals(new DelegatedPublisher($c), $container->get($event3::class));
-        $this->assertEquals(new DelegatedPublisher($d), $container->get($event4::class));
+        $this->assertEquals(new PublisherHandler($a), $container->get($event1::class));
+        $this->assertEquals(new PublisherHandler($b), $container->get($event2::class));
+        $this->assertEquals(new PublisherHandler($c), $container->get($event3::class));
+        $this->assertEquals(new PublisherHandler($d), $container->get($event4::class));
 
         $this->expectException(InfrastructureException::class);
         $this->expectExceptionMessage('No publisher bound for integration event: ' . $event5::class);

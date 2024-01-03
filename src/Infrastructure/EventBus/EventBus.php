@@ -19,9 +19,9 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\EventBus;
 
+use CloudCreativity\Modules\Infrastructure\EventBus\Inbound\NotifierInterface;
+use CloudCreativity\Modules\Infrastructure\EventBus\Outbound\PublisherInterface;
 use CloudCreativity\Modules\Infrastructure\InfrastructureException;
-use CloudCreativity\Modules\IntegrationEvents\IntegrationEventInterface;
-use CloudCreativity\Modules\IntegrationEvents\PublisherInterface;
 
 class EventBus implements EventBusInterface
 {
@@ -48,7 +48,7 @@ class EventBus implements EventBusInterface
         }
 
         throw new InfrastructureException(
-            'Event bus must have a publisher instance to publish integration events.',
+            'Event bus must have a publisher instance to publish an outbound integration event.',
         );
     }
 
@@ -63,22 +63,7 @@ class EventBus implements EventBusInterface
         }
 
         throw new InfrastructureException(
-            'Event bus must have a notifier instance to notify integration event subscribers.',
-        );
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function subscribe(string $event, string|array $receiver): void
-    {
-        if ($this->notifier) {
-            $this->notifier->subscribe($event, $receiver);
-            return;
-        }
-
-        throw new InfrastructureException(
-            'Event bus must have a notifier instance to subscribe to integration events.',
+            'Event bus must have a notifier instance to receive an inbound integration event.',
         );
     }
 }

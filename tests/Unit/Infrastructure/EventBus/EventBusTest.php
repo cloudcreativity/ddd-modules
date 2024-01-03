@@ -20,9 +20,9 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\EventBus;
 
 use CloudCreativity\Modules\Infrastructure\EventBus\EventBus;
-use CloudCreativity\Modules\Infrastructure\EventBus\NotifierInterface;
+use CloudCreativity\Modules\Infrastructure\EventBus\Inbound\NotifierInterface;
+use CloudCreativity\Modules\Infrastructure\EventBus\Outbound\PublisherInterface;
 use CloudCreativity\Modules\Infrastructure\InfrastructureException;
-use CloudCreativity\Modules\IntegrationEvents\PublisherInterface;
 use PHPUnit\Framework\TestCase;
 
 class EventBusTest extends TestCase
@@ -52,7 +52,9 @@ class EventBusTest extends TestCase
         $bus = new EventBus();
 
         $this->expectException(InfrastructureException::class);
-        $this->expectExceptionMessage('Event bus must have a publisher instance to publish integration events.');
+        $this->expectExceptionMessage(
+            'Event bus must have a publisher instance to publish an outbound integration event.',
+        );
 
         $bus->publish(new TestIntegrationEvent());
     }
@@ -83,41 +85,9 @@ class EventBusTest extends TestCase
 
         $this->expectException(InfrastructureException::class);
         $this->expectExceptionMessage(
-            'Event bus must have a notifier instance to notify integration event subscribers.',
+            'Event bus must have a notifier instance to receive an inbound integration event.',
         );
 
         $bus->notify(new TestIntegrationEvent());
-    }
-
-    /**
-     * @return void
-     */
-    public function testItSubscribesToEvent(): void
-    {
-        $bus = new EventBus(
-            notifier: $notifier = $this->createMock(NotifierInterface::class),
-        );
-
-        $notifier
-            ->expects($this->once())
-            ->method('subscribe')
-            ->with(TestIntegrationEvent::class, $receiver = 'SomeEventListener');
-
-        $bus->subscribe(TestIntegrationEvent::class, $receiver);
-    }
-
-    /**
-     * @return void
-     */
-    public function testItCannotSubscribeToEvent(): void
-    {
-        $bus = new EventBus();
-
-        $this->expectException(InfrastructureException::class);
-        $this->expectExceptionMessage(
-            'Event bus must have a notifier instance to subscribe to integration events.',
-        );
-
-        $bus->subscribe(TestIntegrationEvent::class, 'SomeEventListener');
     }
 }

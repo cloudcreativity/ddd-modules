@@ -17,14 +17,13 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\EventBus;
+namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\EventBus\Outbound;
 
 use Closure;
-use CloudCreativity\Modules\Infrastructure\EventBus\Publisher;
-use CloudCreativity\Modules\Infrastructure\EventBus\PublisherContainerInterface;
-use CloudCreativity\Modules\Infrastructure\EventBus\PublishThroughMiddleware;
-use CloudCreativity\Modules\IntegrationEvents\IntegrationEventInterface;
-use CloudCreativity\Modules\IntegrationEvents\PublisherInterface;
+use CloudCreativity\Modules\Infrastructure\EventBus\Outbound\Publisher;
+use CloudCreativity\Modules\Infrastructure\EventBus\Outbound\PublisherContainerInterface;
+use CloudCreativity\Modules\Infrastructure\EventBus\Outbound\PublisherHandlerInterface;
+use CloudCreativity\Modules\Tests\Unit\Infrastructure\EventBus\TestIntegrationEvent;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -62,11 +61,16 @@ class PublisherTest extends TestCase
             ->expects($this->once())
             ->method('get')
             ->with($event::class)
-            ->willReturn($publisher = $this->createMock(PublisherInterface::class));
+            ->willReturn($handler = $this->createMock(PublisherHandlerInterface::class));
 
-        $publisher
+        $handler
             ->expects($this->once())
-            ->method('publish')
+            ->method('middleware')
+            ->willReturn([]);
+
+        $handler
+            ->expects($this->once())
+            ->method('__invoke')
             ->with($this->identicalTo($event));
 
         $this->publisher->publish($event);
@@ -91,38 +95,25 @@ class PublisherTest extends TestCase
             return $next($event3);
         };
 
-        $publisher = new class ($middleware2) implements PublisherInterface, PublishThroughMiddleware {
-            public ?IntegrationEventInterface $passed = null;
-            public function __construct(private Closure $middleware)
-            {
-            }
+        $handler = $this->createMock(PublisherHandlerInterface::class);
 
-            /**
-             * @inheritDoc
-             */
-            public function middleware(): array
-            {
-                return [$this->middleware];
-            }
+        $handler
+            ->expects($this->once())
+            ->method('middleware')
+            ->willReturn([$middleware2]);
 
-            /**
-             * @inheritDoc
-             */
-            public function publish(IntegrationEventInterface $event): void
-            {
-                $this->passed = $event;
-            }
-        };
+        $handler
+            ->expects($this->once())
+            ->method('__invoke')
+            ->with($this->identicalTo($event3));
 
         $this->container
             ->expects($this->once())
             ->method('get')
             ->with($event1::class)
-            ->willReturn($publisher);
+            ->willReturn($handler);
 
         $this->publisher->through([$middleware1]);
         $this->publisher->publish($event1);
-
-        $this->assertSame($event3, $publisher->passed);
     }
 }

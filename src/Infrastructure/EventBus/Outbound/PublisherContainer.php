@@ -17,12 +17,11 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Infrastructure\EventBus;
+namespace CloudCreativity\Modules\Infrastructure\EventBus\Outbound;
 
 use Closure;
+use CloudCreativity\Modules\Infrastructure\EventBus\IntegrationEventInterface;
 use CloudCreativity\Modules\Infrastructure\InfrastructureException;
-use CloudCreativity\Modules\IntegrationEvents\IntegrationEventInterface;
-use CloudCreativity\Modules\IntegrationEvents\PublisherInterface;
 
 final class PublisherContainer implements PublisherContainerInterface
 {
@@ -63,10 +62,10 @@ final class PublisherContainer implements PublisherContainerInterface
     /**
      * @inheritDoc
      */
-    public function get(string $eventName): PublisherInterface
+    public function get(string $eventName): PublisherHandlerInterface
     {
         if ($publisher = $this->publishers[$eventName] ?? null) {
-            return new DelegatedPublisher($publisher);
+            return new PublisherHandler($publisher);
         }
 
         $factory = $this->bindings[$eventName] ?? null;
@@ -74,7 +73,7 @@ final class PublisherContainer implements PublisherContainerInterface
         if ($factory) {
             $publisher = $factory();
             assert(is_object($publisher), "Publisher binding for {$eventName} must return an object.");
-            return new DelegatedPublisher($publisher);
+            return new PublisherHandler($publisher);
         }
 
         throw new InfrastructureException('No publisher bound for integration event: ' . $eventName);

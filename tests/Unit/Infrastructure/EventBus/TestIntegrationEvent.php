@@ -19,7 +19,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\EventBus;
 
-use CloudCreativity\Modules\IntegrationEvents\IntegrationEventInterface;
+use CloudCreativity\Modules\Infrastructure\EventBus\IntegrationEventInterface;
 use DateTimeImmutable;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;

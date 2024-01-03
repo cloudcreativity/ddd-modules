@@ -20,16 +20,16 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Infrastructure\EventBus\Middleware;
 
 use Closure;
+use CloudCreativity\Modules\Infrastructure\EventBus\IntegrationEventInterface;
 use CloudCreativity\Modules\Infrastructure\Log\ObjectContext;
-use CloudCreativity\Modules\IntegrationEvents\IntegrationEventInterface;
 use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-class LogIntegrationEventOutbound implements IntegrationEventMiddlewareInterface
+class LogInboundIntegrationEvent implements IntegrationEventMiddlewareInterface
 {
     /**
-     * LogIntegrationEventOutbound constructor.
+     * LogInboundIntegrationEvent constructor.
      *
      * @param LoggerInterface $log
      * @param string $publishLevel
@@ -51,12 +51,12 @@ class LogIntegrationEventOutbound implements IntegrationEventMiddlewareInterface
 
         $this->log->log(
             $this->publishLevel,
-            "Publishing integration event {$name}.",
+            "Receiving integration event {$name}.",
             $context = ObjectContext::from($event)->context(),
         );
 
         $next($event);
 
-        $this->log->log($this->publishedLevel, "Published integration event {$name}.", $context);
+        $this->log->log($this->publishedLevel, "Received integration event {$name}.", $context);
     }
 }

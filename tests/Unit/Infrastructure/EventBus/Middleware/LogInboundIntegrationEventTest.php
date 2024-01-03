@@ -19,8 +19,8 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\EventBus\Middleware;
 
-use CloudCreativity\Modules\Infrastructure\EventBus\Middleware\LogIntegrationEventOutbound;
-use CloudCreativity\Modules\IntegrationEvents\IntegrationEventInterface;
+use CloudCreativity\Modules\Infrastructure\EventBus\IntegrationEventInterface;
+use CloudCreativity\Modules\Infrastructure\EventBus\Middleware\LogInboundIntegrationEvent;
 use CloudCreativity\Modules\Tests\Unit\Infrastructure\EventBus\TestIntegrationEvent;
 use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use LogicException;
@@ -29,7 +29,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-class LogIntegrationEventOutboundTest extends TestCase
+class LogInboundIntegrationEventTest extends TestCase
 {
     /**
      * @var LoggerInterface&MockObject
@@ -67,7 +67,7 @@ class LogIntegrationEventOutboundTest extends TestCase
                 return true;
             });
 
-        $middleware = new LogIntegrationEventOutbound($this->logger);
+        $middleware = new LogInboundIntegrationEvent($this->logger);
         $middleware($this->event, function (IntegrationEventInterface $received): void {
             $this->assertSame($this->event, $received);
         });
@@ -78,8 +78,8 @@ class LogIntegrationEventOutboundTest extends TestCase
         ];
 
         $this->assertSame([
-            [LogLevel::DEBUG, "Publishing integration event {$eventName}.", $context],
-            [LogLevel::INFO, "Published integration event {$eventName}.", $context],
+            [LogLevel::DEBUG, "Receiving integration event {$eventName}.", $context],
+            [LogLevel::INFO, "Received integration event {$eventName}.", $context],
         ], $logs);
     }
 
@@ -99,7 +99,7 @@ class LogIntegrationEventOutboundTest extends TestCase
                 return true;
             });
 
-        $middleware = new LogIntegrationEventOutbound($this->logger, LogLevel::NOTICE, LogLevel::WARNING);
+        $middleware = new LogInboundIntegrationEvent($this->logger, LogLevel::NOTICE, LogLevel::WARNING);
         $middleware($this->event, function (IntegrationEventInterface $received) {
             $this->assertSame($this->event, $received);
         });
@@ -110,8 +110,8 @@ class LogIntegrationEventOutboundTest extends TestCase
         ];
 
         $this->assertSame([
-            [LogLevel::NOTICE, "Publishing integration event {$eventName}.", $context],
-            [LogLevel::WARNING, "Published integration event {$eventName}.", $context],
+            [LogLevel::NOTICE, "Receiving integration event {$eventName}.", $context],
+            [LogLevel::WARNING, "Received integration event {$eventName}.", $context],
         ], $logs);
     }
 
@@ -131,9 +131,9 @@ class LogIntegrationEventOutboundTest extends TestCase
         $this->logger
             ->expects($this->once())
             ->method('log')
-            ->with(LogLevel::DEBUG, "Publishing integration event {$eventName}.", $context);
+            ->with(LogLevel::DEBUG, "Receiving integration event {$eventName}.", $context);
 
-        $middleware = new LogIntegrationEventOutbound($this->logger);
+        $middleware = new LogInboundIntegrationEvent($this->logger);
 
         try {
             $middleware($this->event, static function () use ($expected) {

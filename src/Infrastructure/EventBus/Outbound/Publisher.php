@@ -17,10 +17,9 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Infrastructure\EventBus;
+namespace CloudCreativity\Modules\Infrastructure\EventBus\Outbound;
 
-use CloudCreativity\Modules\IntegrationEvents\IntegrationEventInterface;
-use CloudCreativity\Modules\IntegrationEvents\PublisherInterface;
+use CloudCreativity\Modules\Infrastructure\EventBus\IntegrationEventInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
@@ -68,18 +67,12 @@ final class Publisher implements PublisherInterface
     public function publish(IntegrationEventInterface $event): void
     {
         $publisher = $this->publishers->get($event::class);
-        $middleware = [];
-
-        if ($publisher instanceof PublishThroughMiddleware) {
-            $middleware = $publisher->middleware();
-            assert(array_is_list($middleware), 'Expecting middleware to be a list.');
-        }
 
         $pipeline = $this->pipelineFactory
             ->getPipelineBuilder()
-            ->through([...$this->pipes, ...$middleware])
+            ->through([...$this->pipes, ...$publisher->middleware()])
             ->build(new MiddlewareProcessor(function (IntegrationEventInterface $passed) use ($publisher) {
-                $publisher->publish($passed);
+                $publisher($passed);
             }));
 
         $pipeline->process($event);

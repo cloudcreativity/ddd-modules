@@ -17,16 +17,16 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Infrastructure\EventBus;
+namespace CloudCreativity\Modules\Infrastructure\EventBus\Outbound;
 
 use Closure;
-use CloudCreativity\Modules\IntegrationEvents\IntegrationEventInterface;
-use CloudCreativity\Modules\IntegrationEvents\PublisherInterface;
+use CloudCreativity\Modules\Infrastructure\EventBus\IntegrationEventInterface;
+use CloudCreativity\Modules\Infrastructure\EventBus\PublishThroughMiddleware;
 
-final class DelegatedPublisher implements PublisherInterface, PublishThroughMiddleware
+final class PublisherHandler implements PublisherHandlerInterface
 {
     /**
-     * DelegatedPublisher constructor.
+     * PublisherHandler constructor.
      *
      * @param object $publisher
      */
@@ -37,7 +37,7 @@ final class DelegatedPublisher implements PublisherInterface, PublishThroughMidd
     /**
      * @inheritDoc
      */
-    public function publish(IntegrationEventInterface $event): void
+    public function __invoke(IntegrationEventInterface $event): void
     {
         if ($this->publisher instanceof Closure) {
             ($this->publisher)($event);

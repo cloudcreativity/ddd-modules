@@ -20,7 +20,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Infrastructure\EventBus\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\IntegrationEvents\IntegrationEventInterface;
+use CloudCreativity\Modules\Infrastructure\EventBus\IntegrationEventInterface;
 
 interface IntegrationEventMiddlewareInterface
 {

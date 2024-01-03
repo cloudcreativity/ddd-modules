@@ -19,21 +19,18 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\EventBus;
 
-interface EventBusInterface
+use DateTimeImmutable;
+use Ramsey\Uuid\UuidInterface;
+
+interface IntegrationEventInterface
 {
     /**
-     * Publish an integration event (outbound).
-     *
-     * @param IntegrationEventInterface $event
-     * @return void
+     * @return UuidInterface
      */
-    public function publish(IntegrationEventInterface $event): void;
+    public function uuid(): UuidInterface;
 
     /**
-     * Notify subscribers of an inbound integration event.
-     *
-     * @param IntegrationEventInterface $event
-     * @return void
+     * @return DateTimeImmutable
      */
-    public function notify(IntegrationEventInterface $event): void;
+    public function occurredAt(): DateTimeImmutable;
 }

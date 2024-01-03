@@ -17,26 +17,18 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Infrastructure\EventBus;
+namespace CloudCreativity\Modules\Infrastructure\EventBus\Outbound;
 
-use CloudCreativity\Modules\IntegrationEvents\IntegrationEventInterface;
+use CloudCreativity\Modules\Infrastructure\EventBus\IntegrationEventInterface;
+use CloudCreativity\Modules\Infrastructure\EventBus\PublishThroughMiddleware;
 
-interface NotifierInterface
+interface PublisherHandlerInterface extends PublishThroughMiddleware
 {
     /**
-     * Notify receivers of an inbound integration event.
+     * Handle the outbound integration event.
      *
      * @param IntegrationEventInterface $event
      * @return void
      */
-    public function notify(IntegrationEventInterface $event): void;
-
-    /**
-     * Subscribe a receiver to an integration event.
-     *
-     * @param class-string<IntegrationEventInterface> $event
-     * @param string|array<string> $receiver
-     * @return void
-     */
-    public function subscribe(string $event, string|array $receiver): void;
+    public function __invoke(IntegrationEventInterface $event): void;
 }

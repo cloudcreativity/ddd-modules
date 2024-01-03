@@ -17,18 +17,17 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Infrastructure\EventBus;
+namespace CloudCreativity\Modules\Infrastructure\EventBus\Outbound;
 
-use CloudCreativity\Modules\IntegrationEvents\IntegrationEventInterface;
-use CloudCreativity\Modules\IntegrationEvents\PublisherInterface;
+use CloudCreativity\Modules\Infrastructure\EventBus\IntegrationEventInterface;
 
 interface PublisherContainerInterface
 {
     /**
-     * Get a publisher for the specified integration event.
+     * Get a publisher handler for the outbound integration event.
      *
      * @param class-string<IntegrationEventInterface> $eventName
-     * @return PublisherInterface
+     * @return PublisherHandlerInterface
      */
-    public function get(string $eventName): PublisherInterface;
+    public function get(string $eventName): PublisherHandlerInterface;
 }

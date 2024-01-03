@@ -17,13 +17,16 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\EventBus;
+namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\EventBus\Outbound;
 
-use CloudCreativity\Modules\Infrastructure\EventBus\DelegatedPublisher;
-use CloudCreativity\Modules\IntegrationEvents\IntegrationEventInterface;
+use CloudCreativity\Modules\Infrastructure\EventBus\IntegrationEventInterface;
+use CloudCreativity\Modules\Infrastructure\EventBus\Outbound\PublisherHandler;
+use CloudCreativity\Modules\Infrastructure\EventBus\Outbound\PublisherHandlerInterface;
+use CloudCreativity\Modules\Tests\Unit\Infrastructure\EventBus\TestIntegrationEvent;
+use CloudCreativity\Modules\Tests\Unit\Infrastructure\EventBus\TestPublisher;
 use PHPUnit\Framework\TestCase;
 
-class DelegatedPublisherTest extends TestCase
+class PublisherHandlerTest extends TestCase
 {
     /**
      * @return void
@@ -42,9 +45,10 @@ class DelegatedPublisherTest extends TestCase
             ->method('middleware')
             ->willReturn($middleware = ['Middleware1', 'Middleware2']);
 
-        $publisher = new DelegatedPublisher($innerHandler);
-        $publisher->publish($event);
+        $publisher = new PublisherHandler($innerHandler);
+        $publisher($event);
 
+        $this->assertInstanceOf(PublisherHandlerInterface::class, $publisher);
         $this->assertSame($middleware, $publisher->middleware());
     }
 
@@ -60,8 +64,8 @@ class DelegatedPublisherTest extends TestCase
             $called = true;
         };
 
-        $publisher = new DelegatedPublisher($fn);
-        $publisher->publish($event);
+        $publisher = new PublisherHandler($fn);
+        $publisher($event);
 
         $this->assertTrue($called);
         $this->assertSame([], $publisher->middleware());

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2023 Cloud Creativity Limited
+ * Copyright 2024 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,27 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\IntegrationEvents;
+namespace CloudCreativity\Modules\Infrastructure\EventBus\Inbound;
 
-interface PublisherInterface
+use Closure;
+use CloudCreativity\Modules\Infrastructure\EventBus\IntegrationEventInterface;
+
+interface NotifierInterface
 {
     /**
-     * Publish an integration event.
+     * Notify subscribers of an inbound integration event.
      *
      * @param IntegrationEventInterface $event
      * @return void
      */
-    public function publish(IntegrationEventInterface $event): void;
+    public function notify(IntegrationEventInterface $event): void;
+
+    /**
+     * Subscribe to an integration event.
+     *
+     * @param class-string<IntegrationEventInterface> $event
+     * @param string|Closure|array<string|Closure> $receiver
+     * @return void
+     */
+    public function subscribe(string $event, string|Closure|array $receiver): void;
 }
