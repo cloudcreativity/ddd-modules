@@ -20,6 +20,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Toolkit\Result;
 
 use BackedEnum;
+use Closure;
 use CloudCreativity\Modules\Toolkit\Iterables\ListTrait;
 
 final class ListOfErrors implements ListOfErrorsInterface
@@ -53,9 +54,33 @@ final class ListOfErrors implements ListOfErrorsInterface
     /**
      * @inheritDoc
      */
-    public function first(): ?ErrorInterface
+    public function first(Closure $fn = null): ?ErrorInterface
     {
-        return $this->stack[0] ?? null;
+        if ($fn === null) {
+            return $this->stack[0] ?? null;
+        }
+
+        foreach ($this->stack as $error) {
+            if ($fn($error)) {
+                return $error;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function contains(Closure $fn): bool
+    {
+        foreach ($this->stack as $error) {
+            if ($fn($error)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

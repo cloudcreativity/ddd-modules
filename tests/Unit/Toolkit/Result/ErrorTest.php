@@ -38,6 +38,8 @@ class ErrorTest extends TestCase
         $this->assertSame('foo', $error->key());
         $this->assertSame('Bar', $error->message());
         $this->assertSame(TestEnum::Foo, $error->code());
+        $this->assertTrue($error->is(TestEnum::Foo));
+        $this->assertFalse($error->is(TestEnum::Bar));
     }
 
     /**

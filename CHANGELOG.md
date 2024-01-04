@@ -13,6 +13,9 @@ All notable changes to this project will be documented in this file. This projec
 - New `SetupBeforeDispatch` and `TearDownAfterDispatch` bus middleware, that can be used either to setup (and optionally
   tear down) application state around the dispatching of a message, or to just do tear down work.
 - The `EventBus` namespace now has a working implementation for publishing integration events.
+- Can now provide a closure to the `ListOfErrorsInterface::first()` method to find the first matching error.
+- Added a `ListOfErrorsInterface::contains()` method to determine whether the list contains a matching error.
+- Added a `ErrorInterface::is()` method to determine whether an error matches a given code.
 
 ### Changed
 

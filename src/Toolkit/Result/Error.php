@@ -68,4 +68,12 @@ final class Error implements ErrorInterface
     {
         return $this->code;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function is(BackedEnum $code): bool
+    {
+        return $this->code === $code;
+    }
 }

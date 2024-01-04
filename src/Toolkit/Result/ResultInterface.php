@@ -59,7 +59,7 @@ interface ResultInterface
     public function errors(): ListOfErrorsInterface;
 
     /**
-     * Get a error message string.
+     * Get an error message string.
      *
      * @return string|null
      */

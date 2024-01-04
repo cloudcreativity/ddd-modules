@@ -19,6 +19,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Result;
 
+use Closure;
 use CloudCreativity\Modules\Toolkit\Iterables\ListInterface;
 
 /**
@@ -27,11 +28,20 @@ use CloudCreativity\Modules\Toolkit\Iterables\ListInterface;
 interface ListOfErrorsInterface extends ListInterface
 {
     /**
-     * Get the first error in the list.
+     * Get the first error in the list, or the first matching error.
      *
+     * @param Closure(ErrorInterface): bool|null $fn
      * @return ErrorInterface|null
      */
-    public function first(): ?ErrorInterface;
+    public function first(?Closure $fn = null): ?ErrorInterface;
+
+    /**
+     * Does the list contain a matching error?
+     *
+     * @param Closure(ErrorInterface): bool $fn
+     * @return bool
+     */
+    public function contains(Closure $fn): bool;
 
     /**
      * Return a new instance with the provided error pushed on to the end of the list.

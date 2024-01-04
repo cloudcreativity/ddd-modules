@@ -43,4 +43,12 @@ interface ErrorInterface
      * @return BackedEnum|null
      */
     public function code(): ?BackedEnum;
+
+    /**
+     * Is the error the specified error code?
+     *
+     * @param BackedEnum $code
+     * @return bool
+     */
+    public function is(BackedEnum $code): bool;
 }

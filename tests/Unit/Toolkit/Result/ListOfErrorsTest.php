@@ -44,7 +44,6 @@ class ListOfErrorsTest extends TestCase
         $this->assertCount(2, $errors);
         $this->assertTrue($errors->isNotEmpty());
         $this->assertFalse($errors->isEmpty());
-        $this->assertSame($a, $errors->first());
     }
 
     /**
@@ -99,5 +98,38 @@ class ListOfErrorsTest extends TestCase
         $this->assertSame([$a, $b], $stack1->all());
         $this->assertSame([$c, $d], $stack2->all());
         $this->assertSame([$a, $b, $c, $d], $actual->all());
+    }
+
+    /**
+     * @return void
+     */
+    public function testFirst(): void
+    {
+        $errors = new ListOfErrors(
+            $a = new Error(null, 'Message A'),
+            new Error(null, 'Message B'),
+            $c = new Error(null, 'Message C'),
+            new Error(null, 'Message D'),
+        );
+
+        $this->assertSame($a, $errors->first());
+        $this->assertSame($c, $errors->first(fn (Error $error) => 'Message C' === $error->message()));
+        $this->assertNull($errors->first(fn (Error $error) => 'Message E' === $error->message()));
+    }
+
+    /**
+     * @return void
+     */
+    public function testContains(): void
+    {
+        $errors = new ListOfErrors(
+            new Error(null, 'Message A'),
+            new Error(null, 'Message B'),
+            new Error(null, 'Message C'),
+            new Error(null, 'Message D'),
+        );
+
+        $this->assertTrue($errors->contains(fn (Error $error) => 'Message C' === $error->message()));
+        $this->assertFalse($errors->contains(fn (Error $error) => 'Message E' === $error->message()));
     }
 }
