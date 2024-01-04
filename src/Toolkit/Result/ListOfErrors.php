@@ -54,14 +54,18 @@ final class ListOfErrors implements ListOfErrorsInterface
     /**
      * @inheritDoc
      */
-    public function first(Closure $fn = null): ?ErrorInterface
+    public function first(Closure|BackedEnum|null $matcher = null): ?ErrorInterface
     {
-        if ($fn === null) {
+        if ($matcher === null) {
             return $this->stack[0] ?? null;
         }
 
+        if ($matcher instanceof BackedEnum) {
+            $matcher = static fn (ErrorInterface $error): bool => $error->is($matcher);
+        }
+
         foreach ($this->stack as $error) {
-            if ($fn($error)) {
+            if ($matcher($error)) {
                 return $error;
             }
         }
@@ -72,10 +76,14 @@ final class ListOfErrors implements ListOfErrorsInterface
     /**
      * @inheritDoc
      */
-    public function contains(Closure $fn): bool
+    public function contains(Closure|BackedEnum $matcher): bool
     {
+        if ($matcher instanceof BackedEnum) {
+            $matcher = static fn (ErrorInterface $error): bool => $error->is($matcher);
+        }
+
         foreach ($this->stack as $error) {
-            if ($fn($error)) {
+            if ($matcher($error)) {
                 return true;
             }
         }

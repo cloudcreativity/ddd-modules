@@ -19,6 +19,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Result;
 
+use BackedEnum;
 use Closure;
 use CloudCreativity\Modules\Toolkit\Iterables\ListInterface;
 
@@ -30,18 +31,18 @@ interface ListOfErrorsInterface extends ListInterface
     /**
      * Get the first error in the list, or the first matching error.
      *
-     * @param Closure(ErrorInterface): bool|null $fn
+     * @param Closure(ErrorInterface): bool|BackedEnum|null $matcher
      * @return ErrorInterface|null
      */
-    public function first(?Closure $fn = null): ?ErrorInterface;
+    public function first(Closure|BackedEnum|null $matcher = null): ?ErrorInterface;
 
     /**
      * Does the list contain a matching error?
      *
-     * @param Closure(ErrorInterface): bool $fn
+     * @param Closure(ErrorInterface): bool|BackedEnum $matcher
      * @return bool
      */
-    public function contains(Closure $fn): bool;
+    public function contains(Closure|BackedEnum $matcher): bool;
 
     /**
      * Return a new instance with the provided error pushed on to the end of the list.

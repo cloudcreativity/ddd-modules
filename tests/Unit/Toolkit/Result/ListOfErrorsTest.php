@@ -19,7 +19,9 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Result;
 
+use CloudCreativity\Modules\Tests\Unit\Infrastructure\Log\TestEnum;
 use CloudCreativity\Modules\Toolkit\Result\Error;
+use CloudCreativity\Modules\Toolkit\Result\ErrorInterface;
 use CloudCreativity\Modules\Toolkit\Result\KeyedSetOfErrors;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrorsInterface;
@@ -110,11 +112,14 @@ class ListOfErrorsTest extends TestCase
             new Error(null, 'Message B'),
             $c = new Error(null, 'Message C'),
             new Error(null, 'Message D'),
+            $e = new Error(code: TestEnum::Bar),
         );
 
         $this->assertSame($a, $errors->first());
-        $this->assertSame($c, $errors->first(fn (Error $error) => 'Message C' === $error->message()));
-        $this->assertNull($errors->first(fn (Error $error) => 'Message E' === $error->message()));
+        $this->assertSame($c, $errors->first(fn (ErrorInterface $error) => 'Message C' === $error->message()));
+        $this->assertSame($e, $errors->first(TestEnum::Bar));
+        $this->assertNull($errors->first(fn (ErrorInterface $error) => 'Message E' === $error->message()));
+        $this->assertNull($errors->first(TestEnum::Foo));
     }
 
     /**
@@ -123,13 +128,15 @@ class ListOfErrorsTest extends TestCase
     public function testContains(): void
     {
         $errors = new ListOfErrors(
-            new Error(null, 'Message A'),
-            new Error(null, 'Message B'),
-            new Error(null, 'Message C'),
-            new Error(null, 'Message D'),
+            new Error(message: 'Message A'),
+            new Error(message: 'Message B'),
+            new Error(message: 'Message C'),
+            new Error(message: 'Message D', code: TestEnum::Foo),
         );
 
-        $this->assertTrue($errors->contains(fn (Error $error) => 'Message C' === $error->message()));
-        $this->assertFalse($errors->contains(fn (Error $error) => 'Message E' === $error->message()));
+        $this->assertTrue($errors->contains(fn (ErrorInterface $error) => 'Message C' === $error->message()));
+        $this->assertTrue($errors->contains(TestEnum::Foo));
+        $this->assertFalse($errors->contains(fn (ErrorInterface $error) => 'Message E' === $error->message()));
+        $this->assertFalse($errors->contains(TestEnum::Bar));
     }
 }
