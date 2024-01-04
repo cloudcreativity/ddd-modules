@@ -94,6 +94,24 @@ final class ListOfErrors implements ListOfErrorsInterface
     /**
      * @inheritDoc
      */
+    public function codes(): array
+    {
+        $codes = [];
+
+        foreach ($this->stack as $error) {
+            $code = $error->code();
+
+            if ($code && !in_array($code, $codes, true)) {
+                $codes[] = $code;
+            }
+        }
+
+        return $codes;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function push(ErrorInterface $error): self
     {
         $copy = clone $this;

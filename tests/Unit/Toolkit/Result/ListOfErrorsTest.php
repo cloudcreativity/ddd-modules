@@ -59,6 +59,7 @@ class ListOfErrorsTest extends TestCase
         $this->assertFalse($errors->isNotEmpty());
         $this->assertSame(0, $errors->count());
         $this->assertNull($errors->first());
+        $this->assertEmpty($errors->codes());
     }
 
     /**
@@ -138,5 +139,20 @@ class ListOfErrorsTest extends TestCase
         $this->assertTrue($errors->contains(TestEnum::Foo));
         $this->assertFalse($errors->contains(fn (ErrorInterface $error) => 'Message E' === $error->message()));
         $this->assertFalse($errors->contains(TestEnum::Bar));
+    }
+
+    /**
+     * @return void
+     */
+    public function testCodes(): void
+    {
+        $errors = new ListOfErrors(
+            new Error(message: 'Message A'),
+            new Error(message: 'Message B', code: TestEnum::Foo),
+            new Error(message: 'Message C', code: TestEnum::Bar),
+            new Error(message: 'Message D', code: TestEnum::Foo),
+        );
+
+        $this->assertSame([TestEnum::Foo, TestEnum::Bar], $errors->codes());
     }
 }

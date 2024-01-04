@@ -45,6 +45,13 @@ interface ListOfErrorsInterface extends ListInterface
     public function contains(Closure|BackedEnum $matcher): bool;
 
     /**
+     * Get all the unique error codes in the list.
+     *
+     * @return array<BackedEnum>
+     */
+    public function codes(): array;
+
+    /**
      * Return a new instance with the provided error pushed on to the end of the list.
      *
      * @param ErrorInterface $error
