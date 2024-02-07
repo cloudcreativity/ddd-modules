@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2023 Cloud Creativity Limited
+ * Copyright 2024 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,26 +19,48 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
-use CloudCreativity\Modules\Toolkit\ContractException;
 use JsonSerializable;
-use Ramsey\Uuid\Uuid as BaseUuid;
 use Ramsey\Uuid\UuidInterface;
 
 final class Uuid implements IdentifierInterface, JsonSerializable
 {
+    /**
+     * @var UuidFactoryInterface|null
+     */
+    private static ?UuidFactoryInterface $factory = null;
+
+    /**
+     * @param UuidFactoryInterface|null $factory
+     * @return void
+     */
+    public static function setFactory(?UuidFactoryInterface $factory): void
+    {
+        self::$factory = $factory;
+    }
+
+    /**
+     * @return UuidFactoryInterface
+     */
+    public static function getFactory(): UuidFactoryInterface
+    {
+        if (self::$factory) {
+            return self::$factory;
+        }
+
+        return self::$factory = new UuidFactory();
+    }
+
     /**
      * @param IdentifierInterface|UuidInterface|string $value
      * @return self
      */
     public static function from(IdentifierInterface|UuidInterface|string $value): self
     {
+        $factory = self::getFactory();
+
         return match(true) {
-            $value instanceof self => $value,
-            $value instanceof UuidInterface => new self($value),
-            is_string($value) => new self(BaseUuid::fromString($value)),
-            default => throw new ContractException(
-                'Unexpected identifier type, received: ' . get_debug_type($value),
-            ),
+            $value instanceof IdentifierInterface, $value instanceof UuidInterface => $factory->from($value),
+            is_string($value) => $factory->fromString($value),
         };
     }
 
@@ -49,7 +71,7 @@ final class Uuid implements IdentifierInterface, JsonSerializable
      */
     public static function random(): self
     {
-        return new self(BaseUuid::uuid4());
+        return self::getFactory()->uuid4();
     }
 
     /**

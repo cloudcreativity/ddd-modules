@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2023 Cloud Creativity Limited
+ * Copyright 2024 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Toolkit\Result;
 
 use BackedEnum;
+use Closure;
 use CloudCreativity\Modules\Toolkit\Iterables\ListTrait;
 
 final class ListOfErrors implements ListOfErrorsInterface
@@ -53,9 +54,59 @@ final class ListOfErrors implements ListOfErrorsInterface
     /**
      * @inheritDoc
      */
-    public function first(): ?ErrorInterface
+    public function first(Closure|BackedEnum|null $matcher = null): ?ErrorInterface
     {
-        return $this->stack[0] ?? null;
+        if ($matcher === null) {
+            return $this->stack[0] ?? null;
+        }
+
+        if ($matcher instanceof BackedEnum) {
+            $matcher = static fn (ErrorInterface $error): bool => $error->is($matcher);
+        }
+
+        foreach ($this->stack as $error) {
+            if ($matcher($error)) {
+                return $error;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function contains(Closure|BackedEnum $matcher): bool
+    {
+        if ($matcher instanceof BackedEnum) {
+            $matcher = static fn (ErrorInterface $error): bool => $error->is($matcher);
+        }
+
+        foreach ($this->stack as $error) {
+            if ($matcher($error)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function codes(): array
+    {
+        $codes = [];
+
+        foreach ($this->stack as $error) {
+            $code = $error->code();
+
+            if ($code && !in_array($code, $codes, true)) {
+                $codes[] = $code;
+            }
+        }
+
+        return $codes;
     }
 
     /**

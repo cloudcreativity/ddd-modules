@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2023 Cloud Creativity Limited
+ * Copyright 2024 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,11 +25,21 @@ use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
 use CloudCreativity\Modules\Toolkit\Identifiers\StringId;
 use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
+use CloudCreativity\Modules\Toolkit\Identifiers\UuidFactoryInterface;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid as RamseyUuid;
 
 class UuidTest extends TestCase
 {
+    /**
+     * @return void
+     */
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        Uuid::setFactory(null);
+    }
+
     /**
      * @return void
      */
@@ -124,8 +134,30 @@ class UuidTest extends TestCase
      */
     public function testFromWithString(): void
     {
-        $expected = Uuid::random();
+        Uuid::setFactory($factory = $this->createMock(UuidFactoryInterface::class));
 
-        $this->assertObjectEquals($expected, Uuid::from($expected->toString()));
+        $factory
+            ->expects($this->once())
+            ->method('fromString')
+            ->with($str = 'blah!')
+            ->willReturn($expected = new Uuid(RamseyUuid::uuid4()));
+
+        $this->assertSame($expected, Uuid::from($str));
+    }
+
+    /**
+     * @return void
+     */
+    public function testFromWithBaseUuid(): void
+    {
+        Uuid::setFactory($factory = $this->createMock(UuidFactoryInterface::class));
+
+        $factory
+            ->expects($this->once())
+            ->method('from')
+            ->with($this->identicalTo($base = RamseyUuid::uuid4()))
+            ->willReturn($expected = new Uuid($base));
+
+        $this->assertSame($expected, Uuid::from($base));
     }
 }

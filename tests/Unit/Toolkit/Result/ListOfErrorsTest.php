@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2023 Cloud Creativity Limited
+ * Copyright 2024 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,9 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Result;
 
+use CloudCreativity\Modules\Tests\Unit\Infrastructure\Log\TestEnum;
 use CloudCreativity\Modules\Toolkit\Result\Error;
+use CloudCreativity\Modules\Toolkit\Result\ErrorInterface;
 use CloudCreativity\Modules\Toolkit\Result\KeyedSetOfErrors;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrorsInterface;
@@ -44,7 +46,6 @@ class ListOfErrorsTest extends TestCase
         $this->assertCount(2, $errors);
         $this->assertTrue($errors->isNotEmpty());
         $this->assertFalse($errors->isEmpty());
-        $this->assertSame($a, $errors->first());
     }
 
     /**
@@ -58,6 +59,7 @@ class ListOfErrorsTest extends TestCase
         $this->assertFalse($errors->isNotEmpty());
         $this->assertSame(0, $errors->count());
         $this->assertNull($errors->first());
+        $this->assertEmpty($errors->codes());
     }
 
     /**
@@ -99,5 +101,58 @@ class ListOfErrorsTest extends TestCase
         $this->assertSame([$a, $b], $stack1->all());
         $this->assertSame([$c, $d], $stack2->all());
         $this->assertSame([$a, $b, $c, $d], $actual->all());
+    }
+
+    /**
+     * @return void
+     */
+    public function testFirst(): void
+    {
+        $errors = new ListOfErrors(
+            $a = new Error(null, 'Message A'),
+            new Error(null, 'Message B'),
+            $c = new Error(null, 'Message C'),
+            new Error(null, 'Message D'),
+            $e = new Error(code: TestEnum::Bar),
+        );
+
+        $this->assertSame($a, $errors->first());
+        $this->assertSame($c, $errors->first(fn (ErrorInterface $error) => 'Message C' === $error->message()));
+        $this->assertSame($e, $errors->first(TestEnum::Bar));
+        $this->assertNull($errors->first(fn (ErrorInterface $error) => 'Message E' === $error->message()));
+        $this->assertNull($errors->first(TestEnum::Foo));
+    }
+
+    /**
+     * @return void
+     */
+    public function testContains(): void
+    {
+        $errors = new ListOfErrors(
+            new Error(message: 'Message A'),
+            new Error(message: 'Message B'),
+            new Error(message: 'Message C'),
+            new Error(message: 'Message D', code: TestEnum::Foo),
+        );
+
+        $this->assertTrue($errors->contains(fn (ErrorInterface $error) => 'Message C' === $error->message()));
+        $this->assertTrue($errors->contains(TestEnum::Foo));
+        $this->assertFalse($errors->contains(fn (ErrorInterface $error) => 'Message E' === $error->message()));
+        $this->assertFalse($errors->contains(TestEnum::Bar));
+    }
+
+    /**
+     * @return void
+     */
+    public function testCodes(): void
+    {
+        $errors = new ListOfErrors(
+            new Error(message: 'Message A'),
+            new Error(message: 'Message B', code: TestEnum::Foo),
+            new Error(message: 'Message C', code: TestEnum::Bar),
+            new Error(message: 'Message D', code: TestEnum::Foo),
+        );
+
+        $this->assertSame([TestEnum::Foo, TestEnum::Bar], $errors->codes());
     }
 }

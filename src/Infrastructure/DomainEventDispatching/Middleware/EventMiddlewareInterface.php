@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2023 Cloud Creativity Limited
+ * Copyright 2024 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ interface EventMiddlewareInterface
      * Handle the event.
      *
      * @param DomainEventInterface $event
-     * @param Closure $next
+     * @param Closure(DomainEventInterface): void $next
      * @return void
      */
     public function __invoke(DomainEventInterface $event, Closure $next): void;

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2023 Cloud Creativity Limited
+ * Copyright 2024 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ namespace CloudCreativity\Modules\Infrastructure\Persistence;
 
 use Closure;
 use CloudCreativity\Modules\Infrastructure\InfrastructureException;
+use CloudCreativity\Modules\Infrastructure\Log\ExceptionReporterInterface;
+use Throwable;
 
 final class UnitOfWorkManager implements UnitOfWorkManagerInterface
 {
@@ -48,9 +50,12 @@ final class UnitOfWorkManager implements UnitOfWorkManagerInterface
      * UnitOfWorkManager constructor.
      *
      * @param UnitOfWorkInterface $unitOfWork
+     * @param ExceptionReporterInterface|null $reporter
      */
-    public function __construct(private readonly UnitOfWorkInterface $unitOfWork)
-    {
+    public function __construct(
+        private readonly UnitOfWorkInterface $unitOfWork,
+        private readonly ?ExceptionReporterInterface $reporter = null,
+    ) {
     }
 
     /**
@@ -64,13 +69,47 @@ final class UnitOfWorkManager implements UnitOfWorkManagerInterface
             );
         }
 
+        if ($attempts < 1) {
+            throw new InfrastructureException('Attempts must be greater than zero.');
+        }
+
+        return $this->retry($callback, $attempts);
+    }
+
+    /**
+     * @param Closure $callback
+     * @param int $attempts
+     * @return mixed
+     */
+    private function retry(Closure $callback, int $attempts): mixed
+    {
+        try {
+            return $this->transaction($callback);
+        } catch (Throwable $ex) {
+            if ($attempts === 1) {
+                throw $ex;
+            }
+
+            // Report "swallowed" exceptions.
+            $this->reporter?->report($ex);
+        }
+
+        return $this->retry($callback, $attempts - 1);
+    }
+
+    /**
+     * @param Closure $callback
+     * @return mixed
+     */
+    private function transaction(Closure $callback): mixed
+    {
         try {
             $result = $this->unitOfWork->execute(function () use ($callback) {
                 $this->active = true;
                 $value = $callback();
                 $this->executeBeforeCommit();
                 return $value;
-            }, $attempts);
+            });
             $this->committed = true;
             $this->executeAfterCommit();
             return $result;

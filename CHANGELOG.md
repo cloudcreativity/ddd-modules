@@ -3,6 +3,35 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/) and [this changelog format](http://keepachangelog.com/).
 
+## Unreleased
+
+## [0.6.0] - 2024-02-07
+
+### Added
+
+- New `DeferredDispatcher` class for dispatching domain events when not using a unit of work.
+- New UUID factory interface and class, that wraps the `ramsey/uuid` factory to return UUID identifiers.
+- GUIDs that wrap UUIDs can now be created via the static `Guid::fromUuid()` method.
+- New `SetupBeforeDispatch` and `TearDownAfterDispatch` bus middleware, that can be used either to setup (and optionally
+  tear down) application state around the dispatching of a message, or to just do tear down work.
+- The `EventBus` namespace now has a working implementation for publishing integration events.
+- Can now provide a closure to the `ListOfErrorsInterface::first()` method to find the first matching error.
+- Added the following methods to the `ListOfErrorsInterface`:
+    - `contains()` - determines whether the list contains a matching error.
+    - `codes()` - returns an array containing the unique error codes in the list.
+- Added an `ErrorInterface::is()` method to determine whether an error matches a given code.
+
+### Changed
+
+- **BREAKING** - renamed the domain event `Dispatcher` class to `UnitOfWorkAwareDispatcher`.
+- **BREAKING** - removed the `IntegrationEvents` namespace and moved to the `Infrastructure\EventBus` namespace.
+- **BREAKING** - the `IntegrationEventInterface` now expects the UUID to be an identifier UUID, not a Ramsey UUID.
+- The UUID factory from the `ramsey/uuid` package is now used when creating new UUID identifiers.
+
+### Fixed
+
+- The unit of work manager now correctly handles re-attempts so that deferred events are not dispatched multiple times.
+
 ## [0.5.0] - 2023-12-02
 
 ### Added

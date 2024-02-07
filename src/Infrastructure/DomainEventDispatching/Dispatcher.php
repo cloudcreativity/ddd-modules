@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2023 Cloud Creativity Limited
+ * Copyright 2024 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,6 @@ namespace CloudCreativity\Modules\Infrastructure\DomainEventDispatching;
 
 use Closure;
 use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
-use CloudCreativity\Modules\Domain\Events\OccursImmediately;
-use CloudCreativity\Modules\Infrastructure\Persistence\UnitOfWorkManagerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
@@ -51,12 +49,10 @@ class Dispatcher implements DispatcherInterface
      * Dispatcher constructor.
      *
      * @param ListenerContainerInterface $listeners
-     * @param UnitOfWorkManagerInterface $unitOfWorkManager
      * @param PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipeline
      */
     public function __construct(
         private readonly ListenerContainerInterface $listeners,
-        private readonly UnitOfWorkManagerInterface $unitOfWorkManager,
         PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipeline = null,
     ) {
         $this->pipelineFactory = PipelineBuilderFactory::make($pipeline);
@@ -99,23 +95,16 @@ class Dispatcher implements DispatcherInterface
      */
     public function dispatch(DomainEventInterface $event): void
     {
-        if ($event instanceof OccursImmediately) {
-            $this->dispatchNow($event);
-            return;
-        }
-
-        $this->unitOfWorkManager->afterCommit(function () use ($event): void {
-            $this->dispatchNow($event);
-        });
+        $this->dispatchNow($event);
     }
 
     /**
-     * Dispatch the event now.
+     * Dispatch the events immediately.
      *
      * @param DomainEventInterface $event
      * @return void
      */
-    private function dispatchNow(DomainEventInterface $event): void
+    protected function dispatchNow(DomainEventInterface $event): void
     {
         $pipeline = $this->pipelineFactory
             ->getPipelineBuilder()
@@ -123,6 +112,50 @@ class Dispatcher implements DispatcherInterface
             ->build(new MiddlewareProcessor($this->dispatcher()));
 
         $pipeline->process($event);
+    }
+
+    /**
+     * @return Closure
+     */
+    private function dispatcher(): Closure
+    {
+        return function (DomainEventInterface $event): DomainEventInterface {
+            foreach ($this->cursor($event::class) as $listener) {
+                $this->execute($event, $listener);
+            }
+            return $event;
+        };
+    }
+
+    /**
+     * Get a cursor to iterate through all listeners for the event.
+     *
+     * @param string $eventName
+     * @return Generator<EventHandler>
+     */
+    protected function cursor(string $eventName): Generator
+    {
+        foreach ($this->bindings[$eventName] ?? [] as $listener) {
+            if (is_string($listener)) {
+                $listener = $this->listeners->get($listener);
+            }
+
+            assert(is_object($listener), 'Expecting listener to be an object.');
+
+            yield new EventHandler($listener);
+        }
+    }
+
+    /**
+     * Execute the listener.
+     *
+     * @param DomainEventInterface $event
+     * @param EventHandler $listener
+     * @return void
+     */
+    protected function execute(DomainEventInterface $event, EventHandler $listener): void
+    {
+        $listener($event);
     }
 
     /**
@@ -138,63 +171,5 @@ class Dispatcher implements DispatcherInterface
         }
 
         return is_string($listener) && !empty($listener);
-    }
-
-    /**
-     * @return Closure
-     */
-    private function dispatcher(): Closure
-    {
-        return function (DomainEventInterface $event): DomainEventInterface {
-            foreach ($this->cursor($event::class) as $listener) {
-                $this->dispatchOrQueue($event, $listener);
-            }
-            return $event;
-        };
-    }
-
-    /**
-     * Execute the listener or queue it in the transaction manager.
-     *
-     * @param DomainEventInterface $event
-     * @param EventHandler $listener
-     * @return void
-     */
-    private function dispatchOrQueue(DomainEventInterface $event, EventHandler $listener): void
-    {
-        if ($listener->beforeCommit()) {
-            $this->unitOfWorkManager->beforeCommit(static function () use ($event, $listener): void {
-                $listener($event);
-            });
-            return;
-        }
-
-        if ($listener->afterCommit()) {
-            $this->unitOfWorkManager->afterCommit(static function () use ($event, $listener): void {
-                $listener($event);
-            });
-            return;
-        }
-
-        $listener($event);
-    }
-
-    /**
-     * Get a cursor to iterate through all listeners for the event.
-     *
-     * @param string $eventName
-     * @return Generator<EventHandler>
-     */
-    private function cursor(string $eventName): Generator
-    {
-        foreach ($this->bindings[$eventName] ?? [] as $listener) {
-            if (is_string($listener)) {
-                $listener = $this->listeners->get($listener);
-            }
-
-            assert(is_object($listener), 'Expecting listener to be an object.');
-
-            yield new EventHandler($listener);
-        }
     }
 }

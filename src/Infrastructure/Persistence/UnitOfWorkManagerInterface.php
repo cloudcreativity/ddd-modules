@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2023 Cloud Creativity Limited
+ * Copyright 2024 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ interface UnitOfWorkManagerInterface
     /**
      * Register a callback to be executed before the unit of work is committed.
      *
-     * @param callable $callback
+     * @param callable(): void $callback
      * @return void
      */
     public function beforeCommit(callable $callback): void;
@@ -43,7 +43,7 @@ interface UnitOfWorkManagerInterface
     /**
      * Register a callback to be executed after the unit of work is committed.
      *
-     * @param callable $callback
+     * @param callable(): void $callback
      * @return void
      */
     public function afterCommit(callable $callback): void;

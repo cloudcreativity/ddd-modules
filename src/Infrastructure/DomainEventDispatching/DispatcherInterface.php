@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2023 Cloud Creativity Limited
+ * Copyright 2024 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ interface DispatcherInterface extends DomainDispatcherInterface
      * Attach an event listener.
      *
      * @param class-string<DomainEventInterface> $event
-     * @param string|Closure|array<int,string|Closure> $listener
+     * @param string|Closure|array<string|Closure> $listener
      * @return void
      */
     public function listen(string $event, string|Closure|array $listener): void;

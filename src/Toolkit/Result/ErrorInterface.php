@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2023 Cloud Creativity Limited
+ * Copyright 2024 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,4 +43,12 @@ interface ErrorInterface
      * @return BackedEnum|null
      */
     public function code(): ?BackedEnum;
+
+    /**
+     * Is the error the specified error code?
+     *
+     * @param BackedEnum $code
+     * @return bool
+     */
+    public function is(BackedEnum $code): bool;
 }

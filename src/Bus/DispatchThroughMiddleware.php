@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2023 Cloud Creativity Limited
+ * Copyright 2024 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ interface DispatchThroughMiddleware
     /**
      * Get the middleware for the command or query.
      *
-     * @return array<int,callable|string>
+     * @return array<callable|string>
      */
     public function middleware(): array;
 }

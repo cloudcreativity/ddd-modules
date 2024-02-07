@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2023 Cloud Creativity Limited
+ * Copyright 2024 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,20 +17,19 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\IntegrationEvents;
+namespace CloudCreativity\Modules\Infrastructure\EventBus\Middleware;
 
-use DateTimeImmutable;
-use Ramsey\Uuid\UuidInterface;
+use Closure;
+use CloudCreativity\Modules\Infrastructure\EventBus\IntegrationEventInterface;
 
-interface IntegrationEventInterface
+interface IntegrationEventMiddlewareInterface
 {
     /**
-     * @return UuidInterface
+     * Handle the event being published or notified.
+     *
+     * @param IntegrationEventInterface $event
+     * @param Closure(IntegrationEventInterface): void $next
+     * @return void
      */
-    public function uuid(): UuidInterface;
-
-    /**
-     * @return DateTimeImmutable
-     */
-    public function occurredAt(): DateTimeImmutable;
+    public function __invoke(IntegrationEventInterface $event, Closure $next): void;
 }

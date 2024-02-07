@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2023 Cloud Creativity Limited
+ * Copyright 2024 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ interface MessageMiddlewareInterface
      * Handle the message.
      *
      * @param MessageInterface $message
-     * @param Closure $next
+     * @param Closure(MessageInterface): ResultInterface<mixed> $next
      * @return ResultInterface<mixed>
      */
     public function __invoke(MessageInterface $message, Closure $next): ResultInterface;

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2023 Cloud Creativity Limited
+ * Copyright 2024 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,25 +19,21 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\EventBus;
 
-use CloudCreativity\Modules\IntegrationEvents\IntegrationEventInterface;
-use CloudCreativity\Modules\IntegrationEvents\PublisherInterface;
-
-interface EventBusInterface extends PublisherInterface
+interface EventBusInterface
 {
     /**
-     * Notify subscribers of an integration event.
+     * Publish an integration event (outbound).
+     *
+     * @param IntegrationEventInterface $event
+     * @return void
+     */
+    public function publish(IntegrationEventInterface $event): void;
+
+    /**
+     * Notify subscribers of an inbound integration event.
      *
      * @param IntegrationEventInterface $event
      * @return void
      */
     public function notify(IntegrationEventInterface $event): void;
-
-    /**
-     * Subscribe to an integration event.
-     *
-     * @param class-string<IntegrationEventInterface> $event
-     * @param string $listener
-     * @return void
-     */
-    public function subscribe(string $event, string $listener): void;
 }
