@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [0.6.0] - 2024-02-07
+
 ### Added
 
 - New `DeferredDispatcher` class for dispatching domain events when not using a unit of work.
