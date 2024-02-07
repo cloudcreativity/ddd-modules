@@ -24,7 +24,7 @@ interface DispatchThroughMiddleware
     /**
      * Get the middleware for the command or query.
      *
-     * @return array<int,callable|string>
+     * @return array<callable|string>
      */
     public function middleware(): array;
 }

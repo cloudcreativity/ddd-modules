@@ -29,7 +29,7 @@ interface DispatcherInterface extends DomainDispatcherInterface
      * Attach an event listener.
      *
      * @param class-string<DomainEventInterface> $event
-     * @param string|Closure|array<int,string|Closure> $listener
+     * @param string|Closure|array<string|Closure> $listener
      * @return void
      */
     public function listen(string $event, string|Closure|array $listener): void;

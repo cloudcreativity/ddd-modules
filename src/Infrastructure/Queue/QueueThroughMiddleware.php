@@ -24,7 +24,7 @@ interface QueueThroughMiddleware
     /**
      * Get the middleware for queue.
      *
-     * @return array<int,callable|string>
+     * @return array<callable|string>
      */
     public function middleware(): array;
 }
