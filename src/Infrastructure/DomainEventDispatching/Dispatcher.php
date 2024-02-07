@@ -46,7 +46,7 @@ class Dispatcher implements DispatcherInterface
     private array $pipes = [];
 
     /**
-     * AbstractDispatcher constructor.
+     * Dispatcher constructor.
      *
      * @param ListenerContainerInterface $listeners
      * @param PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipeline

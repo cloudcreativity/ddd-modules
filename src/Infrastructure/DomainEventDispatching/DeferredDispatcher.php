@@ -22,7 +22,7 @@ namespace CloudCreativity\Modules\Infrastructure\DomainEventDispatching;
 use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
 use CloudCreativity\Modules\Domain\Events\OccursImmediately;
 
-class DeferredDispatcher extends Dispatcher implements DeferredDispatcherInterface
+final class DeferredDispatcher extends Dispatcher implements DeferredDispatcherInterface
 {
     /**
      * @var array<DomainEventInterface>
@@ -62,13 +62,5 @@ class DeferredDispatcher extends Dispatcher implements DeferredDispatcherInterfa
     public function forget(): void
     {
         $this->deferred = [];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function execute(DomainEventInterface $event, EventHandler $listener): void
-    {
-        $listener($event);
     }
 }
