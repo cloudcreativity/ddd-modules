@@ -22,7 +22,7 @@ namespace CloudCreativity\Modules\Infrastructure\DomainEventDispatching;
 use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
 use CloudCreativity\Modules\Domain\Events\OccursImmediately;
 
-final class DeferredDispatcher extends Dispatcher implements DeferredDispatcherInterface
+class DeferredDispatcher extends Dispatcher implements DeferredDispatcherInterface
 {
     /**
      * @var array<DomainEventInterface>

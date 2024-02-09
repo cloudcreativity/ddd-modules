@@ -21,12 +21,8 @@ deptrac:
       - PSR Log
     Domain (Common):
       - Toolkit
-    Integration Events (Common):
-      - Toolkit
-      - Ramsey UUID
     Infrastructure (Common):
       - Toolkit
       - Domain (Common)
-      - Integration Events (Common)
       - Ramsey UUID
       - PSR Log

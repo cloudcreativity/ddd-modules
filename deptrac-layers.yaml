@@ -12,10 +12,6 @@ deptrac:
       collectors:
         - type: className
           value: CloudCreativity\\Modules\\Domain.*
-    - name: Integration Events (Common)
-      collectors:
-        - type: className
-          value: CloudCreativity\\Modules\\IntegrationEvents.*
     - name: Infrastructure (Common)
       collectors:
         - type: className
