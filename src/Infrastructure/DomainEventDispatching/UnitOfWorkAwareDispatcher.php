@@ -25,7 +25,7 @@ use CloudCreativity\Modules\Infrastructure\Persistence\UnitOfWorkManagerInterfac
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactoryInterface;
 
-final class UnitOfWorkAwareDispatcher extends Dispatcher implements DispatcherInterface
+class UnitOfWorkAwareDispatcher extends Dispatcher implements DispatcherInterface
 {
     /**
      * UnitOfWorkAwareDispatcher constructor.

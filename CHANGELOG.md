@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+### Fixed
+
+- Removed `final` from the `DeferredDispatcher` and `UnitOfWorkAwareDispatcher` classes so that they can be extended.
+
 ## [0.6.0] - 2024-02-07
 
 ### Added
