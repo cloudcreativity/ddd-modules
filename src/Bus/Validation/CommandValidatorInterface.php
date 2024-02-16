@@ -19,7 +19,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Bus\Validation;
 
-use CloudCreativity\Modules\Bus\CommandInterface;
+use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrorsInterface;
 
 interface CommandValidatorInterface extends ValidatorInterface

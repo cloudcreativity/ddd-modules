@@ -41,6 +41,16 @@ class ModuleBasenameTest extends TestCase
                 'GetScheduledProcessListQuery',
             ],
             [
+                'CloudCreativity\Application\Modules\Podcasts\BoundedContext\Application\IntegrationEvents\Outbound\PodcastPublished',
+                'Podcasts',
+                'PodcastPublished',
+            ],
+            [
+                'CloudCreativity\Application\Modules\Checkout\Shared\IntegrationEvents\Inbound\OrderCompleted',
+                'Checkout',
+                'OrderCompleted',
+            ],
+            [
                 'CloudCreativity\Application\Modules\WaitList\BoundedContext\Domain\Events\TicketsWereReleased',
                 'WaitList',
                 'TicketsWereReleased',

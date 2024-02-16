@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+### Changed
+
+- **BREAKING** Moved the following interfaces to the `Toolkit\Messages` namespace:
+    - `MessageInterface`
+    - `IntegrationEventInterface`
+- **BREAKING** Interfaces that type-hinted `Bus\CommandInterface`, `Bus\QueryInterface` or `Bus\MessageInterface` now
+  type-hint the new interfaces in the `Toolkit\Messages` namespace.
+- **BREAKING** Moved the `EventBus` implementation from `Infrastructure\EventBus` to `EventBus`. In Deptrac, this
+  namespace is now part of the _Application Bus_ layer.
+
+### Deprecated
+
+- The `Bus\CommandInterface` and `Bus\QueryInterface` have been deprecated in favour of the new interfaces in the
+  `Toolkit\Messages` namespace.
+
 ## [0.6.1] - 2024-02-09
 
 ### Fixed

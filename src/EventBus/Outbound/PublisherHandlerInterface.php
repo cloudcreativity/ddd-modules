@@ -17,20 +17,18 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Bus\Middleware;
+namespace CloudCreativity\Modules\EventBus\Outbound;
 
-use Closure;
-use CloudCreativity\Modules\Toolkit\Messages\MessageInterface;
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
+use CloudCreativity\Modules\EventBus\PublishThroughMiddleware;
+use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 
-interface MessageMiddlewareInterface
+interface PublisherHandlerInterface extends PublishThroughMiddleware
 {
     /**
-     * Handle the message.
+     * Handle the outbound integration event.
      *
-     * @param MessageInterface $message
-     * @param Closure(MessageInterface): ResultInterface<mixed> $next
-     * @return ResultInterface<mixed>
+     * @param IntegrationEventInterface $event
+     * @return void
      */
-    public function __invoke(MessageInterface $message, Closure $next): ResultInterface;
+    public function __invoke(IntegrationEventInterface $event): void;
 }

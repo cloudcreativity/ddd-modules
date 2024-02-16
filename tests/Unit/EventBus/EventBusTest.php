@@ -17,13 +17,13 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\EventBus;
+namespace CloudCreativity\Modules\Tests\Unit\EventBus;
 
-use CloudCreativity\Modules\Infrastructure\EventBus\EventBus;
-use CloudCreativity\Modules\Infrastructure\EventBus\Inbound\NotifierInterface;
-use CloudCreativity\Modules\Infrastructure\EventBus\Outbound\PublisherInterface;
-use CloudCreativity\Modules\Infrastructure\InfrastructureException;
+use CloudCreativity\Modules\EventBus\EventBus;
+use CloudCreativity\Modules\EventBus\Inbound\NotifierInterface;
+use CloudCreativity\Modules\EventBus\Outbound\PublisherInterface;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class EventBusTest extends TestCase
 {
@@ -51,7 +51,7 @@ class EventBusTest extends TestCase
     {
         $bus = new EventBus();
 
-        $this->expectException(InfrastructureException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(
             'Event bus must have a publisher instance to publish an outbound integration event.',
         );
@@ -83,7 +83,7 @@ class EventBusTest extends TestCase
     {
         $bus = new EventBus();
 
-        $this->expectException(InfrastructureException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(
             'Event bus must have a notifier instance to receive an inbound integration event.',
         );

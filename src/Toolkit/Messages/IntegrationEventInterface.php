@@ -17,8 +17,20 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Bus;
+namespace CloudCreativity\Modules\Toolkit\Messages;
 
-interface MessageInterface
+use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
+use DateTimeImmutable;
+
+interface IntegrationEventInterface extends MessageInterface
 {
+    /**
+     * @return Uuid
+     */
+    public function uuid(): Uuid;
+
+    /**
+     * @return DateTimeImmutable
+     */
+    public function occurredAt(): DateTimeImmutable;
 }

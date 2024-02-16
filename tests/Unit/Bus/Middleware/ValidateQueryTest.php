@@ -20,8 +20,8 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Bus\Middleware;
 
 use CloudCreativity\Modules\Bus\Middleware\ValidateQuery;
-use CloudCreativity\Modules\Bus\QueryInterface;
 use CloudCreativity\Modules\Bus\Validation\QueryValidatorInterface;
+use CloudCreativity\Modules\Toolkit\Messages\QueryInterface;
 use CloudCreativity\Modules\Toolkit\Result\Error;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;

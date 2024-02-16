@@ -17,14 +17,8 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Infrastructure\EventBus;
+namespace CloudCreativity\Modules\Toolkit\Messages;
 
-interface PublishThroughMiddleware
+interface QueryInterface extends MessageInterface
 {
-    /**
-     * Get the middleware for integration event publisher.
-     *
-     * @return array<callable|string>
-     */
-    public function middleware(): array;
 }

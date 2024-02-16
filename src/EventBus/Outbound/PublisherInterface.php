@@ -17,18 +17,17 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Infrastructure\EventBus\Outbound;
+namespace CloudCreativity\Modules\EventBus\Outbound;
 
-use CloudCreativity\Modules\Infrastructure\EventBus\IntegrationEventInterface;
-use CloudCreativity\Modules\Infrastructure\EventBus\PublishThroughMiddleware;
+use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 
-interface PublisherHandlerInterface extends PublishThroughMiddleware
+interface PublisherInterface
 {
     /**
-     * Handle the outbound integration event.
+     * Publish an outbound integration event.
      *
      * @param IntegrationEventInterface $event
      * @return void
      */
-    public function __invoke(IntegrationEventInterface $event): void;
+    public function publish(IntegrationEventInterface $event): void;
 }

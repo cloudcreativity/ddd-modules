@@ -8,6 +8,8 @@ deptrac:
       collectors:
         - type: className
           value: CloudCreativity\\Modules\\Bus.*
+        - type: className
+          value: CloudCreativity\\Modules\\EventBus.*
     - name: Domain (Common)
       collectors:
         - type: className

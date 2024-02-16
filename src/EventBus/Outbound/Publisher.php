@@ -17,9 +17,9 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Infrastructure\EventBus\Outbound;
+namespace CloudCreativity\Modules\EventBus\Outbound;
 
-use CloudCreativity\Modules\Infrastructure\EventBus\IntegrationEventInterface;
+use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;

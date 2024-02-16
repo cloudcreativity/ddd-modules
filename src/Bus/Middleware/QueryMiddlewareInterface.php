@@ -20,7 +20,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Bus\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Bus\QueryInterface;
+use CloudCreativity\Modules\Toolkit\Messages\QueryInterface;
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
 interface QueryMiddlewareInterface

@@ -17,11 +17,11 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Infrastructure\EventBus\Middleware;
+namespace CloudCreativity\Modules\EventBus\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Infrastructure\EventBus\IntegrationEventInterface;
 use CloudCreativity\Modules\Infrastructure\Log\ObjectContext;
+use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
