@@ -20,8 +20,8 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Bus\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Bus\MessageInterface;
 use CloudCreativity\Modules\Bus\Middleware\SetupBeforeDispatch;
+use CloudCreativity\Modules\Toolkit\Messages\MessageInterface;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;

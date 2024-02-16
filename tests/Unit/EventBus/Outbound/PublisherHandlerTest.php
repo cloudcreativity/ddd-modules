@@ -17,13 +17,13 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\EventBus\Outbound;
+namespace CloudCreativity\Modules\Tests\Unit\EventBus\Outbound;
 
-use CloudCreativity\Modules\Infrastructure\EventBus\IntegrationEventInterface;
-use CloudCreativity\Modules\Infrastructure\EventBus\Outbound\PublisherHandler;
-use CloudCreativity\Modules\Infrastructure\EventBus\Outbound\PublisherHandlerInterface;
-use CloudCreativity\Modules\Tests\Unit\Infrastructure\EventBus\TestIntegrationEvent;
-use CloudCreativity\Modules\Tests\Unit\Infrastructure\EventBus\TestPublisher;
+use CloudCreativity\Modules\EventBus\Outbound\PublisherHandler;
+use CloudCreativity\Modules\EventBus\Outbound\PublisherHandlerInterface;
+use CloudCreativity\Modules\Tests\Unit\EventBus\TestIntegrationEvent;
+use CloudCreativity\Modules\Tests\Unit\EventBus\TestPublisher;
+use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 use PHPUnit\Framework\TestCase;
 
 class PublisherHandlerTest extends TestCase

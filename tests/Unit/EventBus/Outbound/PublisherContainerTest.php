@@ -17,14 +17,14 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\EventBus\Outbound;
+namespace CloudCreativity\Modules\Tests\Unit\EventBus\Outbound;
 
-use CloudCreativity\Modules\Infrastructure\EventBus\Outbound\PublisherContainer;
-use CloudCreativity\Modules\Infrastructure\EventBus\Outbound\PublisherHandler;
-use CloudCreativity\Modules\Infrastructure\InfrastructureException;
-use CloudCreativity\Modules\Tests\Unit\Infrastructure\EventBus\TestIntegrationEvent;
-use CloudCreativity\Modules\Tests\Unit\Infrastructure\EventBus\TestPublisher;
+use CloudCreativity\Modules\EventBus\Outbound\PublisherContainer;
+use CloudCreativity\Modules\EventBus\Outbound\PublisherHandler;
+use CloudCreativity\Modules\Tests\Unit\EventBus\TestIntegrationEvent;
+use CloudCreativity\Modules\Tests\Unit\EventBus\TestPublisher;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class PublisherContainerTest extends TestCase
 {
@@ -55,7 +55,7 @@ class PublisherContainerTest extends TestCase
         $this->assertEquals(new PublisherHandler($c), $container->get($event3::class));
         $this->assertEquals(new PublisherHandler($d), $container->get($event4::class));
 
-        $this->expectException(InfrastructureException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('No publisher bound for integration event: ' . $event5::class);
 
         $container->get($event5::class);

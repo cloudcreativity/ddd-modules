@@ -17,27 +17,19 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Infrastructure\EventBus\Inbound;
+namespace CloudCreativity\Modules\EventBus\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Infrastructure\EventBus\IntegrationEventInterface;
+use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 
-interface NotifierInterface
+interface IntegrationEventMiddlewareInterface
 {
     /**
-     * Notify subscribers of an inbound integration event.
+     * Handle the event being published or notified.
      *
      * @param IntegrationEventInterface $event
+     * @param Closure(IntegrationEventInterface): void $next
      * @return void
      */
-    public function notify(IntegrationEventInterface $event): void;
-
-    /**
-     * Subscribe to an integration event.
-     *
-     * @param class-string<IntegrationEventInterface> $event
-     * @param string|Closure|array<string|Closure> $receiver
-     * @return void
-     */
-    public function subscribe(string $event, string|Closure|array $receiver): void;
+    public function __invoke(IntegrationEventInterface $event, Closure $next): void;
 }

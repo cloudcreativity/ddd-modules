@@ -17,10 +17,10 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\EventBus;
+namespace CloudCreativity\Modules\Tests\Unit\EventBus;
 
-use CloudCreativity\Modules\Infrastructure\EventBus\IntegrationEventInterface;
 use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
+use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 use DateTimeImmutable;
 
 class TestIntegrationEvent implements IntegrationEventInterface

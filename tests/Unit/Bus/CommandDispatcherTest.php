@@ -22,7 +22,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Bus;
 use CloudCreativity\Modules\Bus\CommandDispatcher;
 use CloudCreativity\Modules\Bus\CommandHandlerContainerInterface;
 use CloudCreativity\Modules\Bus\CommandHandlerInterface;
-use CloudCreativity\Modules\Bus\CommandInterface;
+use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;

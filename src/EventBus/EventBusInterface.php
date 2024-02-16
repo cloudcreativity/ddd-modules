@@ -17,17 +17,25 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Infrastructure\EventBus\Outbound;
+namespace CloudCreativity\Modules\EventBus;
 
-use CloudCreativity\Modules\Infrastructure\EventBus\IntegrationEventInterface;
+use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 
-interface PublisherInterface
+interface EventBusInterface
 {
     /**
-     * Publish an outbound integration event.
+     * Publish an integration event (outbound).
      *
      * @param IntegrationEventInterface $event
      * @return void
      */
     public function publish(IntegrationEventInterface $event): void;
+
+    /**
+     * Notify subscribers of an inbound integration event.
+     *
+     * @param IntegrationEventInterface $event
+     * @return void
+     */
+    public function notify(IntegrationEventInterface $event): void;
 }

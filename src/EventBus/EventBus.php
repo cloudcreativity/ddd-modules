@@ -17,11 +17,12 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Infrastructure\EventBus;
+namespace CloudCreativity\Modules\EventBus;
 
-use CloudCreativity\Modules\Infrastructure\EventBus\Inbound\NotifierInterface;
-use CloudCreativity\Modules\Infrastructure\EventBus\Outbound\PublisherInterface;
-use CloudCreativity\Modules\Infrastructure\InfrastructureException;
+use CloudCreativity\Modules\EventBus\Inbound\NotifierInterface;
+use CloudCreativity\Modules\EventBus\Outbound\PublisherInterface;
+use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
+use RuntimeException;
 
 class EventBus implements EventBusInterface
 {
@@ -47,7 +48,7 @@ class EventBus implements EventBusInterface
             return;
         }
 
-        throw new InfrastructureException(
+        throw new RuntimeException(
             'Event bus must have a publisher instance to publish an outbound integration event.',
         );
     }
@@ -62,7 +63,7 @@ class EventBus implements EventBusInterface
             return;
         }
 
-        throw new InfrastructureException(
+        throw new RuntimeException(
             'Event bus must have a notifier instance to receive an inbound integration event.',
         );
     }

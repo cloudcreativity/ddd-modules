@@ -19,7 +19,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Bus\Validation;
 
-use CloudCreativity\Modules\Bus\QueryInterface;
+use CloudCreativity\Modules\Toolkit\Messages\QueryInterface;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrorsInterface;
 

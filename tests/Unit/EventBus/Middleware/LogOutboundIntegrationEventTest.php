@@ -17,11 +17,11 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\EventBus\Middleware;
+namespace CloudCreativity\Modules\Tests\Unit\EventBus\Middleware;
 
-use CloudCreativity\Modules\Infrastructure\EventBus\IntegrationEventInterface;
-use CloudCreativity\Modules\Infrastructure\EventBus\Middleware\LogOutboundIntegrationEvent;
-use CloudCreativity\Modules\Tests\Unit\Infrastructure\EventBus\TestIntegrationEvent;
+use CloudCreativity\Modules\EventBus\Middleware\LogOutboundIntegrationEvent;
+use CloudCreativity\Modules\Tests\Unit\EventBus\TestIntegrationEvent;
+use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;

@@ -17,19 +17,8 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Infrastructure\EventBus\Middleware;
+namespace CloudCreativity\Modules\Toolkit\Messages;
 
-use Closure;
-use CloudCreativity\Modules\Infrastructure\EventBus\IntegrationEventInterface;
-
-interface IntegrationEventMiddlewareInterface
+interface MessageInterface
 {
-    /**
-     * Handle the event being published or notified.
-     *
-     * @param IntegrationEventInterface $event
-     * @param Closure(IntegrationEventInterface): void $next
-     * @return void
-     */
-    public function __invoke(IntegrationEventInterface $event, Closure $next): void;
 }

@@ -17,11 +17,11 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Infrastructure\EventBus\Outbound;
+namespace CloudCreativity\Modules\EventBus\Outbound;
 
 use Closure;
-use CloudCreativity\Modules\Infrastructure\EventBus\IntegrationEventInterface;
-use CloudCreativity\Modules\Infrastructure\InfrastructureException;
+use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
+use RuntimeException;
 
 final class PublisherContainer implements PublisherContainerInterface
 {
@@ -76,6 +76,6 @@ final class PublisherContainer implements PublisherContainerInterface
             return new PublisherHandler($publisher);
         }
 
-        throw new InfrastructureException('No publisher bound for integration event: ' . $eventName);
+        throw new RuntimeException('No publisher bound for integration event: ' . $eventName);
     }
 }

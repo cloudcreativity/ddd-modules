@@ -17,13 +17,13 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\EventBus\Outbound;
+namespace CloudCreativity\Modules\Tests\Unit\EventBus\Outbound;
 
 use Closure;
-use CloudCreativity\Modules\Infrastructure\EventBus\Outbound\Publisher;
-use CloudCreativity\Modules\Infrastructure\EventBus\Outbound\PublisherContainerInterface;
-use CloudCreativity\Modules\Infrastructure\EventBus\Outbound\PublisherHandlerInterface;
-use CloudCreativity\Modules\Tests\Unit\Infrastructure\EventBus\TestIntegrationEvent;
+use CloudCreativity\Modules\EventBus\Outbound\Publisher;
+use CloudCreativity\Modules\EventBus\Outbound\PublisherContainerInterface;
+use CloudCreativity\Modules\EventBus\Outbound\PublisherHandlerInterface;
+use CloudCreativity\Modules\Tests\Unit\EventBus\TestIntegrationEvent;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

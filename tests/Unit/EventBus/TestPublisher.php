@@ -17,23 +17,26 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Infrastructure\EventBus;
+namespace CloudCreativity\Modules\Tests\Unit\EventBus;
 
-interface EventBusInterface
+use CloudCreativity\Modules\EventBus\PublishThroughMiddleware;
+
+class TestPublisher implements PublishThroughMiddleware
 {
     /**
-     * Publish an integration event (outbound).
-     *
-     * @param IntegrationEventInterface $event
+     * @param TestIntegrationEvent $event
      * @return void
      */
-    public function publish(IntegrationEventInterface $event): void;
+    public function publish(TestIntegrationEvent $event): void
+    {
+        // no-op
+    }
 
     /**
-     * Notify subscribers of an inbound integration event.
-     *
-     * @param IntegrationEventInterface $event
-     * @return void
+     * @inheritDoc
      */
-    public function notify(IntegrationEventInterface $event): void;
+    public function middleware(): array
+    {
+        return [];
+    }
 }

@@ -17,20 +17,8 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Bus\Middleware;
+namespace CloudCreativity\Modules\Toolkit\Messages;
 
-use Closure;
-use CloudCreativity\Modules\Toolkit\Messages\MessageInterface;
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
-
-interface MessageMiddlewareInterface
+interface CommandInterface extends MessageInterface
 {
-    /**
-     * Handle the message.
-     *
-     * @param MessageInterface $message
-     * @param Closure(MessageInterface): ResultInterface<mixed> $next
-     * @return ResultInterface<mixed>
-     */
-    public function __invoke(MessageInterface $message, Closure $next): ResultInterface;
 }

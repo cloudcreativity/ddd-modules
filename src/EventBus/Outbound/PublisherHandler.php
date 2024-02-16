@@ -17,11 +17,11 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Infrastructure\EventBus\Outbound;
+namespace CloudCreativity\Modules\EventBus\Outbound;
 
 use Closure;
-use CloudCreativity\Modules\Infrastructure\EventBus\IntegrationEventInterface;
-use CloudCreativity\Modules\Infrastructure\EventBus\PublishThroughMiddleware;
+use CloudCreativity\Modules\EventBus\PublishThroughMiddleware;
+use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 
 final class PublisherHandler implements PublisherHandlerInterface
 {

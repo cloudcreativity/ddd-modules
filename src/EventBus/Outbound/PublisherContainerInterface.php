@@ -17,20 +17,17 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Infrastructure\EventBus;
+namespace CloudCreativity\Modules\EventBus\Outbound;
 
-use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
-use DateTimeImmutable;
+use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 
-interface IntegrationEventInterface
+interface PublisherContainerInterface
 {
     /**
-     * @return Uuid
+     * Get a publisher handler for the outbound integration event.
+     *
+     * @param class-string<IntegrationEventInterface> $eventName
+     * @return PublisherHandlerInterface
      */
-    public function uuid(): Uuid;
-
-    /**
-     * @return DateTimeImmutable
-     */
-    public function occurredAt(): DateTimeImmutable;
+    public function get(string $eventName): PublisherHandlerInterface;
 }

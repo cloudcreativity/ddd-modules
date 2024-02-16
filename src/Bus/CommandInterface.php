@@ -19,6 +19,11 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Bus;
 
-interface CommandInterface extends MessageInterface
+use CloudCreativity\Modules\Toolkit\Messages\CommandInterface as BaseInterface;
+
+/**
+ * @deprecated 1.0.0 Use CloudCreativity\Modules\Toolkit\Messages\CommandInterface
+ */
+interface CommandInterface extends BaseInterface
 {
 }
