@@ -17,13 +17,14 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Infrastructure\Log;
+namespace CloudCreativity\Modules\Toolkit\Loggable;
 
-use CloudCreativity\Modules\Toolkit\Loggable\ContextProviderInterface as BaseContextProviderInterface;
-
-/**
- * @deprecated 1.0.0 use `CloudCreativity\Modules\Toolkit\Messages\ContextProviderInterface` instead.
- */
-interface ContextProviderInterface extends BaseContextProviderInterface
+interface ContextProviderInterface
 {
+    /**
+     * Get log context.
+     *
+     * @return array<string, mixed>
+     */
+    public function context(): array;
 }

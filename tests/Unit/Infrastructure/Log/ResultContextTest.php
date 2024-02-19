@@ -20,9 +20,10 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Log;
 
 use BackedEnum;
-use CloudCreativity\Modules\Infrastructure\Log\ContextProviderInterface;
+use CloudCreativity\Modules\Infrastructure\Log\ContextProviderInterface as DeprecatedContextProviderInterface;
 use CloudCreativity\Modules\Infrastructure\Log\ResultContext;
 use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
+use CloudCreativity\Modules\Toolkit\Loggable\ContextProviderInterface;
 use CloudCreativity\Modules\Toolkit\Result\Error;
 use CloudCreativity\Modules\Toolkit\Result\ErrorInterface;
 use CloudCreativity\Modules\Toolkit\Result\Result;
@@ -32,11 +33,11 @@ use PHPUnit\Framework\TestCase;
 /**
  * @extends ResultInterface<null>
  */
-interface ResultWithContext extends ResultInterface, ContextProviderInterface
+interface ResultWithContext extends ResultInterface, DeprecatedContextProviderInterface
 {
 }
 
-interface ErrorWithContext extends ErrorInterface, ContextProviderInterface
+interface ErrorWithContext extends ErrorInterface, DeprecatedContextProviderInterface
 {
 }
 
