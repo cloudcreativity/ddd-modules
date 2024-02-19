@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+### Added
+
+- New event bus notifier implementation that was previously missing. This completes the event bus implementation.
+
 ### Changed
 
 - **BREAKING** Moved the following interfaces to the `Toolkit\Messages` namespace:
@@ -13,12 +17,16 @@ All notable changes to this project will be documented in this file. This projec
 - **BREAKING** Interfaces that type-hinted `Bus\CommandInterface`, `Bus\QueryInterface` or `Bus\MessageInterface` now
   type-hint the new interfaces in the `Toolkit\Messages` namespace.
 - **BREAKING** Moved the `EventBus` implementation from `Infrastructure\EventBus` to `EventBus`. In Deptrac, this
-  namespace is now part of the _Application Bus_ layer.
+  namespace is now part of the _Application Bus_ layer. Renamed the publisher handler and publisher handler containers
+  to integration event handler and container - so that they can be used for both the publisher and notifier
+  implementations.
+- **BREAKING** Removed the `EventBus\PublishThroughMiddleware` interface. Use the
+  `Toolkit\Messages\DispatchThroughMiddleware` interface instead.
 
 ### Deprecated
 
-- The `Bus\CommandInterface` and `Bus\QueryInterface` have been deprecated in favour of the new interfaces in the
-  `Toolkit\Messages` namespace.
+- The `Bus\CommandInterface`, `Bus\QueryInterface` and `Bus\DispatchThroughMiddleware` interfaces have been deprecated
+  in favour of the new interfaces in the `Toolkit\Messages` namespace.
 
 ## [0.6.1] - 2024-02-09
 

@@ -17,13 +17,13 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\EventBus\Outbound;
+namespace CloudCreativity\Modules\EventBus;
 
 use Closure;
 use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 use RuntimeException;
 
-final class PublisherContainer implements PublisherContainerInterface
+final class IntegrationEventHandlerContainer implements IntegrationEventHandlerContainerInterface
 {
     /**
      * @var array<string, Closure>
@@ -33,49 +33,49 @@ final class PublisherContainer implements PublisherContainerInterface
     /**
      * @var array<string, Closure>
      */
-    private array $publishers = [];
+    private array $handlers = [];
 
     /**
-     * Bind a publisher factory into the container.
+     * Bind a handler factory into the container.
      *
-     * @param class-string<IntegrationEventInterface> $queueableName
+     * @param class-string<IntegrationEventInterface> $eventName
      * @param Closure $binding
      * @return void
      */
-    public function bind(string $queueableName, Closure $binding): void
+    public function bind(string $eventName, Closure $binding): void
     {
-        $this->bindings[$queueableName] = $binding;
+        $this->bindings[$eventName] = $binding;
     }
 
     /**
-     * Register a publisher.
+     * Register a handler.
      *
-     * @param class-string<IntegrationEventInterface> $queueableName
+     * @param class-string<IntegrationEventInterface> $eventName
      * @param Closure $handler
      * @return void
      */
-    public function register(string $queueableName, Closure $handler): void
+    public function register(string $eventName, Closure $handler): void
     {
-        $this->publishers[$queueableName] = $handler;
+        $this->handlers[$eventName] = $handler;
     }
 
     /**
      * @inheritDoc
      */
-    public function get(string $eventName): PublisherHandlerInterface
+    public function get(string $eventName): IntegrationEventHandlerInterface
     {
-        if ($publisher = $this->publishers[$eventName] ?? null) {
-            return new PublisherHandler($publisher);
+        if ($handler = $this->handlers[$eventName] ?? null) {
+            return new IntegrationEventHandler($handler);
         }
 
         $factory = $this->bindings[$eventName] ?? null;
 
         if ($factory) {
-            $publisher = $factory();
-            assert(is_object($publisher), "Publisher binding for {$eventName} must return an object.");
-            return new PublisherHandler($publisher);
+            $handler = $factory();
+            assert(is_object($handler), "Handler binding for integration event {$eventName} must return an object.");
+            return new IntegrationEventHandler($handler);
         }
 
-        throw new RuntimeException('No publisher bound for integration event: ' . $eventName);
+        throw new RuntimeException('No handler bound for integration event: ' . $eventName);
     }
 }

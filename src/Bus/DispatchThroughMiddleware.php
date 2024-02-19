@@ -19,12 +19,11 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Bus;
 
-interface DispatchThroughMiddleware
+use CloudCreativity\Modules\Toolkit\Messages\DispatchThroughMiddleware as BaseDispatchThroughMiddleware;
+
+/**
+ * @deprecated 1.0.0 use CloudCreativity\Modules\Toolkit\Messages\DispatchThroughMiddleware
+ */
+interface DispatchThroughMiddleware extends BaseDispatchThroughMiddleware
 {
-    /**
-     * Get the middleware for the command or query.
-     *
-     * @return array<callable|string>
-     */
-    public function middleware(): array;
 }

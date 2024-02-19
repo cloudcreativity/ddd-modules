@@ -25,7 +25,7 @@ use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 interface IntegrationEventMiddlewareInterface
 {
     /**
-     * Handle the event being published or notified.
+     * Handle the integration event.
      *
      * @param IntegrationEventInterface $event
      * @param Closure(IntegrationEventInterface): void $next
