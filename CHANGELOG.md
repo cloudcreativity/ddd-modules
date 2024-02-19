@@ -8,6 +8,8 @@ All notable changes to this project will be documented in this file. This projec
 ### Added
 
 - New event bus notifier implementation that was previously missing. This completes the event bus implementation.
+- New message interfaces (command, query, integration event) added to the toolkit.
+- New loggable context provider interface added to the toolkit.
 
 ### Changed
 
@@ -27,6 +29,8 @@ All notable changes to this project will be documented in this file. This projec
 
 - The `Bus\CommandInterface`, `Bus\QueryInterface` and `Bus\DispatchThroughMiddleware` interfaces have been deprecated
   in favour of the new interfaces in the `Toolkit\Messages` namespace.
+- The `Infrastructure\Log\ContextProviderInterface` is deprecated in favour of the new
+  `Toolkit\Loggable\ContextProviderInterface` interface.
 
 ## [0.6.1] - 2024-02-09
 
