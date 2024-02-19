@@ -17,14 +17,28 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\EventBus;
+namespace CloudCreativity\Modules\Tests\Unit\EventBus;
 
-interface PublishThroughMiddleware
+use CloudCreativity\Modules\Toolkit\Messages\DispatchThroughMiddleware;
+
+class TestIntegrationEventHandler implements DispatchThroughMiddleware
 {
     /**
-     * Get the middleware for integration event publisher.
+     * Handle the integration event.
      *
-     * @return array<callable|string>
+     * @param TestIntegrationEvent $event
+     * @return void
      */
-    public function middleware(): array;
+    public function handle(TestIntegrationEvent $event): void
+    {
+        // no-op
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function middleware(): array
+    {
+        return [];
+    }
 }

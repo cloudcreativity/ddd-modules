@@ -29,7 +29,7 @@ use Psr\Log\LogLevel;
 final class LogOutboundIntegrationEvent implements IntegrationEventMiddlewareInterface
 {
     /**
-     * LogIntegrationEventOutbound constructor.
+     * LogOutboundIntegrationEvent constructor.
      *
      * @param LoggerInterface $log
      * @param string $publishLevel

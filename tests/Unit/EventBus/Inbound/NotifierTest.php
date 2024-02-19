@@ -17,17 +17,17 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Tests\Unit\EventBus\Outbound;
+namespace CloudCreativity\Modules\Tests\Unit\EventBus\Inbound;
 
 use Closure;
+use CloudCreativity\Modules\EventBus\Inbound\Notifier;
 use CloudCreativity\Modules\EventBus\IntegrationEventHandlerContainerInterface;
 use CloudCreativity\Modules\EventBus\IntegrationEventHandlerInterface;
-use CloudCreativity\Modules\EventBus\Outbound\Publisher;
 use CloudCreativity\Modules\Tests\Unit\EventBus\TestIntegrationEvent;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class PublisherTest extends TestCase
+class NotifierTest extends TestCase
 {
     /**
      * @var IntegrationEventHandlerContainerInterface&MockObject
@@ -35,9 +35,9 @@ class PublisherTest extends TestCase
     private IntegrationEventHandlerContainerInterface $container;
 
     /**
-     * @var Publisher
+     * @var Notifier
      */
-    private Publisher $publisher;
+    private Notifier $notifier;
 
     /**
      * @return void
@@ -47,13 +47,13 @@ class PublisherTest extends TestCase
         parent::setUp();
 
         $this->container = $this->createMock(IntegrationEventHandlerContainerInterface::class);
-        $this->publisher = new Publisher($this->container);
+        $this->notifier = new Notifier($this->container);
     }
 
     /**
      * @return void
      */
-    public function testPublish(): void
+    public function testNotify(): void
     {
         $event = new TestIntegrationEvent();
 
@@ -73,13 +73,13 @@ class PublisherTest extends TestCase
             ->method('__invoke')
             ->with($this->identicalTo($event));
 
-        $this->publisher->publish($event);
+        $this->notifier->notify($event);
     }
 
     /**
      * @return void
      */
-    public function testPublishWithMiddleware(): void
+    public function testNotifyWithMiddleware(): void
     {
         $event1 = new TestIntegrationEvent();
         $event2 = new TestIntegrationEvent();
@@ -113,7 +113,7 @@ class PublisherTest extends TestCase
             ->with($event1::class)
             ->willReturn($handler);
 
-        $this->publisher->through([$middleware1]);
-        $this->publisher->publish($event1);
+        $this->notifier->through([$middleware1]);
+        $this->notifier->notify($event1);
     }
 }

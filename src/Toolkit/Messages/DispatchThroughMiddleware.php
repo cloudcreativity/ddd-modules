@@ -17,17 +17,14 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\EventBus\Outbound;
+namespace CloudCreativity\Modules\Toolkit\Messages;
 
-use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
-
-interface PublisherContainerInterface
+interface DispatchThroughMiddleware
 {
     /**
-     * Get a publisher handler for the outbound integration event.
+     * Get the middleware to dispatch the message through.
      *
-     * @param class-string<IntegrationEventInterface> $eventName
-     * @return PublisherHandlerInterface
+     * @return array<callable|string>
      */
-    public function get(string $eventName): PublisherHandlerInterface;
+    public function middleware(): array;
 }

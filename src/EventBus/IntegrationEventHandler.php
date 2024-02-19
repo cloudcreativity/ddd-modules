@@ -17,20 +17,20 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\EventBus\Outbound;
+namespace CloudCreativity\Modules\EventBus;
 
 use Closure;
-use CloudCreativity\Modules\EventBus\PublishThroughMiddleware;
+use CloudCreativity\Modules\Toolkit\Messages\DispatchThroughMiddleware;
 use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 
-final class PublisherHandler implements PublisherHandlerInterface
+final class IntegrationEventHandler implements IntegrationEventHandlerInterface
 {
     /**
-     * PublisherHandler constructor.
+     * IntegrationEventHandler constructor.
      *
-     * @param object $publisher
+     * @param object $handler
      */
-    public function __construct(private readonly object $publisher)
+    public function __construct(private readonly object $handler)
     {
     }
 
@@ -39,18 +39,18 @@ final class PublisherHandler implements PublisherHandlerInterface
      */
     public function __invoke(IntegrationEventInterface $event): void
     {
-        if ($this->publisher instanceof Closure) {
-            ($this->publisher)($event);
+        if ($this->handler instanceof Closure) {
+            ($this->handler)($event);
             return;
         }
 
-        assert(method_exists($this->publisher, 'publish'), sprintf(
-            'Cannot publish "%s" - handler "%s" does not have a publish method.',
+        assert(method_exists($this->handler, 'handle'), sprintf(
+            'Cannot handle "%s" - handler "%s" does not have a handle method.',
             $event::class,
-            $this->publisher::class,
+            $this->handler::class,
         ));
 
-        $this->publisher->publish($event);
+        $this->handler->handle($event);
     }
 
     /**
@@ -58,8 +58,8 @@ final class PublisherHandler implements PublisherHandlerInterface
      */
     public function middleware(): array
     {
-        if ($this->publisher instanceof PublishThroughMiddleware) {
-            return $this->publisher->middleware();
+        if ($this->handler instanceof DispatchThroughMiddleware) {
+            return $this->handler->middleware();
         }
 
         return [];

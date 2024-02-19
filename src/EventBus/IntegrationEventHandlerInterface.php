@@ -17,15 +17,15 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\EventBus\Outbound;
+namespace CloudCreativity\Modules\EventBus;
 
-use CloudCreativity\Modules\EventBus\PublishThroughMiddleware;
+use CloudCreativity\Modules\Toolkit\Messages\DispatchThroughMiddleware;
 use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 
-interface PublisherHandlerInterface extends PublishThroughMiddleware
+interface IntegrationEventHandlerInterface extends DispatchThroughMiddleware
 {
     /**
-     * Handle the outbound integration event.
+     * Handle the integration event.
      *
      * @param IntegrationEventInterface $event
      * @return void

@@ -17,16 +17,14 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Tests\Unit\EventBus\Outbound;
+namespace CloudCreativity\Modules\Tests\Unit\EventBus;
 
-use CloudCreativity\Modules\EventBus\Outbound\PublisherHandler;
-use CloudCreativity\Modules\EventBus\Outbound\PublisherHandlerInterface;
-use CloudCreativity\Modules\Tests\Unit\EventBus\TestIntegrationEvent;
-use CloudCreativity\Modules\Tests\Unit\EventBus\TestPublisher;
+use CloudCreativity\Modules\EventBus\IntegrationEventHandler;
+use CloudCreativity\Modules\EventBus\IntegrationEventHandlerInterface;
 use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 use PHPUnit\Framework\TestCase;
 
-class PublisherHandlerTest extends TestCase
+class IntegrationEventHandlerTest extends TestCase
 {
     /**
      * @return void
@@ -34,21 +32,21 @@ class PublisherHandlerTest extends TestCase
     public function testItInvokesMethodsOnInnerHandler(): void
     {
         $event = new TestIntegrationEvent();
-        $innerHandler = $this->createMock(TestPublisher::class);
+        $innerHandler = $this->createMock(TestIntegrationEventHandler::class);
 
         $innerHandler
             ->expects($this->once())
-            ->method('publish')
+            ->method('handle')
             ->with($this->identicalTo($event));
 
         $innerHandler
             ->method('middleware')
             ->willReturn($middleware = ['Middleware1', 'Middleware2']);
 
-        $publisher = new PublisherHandler($innerHandler);
+        $publisher = new IntegrationEventHandler($innerHandler);
         $publisher($event);
 
-        $this->assertInstanceOf(PublisherHandlerInterface::class, $publisher);
+        $this->assertInstanceOf(IntegrationEventHandlerInterface::class, $publisher);
         $this->assertSame($middleware, $publisher->middleware());
     }
 
@@ -64,7 +62,7 @@ class PublisherHandlerTest extends TestCase
             $called = true;
         };
 
-        $publisher = new PublisherHandler($fn);
+        $publisher = new IntegrationEventHandler($fn);
         $publisher($event);
 
         $this->assertTrue($called);

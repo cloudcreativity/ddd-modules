@@ -17,7 +17,7 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\EventBus\Outbound;
+namespace CloudCreativity\Modules\EventBus\Inbound;
 
 use CloudCreativity\Modules\EventBus\IntegrationEventHandlerContainerInterface;
 use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
@@ -26,7 +26,7 @@ use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactoryInterface;
 
-final class Publisher implements PublisherInterface
+final class Notifier implements NotifierInterface
 {
     /**
      * @var PipelineBuilderFactoryInterface
@@ -39,7 +39,7 @@ final class Publisher implements PublisherInterface
     private array $pipes = [];
 
     /**
-     * Publisher constructor.
+     * Notifier constructor.
      *
      * @param IntegrationEventHandlerContainerInterface $handlers
      * @param PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipeline
@@ -52,7 +52,7 @@ final class Publisher implements PublisherInterface
     }
 
     /**
-     * Send outbound integration events through the provided pipes.
+     * Send inbound integration events through the provided pipes.
      *
      * @param array<string|callable> $pipes
      * @return void
@@ -65,7 +65,7 @@ final class Publisher implements PublisherInterface
     /**
      * @inheritDoc
      */
-    public function publish(IntegrationEventInterface $event): void
+    public function notify(IntegrationEventInterface $event): void
     {
         $handler = $this->handlers->get($event::class);
 
