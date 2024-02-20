@@ -72,7 +72,7 @@ final class Publisher implements PublisherInterface
         $pipeline = $this->pipelineFactory
             ->getPipelineBuilder()
             ->through([...$this->pipes, ...$handler->middleware()])
-            ->build(new MiddlewareProcessor(function (IntegrationEventInterface $passed) use ($handler) {
+            ->build(new MiddlewareProcessor(function (IntegrationEventInterface $passed) use ($handler): void {
                 $handler($passed);
             }));
 

@@ -25,6 +25,11 @@ All notable changes to this project will be documented in this file. This projec
 - **BREAKING** Removed the `EventBus\PublishThroughMiddleware` interface. Use the
   `Toolkit\Messages\DispatchThroughMiddleware` interface instead.
 
+### Removed
+
+- **BREAKING** removed the `deptrac-layers.yaml` file, in favour of applications including the classes in their own
+   Deptrac configuration.
+
 ### Deprecated
 
 - The `Bus\CommandInterface`, `Bus\QueryInterface` and `Bus\DispatchThroughMiddleware` interfaces have been deprecated
