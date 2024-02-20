@@ -1,28 +1,37 @@
-imports:
-  - deptrac-layers.yaml
 deptrac:
   paths:
     - ./src
   layers:
-    - name: PSR Log
+    - name: Toolkit
       collectors:
         - type: className
-          value: Psr\\Log.*
-    - name: Ramsey UUID
+          value: CloudCreativity\\Modules\\Toolkit\\*
+        - type: className
+          value: Ramsey\\Uuid\\*
+    - name: Domain
       collectors:
         - type: className
-          value: Ramsey\\Uuid.*
+          value: CloudCreativity\\Modules\\Domain\\*
+    - name: Infrastructure
+      collectors:
+        - type: className
+          value: CloudCreativity\\Modules\\Infrastructure\\*
+        - type: className
+          value: Psr\\Log\\*
+    - name: Application
+      collectors:
+        - type: className
+          value: CloudCreativity\\Modules\\Bus\\*
+        - type: className
+          value: CloudCreativity\\Modules\\EventBus\\*
   ruleset:
     Toolkit:
-      - Ramsey UUID
-    Application Bus:
+    Domain:
       - Toolkit
-      - Infrastructure (Common)
-      - PSR Log
-    Domain (Common):
+    Infrastructure:
       - Toolkit
-    Infrastructure (Common):
+      - Domain
+    Application:
       - Toolkit
-      - Domain (Common)
-      - Ramsey UUID
-      - PSR Log
+      - Domain
+      - Infrastructure

@@ -22,7 +22,7 @@ namespace CloudCreativity\Modules\Infrastructure\Log;
 use CloudCreativity\Modules\Toolkit\Loggable\ContextProviderInterface as BaseContextProviderInterface;
 
 /**
- * @deprecated 1.0.0 use `CloudCreativity\Modules\Toolkit\Messages\ContextProviderInterface` instead.
+ * @deprecated 1.0.0 use `CloudCreativity\Modules\Toolkit\Loggable\ContextProviderInterface` instead.
  */
 interface ContextProviderInterface extends BaseContextProviderInterface
 {
