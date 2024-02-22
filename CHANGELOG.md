@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file. This projec
 - New event bus notifier implementation that was previously missing. This completes the event bus implementation.
 - New message interfaces (command, query, integration event) added to the toolkit.
 - New loggable context provider interface added to the toolkit.
+- Module basename now supports namespaces where an application only has a single bounded context.
 
 ### Changed
 
