@@ -19,6 +19,8 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Bus;
 
+use CloudCreativity\Modules\Toolkit\Messages\DispatchThroughMiddleware;
+use CloudCreativity\Modules\Toolkit\Messages\QueryInterface;
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
 final class QueryHandler implements QueryHandlerInterface

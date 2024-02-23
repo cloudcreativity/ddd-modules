@@ -20,8 +20,8 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Bus\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Bus\MessageInterface;
 use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\DeferredDispatcherInterface;
+use CloudCreativity\Modules\Toolkit\Messages\MessageInterface;
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 use Throwable;
 

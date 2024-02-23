@@ -19,9 +19,9 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Bus\Middleware;
 
-use CloudCreativity\Modules\Bus\CommandInterface;
 use CloudCreativity\Modules\Bus\Middleware\ValidateCommand;
 use CloudCreativity\Modules\Bus\Validation\CommandValidatorInterface;
+use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 use CloudCreativity\Modules\Toolkit\Result\Error;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;

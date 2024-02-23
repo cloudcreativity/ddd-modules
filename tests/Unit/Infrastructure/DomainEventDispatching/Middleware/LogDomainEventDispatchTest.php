@@ -89,8 +89,8 @@ class LogDomainEventDispatchTest extends TestCase
         });
 
         $this->assertSame([
-            [LogLevel::DEBUG, "Dispatching event {$eventName}.", []],
-            [LogLevel::INFO, "Dispatched event {$eventName}.", []],
+            [LogLevel::DEBUG, "Dispatching domain event {$eventName}.", []],
+            [LogLevel::INFO, "Dispatched domain event {$eventName}.", []],
         ], $logs);
     }
 
@@ -116,8 +116,8 @@ class LogDomainEventDispatchTest extends TestCase
         });
 
         $this->assertSame([
-            [LogLevel::NOTICE, "Dispatching event {$eventName}."],
-            [LogLevel::WARNING, "Dispatched event {$eventName}."],
+            [LogLevel::NOTICE, "Dispatching domain event {$eventName}."],
+            [LogLevel::WARNING, "Dispatched domain event {$eventName}."],
         ], $logs);
     }
 
@@ -132,7 +132,7 @@ class LogDomainEventDispatchTest extends TestCase
         $this->logger
             ->expects($this->once())
             ->method('log')
-            ->with(LogLevel::DEBUG, "Dispatching event {$eventName}.");
+            ->with(LogLevel::DEBUG, "Dispatching domain event {$eventName}.");
 
         $middleware = new LogDomainEventDispatch($this->logger);
 

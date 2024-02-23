@@ -27,7 +27,7 @@ class ModuleBasenameTest extends TestCase
     /**
      * @return array<array<string>>
      */
-    public static function nameProvider(): array
+    public static function moduleProvider(): array
     {
         return [
             [
@@ -39,6 +39,16 @@ class ModuleBasenameTest extends TestCase
                 'CloudCreativity\Application\Modules\WaitList\BoundedContext\Application\Queries\GetScheduledProcessList\GetScheduledProcessListQuery',
                 'WaitList',
                 'GetScheduledProcessListQuery',
+            ],
+            [
+                'CloudCreativity\Application\Modules\Podcasts\BoundedContext\Application\IntegrationEvents\Outbound\PodcastPublished',
+                'Podcasts',
+                'PodcastPublished',
+            ],
+            [
+                'CloudCreativity\Application\Modules\Checkout\Shared\IntegrationEvents\Inbound\OrderCompleted',
+                'Checkout',
+                'OrderCompleted',
             ],
             [
                 'CloudCreativity\Application\Modules\WaitList\BoundedContext\Domain\Events\TicketsWereReleased',
@@ -69,13 +79,43 @@ class ModuleBasenameTest extends TestCase
     }
 
     /**
+     * Test module names when modules are not in use.
+     *
+     * This scenario happens when an application only has one bounded context,
+     * i.e. one module. For example, a microservice that represents that bounded context.
+     *
+     * @return array<array<string>>
+     */
+    public static function withoutModuleProvider(): array
+    {
+        return [
+            [
+                'App\BoundedContext\Application\Queries\GetTradeIn\GetTradeInQuery',
+                'GetTradeInQuery',
+            ],
+            [
+                'App\BoundedContext\Application\Commands\SubmitTradeIn\SubmitTradeInCommand',
+                'SubmitTradeInCommand',
+            ],
+            [
+                'App\BoundedContext\Domain\Events\TradeInSubmitted',
+                'TradeInSubmitted',
+            ],
+            [
+                'App\BoundedContext\Shared\IntegrationEvents\TradeInSubmitted',
+                'TradeInSubmitted',
+            ],
+        ];
+    }
+
+    /**
      * @param string $value
      * @param string $context
      * @param string $message
      * @return void
-     * @dataProvider nameProvider
+     * @dataProvider moduleProvider
      */
-    public function testFrom(string $value, string $context, string $message): void
+    public function testFromModule(string $value, string $context, string $message): void
     {
         $name = ModuleBasename::from($value);
 
@@ -85,6 +125,24 @@ class ModuleBasenameTest extends TestCase
         $this->assertSame("{$context}:{$message}", $name->toString());
         $this->assertSame("{$context}/{$message}", $name->toString('/'));
         $this->assertSame("{$context}:{$message}", (string) $name);
+    }
+
+    /**
+     * @param string $value
+     * @param string $message
+     * @return void
+     * @dataProvider withoutModuleProvider
+     */
+    public function testFromWithoutModule(string $value, string $message): void
+    {
+        $name = ModuleBasename::from($value);
+
+        $this->assertNull($name->module);
+        $this->assertSame($message, $name->name);
+        $this->assertEquals($name, ModuleBasename::tryFrom($value));
+        $this->assertSame($message, $name->toString());
+        $this->assertSame($message, $name->toString('/'));
+        $this->assertSame($message, (string) $name);
     }
 
     /**

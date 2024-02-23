@@ -19,6 +19,11 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Bus;
 
-interface QueryInterface extends MessageInterface
+use CloudCreativity\Modules\Toolkit\Messages\QueryInterface as BaseInterface;
+
+/**
+ * @deprecated 1.0.0 Use CloudCreativity\Modules\Toolkit\Messages\QueryInterface
+ */
+interface QueryInterface extends BaseInterface
 {
 }

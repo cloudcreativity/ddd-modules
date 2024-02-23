@@ -25,7 +25,9 @@ use UnexpectedValueException;
 final class ModuleBasename implements Stringable
 {
     /** @var string  */
-    private const REGEX_MODULES = '/Modules\\\\(\w+)\\\\[\w\\\\]+\\\\(\w+)$/m';
+    private const REGEX_MODULES = '/\\\\Modules\\\\(\w+)\\\\[\w\\\\]+\\\\(\w+)$/m';
+    /** @var string */
+    private const REGEX_WITHOUT_MODULES = '/\\\\(Queries|Commands|Domain\\\\Events|IntegrationEvents)(\\\\[\w\\\\]+)?\\\\(\w+)$/m';
 
     /**
      * Create a message name from a class string.
@@ -58,17 +60,21 @@ final class ModuleBasename implements Stringable
             return new self($matches[1], $matches[2]);
         }
 
+        if (1 === preg_match(self::REGEX_WITHOUT_MODULES, $class, $matches)) {
+            return new self(null, $matches[3]);
+        }
+
         return null;
     }
 
     /**
      * ModuleBasename constructor.
      *
-     * @param string $module
+     * @param string|null $module
      * @param string $name
      */
     private function __construct(
-        public readonly string $module,
+        public readonly ?string $module,
         public readonly string $name,
     ) {
     }
@@ -89,11 +95,15 @@ final class ModuleBasename implements Stringable
      */
     public function toString(string $delimiter = ':'): string
     {
+        if ($this->module === null) {
+            return $this->name;
+        }
+
         return sprintf('%s%s%s', $this->module, $delimiter, $this->name);
     }
 
     /**
-     * @return array<string, string>
+     * @return array<string, string|null>
      */
     public function toArray(): array
     {

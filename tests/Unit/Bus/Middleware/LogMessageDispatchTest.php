@@ -19,10 +19,10 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Bus\Middleware;
 
-use CloudCreativity\Modules\Bus\MessageInterface;
 use CloudCreativity\Modules\Bus\Middleware\LogMessageDispatch;
 use CloudCreativity\Modules\Infrastructure\Log\ObjectContext;
 use CloudCreativity\Modules\Infrastructure\Log\ResultContext;
+use CloudCreativity\Modules\Toolkit\Messages\MessageInterface;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;

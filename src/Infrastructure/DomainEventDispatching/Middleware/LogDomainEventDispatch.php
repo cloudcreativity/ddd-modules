@@ -48,10 +48,10 @@ class LogDomainEventDispatch implements EventMiddlewareInterface
     {
         $name = ModuleBasename::tryFrom($event)?->toString() ?? $event::class;
 
-        $this->logger->log($this->dispatchLevel, "Dispatching event {$name}.");
+        $this->logger->log($this->dispatchLevel, "Dispatching domain event {$name}.");
 
         $next($event);
 
-        $this->logger->log($this->dispatchedLevel, "Dispatched event {$name}.");
+        $this->logger->log($this->dispatchedLevel, "Dispatched domain event {$name}.");
     }
 }

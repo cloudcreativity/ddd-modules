@@ -19,9 +19,9 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Bus\Middleware;
 
-use CloudCreativity\Modules\Bus\MessageInterface;
 use CloudCreativity\Modules\Bus\Middleware\FlushDeferredEvents;
 use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\DeferredDispatcherInterface;
+use CloudCreativity\Modules\Toolkit\Messages\MessageInterface;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
