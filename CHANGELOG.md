@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [1.0.0-rc.1] - 2024-02-23
+
 ### Added
 
 - New event bus notifier implementation that was previously missing. This completes the event bus implementation.
