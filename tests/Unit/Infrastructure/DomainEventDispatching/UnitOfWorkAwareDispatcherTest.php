@@ -175,12 +175,12 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
             ->method('handle');
 
         $this->unitOfWorkManager
-            ->expects($this->never())
-            ->method('beforeCommit');
+            ->expects($this->once())
+            ->method('beforeCommit');  // we'll prove this works in the subsequent test
 
         $this->unitOfWorkManager
-            ->expects($this->exactly(1))
-            ->method('afterCommit'); // we'll prove this works in the subsequent test
+            ->expects($this->never())
+            ->method('afterCommit');
 
         $this->dispatcher->listen($event::class, [
             'Listener1',
@@ -194,7 +194,7 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
      * @return void
      * @depends testItDoesNotDispatchImmediately
      */
-    public function testItDispatchesEventInAfterCommitCallback(): void
+    public function testItDispatchesEventInBeforeCommitCallback(): void
     {
         $event = new TestDomainEvent();
 
@@ -221,8 +221,8 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
             ->with($this->identicalTo($event));
 
         $this->unitOfWorkManager
-            ->expects($this->exactly(1))
-            ->method('afterCommit')
+            ->expects($this->once())
+            ->method('beforeCommit')
             ->with($this->callback(function (Closure $callback): bool {
                 $callback();
                 return true;

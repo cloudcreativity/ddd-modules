@@ -52,7 +52,7 @@ class UnitOfWorkAwareDispatcher extends Dispatcher implements DispatcherInterfac
             return;
         }
 
-        $this->unitOfWorkManager->afterCommit(function () use ($event): void {
+        $this->unitOfWorkManager->beforeCommit(function () use ($event): void {
             $this->dispatchNow($event);
         });
     }
