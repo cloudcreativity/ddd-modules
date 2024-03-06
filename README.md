@@ -20,4 +20,4 @@ composer require cloudcreativity/ddd-modules
 
 ## License
 
-DDD Modules is open-sourced software licensed under the [Apache 2.0 License](./LICENSE).
+DDD Modules is open-source software licensed under the [MIT License](./LICENSE).
