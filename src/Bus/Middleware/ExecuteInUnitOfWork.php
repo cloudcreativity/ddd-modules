@@ -20,6 +20,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Bus\Middleware;
 
 use Closure;
+use CloudCreativity\Modules\Infrastructure\Persistence\AbortOnFailureException;
 use CloudCreativity\Modules\Infrastructure\Persistence\UnitOfWorkManagerInterface;
 use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
@@ -43,13 +44,16 @@ final class ExecuteInUnitOfWork implements CommandMiddlewareInterface
      */
     public function __invoke(CommandInterface $command, Closure $next): ResultInterface
     {
-        $result = $this->unitOfWorkManager->execute(
-            static fn () => $next($command),
-            $this->attempts,
-        );
-
-        assert($result instanceof ResultInterface, 'Expecting a result object.');
-
-        return $result;
+        try {
+            return $this->unitOfWorkManager->execute(
+                static function () use ($command, $next): ResultInterface {
+                    $res = $next($command);
+                    return $res->didSucceed() ? $res : throw new AbortOnFailureException($res);
+                },
+                $this->attempts,
+            );
+        } catch (AbortOnFailureException $ex) {
+            return $ex->getResult();
+        }
     }
 }

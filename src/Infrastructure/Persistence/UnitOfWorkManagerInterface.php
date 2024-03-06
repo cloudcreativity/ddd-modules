@@ -26,9 +26,10 @@ interface UnitOfWorkManagerInterface
     /**
      * Execute the provided closure within a unit of work.
      *
-     * @param Closure $callback
+     * @template TReturn
+     * @param Closure(): TReturn $callback
      * @param int $attempts
-     * @return mixed
+     * @return TReturn
      */
     public function execute(Closure $callback, int $attempts = 1): mixed;
 

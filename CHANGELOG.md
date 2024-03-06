@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+### Added
+
+- New `FailedResultException` for throw result objects that have not succeeded.
+
 ### Changed
 
 - **BREAKING**: The `UnitOfWorkAwareDispatcher` now queues deferred events to be dispatched before the unit of work
@@ -14,6 +18,11 @@ All notable changes to this project will be documented in this file. This projec
   pattern to be used for the publishing of integration events. This is a breaking change because it changes the order in
   which events and listeners are executed. Listeners that need to be dispatched after the commit should now implement
   the `DispatchAfterCommit` interface.
+
+### Fixed
+
+- The `ExecuteInUnitOfWork` middleware now correctly prevents the unit of work committing if the inner handler returns a
+  failed result. Previously the unit of work would have committed, which was incorrect for a failed result.
 
 ## [1.0.0-rc.1] - 2024-02-23
 
@@ -41,7 +50,7 @@ All notable changes to this project will be documented in this file. This projec
 ### Removed
 
 - **BREAKING** removed the `deptrac-layers.yaml` file, in favour of applications including the classes in their own
-   Deptrac configuration.
+  Deptrac configuration.
 
 ### Deprecated
 

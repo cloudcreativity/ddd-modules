@@ -17,19 +17,32 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Infrastructure\Persistence;
+namespace CloudCreativity\Modules\Toolkit\Result;
 
-use Closure;
+use RuntimeException;
+use Throwable;
 
-interface UnitOfWorkInterface
+class FailedResultException extends RuntimeException
 {
     /**
-     * Execute the callback in a unit of work.
+     * FailedResultException constructor.
      *
-     * @template TReturn
-     * @param Closure(): TReturn $callback
-     * @param int $attempts
-     * @return TReturn
+     * @param ResultInterface<mixed> $result
      */
-    public function execute(Closure $callback, int $attempts = 1): mixed;
+    public function __construct(
+        private readonly ResultInterface $result,
+        int $code = 0,
+        Throwable $previous = null,
+    ) {
+        assert($result->didFail(), 'Expecting a failed result.');
+        parent::__construct($result->error() ?? '', $code, $previous);
+    }
+
+    /**
+     * @return ResultInterface<mixed>
+     */
+    public function getResult(): ResultInterface
+    {
+        return $this->result;
+    }
 }

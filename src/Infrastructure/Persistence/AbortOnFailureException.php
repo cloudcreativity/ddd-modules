@@ -19,17 +19,8 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\Persistence;
 
-use Closure;
+use CloudCreativity\Modules\Toolkit\Result\FailedResultException;
 
-interface UnitOfWorkInterface
+final class AbortOnFailureException extends FailedResultException
 {
-    /**
-     * Execute the callback in a unit of work.
-     *
-     * @template TReturn
-     * @param Closure(): TReturn $callback
-     * @param int $attempts
-     * @return TReturn
-     */
-    public function execute(Closure $callback, int $attempts = 1): mixed;
 }
