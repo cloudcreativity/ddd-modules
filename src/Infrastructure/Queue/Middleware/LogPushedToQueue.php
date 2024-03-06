@@ -51,12 +51,12 @@ class LogPushedToQueue implements QueueMiddlewareInterface
 
         $this->log->log(
             $this->queueLevel,
-            "Queuing message {$name}.",
+            "Queuing job {$name}.",
             $context = ObjectContext::from($queueable)->context(),
         );
 
         $next($queueable);
 
-        $this->log->log($this->queuedLevel, "Queued message {$name}.", $context);
+        $this->log->log($this->queuedLevel, "Queued job {$name}.", $context);
     }
 }

@@ -76,8 +76,8 @@ class LogPushedToQueueTest extends TestCase
         $context = ['foo' => 'baz', 'bar' => 'bat'];
 
         $this->assertSame([
-            [LogLevel::DEBUG, "Queuing message {$messageName}.", $context],
-            [LogLevel::INFO, "Queued message {$messageName}.", $context],
+            [LogLevel::DEBUG, "Queuing job {$messageName}.", $context],
+            [LogLevel::INFO, "Queued job {$messageName}.", $context],
         ], $logs);
     }
 
@@ -105,8 +105,8 @@ class LogPushedToQueueTest extends TestCase
         $context = ['foo' => 'baz', 'bar' => 'bat'];
 
         $this->assertSame([
-            [LogLevel::NOTICE, "Queuing message {$messageName}.", $context],
-            [LogLevel::WARNING, "Queued message {$messageName}.", $context],
+            [LogLevel::NOTICE, "Queuing job {$messageName}.", $context],
+            [LogLevel::WARNING, "Queued job {$messageName}.", $context],
         ], $logs);
     }
 
@@ -122,7 +122,7 @@ class LogPushedToQueueTest extends TestCase
         $this->logger
             ->expects($this->once())
             ->method('log')
-            ->with(LogLevel::DEBUG, "Queuing message {$messageName}.", $context);
+            ->with(LogLevel::DEBUG, "Queuing job {$messageName}.", $context);
 
         $middleware = new LogPushedToQueue($this->logger);
 
