@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Bus;
 
-use CloudCreativity\Modules\Bus\QueryInterface;
+use CloudCreativity\Modules\Toolkit\Messages\QueryInterface;
 
 class TestQuery implements QueryInterface
 {

@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+### Removed
+
+- **BREAKING** The following deprecated interfaces have been removed:
+    - `Bus\CommandInterface` use `Toolkit\Messages\CommandInterface` instead.
+    - `Bus\QueryInterface` use `Toolkit\Messages\QueryInterface` instead.
+    - `Bus\DispatchThroughMiddleware` use `Toolkit\Messages\DispatchThroughMiddleware` instead.
+    - `Infrastructure\Log\ContextProviderInterface` use `Toolkit\Loggable\ContextProviderInterface` instead.
+
 ## [1.0.0-rc.2] - 2024-03-06
 
 ### Added
@@ -74,7 +82,8 @@ All notable changes to this project will be documented in this file. This projec
 - New `DeferredDispatcher` class for dispatching domain events when not using a unit of work.
 - New UUID factory interface and class, that wraps the `ramsey/uuid` factory to return UUID identifiers.
 - GUIDs that wrap UUIDs can now be created via the static `Guid::fromUuid()` method.
-- New `SetupBeforeDispatch` and `TearDownAfterDispatch` bus middleware, that can be used either to setup (and optionally
+- New `SetupBeforeDispatch` and `TearDownAfterDispatch` bus middleware, that can be used either to set up (and
+  optionally
   tear down) application state around the dispatching of a message, or to just do tear down work.
 - The `EventBus` namespace now has a working implementation for publishing integration events.
 - Can now provide a closure to the `ListOfErrorsInterface::first()` method to find the first matching error.
@@ -131,7 +140,7 @@ All notable changes to this project will be documented in this file. This projec
 - All constructor arguments for the `Toolkit\Result\Error` object are now optional. This allows named arguments to be
   used when creating an error object.
 - The `Toolkit\Result\Error` object can now accept only a code, previously it had to have a message.
-- The following interfaces no longer extend the log `ContextProviderInterface`. Instead classes only need to implement
+- The following interfaces no longer extend the log `ContextProviderInterface`. Instead, classes only need to implement
   that log interface if they need to customise how that class is logged.
     - `Bus\MessageInterface`
     - `Infrastructure\Queue\QueueableInterface`
