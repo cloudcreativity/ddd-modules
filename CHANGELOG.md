@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [1.0.0-rc.2] - 2024-03-06
+
 ### Added
 
 - New `FailedResultException` for throw result objects that have not succeeded.
