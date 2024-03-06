@@ -9,8 +9,10 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Toolkit\Messages;
+namespace CloudCreativity\Modules\Infrastructure\Persistence;
 
-interface QueryInterface extends MessageInterface
+use CloudCreativity\Modules\Toolkit\Result\FailedResultException;
+
+final class AbortOnFailureException extends FailedResultException
 {
 }
