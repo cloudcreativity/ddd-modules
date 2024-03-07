@@ -2,3 +2,8 @@ vendor/
 composer.lock
 .phpunit.cache/
 .deptrac.cache
+
+# Vitepress
+node_modules/
+docs/.vitepress/dist/
+docs/.vitepress/cache/
