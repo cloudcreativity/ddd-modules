@@ -7,39 +7,69 @@ export default defineConfig({
     themeConfig: {
         // https://vitepress.dev/reference/default-theme-config
         nav: [
-            { text: 'Guide', link: '/guide/' },
+            {
+                text: 'Guide',
+                link: '/guide/',
+            },
         ],
 
         sidebar: {
-           '/guide/': [
-               {
-                   text: 'Introduction',
-                   collapsed: false,
-                   items: [
-                       { text: 'What is DDD Modules?', link: '/guide/' },
-                       { text: 'Installation', link: '/guide/installation' },
-                   ],
-               },
-               {
-                   text: 'Core Concepts',
-                   collapsed: false,
-                   items: [
-                       { text: 'Overview', link: '/guide/concepts/' },
-                       { text: 'Layers', link: '/guide/concepts/layers' },
-                       { text: 'Encapsulation', link: '/guide/concepts/encapsulation' },
-                       { text: 'Modularisation', link: '/guide/concepts/modularisation' },
-                   ],
-               },
-           ],
+            '/guide/': [
+                {
+                    text: 'Introduction',
+                    collapsed: false,
+                    items: [
+                        {text: 'What is DDD Modules?', link: '/guide/'},
+                        {text: 'Installation', link: '/guide/installation'},
+                    ],
+                },
+                {
+                    text: 'Core Concepts',
+                    collapsed: false,
+                    items: [
+                        {text: 'Overview', link: '/guide/concepts/'},
+                        {text: 'Layers', link: '/guide/concepts/layers'},
+                        {text: 'Encapsulation', link: '/guide/concepts/encapsulation'},
+                        {text: 'Modularisation', link: '/guide/concepts/modularisation'},
+                    ],
+                },
+                {
+                    text: 'Domain Layer',
+                    collapsed: false,
+                    items: [
+                        {text: 'Entities & Aggregates', link: '/guide/domain/entities'},
+                    ],
+                },
+                {
+                    text: 'Infrastructure Layer',
+                    collapsed: false,
+                    items: [],
+                },
+                {
+                    text: 'Application Layer',
+                    collapsed: false,
+                    items: [],
+                },
+                {
+                    text: 'Toolkit',
+                    collapsed: false,
+                    items: [
+                        {text: 'Identifiers', link: '/guide/toolkit/identifiers'},
+                    ],
+                }
+            ],
         },
 
         socialLinks: [
-            { icon: 'github', link: 'https://github.com/cloudcreativity/ddd-modules' },
+            {
+                icon: 'github',
+                link: 'https://github.com/cloudcreativity/ddd-modules',
+            },
         ],
 
         footer: {
             message: 'Released under the MIT License.',
-            copyright: 'Copyright © 2024 Cloud Creativity Ltd'
-        }
-    }
+            copyright: 'Copyright © 2024 Cloud Creativity Ltd',
+        },
+    },
 })

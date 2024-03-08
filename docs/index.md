@@ -9,7 +9,7 @@ hero:
   actions:
     - theme: brand
       text: Read the Docs
-      link: /guide/introduction/what-is-ddd-modules
+      link: /guide/
     - theme: alt
       text: View on Github
       link: https://github.com/cloudcreativity/ddd-modules
