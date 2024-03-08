@@ -13,11 +13,21 @@ export default defineConfig({
         sidebar: {
            '/guide/': [
                {
-                   text: 'Concepts',
+                   text: 'Introduction',
                    collapsed: false,
                    items: [
+                       { text: 'What is DDD Modules?', link: '/guide/' },
+                       { text: 'Installation', link: '/guide/installation' },
+                   ],
+               },
+               {
+                   text: 'Core Concepts',
+                   collapsed: false,
+                   items: [
+                       { text: 'Overview', link: '/guide/concepts/' },
                        { text: 'Layers', link: '/guide/concepts/layers' },
                        { text: 'Encapsulation', link: '/guide/concepts/encapsulation' },
+                       { text: 'Modularisation', link: '/guide/concepts/modularisation' },
                    ],
                },
            ],

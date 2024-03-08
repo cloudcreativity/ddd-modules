@@ -9,17 +9,13 @@ hero:
   actions:
     - theme: brand
       text: Read the Docs
-      link: /markdown-examples
+      link: /guide/introduction/what-is-ddd-modules
     - theme: alt
-      text: Installation
-      link: /api-examples
+      text: View on Github
+      link: https://github.com/cloudcreativity/ddd-modules
 
-features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+#features:
+#  - title: Feature A
+#    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
 ---
 

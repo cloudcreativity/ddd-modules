@@ -131,7 +131,7 @@ or to retrieve current state from the other context.
 
 Here, the invoking of an action in the other bounded context maps directly to sending a command message to that bounded
 context. The retrieval of the current state of the other context maps directly to sending a query message to
-that bounded context. Both happen immediately, i.e. a synchronous in nature. This means the calling bounded context
+that bounded context. Both happen immediately, i.e. are synchronous in nature. This means the calling bounded context
 needs to wait for a response from the other context before it can continue with its own execution.
 
 ### Consumers
