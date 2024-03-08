@@ -4,9 +4,15 @@ You've decided to use domain-driven design (DDD) as your architectural approach.
 maybe even held some Event Storming sessions, and can now talk fluently in the ubiquitous language of your domain. Now
 you need to start writing the domain code.
 
-But how? How should your code be structured? How do you ensure that the bounded context you're writing is entirely
+But how?! :thinking:
+
+How should your code be structured? How do you ensure that the bounded context you're writing is entirely
 encapsulated? How do you enforce architectural boundaries between bounded contexts, and ensure that they are loosely
 coupled?
+
+:melting_face:
+
+Don't worry, we've got you! :saluting_face:
 
 This package provides a conceptual approach and a set of tooling to help you write loosely coupled and highly
 encapsulated bounded contexts - or modules - in PHP.
@@ -51,5 +57,6 @@ path to microservices in the future. I.e. an evolution along these lines:
 
 This package emerged out of the journey from a monolith to a modular monolith. It provided a toolset to write each
 bounded context as its own module within the monolith, while also guaranteeing that each module was loosely coupled
-and highly encapsulated. This guarantee is needed to ensure modules can be extracted to microservices as needed in the
-future.
+and highly encapsulated.
+
+This guarantee ensures modules can be extracted to microservices as needed in the future. :tada:

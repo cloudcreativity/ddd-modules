@@ -1,4 +1,4 @@
-# Entities & Aggregate Roots
+# Entities & Aggregates
 
 The business logic in your domain layer will be defined in terms of the following concepts:
 
@@ -7,7 +7,7 @@ The business logic in your domain layer will be defined in terms of the followin
   as a single unit for the purpose of state changes in-line with business logic.
 - **Value Object** - an object that has no identity and is immutable. It is used to describe a characteristic (or
   characteristics) of an entity, and to define data types specific to the domain that are not represented by primitives.
-  This can include enums.
+  (The [next chapter](./value-objects) covers these in detail.)
 
 This package provides some tooling to help implement a bounded context's domain layer in terms of these concepts.
 However, it is intentionally light-weight, because each domain should be modelled according to its own concerns.
@@ -120,39 +120,86 @@ e.g. an integer where we know the persistence layer uses an auto-incrementing in
 
 See the [Identifiers chapter](../toolkit/identifiers) for more details.
 
-## Value Objects
+## Invariants
 
-Value objects should also be defined in your domain. These are specific to your domain and represent values that have a
-logical meaning within the domain. Value objects must always be immutable, and have _object equality_. I.e. one value
-object is equal to another if they hold the same value.
+Entities and aggregates should be designed to maintain invariants. An invariant is a condition that must always be true
+for the entity or aggregate to be in a valid state.
 
-Enums are also considered value objects, as they are not uniquely identifiable and are immutable.
+### Constructor State
 
-In the example above, the `Attendee` aggregate root has a `Customer` value object. This is defined as follows:
+Maintaining invariants means that an entity or aggregate must never be constructed in an invalid state. This means you
+will need to enforce the invariant within the constructor.
+
+For example, our `Attendee` aggregate root should always have at least one ticket. This is an invariant that we can
+enforce in the constructor:
 
 ```php
-namespace App\Modules\EventManagement\BoundedContext\Domain\ValueObjects;
+use CloudCreativity\Modules\Toolkit\Contracts;
 
-final readonly class Customer
+class Attendee implements AggregateInterface
 {
+    use EntityTrait;
+
     public function __construct(
-        public readonly string $firstName,
-        public readonly string $lastName,
-        public readonly EmailAddress $email,
+        private readonly IdentifierInterface $id,
+        private readonly Customer $customer,
+        private readonly ListOfTickets $tickets,
     ) {
+        Contracts::assert(
+            $this->tickets->isNotEmpty(),
+            'Attendee must have at least one ticket.',
+        );
+
+        $this->id = $id;
     }
 
-    public function equals(self $other): bool
-    {
-        return $this->firstName === $other->firstName &&
-            $this->lastName === $other->lastName &&
-            $this->email->equals($other->email);
+    // ...methods
+}
+```
+
+:::tip
+See the [Assertions Chapter](../toolkit/assertions) for an explanation of the `Contract::assert()` helper.
+:::
+
+### Mutating State
+
+Additionally, your entities and aggregates should never enter an invalid state. This means that you should
+not provide public "setters" for changing properties on the entity or aggregate. Instead, you should provide methods
+that represent the _business logic_ that can change the state of the entity or aggregate.
+
+These methods are better than setters, as they allow the "complete" state of the mutation to be provided at once,
+through the method arguments. In comparison, "setter" methods typically allow the state to be changed incrementally,
+one property at a time - which risks the entity or aggregate entering an invalid state between each change.
+
+:::tip
+If your state changing method requires a lot of inputs, consider using a value object to encapsulate the inputs -
+rather than having a long list of method arguments. This also means the value object can encapsulate the logic of
+validating the inputs, which can be reused in other parts of your domain.
+:::
+
+For example, if an `Attendee` can cancel a ticket, you might provide a `cancelTicket()` method:
+
+```php
+public function cancelTicket(
+    IdentifierInterface $ticketId,
+    CancellationReasonEnum $reason,
+): void
+{
+    $ticket = $this->tickets->findOrFail($ticketId);
+
+    if ($ticket->isNotCancelled()) {
+        $ticket->markAsCancelled($reason);
+
+        Services::getEvents()->dispatch(new AttendeeTicketWasCancelled(
+          attendeeId: $this->id,
+          ticketId: $ticketId,
+          reason: $reason,
+        ));
     }
 }
 ```
 
 :::tip
-If a value object is not intended to be extended, it should be declared `final`. In PHP >=8.2, making it `readonly` is
-also recommended. Both prevent the value object being mocked in tests - however, this is desirable as value objects
-should not be mocked.
+As shown in the example, this also allows your entity to emit domain events when its state changes.
+See the [Domain Events chapter](../domain-events) for more detail on this topic.
 :::

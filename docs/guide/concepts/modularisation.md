@@ -1,7 +1,3 @@
----
-outline: deep
----
-
 # Modularisation
 
 Modularisation is an approach to splitting up a monolith, particularly one that is considered _legacy_ code, into

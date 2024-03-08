@@ -2,6 +2,11 @@
 
 This section of the guide provides the core conceptual concepts that underpin the design of this package.
 
+## Bounded Contexts
+
+The [Bounded Contexts Chapter](./bounded-contexts) explains what a bounded context is, and how this relates to the
+concept of "modules" in this package.
+
 ## Layers
 
 The [Layers Chapter](./layers) explains how each bounded context - or module - is divided into layers. Each layer has a

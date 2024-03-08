@@ -28,6 +28,7 @@ export default defineConfig({
                     collapsed: false,
                     items: [
                         {text: 'Overview', link: '/guide/concepts/'},
+                        {text: 'Bounded Contexts', link: '/guide/concepts/bounded-contexts'},
                         {text: 'Layers', link: '/guide/concepts/layers'},
                         {text: 'Encapsulation', link: '/guide/concepts/encapsulation'},
                         {text: 'Modularisation', link: '/guide/concepts/modularisation'},
@@ -38,6 +39,9 @@ export default defineConfig({
                     collapsed: false,
                     items: [
                         {text: 'Entities & Aggregates', link: '/guide/domain/entities'},
+                        {text: 'Value Objects', link: '/guide/domain/value-objects'},
+                        {text: 'Domain Events', link: '/guide/domain/events'},
+                        {text: 'Services', link: '/guide/domain/services'},
                     ],
                 },
                 {
@@ -52,9 +56,11 @@ export default defineConfig({
                 },
                 {
                     text: 'Toolkit',
-                    collapsed: false,
+                    collapsed: true,
                     items: [
+                        {text: 'Assertions', link: '/guide/toolkit/assertions'},
                         {text: 'Identifiers', link: '/guide/toolkit/identifiers'},
+                        {text: 'Iterables', link: '/guide/toolkit/iterables'},
                     ],
                 }
             ],
@@ -71,5 +77,7 @@ export default defineConfig({
             message: 'Released under the MIT License.',
             copyright: 'Copyright © 2024 Cloud Creativity Ltd',
         },
+
+        outline: 'deep',
     },
 })
