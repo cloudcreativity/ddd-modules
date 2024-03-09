@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [1.0.0] - 2024-03-09
+
 ### Removed
 
 - **BREAKING** The following deprecated interfaces have been removed:
@@ -17,7 +19,7 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Added
 
-- New `FailedResultException` for throw result objects that have not succeeded.
+- New `FailedResultException` for throwing result objects that have not succeeded.
 
 ### Changed
 
