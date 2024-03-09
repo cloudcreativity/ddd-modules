@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Bus;
 
-use CloudCreativity\Modules\Bus\CommandInterface;
+use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 
 class TestCommand implements CommandInterface
 {

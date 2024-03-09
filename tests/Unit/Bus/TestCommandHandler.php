@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Bus;
 
-use CloudCreativity\Modules\Bus\DispatchThroughMiddleware;
+use CloudCreativity\Modules\Toolkit\Messages\DispatchThroughMiddleware;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 

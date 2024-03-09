@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Log;
 
 use BackedEnum;
-use CloudCreativity\Modules\Infrastructure\Log\ContextProviderInterface as DeprecatedContextProviderInterface;
 use CloudCreativity\Modules\Infrastructure\Log\ResultContext;
 use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
 use CloudCreativity\Modules\Toolkit\Loggable\ContextProviderInterface;
@@ -25,11 +24,11 @@ use PHPUnit\Framework\TestCase;
 /**
  * @extends ResultInterface<null>
  */
-interface ResultWithContext extends ResultInterface, DeprecatedContextProviderInterface
+interface ResultWithContext extends ResultInterface, ContextProviderInterface
 {
 }
 
-interface ErrorWithContext extends ErrorInterface, DeprecatedContextProviderInterface
+interface ErrorWithContext extends ErrorInterface, ContextProviderInterface
 {
 }
 
