@@ -201,5 +201,5 @@ public function cancelTicket(
 
 :::tip
 As shown in the example, this also allows your entity to emit domain events when its state changes.
-See the [Domain Events chapter](../domain-events) for more detail on this topic.
+See the [Domain Events chapter](./events) for more detail on this topic.
 :::

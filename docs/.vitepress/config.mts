@@ -4,6 +4,7 @@ import {defineConfig} from 'vitepress'
 export default defineConfig({
     title: "DDD Modules",
     description: "Modules for domain-driven implementations in PHP.",
+    base: '/ddd-modules/',
     themeConfig: {
         // https://vitepress.dev/reference/default-theme-config
         nav: [

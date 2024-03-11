@@ -27,7 +27,7 @@ can have its own _Order_ aggregate root, but it can be modelled exactly for the 
 ## Modules
 
 This package is called _DDD Modules_ because it originated from a need to split down a complex monolith into a
-_modular monolith_. This [Modularisation process is covered in a later chapter.](../modularisation)
+_modular monolith_. This [Modularisation process is covered in a later chapter.](./modularisation)
 
 **The important thing to note is that there is a one-to-one relationship between a bounded context and a module. Each
 module encompasses a singular bounded context.**
