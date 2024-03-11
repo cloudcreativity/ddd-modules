@@ -330,8 +330,8 @@ Or like this?
 }
 ```
 
-Only the framework layer knows - as JSON is effectively a _presentation_ of the data. As we know, the domain layer
-is the inner-most layer, that should have no knowledge of the outer layers - including the presentation layer. The same
+Only the _presentation_ layer knows - as JSON is a data delivery mechanism. As we know, the domain layer is the
+inner-most layer, that should have no knowledge of the outer layers - including the presentation layer. The same
 applies for serializing to strings - this is a concern of the presentation layer.
 
 The only exception to this would be _scalar_ value objects - for example our `EmailAddress` value object. In this case,

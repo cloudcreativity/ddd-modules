@@ -15,16 +15,17 @@ specific responsibility and is designed to be as decoupled as possible from the 
 1. Domain
 2. Infrastructure
 3. Application
-4. Framework (encompassing presentation and delivery).
+4. Presentation
 
 ## Encapsulation
 
-The [Encapsulation Chapter](./encapsulation) explains how the bounded context is encapsulated - i.e. only exposes a
-defined contract to the outside world, while hiding the internal implementation details.
+The [Encapsulation Chapter](./encapsulation) explains how the bounded context is encapsulated. This means the
+application layer exposes a defined contract to the outside world, while hiding the internal implementation of the
+domain and infrastructure layers.
 
 The chapter describes how **messages** - commands, queries and integration events - are used to pass information between
-the outside world and the bounded context. Additionally it covers coupling between bounded contexts for
-context-to-context communication.
+the outside world and the bounded context. It also covers **coupling** between bounded contexts for context-to-context
+communication.
 
 ## Modularisation
 

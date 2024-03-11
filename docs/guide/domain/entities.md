@@ -174,7 +174,7 @@ one property at a time - which risks the entity or aggregate entering an invalid
 :::tip
 If your state changing method requires a lot of inputs, consider using a value object to encapsulate the inputs -
 rather than having a long list of method arguments. This also means the value object can encapsulate the logic of
-validating the inputs, which can be reused in other parts of your domain.
+ensuring the inputs are an invariant, which can be reused in other parts of your domain.
 :::
 
 For example, if an `Attendee` can cancel a ticket, you might provide a `cancelTicket()` method:

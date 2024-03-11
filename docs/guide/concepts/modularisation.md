@@ -49,9 +49,9 @@ namespaces of classes:
 ```
 
 :::tip
-Note that there is no _framework layer_ here. The framework would be _outside_ the `Modules` namespace. This is because
-the framework is the outermost layer of the architecture, which would consume the module's application interface to
-dispatch commands or queries.
+Note that there is no _presentation layer_ here. Presentation and delivery is _outside_ the `Modules` namespace. This is
+because presentation is the outermost layer of the architecture, which would consume the module's application interface
+to dispatch commands or queries.
 :::
 
 As a top-level summary, the three namespaces in each module are:
@@ -106,7 +106,7 @@ need to call another module directly.
 
 :::info
 In a microservice architecture, this would be the point where one microservice representing a bounded context calls
-another microservice representing a separate bounded context, e.g. HTTP or gRPC.
+another microservice representing a separate bounded context, e.g. via HTTP or gRPC.
 :::
 
 The consumer namespace must not contain any business logic - therefore it must not depend on anything from the bounded

@@ -90,10 +90,10 @@ interface EventManagementApplicationInterface
 }
 ```
 
-This is the _only_ interface that is exposed to the _outside world_ - i.e. the framework layer. It ensures the bounded
-context is fully encapsulated, because it only defines the interfaces required to dispatch domain-centric messages.
-Everything else - domain entities containing business logic, infrastructure to respond and process messages, etc - is
-encapsulated within the bounded context behind this application interface.
+This is the _only_ interface that is exposed to the _outside world_ - i.e. the presentation and delivery layer. It
+ensures the bounded context is fully encapsulated, because it only defines the interfaces required to dispatch
+domain-centric messages. Everything else - domain entities containing business logic, infrastructure to respond and
+process messages, etc - is encapsulated within the bounded context behind this application interface.
 
 :::tip
 In the above interface, it is important to note that there is a specific interface for the event management's command,
