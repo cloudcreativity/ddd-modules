@@ -47,12 +47,21 @@ export default defineConfig({
                 {
                     text: 'Infrastructure Layer',
                     collapsed: false,
-                    items: [],
+                    items: [
+                        {text: 'Asynchronous Processing', link: '/guide/infrastructure/queues'},
+                        {text: 'Dependency Injection', link: '/guide/infrastructure/dependency-injection'},
+                        {text: 'Persistence', link: '/guide/infrastructure/persistence'},
+                        {text: 'Units of Work', link: '/guide/infrastructure/units-of-work'},
+                    ],
                 },
                 {
                     text: 'Application Layer',
                     collapsed: false,
-                    items: [],
+                    items: [
+                        {text: 'Commands', link: '/guide/application/commands'},
+                        {text: 'Queries', link: '/guide/application/queries'},
+                        {text: 'Integration Events', link: '/guide/application/events'},
+                    ],
                 },
                 {
                     text: 'Toolkit',

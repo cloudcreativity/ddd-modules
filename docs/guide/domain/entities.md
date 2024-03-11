@@ -191,9 +191,9 @@ public function cancelTicket(
         $ticket->markAsCancelled($reason);
 
         Services::getEvents()->dispatch(new AttendeeTicketWasCancelled(
-          attendeeId: $this->id,
-          ticketId: $ticketId,
-          reason: $reason,
+            attendeeId: $this->id,
+            ticketId: $ticketId,
+            reason: $reason,
         ));
     }
 }

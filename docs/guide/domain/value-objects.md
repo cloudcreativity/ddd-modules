@@ -167,7 +167,7 @@ final readonly class Customer
 ```
 
 :::tip
-See the [Assertions Chapter](../toolkit/assertions) for an explanation of the `Contract::assert()` helper.
+See the [Assertions Chapter](../toolkit/assertions) for an explanation of the `Contracts::assert()` helper.
 :::
 
 ## Immutability
