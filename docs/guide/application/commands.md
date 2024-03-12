@@ -253,7 +253,7 @@ it may be best to move the creation of your command bus to a dedicated factory c
 ### Dispatching Commands
 
 You can now dispatch command messages to your bounded context from the _outside world_. For example, if we were using
-a single action controller to handle HTTP requests in a Laravel application, we might dispatch a command like this:
+a single action controller to handle a HTTP request in a Laravel application, we might dispatch a command like this:
 
 ```php
 namespace App\Http\Controllers\Api\Attendees;
@@ -279,7 +279,7 @@ class CancellationController extends Controller
         ]);
 
         $command = new CancelAttendeeTicketCommand(
-            attendeeId: new IntegerId((int) $request->attendeeId),
+            attendeeId: new IntegerId((int) $attendeeId),
             ticketId: new IntegerId((int) $validated->ticket),
             reason: CancellationReasonEnum::from($request->reason),
         );
@@ -318,7 +318,7 @@ Middleware is executed in the order it is added to the bus.
 
 To apply middleware to a specific command handler, the handler must implement the `DispatchThroughMiddleware` interface,
 as shown in the example handler above. The `middleware()` method should return an array of middleware to run, in the
-order they should be executed. Handler middleware are always executed after the bus middleware.
+order they should be executed. Handler middleware are always executed _after_ the bus middleware.
 
 This package provides a number of command middleware, which are described below. Additionally, you can write your own
 middleware to suit your specific needs.
