@@ -255,8 +255,8 @@ example:
 ```php
 namespace App\Modules\EventManagement\BoundedContext\Application\Listeners;
 
-use App\Modules\EventManagement\BoundedContext\Domain\Events\AttendeeTicketWasCancelled;
 use App\Modules\EventManagement\BoundedContext\Application\Commands\RecalculateSalesAtEventCommand;
+use App\Modules\EventManagement\BoundedContext\Domain\Events\AttendeeTicketWasCancelled;
 use CloudCreativity\Modules\Infrastructure\Queue\QueueInterface;
 
 final readonly class QueueTicketSalesReportRecalculation
