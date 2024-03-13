@@ -54,7 +54,7 @@ final readonly class AttendeeTicketWasCancelled implements
         public IdentifierInterface $attendeeId,
         public IdentifierInterface $ticketId,
         public CancellationReasonEnum $reason,
-        private \DateTimeImmutable $occurredAt = new \DateTimeImmutable(),
+        public \DateTimeImmutable $occurredAt = new \DateTimeImmutable(),
     ) {
     }
 
@@ -318,6 +318,8 @@ final readonly class PublishAttendeeTicketWasCancelled
     {
         $this->eventBus->publish(
             new IntegrationEvents\AttendeeTicketWasCancelled(
+                uuid: $this->uuidFactory->uuid4(),
+                occurredAt: $event->occurredAt,
                 eventId: $event->eventId,
                 attendeeId: $event->attendeeId,
                 ticketId: $event->ticketId,

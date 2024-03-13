@@ -14,9 +14,7 @@ How should your code be structured? How do you ensure that the bounded context y
 encapsulated? How do you enforce architectural boundaries between bounded contexts, and ensure that they are loosely
 coupled?
 
-:melting_face:
-
-Don't worry, we've got you! :saluting_face:
+Don't worry, we've got you!
 
 This package provides a conceptual approach and a set of tooling to help you write loosely coupled and highly
 encapsulated bounded contexts - or modules - in PHP.

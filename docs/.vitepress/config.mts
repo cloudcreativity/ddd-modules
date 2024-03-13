@@ -47,10 +47,12 @@ export default defineConfig({
                 },
                 {
                     text: 'Infrastructure Layer',
-                    collapsed: false,
+                    collapsed: true,
                     items: [
                         {text: 'Asynchronous Processing', link: '/guide/infrastructure/queues'},
                         {text: 'Dependency Injection', link: '/guide/infrastructure/dependency-injection'},
+                        {text: 'Inbox', link: '/guide/infrastructure/inbox'},
+                        {text: 'Outbox', link: '/guide/infrastructure/outbox'},
                         {text: 'Persistence', link: '/guide/infrastructure/persistence'},
                         {text: 'Units of Work', link: '/guide/infrastructure/units-of-work'},
                     ],

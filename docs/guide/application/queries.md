@@ -166,7 +166,7 @@ use App\Modules\EventManagement\BoundedContext\Application\Queries\{
     GetAttendeeTickets\GetAttendeeTicketsQuery,
     GetAttendeeTickets\GetAttendeeTicketsHandler,
     GetAttendeeTickets\GetAttendeeTicketsHandlerInterface,
-}
+};
 use CloudCreativity\Modules\Bus\{
     QueryHandlerContainer,
     Middleware\LogMessageDispatch,

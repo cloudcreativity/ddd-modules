@@ -195,7 +195,7 @@ use App\Modules\EventManagement\BoundedContext\Application\Commands\{
     CancelAttendeeTicket\CancelAttendeeTicketCommand,
     CancelAttendeeTicket\CancelAttendeeTicketHandler,
     CancelAttendeeTicket\CancelAttendeeTicketHandlerInterface,
-}
+};
 use CloudCreativity\Modules\Bus\{
     CommandHandlerContainer,
     Middleware\ExecuteInUnitOfWork,
