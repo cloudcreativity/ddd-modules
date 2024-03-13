@@ -36,13 +36,18 @@ final class IntegrationEventHandler implements IntegrationEventHandlerInterface
             return;
         }
 
-        assert(method_exists($this->handler, 'handle'), sprintf(
-            'Cannot handle "%s" - handler "%s" does not have a handle method.',
+        foreach (['handle', 'publish'] as $method) {
+            if (method_exists($this->handler, $method)) {
+                $this->handler->{$method}($event);
+                return;
+            }
+        }
+
+        throw new \RuntimeException(sprintf(
+            'Cannot handle "%s" - handler "%s" does not have a handle or publish method.',
             $event::class,
             $this->handler::class,
         ));
-
-        $this->handler->handle($event);
     }
 
     /**

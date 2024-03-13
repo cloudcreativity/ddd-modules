@@ -21,7 +21,7 @@ class IntegrationEventHandlerTest extends TestCase
     /**
      * @return void
      */
-    public function testItInvokesMethodsOnInnerHandler(): void
+    public function testItInvokesHandleMethodOnInnerHandler(): void
     {
         $event = new TestIntegrationEvent();
         $innerHandler = $this->createMock(TestIntegrationEventHandler::class);
@@ -40,6 +40,32 @@ class IntegrationEventHandlerTest extends TestCase
 
         $this->assertInstanceOf(IntegrationEventHandlerInterface::class, $publisher);
         $this->assertSame($middleware, $publisher->middleware());
+    }
+
+    /**
+     * Allow the inner handler to use the "publish" method.
+     *
+     * This is useful where the handler is for a publisher, because it makes more sense
+     * than "publish".
+     *
+     * @return void
+     */
+    public function testItInvokesPublishMethodOnInnerHandler(): void
+    {
+        $event = new TestIntegrationEvent();
+        $innerHandler = new class () {
+            public TestIntegrationEvent|null $published = null;
+
+            public function publish(TestIntegrationEvent $event): void
+            {
+                $this->published = $event;
+            }
+        };
+
+        $publisher = new IntegrationEventHandler($innerHandler);
+        $publisher($event);
+
+        $this->assertSame($event, $innerHandler->published);
     }
 
     /**
