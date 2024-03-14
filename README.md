@@ -2,6 +2,8 @@
 
 **Write highly encapsulated and loosely coupled modules, for domain-centric architecture.**
 
+[Read the docs here.](https://cloudcreativity.github.io/ddd-modules)
+
 ## What is this?
 
 You've decided to use domain-driven design (DDD) as your architectural approach. You've engaged with business experts,
