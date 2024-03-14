@@ -18,6 +18,7 @@ use Ramsey\Uuid\Type\Integer as IntegerObject;
 use Ramsey\Uuid\Uuid as BaseUuid;
 use Ramsey\Uuid\UuidFactoryInterface as BaseUuidFactoryInterface;
 use Ramsey\Uuid\UuidInterface;
+use RuntimeException;
 
 final class UuidFactory implements UuidFactoryInterface
 {
@@ -134,5 +135,29 @@ final class UuidFactory implements UuidFactoryInterface
     public function uuid6(?Hexadecimal $node = null, ?int $clockSeq = null): Uuid
     {
         return new Uuid($this->baseFactory->uuid6($node, $clockSeq));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function uuid7(?DateTimeInterface $dateTime = null): Uuid
+    {
+        if (method_exists($this->baseFactory, 'uuid7')) {
+            return new Uuid($this->baseFactory->uuid7($dateTime));
+        }
+
+        throw new RuntimeException('UUID version 7 is not supported by the underlying factory.');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function uuid8(string $bytes): Uuid
+    {
+        if (method_exists($this->baseFactory, 'uuid8')) {
+            return new Uuid($this->baseFactory->uuid8($bytes));
+        }
+
+        throw new RuntimeException('UUID version 8 is not supported by the underlying factory.');
     }
 }

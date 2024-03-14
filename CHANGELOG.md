@@ -10,6 +10,10 @@ All notable changes to this project will be documented in this file. This projec
 - Allow an outbound integration event handler to implement a `publish()` method. The `handle()` method is still
   supported, but `publish()` makes more sense to describe what the handler does with the event it has been given.
 
+### Fixed
+
+- Added missing UUID 7 and 8 methods to the UUID factory interface.
+
 ## [1.0.0] - 2024-03-09
 
 ### Removed
