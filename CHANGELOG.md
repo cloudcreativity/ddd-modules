@@ -13,6 +13,8 @@ All notable changes to this project will be documented in this file. This projec
 ### Fixed
 
 - Added missing UUID 7 and 8 methods to the UUID factory interface.
+- The `Result::error()` method now correctly returns the first error message even if it is not on the first error in the
+  list.
 
 ## [1.0.0] - 2024-03-09
 

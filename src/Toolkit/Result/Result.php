@@ -117,7 +117,13 @@ final class Result implements ResultInterface
      */
     public function error(): ?string
     {
-        return $this->errors->first()?->message();
+        foreach ($this->errors as $error) {
+            if ($message = $error->message()) {
+                return $message;
+            }
+        }
+
+        return null;
     }
 
     /**
