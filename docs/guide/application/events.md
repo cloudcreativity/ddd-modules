@@ -221,7 +221,7 @@ always need to be the case in your domain.
 
 :::tip
 You can improve the example publishing of outbound integration events by domain event listeners using an
-[Outbox pattern.](../infrastructure/outbox.md)
+[Outbox pattern.](../infrastructure/outbox-inbox)
 :::
 
 ### Receiving Events
@@ -276,7 +276,7 @@ need to react to it.
 
 :::tip
 You can improve the example processing of inbound integration events by your presentation and delivery layer by using
-an [Inbox pattern.](../infrastructure/inbox.md)
+an [Inbox pattern.](../infrastructure/outbox-inbox)
 :::
 
 ## Publisher
