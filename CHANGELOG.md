@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [1.1.0] - 2024-03-14
+
 ### Added
 
 - Allow an outbound integration event handler to implement a `publish()` method. The `handle()` method is still
