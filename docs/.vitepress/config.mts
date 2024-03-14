@@ -71,6 +71,7 @@ export default defineConfig({
                         {text: 'Assertions', link: '/guide/toolkit/assertions'},
                         {text: 'Identifiers', link: '/guide/toolkit/identifiers'},
                         {text: 'Iterables', link: '/guide/toolkit/iterables'},
+                        {text: 'Results', link: '/guide/toolkit/results'},
                     ],
                 }
             ],
