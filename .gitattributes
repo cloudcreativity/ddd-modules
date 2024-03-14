@@ -7,3 +7,6 @@ deptrac.yaml export-ignore
 phpstan.neon export-ignore
 phpunit.xml export-ignore
 pint.json export-ignore
+/docs export-ignore
+package.json export-ignore
+package-lock.json export-ignore

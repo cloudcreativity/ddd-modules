@@ -76,6 +76,23 @@ class ResultTest extends TestCase
     }
 
     /**
+     * @return void
+     */
+    public function testErrorWithMultipleErrors(): void
+    {
+        $errors = new ListOfErrors(
+            new Error(code: TestEnum::Foo),
+            new Error(code: TestEnum::Bar),
+            new Error(message: 'Message A'),
+            new Error(message: 'Message B'),
+        );
+
+        $result = Result::failed($errors);
+
+        $this->assertSame('Message A', $result->error());
+    }
+
+    /**
      * @param Result<null> $result
      * @return void
      * @depends testFailed

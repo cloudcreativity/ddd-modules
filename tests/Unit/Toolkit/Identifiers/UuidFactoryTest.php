@@ -21,14 +21,15 @@ use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Type\Hexadecimal;
 use Ramsey\Uuid\Type\Integer;
 use Ramsey\Uuid\Uuid as BaseUuid;
+use Ramsey\Uuid\UuidFactory as BaseUuidFactory;
 use Ramsey\Uuid\UuidFactoryInterface as BaseUuidFactoryInterface;
 
 class UuidFactoryTest extends TestCase
 {
     /**
-     * @var MockObject&BaseUuidFactoryInterface
+     * @var MockObject&BaseUuidFactory
      */
-    private BaseUuidFactoryInterface&MockObject $baseFactory;
+    private BaseUuidFactory&MockObject $baseFactory;
 
     /**
      * @var UuidFactory
@@ -43,7 +44,7 @@ class UuidFactoryTest extends TestCase
         parent::setUp();
 
         $this->factory = new UuidFactory(
-            $this->baseFactory = $this->createMock(BaseUuidFactoryInterface::class),
+            $this->baseFactory = $this->createMock(BaseUuidFactory::class),
         );
     }
 
@@ -280,5 +281,73 @@ class UuidFactoryTest extends TestCase
 
         $this->assertInstanceOf(Uuid::class, $uuid);
         $this->assertSame($uuid->value, $base);
+    }
+
+    /**
+     * @return void
+     */
+    public function testUuid7(): void
+    {
+        $date = new \DateTimeImmutable();
+
+        $this->baseFactory
+            ->expects($this->once())
+            ->method('uuid7')
+            ->with($this->identicalTo($date))
+            ->willReturn($base = BaseUuid::uuid4());
+
+        $uuid = $this->factory->uuid7($date);
+
+        $this->assertInstanceOf(Uuid::class, $uuid);
+        $this->assertSame($uuid->value, $base);
+    }
+
+    /**
+     * @return void
+     */
+    public function testUuid7NotSupported(): void
+    {
+        $factory = new UuidFactory(
+            $this->createMock(BaseUuidFactoryInterface::class),
+        );
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('UUID version 7 is not supported by the underlying factory.');
+
+        $factory->uuid7();
+    }
+
+    /**
+     * @return void
+     */
+    public function testUuid8(): void
+    {
+        $bytes = 'blah!';
+
+        $this->baseFactory
+            ->expects($this->once())
+            ->method('uuid8')
+            ->with($bytes)
+            ->willReturn($base = BaseUuid::uuid4());
+
+        $uuid = $this->factory->uuid8($bytes);
+
+        $this->assertInstanceOf(Uuid::class, $uuid);
+        $this->assertSame($uuid->value, $base);
+    }
+
+    /**
+     * @return void
+     */
+    public function testUuid8NotSupported(): void
+    {
+        $factory = new UuidFactory(
+            $this->createMock(BaseUuidFactoryInterface::class),
+        );
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('UUID version 8 is not supported by the underlying factory.');
+
+        $factory->uuid8('bytes!');
     }
 }
