@@ -74,6 +74,7 @@ mechanisms, including:
   JSON, etc. :thinking: Yes, that's right - JSON is a _presentation_ format.
 - Console commands - taking console input and presenting results via console output.
 - Queued jobs - for dispatching commands asynchronously.
+- Notifications - e.g. presentation via an HTML email, a text message, or a Slack notification.
 - Etc.
 
 The presentation and delivery layer must _only_ depend on the application layer. Or - in other words - it can only:
