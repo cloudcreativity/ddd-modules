@@ -140,9 +140,10 @@ use App\Modules\EventManagement\BoundedContext\Domain\{
     Enums\CancellationReasonEnum,
     Events\AttendeeTicketWasCancelled,
 };
+use CloudCreativity\Modules\Domain\AggregateInterface;
 use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
 
-class Attendee
+class Attendee implements AggregateInterface
 {
     // ...other methods
 
