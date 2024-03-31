@@ -11,13 +11,16 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\Queue;
 
-interface QueueHandlerInterface extends QueuesBatches, QueueThroughMiddleware
+use CloudCreativity\Modules\Toolkit\Messages\DispatchThroughMiddleware;
+use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
+
+interface QueueHandlerInterface extends DispatchThroughMiddleware
 {
     /**
-     * Queue the message.
+     * Handle the message.
      *
      * @param QueueableInterface $message
-     * @return void
+     * @return ResultInterface<mixed>
      */
-    public function __invoke(QueueableInterface $message): void;
+    public function __invoke(QueueableInterface $message): ResultInterface;
 }

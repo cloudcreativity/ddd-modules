@@ -11,13 +11,13 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\Queue;
 
-interface QueuesBatches
+interface EnqueuerInterface
 {
     /**
-     * Set the batch of messages that are being queued.
+     * Add the message to the queue.
      *
-     * @param QueueableBatch $batch
+     * @param QueueableInterface $queueable
      * @return void
      */
-    public function withBatch(QueueableBatch $batch): void;
+    public function queue(QueueableInterface $queueable): void;
 }

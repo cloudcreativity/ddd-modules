@@ -14,6 +14,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Bus;
 use CloudCreativity\Modules\Bus\CommandDispatcher;
 use CloudCreativity\Modules\Bus\CommandHandlerContainerInterface;
 use CloudCreativity\Modules\Bus\CommandHandlerInterface;
+use CloudCreativity\Modules\Bus\Queue\CommandEnqueuerInterface;
 use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
@@ -26,12 +27,17 @@ class CommandDispatcherTest extends TestCase
     /**
      * @var CommandHandlerContainerInterface&MockObject
      */
-    private CommandHandlerContainerInterface $container;
+    private CommandHandlerContainerInterface&MockObject $container;
 
     /**
      * @var PipeContainerInterface&MockObject
      */
-    private PipeContainerInterface $pipeContainer;
+    private PipeContainerInterface&MockObject $pipeContainer;
+
+    /**
+     * @var MockObject&CommandEnqueuerInterface
+     */
+    private CommandEnqueuerInterface&MockObject $enqueuer;
 
     /**
      * @var CommandDispatcher
@@ -50,6 +56,7 @@ class CommandDispatcherTest extends TestCase
             new PipelineBuilderFactory(
                 $this->pipeContainer = $this->createMock(PipeContainerInterface::class),
             ),
+            $this->enqueuer = $this->createMock(CommandEnqueuerInterface::class),
         );
     }
 
@@ -58,6 +65,8 @@ class CommandDispatcherTest extends TestCase
      */
     public function test(): void
     {
+        $this->willNotQueue();
+
         $command = $this->createMock(CommandInterface::class);
 
         $this->container
@@ -82,6 +91,8 @@ class CommandDispatcherTest extends TestCase
      */
     public function testWithMiddleware(): void
     {
+        $this->willNotQueue();
+
         $command1 = new TestCommand();
         $command2 = new TestCommand();
         $command3 = new TestCommand();
@@ -128,5 +139,85 @@ class CommandDispatcherTest extends TestCase
         $actual = $this->dispatcher->dispatch($command1);
 
         $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @return void
+     */
+    public function testItThrowsWhenItCannotQueueCommands(): void
+    {
+        $dispatcher = new CommandDispatcher(
+            $this->container,
+        );
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Command dispatcher must have an enqueuer to queue commands.');
+
+        $dispatcher->queue(new TestCommand());
+    }
+
+    /**
+     * @return void
+     */
+    public function testItQueuesCommand(): void
+    {
+        $this->willNotDispatch();
+
+        $this->enqueuer
+            ->expects($this->once())
+            ->method('queue')
+            ->with($this->identicalTo($command = new TestCommand()));
+
+        $this->dispatcher->queue($command);
+    }
+
+    /**
+     * @return void
+     */
+    public function testItQueuesManyCommands(): void
+    {
+        $commands = [
+            new TestCommand(),
+            new TestCommand(),
+            new TestCommand(),
+        ];
+
+        $sequence = [];
+
+        $this->enqueuer
+            ->expects($this->exactly(3))
+            ->method('queue')
+            ->with($this->callback(function ($cmd) use (&$sequence): bool {
+                $sequence[] = $cmd;
+                return true;
+            }));
+
+        $this->dispatcher->queue($commands);
+
+        $this->assertSame($commands, $sequence);
+    }
+
+    /**
+     * @return void
+     */
+    private function willNotQueue(): void
+    {
+        $this->enqueuer
+            ->expects($this->never())
+            ->method($this->anything());
+    }
+
+    /**
+     * @return void
+     */
+    private function willNotDispatch(): void
+    {
+        $this->container
+            ->expects($this->never())
+            ->method($this->anything());
+
+        $this->pipeContainer
+            ->expects($this->never())
+            ->method($this->anything());
     }
 }

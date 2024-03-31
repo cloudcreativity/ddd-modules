@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\Queue;
 
-interface QueueableInterface
+use CloudCreativity\Modules\Toolkit\Messages\MessageInterface;
+
+interface QueueableInterface extends MessageInterface
 {
 }

@@ -11,28 +11,20 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue;
 
-use CloudCreativity\Modules\Infrastructure\Queue\QueueableBatch;
 use CloudCreativity\Modules\Infrastructure\Queue\QueueableInterface;
-use CloudCreativity\Modules\Infrastructure\Queue\QueuesBatches;
-use CloudCreativity\Modules\Infrastructure\Queue\QueueThroughMiddleware;
+use CloudCreativity\Modules\Toolkit\Messages\DispatchThroughMiddleware;
+use CloudCreativity\Modules\Toolkit\Result\Result;
+use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
-class TestQueueHandler implements QueuesBatches, QueueThroughMiddleware
+class TestQueueHandler implements DispatchThroughMiddleware
 {
     /**
-     * @inheritDoc
-     */
-    public function withBatch(QueueableBatch $batch): void
-    {
-        // no-op
-    }
-
-    /**
      * @param QueueableInterface $job
-     * @return void
+     * @return ResultInterface<null>
      */
-    public function queue(QueueableInterface $job): void
+    public function execute(QueueableInterface $job): ResultInterface
     {
-        // no-op
+        return Result::ok();
     }
 
     /**

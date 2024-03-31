@@ -11,13 +11,20 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\Queue;
 
+use Closure;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactoryInterface;
+use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
 class Queue implements QueueInterface
 {
+    /**
+     * @var EnqueuerInterface
+     */
+    private readonly EnqueuerInterface $enqueuer;
+
     /**
      * @var PipelineBuilderFactoryInterface
      */
@@ -31,18 +38,21 @@ class Queue implements QueueInterface
     /**
      * Queue constructor.
      *
+     * @param EnqueuerInterface|Closure(QueueableInterface): void $enqueuer
      * @param QueueHandlerContainerInterface $handlers
      * @param PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipeline
      */
     public function __construct(
+        EnqueuerInterface|Closure $enqueuer,
         private readonly QueueHandlerContainerInterface $handlers,
         PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipeline = null,
     ) {
+        $this->enqueuer = ($enqueuer instanceof Closure) ? new ClosureEnqueuer($enqueuer) : $enqueuer;
         $this->pipelineFactory = PipelineBuilderFactory::make($pipeline);
     }
 
     /**
-     * Push jobs through the provided pipes when queuing them.
+     * Dispatch messages through the provided pipes.
      *
      * @param array<string|callable> $pipes
      * @return void
@@ -55,34 +65,34 @@ class Queue implements QueueInterface
     /**
      * @inheritDoc
      */
-    public function push(QueueableInterface $queueable): void
+    public function push(QueueableInterface|iterable $queueable): void
     {
-        $this->pushBatch(new QueueableBatch($queueable));
+        if ($queueable instanceof QueueableInterface) {
+            $this->enqueuer->queue($queueable);
+            return;
+        }
+
+        foreach ($queueable as $item) {
+            $this->enqueuer->queue($item);
+        }
     }
 
     /**
      * @inheritDoc
      */
-    public function pushBatch(QueueableBatch $batch): void
+    public function dispatch(QueueableInterface $queueable): ResultInterface
     {
-        $handler = $this->handlers->get(
-            $batch->first()::class,
-        );
+        $handler = $this->handlers->get($queueable::class);
 
         $pipeline = $this->pipelineFactory
             ->getPipelineBuilder()
             ->through([...$this->pipes, ...array_values($handler->middleware())])
-            ->build(new MiddlewareProcessor(
-                static function (QueueableInterface $message) use ($handler): QueueableInterface {
-                    $handler($message);
-                    return $message;
-                },
-            ));
+            ->build(MiddlewareProcessor::wrap($handler));
 
-        $handler->withBatch($batch);
+        $result = $pipeline->process($queueable);
 
-        foreach ($batch as $queueable) {
-            $pipeline->process($queueable);
-        }
+        assert($result instanceof ResultInterface, 'Expecting pipeline to return a result object.');
+
+        return $result;
     }
 }

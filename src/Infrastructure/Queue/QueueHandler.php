@@ -11,7 +11,8 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\Queue;
 
-use Closure;
+use CloudCreativity\Modules\Toolkit\Messages\DispatchThroughMiddleware;
+use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
 final class QueueHandler implements QueueHandlerInterface
 {
@@ -27,30 +28,15 @@ final class QueueHandler implements QueueHandlerInterface
     /**
      * @inheritDoc
      */
-    public function __invoke(QueueableInterface $message): void
+    public function __invoke(QueueableInterface $message): ResultInterface
     {
-        if ($this->handler instanceof Closure) {
-            ($this->handler)($message);
-            return;
-        }
-
-        assert(method_exists($this->handler, 'queue'), sprintf(
-            'Cannot queue "%s" - handler "%s" does not have a queue method.',
+        assert(method_exists($this->handler, 'execute'), sprintf(
+            'Cannot dispatch "%s" - handler "%s" does not have an execute method.',
             $message::class,
             $this->handler::class,
         ));
 
-        $this->handler->queue($message);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function withBatch(QueueableBatch $batch): void
-    {
-        if ($this->handler instanceof QueuesBatches) {
-            $this->handler->withBatch($batch);
-        }
+        return $this->handler->execute($message);
     }
 
     /**
@@ -58,7 +44,7 @@ final class QueueHandler implements QueueHandlerInterface
      */
     public function middleware(): array
     {
-        if ($this->handler instanceof QueueThroughMiddleware) {
+        if ($this->handler instanceof DispatchThroughMiddleware) {
             return $this->handler->middleware();
         }
 

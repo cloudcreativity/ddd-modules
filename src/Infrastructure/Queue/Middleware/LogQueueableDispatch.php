@@ -13,12 +13,14 @@ namespace CloudCreativity\Modules\Infrastructure\Queue\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Infrastructure\Log\ObjectContext;
+use CloudCreativity\Modules\Infrastructure\Log\ResultContext;
 use CloudCreativity\Modules\Infrastructure\Queue\QueueableInterface;
 use CloudCreativity\Modules\Toolkit\ModuleBasename;
+use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-final class LogPushedToQueue implements EnqueuerMiddlewareInterface
+final class LogQueueableDispatch implements QueueableMiddlewareInterface
 {
     /**
      * LogPushedToQueue constructor.
@@ -37,18 +39,24 @@ final class LogPushedToQueue implements EnqueuerMiddlewareInterface
     /**
      * @inheritDoc
      */
-    public function __invoke(QueueableInterface $queueable, Closure $next): void
+    public function __invoke(QueueableInterface $queueable, Closure $next): ResultInterface
     {
         $name = ModuleBasename::tryFrom($queueable)?->toString() ?? $queueable::class;
 
         $this->log->log(
             $this->queueLevel,
-            "Queuing job {$name}.",
-            $context = ObjectContext::from($queueable)->context(),
+            "Dispatching queued job {$name}.",
+            ObjectContext::from($queueable)->context(),
         );
 
-        $next($queueable);
+        $result = $next($queueable);
 
-        $this->log->log($this->queuedLevel, "Queued job {$name}.", $context);
+        $this->log->log(
+            $this->queuedLevel,
+            "Dispatched queued job {$name}.",
+            ResultContext::from($result)->context(),
+        );
+
+        return $result;
     }
 }

@@ -11,12 +11,13 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue;
 
-use Closure;
+use CloudCreativity\Modules\Infrastructure\Queue\EnqueuerInterface;
 use CloudCreativity\Modules\Infrastructure\Queue\Queue;
-use CloudCreativity\Modules\Infrastructure\Queue\QueueableBatch;
 use CloudCreativity\Modules\Infrastructure\Queue\QueueableInterface;
 use CloudCreativity\Modules\Infrastructure\Queue\QueueHandlerContainerInterface;
 use CloudCreativity\Modules\Infrastructure\Queue\QueueHandlerInterface;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
+use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -25,7 +26,17 @@ class QueueTest extends TestCase
     /**
      * @var QueueHandlerContainerInterface&MockObject
      */
-    private QueueHandlerContainerInterface $container;
+    private QueueHandlerContainerInterface&MockObject $handlers;
+
+    /**
+     * @var MockObject&PipeContainerInterface
+     */
+    private PipeContainerInterface&MockObject $pipes;
+
+    /**
+     * @var EnqueuerInterface&MockObject
+     */
+    private EnqueuerInterface&MockObject $enqueuer;
 
     /**
      * @var Queue
@@ -39,169 +50,155 @@ class QueueTest extends TestCase
     {
         parent::setUp();
 
-        $this->container = $this->createMock(QueueHandlerContainerInterface::class);
-        $this->queue = new Queue($this->container);
+        $this->queue = new Queue(
+            enqueuer: $this->enqueuer = $this->createMock(EnqueuerInterface::class),
+            handlers: $this->handlers = $this->createMock(QueueHandlerContainerInterface::class),
+            pipeline: $this->pipes = $this->createMock(PipeContainerInterface::class),
+        );
     }
 
     /**
      * @return void
      */
-    public function testPush(): void
+    public function testItDispatchesQueueable(): void
     {
-        $message = $this->createMock(QueueableInterface::class);
+        $this->willNotQueue();
 
-        $this->container
+        $queueable = $this->createMock(QueueableInterface::class);
+
+        $this->handlers
             ->expects($this->once())
             ->method('get')
-            ->with($message::class)
+            ->with($queueable::class)
             ->willReturn($handler = $this->createMock(QueueHandlerInterface::class));
 
         $handler
             ->expects($this->once())
-            ->method('withBatch')
-            ->with($this->equalTo(new QueueableBatch($message)));
-
-        $handler
-            ->expects($this->once())
             ->method('__invoke')
-            ->with($this->identicalTo($message));
+            ->with($this->identicalTo($queueable))
+            ->willReturn($expected = Result::ok());
 
-        $this->queue->push($message);
+        $actual = $this->queue->dispatch($queueable);
+
+        $this->assertSame($expected, $actual);
     }
 
     /**
      * @return void
      */
-    public function testPushWithMiddleware(): void
+    public function testItDispatchesThroughMiddleware(): void
     {
-        $message1 = $this->createMock(QueueableInterface::class);
-        $message2 = $this->createMock(QueueableInterface::class);
-        $message3 = $this->createMock(QueueableInterface::class);
+        $this->willNotQueue();
 
-        $middleware1 = function ($actual, \Closure $next) use ($message1, $message2) {
-            $this->assertSame($message1, $actual);
-            return $next($message2);
+        $queueable1 = $this->createMock(QueueableInterface::class);
+        $queueable2 = $this->createMock(QueueableInterface::class);
+        $queueable3 = $this->createMock(QueueableInterface::class);
+
+        $middleware1 = function ($actual, \Closure $next) use ($queueable1, $queueable2) {
+            $this->assertSame($queueable1, $actual);
+            return $next($queueable2);
         };
 
-        $middleware2 = function ($actual, \Closure $next) use ($message2, $message3) {
-            $this->assertSame($message2, $actual);
-            return $next($message3);
+        $middleware2 = function ($actual, \Closure $next) use ($queueable2, $queueable3) {
+            $this->assertSame($queueable2, $actual);
+            return $next($queueable3);
         };
 
-        $this->container
+        $this->handlers
             ->expects($this->once())
             ->method('get')
-            ->with($message1::class)
+            ->with($queueable1::class)
             ->willReturn($handler = $this->createMock(QueueHandlerInterface::class));
 
         $handler
             ->expects($this->once())
-            ->method('withBatch')
-            ->with($this->equalTo(new QueueableBatch($message1)));
-
-        $handler
-            ->expects($this->once())
             ->method('__invoke')
-            ->with($this->identicalTo($message3));
+            ->with($this->identicalTo($queueable3))
+            ->willReturn($expected = Result::ok());
 
         $handler
             ->expects($this->once())
             ->method('middleware')
-            ->willReturn([$middleware2]);
+            ->willReturn(['MySecondMiddleware']);
+
+        $this->pipes
+            ->expects($this->once())
+            ->method('get')
+            ->with('MySecondMiddleware')
+            ->willReturn($middleware2);
 
         $this->queue->through([$middleware1]);
-        $this->queue->push($message1);
+        $actual = $this->queue->dispatch($queueable1);
+
+        $this->assertSame($expected, $actual);
     }
 
     /**
      * @return void
      */
-    public function testPushBatch(): void
+    public function testItQueuesOne(): void
     {
-        $message1 = $this->createMock(QueueableInterface::class);
-        $message2 = $this->createMock(QueueableInterface::class);
-        $batch = new QueueableBatch($message1, $message2);
-        $invoked = [];
+        $this->willNotDispatch();
 
-        $this->container
+        $queueable = $this->createMock(QueueableInterface::class);
+
+        $this->enqueuer
             ->expects($this->once())
-            ->method('get')
-            ->with($message1::class)
-            ->willReturn($handler = $this->createMock(QueueHandlerInterface::class));
+            ->method('queue')
+            ->with($this->identicalTo($queueable));
 
-        $handler
-            ->expects($this->once())
-            ->method('withBatch')
-            ->with($this->identicalTo($batch));
-
-        $handler
-            ->expects($this->once())
-            ->method('middleware')
-            ->willReturn([]);
-
-        $handler
-            ->expects($this->exactly(2))
-            ->method('__invoke')
-            ->willReturnCallback(function ($message) use (&$invoked): bool {
-                $invoked[] = $message;
-                return true;
-            });
-
-        $this->queue->pushBatch($batch);
-        $this->assertSame([$message1, $message2], $invoked);
+        $this->queue->push($queueable);
     }
 
     /**
      * @return void
      */
-    public function testPushBatchWithMiddleware(): void
+    public function testItQueuesMany(): void
     {
-        $message1 = $this->createMock(QueueableInterface::class);
-        $message2 = $this->createMock(QueueableInterface::class);
-        $actual = [];
-        $batch = new QueueableBatch($message1, $message2);
-        $invoked = [];
+        $this->willNotDispatch();
 
-        $middleware1 = function ($job, Closure $next) use (&$actual) {
-            $actual['m1'] ??= [];
-            $actual['m1'][] = $job;
-            return $next($job);
-        };
+        $queueable = [
+            $this->createMock(QueueableInterface::class),
+            $this->createMock(QueueableInterface::class),
+            $this->createMock(QueueableInterface::class),
+        ];
 
-        $middleware2 = function ($job, Closure $next) use (&$actual) {
-            $actual['m2'] ??= [];
-            $actual['m2'][] = $job;
-            return $next($job);
-        };
+        $sequence = [];
 
-        $this->container
-            ->method('get')
-            ->with($message1::class)
-            ->willReturn($handler = $this->createMock(QueueHandlerInterface::class));
-
-        $handler
-            ->expects($this->once())
-            ->method('withBatch')
-            ->with($this->identicalTo($batch));
-
-        $handler
-            ->expects($this->once())
-            ->method('middleware')
-            ->willReturn([$middleware2]);
-
-        $handler
-            ->expects($this->exactly(2))
-            ->method('__invoke')
-            ->willReturnCallback(function ($message) use (&$invoked): bool {
-                $invoked[] = $message;
+        $this->enqueuer
+            ->expects($this->exactly(3))
+            ->method('queue')
+            ->with($this->callback(function ($q) use (&$sequence): bool {
+                $sequence[] = $q;
                 return true;
-            });
+            }));
 
-        $this->queue->through([$middleware1]);
-        $this->queue->pushBatch($batch);
+        $this->queue->push($queueable);
 
-        $this->assertCount(2, $actual);
-        $this->assertSame(['m1' => [$message1, $message2], 'm2' => [$message1, $message2]], $actual);
-        $this->assertSame([$message1, $message2], $invoked);
+        $this->assertSame($queueable, $sequence);
+    }
+
+    /**
+     * @return void
+     */
+    private function willNotDispatch(): void
+    {
+        $this->handlers
+            ->expects($this->never())
+            ->method($this->anything());
+
+        $this->pipes
+            ->expects($this->never())
+            ->method($this->anything());
+    }
+
+    /**
+     * @return void
+     */
+    private function willNotQueue(): void
+    {
+        $this->enqueuer
+            ->expects($this->never())
+            ->method($this->anything());
     }
 }

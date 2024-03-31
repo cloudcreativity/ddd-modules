@@ -11,21 +11,23 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\Queue;
 
+use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
+
 interface QueueInterface
 {
     /**
      * Push a message onto the queue.
      *
-     * @param QueueableInterface $queueable
+     * @param QueueableInterface|iterable<QueueableInterface> $queueable
      * @return void
      */
-    public function push(QueueableInterface $queueable): void;
+    public function push(QueueableInterface|iterable $queueable): void;
 
     /**
-     * Push a batch of messages onto the queue.
+     * Dispatch a queued message.
      *
-     * @param QueueableBatch $batch
-     * @return void
+     * @param QueueableInterface $queueable
+     * @return ResultInterface<mixed>
      */
-    public function pushBatch(QueueableBatch $batch): void;
+    public function dispatch(QueueableInterface $queueable): ResultInterface;
 }

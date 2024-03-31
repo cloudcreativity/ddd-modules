@@ -14,13 +14,13 @@ namespace CloudCreativity\Modules\Infrastructure\Queue\Middleware;
 use Closure;
 use CloudCreativity\Modules\Infrastructure\Queue\QueueableInterface;
 
-interface QueueMiddlewareInterface
+interface EnqueuerMiddlewareInterface
 {
     /**
      * Handle the message being queued.
      *
      * @param QueueableInterface $queueable
-     * @param Closure $next
+     * @param Closure(QueueableInterface): void $next
      * @return void
      */
     public function __invoke(QueueableInterface $queueable, Closure $next): void;
