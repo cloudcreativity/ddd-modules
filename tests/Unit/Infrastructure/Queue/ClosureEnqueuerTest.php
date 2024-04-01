@@ -102,4 +102,31 @@ class ClosureEnqueuerTest extends TestCase
 
         $this->assertSame($queueable4, $this->actual);
     }
+
+
+    /**
+     * @return void
+     */
+    public function testWithAlternativeHandlers(): void
+    {
+        $expected = new TestQueueable();
+        $mock = $this->createMock(QueueableInterface::class);
+        $actual = null;
+
+        $this->enqueuer->register($mock::class, function (QueueableInterface $cmd): never {
+            $this->fail('Not expecting this closure to be called.');
+        });
+
+        $this->enqueuer->register(
+            TestQueueable::class,
+            function (TestQueueable $cmd) use (&$actual) {
+                $actual = $cmd;
+            },
+        );
+
+        $this->enqueuer->queue($expected);
+
+        $this->assertNull($this->actual);
+        $this->assertSame($expected, $actual);
+    }
 }

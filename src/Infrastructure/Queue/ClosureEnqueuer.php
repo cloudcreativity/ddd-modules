@@ -25,6 +25,11 @@ final class ClosureEnqueuer implements EnqueuerInterface
     private readonly PipelineBuilderFactoryInterface $pipelineFactory;
 
     /**
+     * @var array<class-string<QueueableInterface>, Closure>
+     */
+    private array $enqueuers = [];
+
+    /**
      * @var array<string|callable>
      */
     private array $pipes = [];
@@ -32,13 +37,25 @@ final class ClosureEnqueuer implements EnqueuerInterface
     /**
      * ClosureEnqueuer constructor.
      *
-     * @param Closure(QueueableInterface): void $callback
+     * @param Closure(QueueableInterface): void $fn
      */
     public function __construct(
-        private readonly Closure $callback,
-        PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipeline = null,
+        private readonly Closure $fn,
+        PipeContainerInterface|null $pipeline = null,
     ) {
-        $this->pipelineFactory = PipelineBuilderFactory::make($pipeline);
+        $this->pipelineFactory = new PipelineBuilderFactory($pipeline);
+    }
+
+    /**
+     * Register an enqueuer for a specific job.
+     *
+     * @param class-string<QueueableInterface> $queuable
+     * @param Closure $fn
+     * @return void
+     */
+    public function register(string $queuable, Closure $fn): void
+    {
+        $this->enqueuers[$queuable] = $fn;
     }
 
     /**
@@ -57,10 +74,12 @@ final class ClosureEnqueuer implements EnqueuerInterface
      */
     public function queue(QueueableInterface $queueable): void
     {
+        $enqueuer = $this->enqueuers[$queueable::class] ?? $this->fn;
+
         $pipeline = $this->pipelineFactory
             ->getPipelineBuilder()
             ->through($this->pipes)
-            ->build(new MiddlewareProcessor($this->callback));
+            ->build(new MiddlewareProcessor($enqueuer));
 
         $pipeline->process($queueable);
     }

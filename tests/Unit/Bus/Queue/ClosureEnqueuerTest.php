@@ -62,6 +62,9 @@ class ClosureEnqueuerTest extends TestCase
         $this->assertSame($command, $this->actual);
     }
 
+    /**
+     * @return void
+     */
     public function testWithMiddleware(): void
     {
         $command1 = new TestCommand();
@@ -99,5 +102,31 @@ class ClosureEnqueuerTest extends TestCase
         $this->enqueuer->queue($command1);
 
         $this->assertSame($command4, $this->actual);
+    }
+
+    /**
+     * @return void
+     */
+    public function testWithAlternativeHandlers(): void
+    {
+        $expected = new TestCommand();
+        $mock = $this->createMock(CommandInterface::class);
+        $actual = null;
+
+        $this->enqueuer->register($mock::class, function (CommandInterface $cmd): never {
+            $this->fail('Not expecting this closure to be called.');
+        });
+
+        $this->enqueuer->register(
+            TestCommand::class,
+            function (TestCommand $cmd) use (&$actual) {
+                $actual = $cmd;
+            },
+        );
+
+        $this->enqueuer->queue($expected);
+
+        $this->assertNull($this->actual);
+        $this->assertSame($expected, $actual);
     }
 }
