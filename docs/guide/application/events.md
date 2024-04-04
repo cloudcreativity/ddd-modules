@@ -415,9 +415,9 @@ $publisher = new Publisher(
 $handlers->register(
     AttendeeTicketWasCancelled::class,
     function (AttendeeTicketWasCancelled $event): void {
-      $serializer = $this->dependencies->getEventJsonSerializer();
-      $topic = $this->dependencies->getSecureTopicFactory()->make($event::class);
-      $topic->send(['data' => $this->serializer->serialize($event)]);
+        $serializer = $this->dependencies->getEventJsonSerializer();
+        $topic = $this->dependencies->getSecureTopicFactory()->make($event::class);
+        $topic->send(['data' => $this->serializer->serialize($event)]);
     },
 );
 ```
@@ -609,11 +609,11 @@ $notifier = new Notifier(
 $handlers->register(
     OrderWasFulfilled::class,
     function (AttendeeTicketWasCancelled $event): void {
-      $this->getCommandBus()->dispatch(
-          new RecalculateSalesAtEventCommand(
-              eventId: $event->eventId,
-          ),
-      );
+        $this->getCommandBus()->dispatch(
+            new RecalculateSalesAtEventCommand(
+                eventId: $event->eventId,
+            ),
+        );
     },
 );
 ```

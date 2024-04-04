@@ -95,8 +95,10 @@ The following is an example structure of the bounded context namespace/folders:
 
 This an indicative structure, which is explained in more detail in the chapters covering the tooling for each layer.
 
-> The bounded context _may_ rely on values from the `Shared` module namespace, but must never use anything from the
+:::warning
+The bounded context _may_ rely on values from the `Shared` module namespace, but must never use anything from the
 `Consumer` namespace.
+:::
 
 ### Consumer
 
