@@ -11,13 +11,15 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\Queue;
 
-interface QueueHandlerContainerInterface
+use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
+
+interface EnqueuerContainerInterface
 {
     /**
-     * Get a queue handler for the specified message.
+     * Get an enqueuer for the provided command.
      *
-     * @param string $queueableName
-     * @return QueueHandlerInterface
+     * @param class-string<CommandInterface> $command
+     * @return EnqueuerInterface
      */
-    public function get(string $queueableName): QueueHandlerInterface;
+    public function get(string $command): EnqueuerInterface;
 }

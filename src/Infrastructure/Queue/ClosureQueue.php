@@ -9,26 +9,25 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Bus\Queue;
+namespace CloudCreativity\Modules\Infrastructure\Queue;
 
 use Closure;
 use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactoryInterface;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 
-final class ClosureEnqueuer implements CommandEnqueuerInterface
+final class ClosureQueue implements QueueInterface
 {
     /**
-     * @var PipelineBuilderFactoryInterface
+     * @var PipelineBuilder
      */
-    private readonly PipelineBuilderFactoryInterface $pipelineFactory;
+    private readonly PipelineBuilder $pipelineBuilder;
 
     /**
      * @var array<class-string<CommandInterface>, Closure>
      */
-    private array $enqueuers = [];
+    private array $bind = [];
 
     /**
      * @var array<string|callable>
@@ -44,23 +43,23 @@ final class ClosureEnqueuer implements CommandEnqueuerInterface
         private readonly Closure $fn,
         PipeContainerInterface|null $middleware = null,
     ) {
-        $this->pipelineFactory = new PipelineBuilderFactory($middleware);
+        $this->pipelineBuilder = new PipelineBuilder($middleware);
     }
 
     /**
-     * Register an enqueuer for a specific command.
+     * Register an enqueuer for the specified command.
      *
      * @param class-string<CommandInterface> $command
      * @param Closure $fn
      * @return void
      */
-    public function register(string $command, Closure $fn): void
+    public function bind(string $command, Closure $fn): void
     {
-        $this->enqueuers[$command] = $fn;
+        $this->bind[$command] = $fn;
     }
 
     /**
-     * Queue commands through the provided pipes.
+     * Queue messages through the provided pipes.
      *
      * @param array<string|callable> $pipes
      * @return void
@@ -73,15 +72,18 @@ final class ClosureEnqueuer implements CommandEnqueuerInterface
     /**
      * @inheritDoc
      */
-    public function queue(CommandInterface $command): void
+    public function push(CommandInterface|iterable $command): void
     {
-        $enqueuer = $this->enqueuers[$command::class] ?? $this->fn;
+        $commands = ($command instanceof CommandInterface) ? [$command] : $command;
 
-        $pipeline = $this->pipelineFactory
-            ->getPipelineBuilder()
-            ->through($this->pipes)
-            ->build(new MiddlewareProcessor($enqueuer));
+        foreach ($commands as $cmd) {
+            $enqueuer = $this->bind[$cmd::class] ?? $this->fn;
 
-        $pipeline->process($command);
+            $pipeline = $this->pipelineBuilder
+                ->through($this->pipes)
+                ->build(new MiddlewareProcessor($enqueuer));
+
+            $pipeline->process($cmd);
+        }
     }
 }

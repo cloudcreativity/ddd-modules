@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/) and [this changelog format](http://keepachangelog.com/).
 
+## Unreleased (Next Major Version)
+
+### Added
+
+- **BREAKING** The command bus interface now has a `queue()` method. Our command dispatcher implementation has been
+  updated to accept a queue factory closure as its third constructor argument. This is an optional argument, so this
+  change only breaks your implementation if you have manually implemented the command dispatch interface.
+
+### Changed
+
+- **BREAKING** Refactored the queue implementation so that commands are queued. The queue implementation was previously
+  not documented. There is now complete documentation in the [Asynchronous Processing](docs/guide/infrastructure/queues)
+  chapter. Refer to that documentation to upgrade your implementation.
+
 ## Unreleased
 
 ## [1.1.0] - 2024-03-14

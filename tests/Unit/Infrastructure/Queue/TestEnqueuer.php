@@ -9,19 +9,18 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Bus\Middleware;
+namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue;
 
-use Closure;
 use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 
-interface EnqueuerMiddlewareInterface
+class TestEnqueuer
 {
     /**
-     * Handle the command being queued.
-     *
      * @param CommandInterface $command
-     * @param Closure(CommandInterface): void $next
      * @return void
      */
-    public function __invoke(CommandInterface $command, Closure $next): void;
+    public function push(CommandInterface $command): void
+    {
+        // no-op
+    }
 }

@@ -11,23 +11,15 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\Queue;
 
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
+use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 
 interface QueueInterface
 {
     /**
-     * Push a message onto the queue.
+     * Push a command or commands onto the queue.
      *
-     * @param QueueableInterface|iterable<QueueableInterface> $queueable
+     * @param CommandInterface|iterable<CommandInterface> $command
      * @return void
      */
-    public function push(QueueableInterface|iterable $queueable): void;
-
-    /**
-     * Dispatch a queued message.
-     *
-     * @param QueueableInterface $queueable
-     * @return ResultInterface<mixed>
-     */
-    public function dispatch(QueueableInterface $queueable): ResultInterface;
+    public function push(CommandInterface|iterable $command): void;
 }

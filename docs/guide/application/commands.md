@@ -280,8 +280,8 @@ class CancellationController extends Controller
 
         $command = new CancelAttendeeTicketCommand(
             attendeeId: new IntegerId((int) $attendeeId),
-            ticketId: new IntegerId((int) $validated->ticket),
-            reason: CancellationReasonEnum::from($request->reason),
+            ticketId: new IntegerId((int) $validated['ticket']),
+            reason: CancellationReasonEnum::from($request['reason']),
         );
 
         $result = $bus->dispatch($command);
@@ -305,29 +305,25 @@ to. Everything else - how your bounded context processes and responds to the act
 implementation detail_ of your domain.
 :::
 
-## Asynchronous Commands
-
-Modern PHP frameworks provide implementations that allow you to queue work for asynchronous processing. This is
-advantageous, as it allows expensive operations to be executed in a non-blocking way. It also gives developers
-capabilities like retry and back-off - which typically increase the resilience implementations.
-
-Our command bus provides an abstraction that allows the _outside world_ to queue commands for execution, rather than
-dispatching them synchronously. However, the knowledge of how to queue this is encapsulated within the bounded context.
-
-:::tip
-Need to queue work that is an internal implementation detail of your bounded context? I.e. that will never be
-dispatched by the _outside world_? Check out the [Asynchronous Processing chapter.](../infrastructure/queues)
-:::
-
 ### Queuing Commands
 
-To queue a command for asynchronous execution, use the `queue()` method on the command bus - instead of the `dispatch()`
-method.
+Commands can also be queued by the outside world. To indicate that a command should be queued, the `queue()` method is
+used instead of the `dispatch()` method.
 
-For example, the cancellation of an attendee's ticket could be performed asynchronously if we update the controller
-implementation as follows:
+This allows the presentation and delivery layer to execute a command in a non-blocking way. For example, our controller
+implementation could be updated to return a `202 Accepted` response to indicate the command has been queued:
 
 ```php
+namespace App\Http\Controllers\Api\Attendees;
+
+use App\Modules\EventManagement\BoundedContext\Application\Commands\{
+    CancelAttendeeTicket\CancelAttendeeTicketCommand,
+    EventManagementCommandBusInterface,
+};
+use App\Modules\EventManagement\Shared\Enums\CancellationReasonEnum;
+use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
+use Illuminate\Validation\Rule;
+
 class CancellationController extends Controller
 {
     public function __invoke(
@@ -342,187 +338,24 @@ class CancellationController extends Controller
 
         $command = new CancelAttendeeTicketCommand(
             attendeeId: new IntegerId((int) $attendeeId),
-            ticketId: new IntegerId((int) $validated->ticket),
-            reason: CancellationReasonEnum::from($request->reason),
+            ticketId: new IntegerId((int) $validated['ticket']),
+            reason: CancellationReasonEnum::from($request['reason']),
         );
 
         $bus->queue($command);
 
-        return response()->noContent();
+        return response()->noContent(status: 202);
     }
 }
 ```
 
-There is some additional setup required to get this working - we must provide the command bus with an _enqueuer_
-component.
-
-An _enqueuer_ is a component that is responsible for adding items to a queue. For our command bus, it is a provided
-component that encapsulate the knowledge of how to push a command on to a queue. This is effectively an abstraction
-that allows you to integrate our command bus with any queue implementation that you are using. To illustrate this, we
-will use Laravel's queue as an example.
-
-### Laravel Example
-
-Laravel comes with a full-featured queue implementation. It is easy to use this with our command bus.
-
-Firstly, create a Laravel queue job that can dispatch a command. Here is an example of such a job for the event
-management bounded context:
-
-```php
-namespace App\Modules\EventManagement\BoundedContext\Application\Commands;
-
-use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-
-class DispatchCommandJob implements ShouldQueue
-{
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    
-    public function __construct(
-        public readonly CommandInterface $command
-    ) {
-    }
-    
-    public function handle(EventManagementCommandBusInterface $bus): void
-    {
-        $result = $bus->dispatch($this->command);
-        
-        if ($result->didFail()) {
-            throw new \RuntimeException(
-                'Not expecting command to fail: ' . $result->error(),
-            );
-        }
-    }
-}
-```
-
-:::tip
-Here the job is intentionally in our bounded context's application namespace, rather than Laravel's default location
-of `App\Jobs`. How commands should be executed asynchronously is an internal implementation detail of our bounded
-context - rather than something that is exposed to the outside world.
-
-This makes sense when you think of the encapsulation that is key to the modular approach that this package takes.
-Commands define what the outside world can dispatch, but there is no exposure of how a bounded context processes this
-command. Therefore, only the bounded context can understand how to queue it. For example, if back-off or retry is
-needed for a specific command, only the bounded context can understand that as it knows how the command is processed.
+:::warning
+To allow commands to be queued, you **must** provide a queue factory to the command bus when creating it. This topic is
+covered in the [Asynchronous Processing](../infrastructure/queues#external-queuing) chapter, with specific examples
+in the _External Queuing_ section.
 :::
 
-We can then add this to our command bus when we create it:
-
-```php
-use App\Modules\EventManagement\BoundedContext\Application\Commands\{
-    DispatchCommandJob,
-    EventManagementCommandBus,
-    EventManagementCommandBusInterface,
-};
-use CloudCreativity\Modules\Bus\{
-    CommandHandlerContainer,
-    Queue\CommandEnqueuerInterface,
-};
-use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
-
-final class EventManagementApplication implements EventManagementApplicationInterface
-{
-    // ...other methods
-
-    public function getCommandBus(): EventManagementCommandBusInterface
-    {
-        $bus = new EventManagementCommandBus(
-            handlers: $handlers = new CommandHandlerContainer(),
-            pipeline: $middleware = new PipeContainer(),
-            enqueuer: function (CommandInterface $command): void {
-                DispatchCommandJob::dispatch($command);
-            },
-        );
-
-        // ...command handler bindings.
-        // ...middleware bindings
-
-        return $bus;
-    }
-}
-```
-
-In this example, we provide the command bus with a closure that can be used as an enqueuer. This is the simplest way
-of creating an enqueuer. You can customise this further using our `ClosureEnqueuer` class, or write a concrete class
-yourself by implementing the enqueuer interface.
-
-### Closure Enqueuer
-
-As shown in the above example, you can provide a simple closure to our command bus, and it will be used to queue
-commands. However, there may be scenarios where you want to customise this further. Our `ClosureEnqueuer` class
-allows you to do this.
-
-Create a closure enqueuer by providing it with the closure that will queue commands by default:
-
-```php
-use CloudCreativity\Modules\Bus\Queue\ClosureEnqueuer;
-
-$enqueuer = new ClosureEnqueuer(
-    function (CommandInterface $command): void {
-        DispatchCommandJob::dispatch($command);
-    },
-);
-```
-
-If needed, you can configure additional closures that handle specific jobs. For example:
-
-```php
-use CloudCreativity\Modules\Bus\Queue\ClosureEnqueuer;
-
-$enqueuer = new ClosureEnqueuer(
-    function (CommandInterface $command): void {
-        DispatchCommandJob::dispatch($command);
-    },
-);
-
-$enqueuer->register(
-    CancelAttendeeTicketCommand::class,
-    function (CancelAttendeeTicketCommand $command): void {
-        DispatchCommandJob::dispatch($command)->onQueue('cancellations');
-    },
-);
-```
-
-It is also possible to add middleware to the closure implementation. See the 
-[Enqueuer Middleware section](#enqueuer-middleware) for more details.
-
-### Writing an Enqueuer
-
-Although the closure enqueuer implementation is pretty flexible, there may be times where it would be better for you
-to write a concrete class instead. For example, if integrating with your queue implementation is too complex to
-encapsulate in a simple closure.
-
-Simply write a class that implements this interface, and provide it to the command bus:
-
-```php
-namespace CloudCreativity\Modules\Bus\Queue;
-
-use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
-
-interface CommandEnqueuerInterface
-{
-    /**
-     * Add the command to the queue.
-     *
-     * @param CommandInterface $command
-     * @return void
-     */
-    public function queue(CommandInterface $command): void;
-}
-```
-
-:::tip
-If you want to add middleware to your custom implementation, take a look at how that is implemented in our
-`ClosureEnqueuer` class.
-:::
-
-## Dispatch Middleware
+## Middleware
 
 Our command bus implementation gives you complete control over how to compose the handling of your commands, via
 middleware. Middleware is a powerful way to add cross-cutting concerns to your command handling, such as logging,
@@ -542,11 +375,12 @@ middleware to suit your specific needs.
 
 ### Setup and Teardown
 
-Our `SetupBeforeDispatch` middleware allows your to run setup work before the command is dispatched, and optionally
+Our `SetupBeforeDispatch` middleware allows setup work to be run before the command is dispatched, and optionally
 teardown work when the command has completed.
 
 This allows you to set up any state and guarantee that the state is cleaned up, regardless of the outcome of the
-command. The primary use case for this is to boostrap [Domain Services](../domain/services).
+command. The primary use case for this is to boostrap [Domain Services](../domain/services) and to garbage collect any
+singleton instances of dependencies.
 
 For example:
 
@@ -739,81 +573,7 @@ final class MyMiddleware
 :::tip
 If you're writing middleware that is only meant to be used for a specific command, type-hint that command instead of
 the generic `CommandInterface`.
+
+If you're writing middleware that can be used for both commands and queries, use a union type i.e.
+`CommandInterface|QueryInterface`.
 :::
-
-## Enqueuer Middleware
-
-Our `ClosureEnqueuer` class can also be configured with middleware. Provide a pipe container as the second constructor
-argument, which can be configured with middleware. Then use the `through()` method to define which middleware should
-be run:
-
-```php
-use CloudCreativity\Modules\Bus\Queue\ClosureEnqueuer;
-use CloudCreativity\Modules\Bus\Middleware\LogPushedToQueue;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
-
-$enqueuer = new ClosureEnqueuer(
-    fn: function (CommandInterface $command): void {
-        DispatchCommandJob::dispatch($command);
-    },
-    middleware: $middleware = new PipeContainer(),
-);
-
-$enqueuer->through([LogPushedToQueue::class]);
-
-$middleware->bind(
-    LogPushedToQueue::class, 
-    fn () => new LogPushedToQueue($this->dependencies->getLogger()), 
-);
-```
-
-### Queue Logging
-
-To log a command being pushed onto a queue, use the `LogPushedToQueue` middleware. This works in exactly the same way
-as the `LogMessageDispatch` command dispatch middleware described above. For example:
-
-```php
-use CloudCreativity\Modules\Bus\Middleware\LogPushedToQueue;
-
-$middleware->bind(
-    LogPushedToQueue::class,
-    fn (): LogPushedToQueue => new LogPushedToQueue(
-        $this->dependencies->getLogger(),
-    ),
-);
-
-$enqueuer->through([LogPushedToQueue::class]);
-```
-
-See the section above on the `LogMessageDispatch` for customising log levels. Additionally, the log context can be
-customised by implementing the `ContextProviderInterface` on the command class.
-
-### Writing Middleware
-
-If you are writing a middleware for queuing commands via an enqueuer, the signature is as follows:
-
-```php
-namespace App\Bus\Middleware;
-
-use Closure;
-use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
-
-final class MyEnqueuerMiddleware
-{
-    /**
-     * Execute the middleware.
-     *
-     * @param CommandInterface $command
-     * @param Closure(CommandInterface): void $next
-     * @return void
-     */
-    public function __invoke(CommandInterface $command, Closure $next): void
-    {
-        // executes before the enqueuer pushes command to the queue
-
-        $next($command);
-
-        // executes after the command is pushed to the queue.
-    }
-}
-```
