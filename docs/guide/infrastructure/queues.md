@@ -549,7 +549,7 @@ $middleware->bind(
 $queue->through([LogPushedToQueue::class]);
 ```
 
-The use of this middleware is identical to that described in the [Commands chapter.](./commands#logging)
+The use of this middleware is identical to that described in the [Commands chapter.](../application/commands#logging)
 See those instructions for more information, such as configuring the log levels and customising the log context for the
 command.
 
