@@ -9,10 +9,9 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Infrastructure\Log;
+namespace CloudCreativity\Modules\Toolkit\Loggable;
 
 use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
-use CloudCreativity\Modules\Toolkit\Loggable\ContextProviderInterface;
 use CloudCreativity\Modules\Toolkit\Result\ErrorInterface;
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 

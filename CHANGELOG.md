@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+### Added
+
+- The `FailedResultException` now implements the `ContextProviderInterface` to get log context from the exception's
+  result object. In Laravel applications, this means the exception context will automatically be logged.
+
+### Changed
+
+- **BREAKING** the `ResultContext` and `ObjectContext` helper classes have been moved to the `Toolkit\Loggable`
+  namespace.
+
 ## [1.1.0] - 2024-03-14
 
 ### Added
