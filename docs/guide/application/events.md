@@ -300,7 +300,7 @@ use App\Modules\EventManagement\Shared\IntegrationEvents\{
 };
 use CloudCreativity\Modules\EventBus\{
     IntegrationEventHandlerContainer,
-    Middleware\LogOutboundIntegrationEvent,
+    Middleware\LogOutboundEvent,
     Outbound\Publisher,
 };
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
@@ -334,15 +334,15 @@ final class EventManagementApplication implements EventManagementEventBusInterfa
 
         /** Bind middleware factories */
         $middleware->bind(
-            LogOutboundIntegrationEvent::class,
-            fn () => new LogOutboundIntegrationEvent(
+            LogOutboundEvent::class,
+            fn () => new LogOutboundEvent(
                 $this->dependencies->getLogger(),
             ),
         );
 
         /** Attach middleware that runs for all events */
         $bus->through([
-            LogOutboundIntegrationEvent::class,
+            LogOutboundEvent::class,
         ]);
 
         return $publisher;
@@ -415,9 +415,9 @@ $publisher = new Publisher(
 $handlers->register(
     AttendeeTicketWasCancelled::class,
     function (AttendeeTicketWasCancelled $event): void {
-      $serializer = $this->dependencies->getEventJsonSerializer();
-      $topic = $this->dependencies->getSecureTopicFactory()->make($event::class);
-      $topic->send(['data' => $this->serializer->serialize($event)]);
+        $serializer = $this->dependencies->getEventJsonSerializer();
+        $topic = $this->dependencies->getSecureTopicFactory()->make($event::class);
+        $topic->send(['data' => $this->serializer->serialize($event)]);
     },
 );
 ```
@@ -448,7 +448,7 @@ use App\Modules\Ordering\Shared\IntegrationEvents\OrderWasFulfilled;
 use CloudCreativity\Modules\EventBus\{
     IntegrationEventHandlerContainer,
     Inbound\Notifier,
-    Middleware\LogInboundIntegrationEvent,
+    Middleware\LogInboundEvent,
 };
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 
@@ -480,15 +480,15 @@ final class EventManagementApplication implements EventManagementEventBusInterfa
 
         /** Bind middleware factories */
         $middleware->bind(
-            LogInboundIntegrationEvent::class,
-            fn () => new LogInboundIntegrationEvent(
+            LogInboundEvent::class,
+            fn () => new LogInboundEvent(
                 $this->dependencies->getLogger(),
             ),
         );
 
         /** Attach middleware that runs for all events */
         $bus->through([
-            LogInboundIntegrationEvent::class,
+            LogInboundEvent::class,
         ]);
 
         return $notifier;
@@ -566,8 +566,8 @@ namespace App\Modules\EventManagement\BoundedContext\Application\IntegrationEven
 
 use App\Modules\EventManagement\BoundedContext\Domain\Events\SalesAtEventDidChange;
 use App\Modules\Ordering\Shared\IntegrationEvents\OrderWasFulfilled;
-use CloudCreativity\Modules\Bus\Middleware\ExecuteInUnitOfWork;
 use CloudCreativity\Modules\Domain\Events\DispatcherInterface;
+use CloudCreativity\Modules\EventBus\Middleware\NotifyInUnitOfWork;
 use CloudCreativity\Modules\Toolkit\Messages\DispatchThroughMiddleware;
 
 final readonly class OrderWasFulfilledHandler implements
@@ -588,7 +588,7 @@ final readonly class OrderWasFulfilledHandler implements
     public function middleware(): array
     {
         return [
-            ExecuteInUnitOfWork::class,
+            NotifyInUnitOfWork::class,
         ];
     }
 }
@@ -609,11 +609,11 @@ $notifier = new Notifier(
 $handlers->register(
     OrderWasFulfilled::class,
     function (AttendeeTicketWasCancelled $event): void {
-      $this->getCommandBus()->dispatch(
-          new RecalculateSalesAtEventCommand(
-              eventId: $event->eventId,
-          ),
-      );
+        $this->getCommandBus()->dispatch(
+            new RecalculateSalesAtEventCommand(
+                eventId: $event->eventId,
+            ),
+        );
     },
 );
 ```
@@ -669,21 +669,110 @@ the order they should be executed. Handler middleware are always executed _after
 This package provides several useful middleware, which are described below. Additionally, you can write your own
 middleware to suit your specific needs.
 
+### Setup and Teardown
+
+Our `SetupBeforeEvent` middleware allows your to run setup work before the event is published or notified, and
+optionally teardown work after.
+
+This allows you to set up any state, services or singletons - and guarantee that these are cleaned up, regardless of
+whether the notifying or publishing completes or throws an exception.
+
+For example:
+
+```php
+use App\Modules\EventManagement\BoundedContext\Domain\Services;
+use CloudCreativity\Modules\EventBus\Middleware\SetupBeforeEvent;
+
+$middleware->bind(
+    SetupBeforeEvent::class,
+    fn () => new SetupBeforeEvent(function (): Closure {
+        // setup singletons, dependencies etc here.
+        return function (): void {
+            // teardown singletons, dependencies etc here.
+            // returning a teardown closure is optional.
+        };
+    }),
+);
+
+$bus->through([
+    LogInboundEvent::class,
+    SetupBeforeEvent::class,
+]);
+```
+
+Here our setup middleware takes a setup closure as its only constructor argument. This setup closure can optionally
+return a closure to do any teardown work. The teardown callback is guaranteed to always be executed - i.e. it will run
+even if an exception is thrown.
+
+If you only need to do any teardown work, use the `TeardownAfterEvent` middleware instead. This takes a single teardown
+closure as its only constructor argument:
+
+```php
+use CloudCreativity\Modules\EventBus\Middleware\TearDownAfterEvent;
+
+$middleware->bind(
+    TearDownAfterEvent::class,
+    fn () => new TearDownAfterEvent(function (): Closure {
+        // teardown here
+    }),
+);
+
+$bus->through([
+    LogInboundEvent::class,
+    TearDownAfterEvent::class,
+]);
+```
+
+### Unit of Work
+
+Ideally notifiers that are not dispatching commands should always be executed in a unit of work.
+We cover this in detail in the [Units of Work chapter.](../infrastructure/units-of-work)
+
+:::tip
+If your notifier only dispatches a command, then it will not need to be wrapped in a unit of work. This is because the
+command itself should use a unit of work.
+:::
+
+To notify an event in a unit of work, you will need to use our `NotifyInUnitOfWork` middleware. You should always
+implement this as handler middleware - because typically you need it to be the final middleware that runs before a
+handler is invoked. It also makes it clear to developers looking at the handler that it is expected to run
+in a unit of work. The example `OrderWasFulfilledHandler` above demonstrates this.
+
+An example binding for this middleware is:
+
+```php
+use CloudCreativity\Modules\EventBus\Middleware\NotifyInUnitOfWork;
+
+$middleware->bind(
+    NotifyInUnitOfWork::class,
+    fn () => new NotifyInUnitOfWork($this->getUnitOfWorkManager()),
+);
+```
+
+:::warning
+If you're using a unit of work, you should be combining this with our "unit of work domain event dispatcher".
+One really important thing to note is that you **must inject both the middleware and the domain event dispatcher with
+exactly the same instance of the unit of work manager.**
+
+I.e. use a singleton instance of the unit of work manager. Plus use the teardown middleware (described above) to dispose
+of the singleton instance once the handler has been executed.
+:::
+
 ### Logging
 
-Use our `LogInboundIntegrationEvent` or `LogOutboundIntegrationEvent` middleware to log the receiving or publishing
-an integration event. Both take a [PSR Logger](https://php-fig.org/psr/psr-3/).
+Use our `LogInboundEvent` or `LogOutboundEvent` middleware to log when an integration event is received or published.
+Both take a [PSR Logger](https://php-fig.org/psr/psr-3/).
 
 The only difference between these two middleware is they log a different message that makes it clear whether the
 integration event is inbound or outbound. Make sure you use the correct one for the publisher or notifier! The publisher
-needs to use `LogOutboundIntegrationEvent` and the notifier needs to use `LogInboundIntegrationEvent`.
+needs to use `LogOutboundEvent` and the notifier needs to use `LogInboundEvent`.
 
 ```php
-use CloudCreativity\Modules\EventBus\Middleware\LogMessageDispatch;
+use CloudCreativity\Modules\EventBus\Middleware\LogInboundEvent;
 
 $middleware->bind(
-    LogMessageDispatch::class,
-    fn (): LogMessageDispatch => new LogMessageDispatch(
+    LogInboundEvent::class,
+    fn () => new LogInboundEvent(
         $this->dependencies->getLogger(),
     ),
 );
