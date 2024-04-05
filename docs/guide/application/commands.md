@@ -211,7 +211,7 @@ final class EventManagementApplication implements EventManagementApplicationInte
     {
         $bus = new EventManagementCommandBus(
             handlers: $handlers = new CommandHandlerContainer(),
-            pipeline: $middleware = new PipeContainer(),
+            middleware: $middleware = new PipeContainer(),
         );
 
         /** Bind commands to handler factories */

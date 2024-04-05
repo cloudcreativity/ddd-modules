@@ -15,15 +15,14 @@ use CloudCreativity\Modules\EventBus\IntegrationEventHandlerContainerInterface;
 use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactoryInterface;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 
 final class Notifier implements NotifierInterface
 {
     /**
-     * @var PipelineBuilderFactoryInterface
+     * @var PipelineBuilder
      */
-    private readonly PipelineBuilderFactoryInterface $pipelineFactory;
+    private readonly PipelineBuilder $pipelineBuilder;
 
     /**
      * @var array<string|callable>
@@ -34,13 +33,13 @@ final class Notifier implements NotifierInterface
      * Notifier constructor.
      *
      * @param IntegrationEventHandlerContainerInterface $handlers
-     * @param PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipeline
+     * @param PipeContainerInterface|null $middleware
      */
     public function __construct(
         private readonly IntegrationEventHandlerContainerInterface $handlers,
-        PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipeline = null,
+        ?PipeContainerInterface $middleware = null,
     ) {
-        $this->pipelineFactory = PipelineBuilderFactory::make($pipeline);
+        $this->pipelineBuilder = new PipelineBuilder($middleware);
     }
 
     /**
@@ -51,6 +50,8 @@ final class Notifier implements NotifierInterface
      */
     public function through(array $pipes): void
     {
+        assert(array_is_list($pipes), 'Expecting an array list of middleware.');
+
         $this->pipes = array_values($pipes);
     }
 
@@ -61,12 +62,9 @@ final class Notifier implements NotifierInterface
     {
         $handler = $this->handlers->get($event::class);
 
-        $pipeline = $this->pipelineFactory
-            ->getPipelineBuilder()
+        $pipeline = $this->pipelineBuilder
             ->through([...$this->pipes, ...$handler->middleware()])
-            ->build(new MiddlewareProcessor(function (IntegrationEventInterface $passed) use ($handler): void {
-                $handler($passed);
-            }));
+            ->build(MiddlewareProcessor::wrap($handler));
 
         $pipeline->process($event);
     }

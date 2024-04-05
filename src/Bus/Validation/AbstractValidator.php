@@ -13,8 +13,7 @@ namespace CloudCreativity\Modules\Bus\Validation;
 
 use CloudCreativity\Modules\Toolkit\Pipeline\AccumulationProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactoryInterface;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineInterface;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrorsInterface;
@@ -22,9 +21,9 @@ use CloudCreativity\Modules\Toolkit\Result\ListOfErrorsInterface;
 abstract class AbstractValidator implements ValidatorInterface
 {
     /**
-     * @var PipelineBuilderFactoryInterface
+     * @var PipelineBuilder
      */
-    private readonly PipelineBuilderFactoryInterface $pipelineFactory;
+    private readonly PipelineBuilder $pipelineFactory;
 
     /**
      * @var iterable<string|callable>
@@ -34,12 +33,11 @@ abstract class AbstractValidator implements ValidatorInterface
     /**
      * AbstractValidator constructor
      *
-     * @param PipelineBuilderFactoryInterface|PipeContainerInterface $pipelineFactory
+     * @param PipeContainerInterface|null $rules
      */
-    public function __construct(
-        PipelineBuilderFactoryInterface|PipeContainerInterface $pipelineFactory = new PipelineBuilderFactory(),
-    ) {
-        $this->pipelineFactory = PipelineBuilderFactory::make($pipelineFactory);
+    public function __construct(?PipeContainerInterface $rules = null)
+    {
+        $this->pipelineFactory = new PipelineBuilder($rules);
     }
 
     /**
@@ -59,7 +57,6 @@ abstract class AbstractValidator implements ValidatorInterface
     protected function getPipeline(): PipelineInterface
     {
         return $this->pipelineFactory
-            ->getPipelineBuilder()
             ->through($this->rules)
             ->build($this->processor());
     }

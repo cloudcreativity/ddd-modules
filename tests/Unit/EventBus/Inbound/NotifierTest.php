@@ -16,6 +16,7 @@ use CloudCreativity\Modules\EventBus\Inbound\Notifier;
 use CloudCreativity\Modules\EventBus\IntegrationEventHandlerContainerInterface;
 use CloudCreativity\Modules\EventBus\IntegrationEventHandlerInterface;
 use CloudCreativity\Modules\Tests\Unit\EventBus\TestIntegrationEvent;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -24,7 +25,12 @@ class NotifierTest extends TestCase
     /**
      * @var IntegrationEventHandlerContainerInterface&MockObject
      */
-    private IntegrationEventHandlerContainerInterface $container;
+    private IntegrationEventHandlerContainerInterface $handlers;
+
+    /**
+     * @var MockObject&PipeContainerInterface
+     */
+    private PipeContainerInterface&MockObject $middleware;
 
     /**
      * @var Notifier
@@ -38,8 +44,10 @@ class NotifierTest extends TestCase
     {
         parent::setUp();
 
-        $this->container = $this->createMock(IntegrationEventHandlerContainerInterface::class);
-        $this->notifier = new Notifier($this->container);
+        $this->notifier = new Notifier(
+            handlers: $this->handlers = $this->createMock(IntegrationEventHandlerContainerInterface::class),
+            middleware: $this->middleware = $this->createMock(PipeContainerInterface::class),
+        );
     }
 
     /**
@@ -49,7 +57,7 @@ class NotifierTest extends TestCase
     {
         $event = new TestIntegrationEvent();
 
-        $this->container
+        $this->handlers
             ->expects($this->once())
             ->method('get')
             ->with($event::class)
@@ -87,19 +95,25 @@ class NotifierTest extends TestCase
             return $next($event3);
         };
 
+        $this->middleware
+            ->expects($this->once())
+            ->method('get')
+            ->with('Middleware2')
+            ->willReturn($middleware2);
+
         $handler = $this->createMock(IntegrationEventHandlerInterface::class);
 
         $handler
             ->expects($this->once())
             ->method('middleware')
-            ->willReturn([$middleware2]);
+            ->willReturn(['Middleware2']);
 
         $handler
             ->expects($this->once())
             ->method('__invoke')
             ->with($this->identicalTo($event3));
 
-        $this->container
+        $this->handlers
             ->expects($this->once())
             ->method('get')
             ->with($event1::class)

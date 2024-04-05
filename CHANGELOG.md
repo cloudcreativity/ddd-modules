@@ -18,8 +18,28 @@ All notable changes to this project will be documented in this file. This projec
 - **BREAKING** Refactored the queue implementation so that commands are queued. The queue implementation was previously
   not documented. There is now complete documentation in the [Asynchronous Processing](docs/guide/infrastructure/queues)
   chapter. Refer to that documentation to upgrade your implementation.
+- **BREAKING** For clarity, the following classes have had their `pipeline` constructor argument renamed
+  to `middleware`. You will need to update the construction of these classes if you are using named arguments:
+    - `Bus/CommandDispatcher`
+    - `Bus/QueryDispatcher`
+    - `EventBus\Inbound\Notifier`
+    - `EventBus\Outbound\Publisher`
+    - `Infrastructure\DomainEventDispatching\Dispatcher`
+    - `Infrastructure\DomainEventDispatching\DeferredDispatcher`
+    - `Infrastructure\DomainEventDispatching\UnitOfWorkAwareDispatcher`
+- **BREAKING** The single constructor argument for the `Bus\Validation\CommandValidator`
+  and `Bus\Validation\QueryValidator` has been renamed `rules` for clarity. Although breaking, this will only affect
+  your implementation if you are using named arguments when constructing either of these validators.
 - **BREAKING** the `ResultContext` and `ObjectContext` helper classes have been moved to the `Toolkit\Loggable`
   namespace.
+
+### Removed
+
+- **BREAKING** The pipeline builder factory was no longer required, so the following classes/interfaces have been
+  deleted. Although breaking, this is unlikely to affect your implementation as these classes were only used internal
+  within our bus and dispatch implementations.
+    - `Toolkit\Pipeline\PipelineBuilderFactoryInterface`
+    - `Toolkit\Pipeline\PipelineBuilderFactory`
 
 ## [1.2.0] - 2024-04-05
 

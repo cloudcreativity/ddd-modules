@@ -14,16 +14,15 @@ namespace CloudCreativity\Modules\Bus;
 use CloudCreativity\Modules\Toolkit\Messages\QueryInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactoryInterface;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
 class QueryDispatcher implements QueryDispatcherInterface
 {
     /**
-     * @var PipelineBuilderFactoryInterface
+     * @var PipelineBuilder
      */
-    private readonly PipelineBuilderFactoryInterface $pipelineFactory;
+    private readonly PipelineBuilder $pipelineBuilder;
 
     /**
      * @var array<string|callable>
@@ -34,13 +33,13 @@ class QueryDispatcher implements QueryDispatcherInterface
      * QueryDispatcher constructor.
      *
      * @param QueryHandlerContainerInterface $handlers
-     * @param PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipeline
+     * @param PipeContainerInterface|null $middleware
      */
     public function __construct(
         private readonly QueryHandlerContainerInterface $handlers,
-        PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipeline = null,
+        ?PipeContainerInterface $middleware = null,
     ) {
-        $this->pipelineFactory = PipelineBuilderFactory::make($pipeline);
+        $this->pipelineBuilder = new PipelineBuilder($middleware);
     }
 
     /**
@@ -63,8 +62,7 @@ class QueryDispatcher implements QueryDispatcherInterface
     {
         $handler = $this->handlers->get($query::class);
 
-        $pipeline = $this->pipelineFactory
-            ->getPipelineBuilder()
+        $pipeline = $this->pipelineBuilder
             ->through([...$this->pipes, ...array_values($handler->middleware())])
             ->build(MiddlewareProcessor::wrap($handler));
 

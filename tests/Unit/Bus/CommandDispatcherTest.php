@@ -26,12 +26,12 @@ class CommandDispatcherTest extends TestCase
     /**
      * @var CommandHandlerContainerInterface&MockObject
      */
-    private CommandHandlerContainerInterface&MockObject $container;
+    private CommandHandlerContainerInterface&MockObject $handlers;
 
     /**
      * @var PipeContainerInterface&MockObject
      */
-    private PipeContainerInterface&MockObject $pipeContainer;
+    private PipeContainerInterface&MockObject $middleware;
 
     /**
      * @var MockObject&QueueInterface
@@ -53,8 +53,8 @@ class CommandDispatcherTest extends TestCase
         $this->queue = $this->createMock(QueueInterface::class);
 
         $this->dispatcher = new CommandDispatcher(
-            handlers: $this->container = $this->createMock(CommandHandlerContainerInterface::class),
-            pipeline: $this->pipeContainer = $this->createMock(PipeContainerInterface::class),
+            handlers: $this->handlers = $this->createMock(CommandHandlerContainerInterface::class),
+            middleware: $this->middleware = $this->createMock(PipeContainerInterface::class),
             queue: fn () => $this->queue,
         );
     }
@@ -68,7 +68,7 @@ class CommandDispatcherTest extends TestCase
 
         $command = $this->createMock(CommandInterface::class);
 
-        $this->container
+        $this->handlers
             ->expects($this->once())
             ->method('get')
             ->with($command::class)
@@ -112,12 +112,12 @@ class CommandDispatcherTest extends TestCase
             return $next($command4);
         };
 
-        $this->container
+        $this->handlers
             ->method('get')
             ->with($command1::class)
             ->willReturn($handler = $this->createMock(CommandHandlerInterface::class));
 
-        $this->pipeContainer
+        $this->middleware
             ->expects($this->once())
             ->method('get')
             ->with('MySecondMiddleware')
@@ -146,7 +146,7 @@ class CommandDispatcherTest extends TestCase
     public function testItThrowsWhenItCannotQueueCommands(): void
     {
         $dispatcher = new CommandDispatcher(
-            $this->container,
+            $this->handlers,
         );
 
         $this->expectException(\RuntimeException::class);
@@ -206,11 +206,11 @@ class CommandDispatcherTest extends TestCase
      */
     private function willNotDispatch(): void
     {
-        $this->container
+        $this->handlers
             ->expects($this->never())
             ->method($this->anything());
 
-        $this->pipeContainer
+        $this->middleware
             ->expects($this->never())
             ->method($this->anything());
     }

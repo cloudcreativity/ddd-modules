@@ -13,7 +13,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Bus\Validation;
 
 use CloudCreativity\Modules\Bus\Validation\QueryValidator;
 use CloudCreativity\Modules\Toolkit\Messages\QueryInterface;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Result\Error;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
 use PHPUnit\Framework\TestCase;
@@ -45,9 +45,19 @@ class QueryValidatorTest extends TestCase
             return new ListOfErrors($error2, $error3);
         };
 
-        $validator = new QueryValidator(new PipelineBuilderFactory());
+        $rules = $this->createMock(PipeContainerInterface::class);
+        $rules
+            ->expects($this->exactly(2))
+            ->method('get')
+            ->willReturnCallback(fn (string $name) => match ($name) {
+                'Rule2' => $b,
+                'Rule3' => $c,
+                default => $this->fail('Unexpected rule name: ' . $name),
+            });
+
+        $validator = new QueryValidator(rules: $rules);
         $actual = $validator
-            ->using([$a, $b, $c])
+            ->using([$a, 'Rule2', 'Rule3'])
             ->validate($query);
 
         $this->assertInstanceOf(ListOfErrors::class, $actual);
@@ -60,7 +70,7 @@ class QueryValidatorTest extends TestCase
     public function testNoRules(): void
     {
         $query = $this->createMock(QueryInterface::class);
-        $validator = new QueryValidator(new PipelineBuilderFactory());
+        $validator = new QueryValidator();
 
         $this->assertEquals(new ListOfErrors(), $validator->validate($query));
     }
