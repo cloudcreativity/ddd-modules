@@ -9,15 +9,18 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Infrastructure\Queue;
+namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue;
 
-interface QueueHandlerInterface extends QueuesBatches, QueueThroughMiddleware
+use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
+
+class TestEnqueuer
 {
     /**
-     * Queue the message.
-     *
-     * @param QueueableInterface $message
+     * @param CommandInterface $command
      * @return void
      */
-    public function __invoke(QueueableInterface $message): void;
+    public function push(CommandInterface $command): void
+    {
+        // no-op
+    }
 }

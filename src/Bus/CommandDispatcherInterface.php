@@ -23,4 +23,12 @@ interface CommandDispatcherInterface
      * @return ResultInterface<mixed>
      */
     public function dispatch(CommandInterface $command): ResultInterface;
+
+    /**
+     * Queue a command or commands for asynchronous dispatching.
+     *
+     * @param CommandInterface|iterable<CommandInterface> $command
+     * @return void
+     */
+    public function queue(CommandInterface|iterable $command): void;
 }

@@ -14,9 +14,9 @@ namespace CloudCreativity\Modules\Tests\Unit\Bus;
 use CloudCreativity\Modules\Bus\CommandDispatcher;
 use CloudCreativity\Modules\Bus\CommandHandlerContainerInterface;
 use CloudCreativity\Modules\Bus\CommandHandlerInterface;
+use CloudCreativity\Modules\Infrastructure\Queue\QueueInterface;
 use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -26,12 +26,17 @@ class CommandDispatcherTest extends TestCase
     /**
      * @var CommandHandlerContainerInterface&MockObject
      */
-    private CommandHandlerContainerInterface $container;
+    private CommandHandlerContainerInterface&MockObject $container;
 
     /**
      * @var PipeContainerInterface&MockObject
      */
-    private PipeContainerInterface $pipeContainer;
+    private PipeContainerInterface&MockObject $pipeContainer;
+
+    /**
+     * @var MockObject&QueueInterface
+     */
+    private QueueInterface&MockObject $queue;
 
     /**
      * @var CommandDispatcher
@@ -45,11 +50,12 @@ class CommandDispatcherTest extends TestCase
     {
         parent::setUp();
 
+        $this->queue = $this->createMock(QueueInterface::class);
+
         $this->dispatcher = new CommandDispatcher(
-            $this->container = $this->createMock(CommandHandlerContainerInterface::class),
-            new PipelineBuilderFactory(
-                $this->pipeContainer = $this->createMock(PipeContainerInterface::class),
-            ),
+            handlers: $this->container = $this->createMock(CommandHandlerContainerInterface::class),
+            pipeline: $this->pipeContainer = $this->createMock(PipeContainerInterface::class),
+            queue: fn () => $this->queue,
         );
     }
 
@@ -58,6 +64,8 @@ class CommandDispatcherTest extends TestCase
      */
     public function test(): void
     {
+        $this->willNotQueue();
+
         $command = $this->createMock(CommandInterface::class);
 
         $this->container
@@ -82,6 +90,8 @@ class CommandDispatcherTest extends TestCase
      */
     public function testWithMiddleware(): void
     {
+        $this->willNotQueue();
+
         $command1 = new TestCommand();
         $command2 = new TestCommand();
         $command3 = new TestCommand();
@@ -128,5 +138,80 @@ class CommandDispatcherTest extends TestCase
         $actual = $this->dispatcher->dispatch($command1);
 
         $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @return void
+     */
+    public function testItThrowsWhenItCannotQueueCommands(): void
+    {
+        $dispatcher = new CommandDispatcher(
+            $this->container,
+        );
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage(
+            'Commands cannot be queued because the command dispatcher has not been given a queue factory.',
+        );
+
+        $dispatcher->queue(new TestCommand());
+    }
+
+    /**
+     * @return void
+     */
+    public function testItQueuesCommand(): void
+    {
+        $this->willNotDispatch();
+
+        $this->queue
+            ->expects($this->once())
+            ->method('push')
+            ->with($this->identicalTo($command = new TestCommand()));
+
+        $this->dispatcher->queue($command);
+    }
+
+    /**
+     * @return void
+     */
+    public function testItQueuesManyCommands(): void
+    {
+        $commands = [
+            new TestCommand(),
+            new TestCommand(),
+            new TestCommand(),
+        ];
+
+        $this->queue
+            ->expects($this->once())
+            ->method('push')
+            ->with($this->identicalTo($commands));
+
+        $this->dispatcher->queue($commands);
+    }
+
+    /**
+     * @return void
+     */
+    private function willNotQueue(): void
+    {
+        $this->queue
+            ->expects($this->never())
+            ->method($this->anything());
+    }
+
+    /**
+     * @return void
+     */
+    private function willNotDispatch(): void
+    {
+        $this->container
+            ->expects($this->never())
+            ->method($this->anything());
+
+        $this->pipeContainer
+            ->expects($this->never())
+            ->method($this->anything());
     }
 }

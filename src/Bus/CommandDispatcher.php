@@ -11,12 +11,15 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Bus;
 
+use Closure;
+use CloudCreativity\Modules\Infrastructure\Queue\QueueInterface;
 use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactoryInterface;
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
+use RuntimeException;
 
 class CommandDispatcher implements CommandDispatcherInterface
 {
@@ -24,6 +27,11 @@ class CommandDispatcher implements CommandDispatcherInterface
      * @var PipelineBuilderFactoryInterface
      */
     private readonly PipelineBuilderFactoryInterface $pipelineFactory;
+
+    /**
+     * @var null|QueueInterface|Closure(): QueueInterface
+     */
+    private QueueInterface|Closure|null $queue;
 
     /**
      * @var array<string|callable>
@@ -35,12 +43,15 @@ class CommandDispatcher implements CommandDispatcherInterface
      *
      * @param CommandHandlerContainerInterface $handlers
      * @param PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipeline
+     * @param null|Closure(): QueueInterface $queue
      */
     public function __construct(
         private readonly CommandHandlerContainerInterface $handlers,
         PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipeline = null,
+        Closure|null $queue = null,
     ) {
         $this->pipelineFactory = PipelineBuilderFactory::make($pipeline);
+        $this->queue = $queue;
     }
 
     /**
@@ -73,5 +84,23 @@ class CommandDispatcher implements CommandDispatcherInterface
         assert($result instanceof ResultInterface, 'Expecting pipeline to return a result object.');
 
         return $result;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function queue(CommandInterface|iterable $command): void
+    {
+        if ($this->queue === null) {
+            throw new RuntimeException(
+                'Commands cannot be queued because the command dispatcher has not been given a queue factory.',
+            );
+        }
+
+        if ($this->queue instanceof Closure) {
+            $this->queue = ($this->queue)();
+        }
+
+        $this->queue->push($command);
     }
 }

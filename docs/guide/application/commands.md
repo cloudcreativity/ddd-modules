@@ -280,8 +280,8 @@ class CancellationController extends Controller
 
         $command = new CancelAttendeeTicketCommand(
             attendeeId: new IntegerId((int) $attendeeId),
-            ticketId: new IntegerId((int) $validated->ticket),
-            reason: CancellationReasonEnum::from($request->reason),
+            ticketId: new IntegerId((int) $validated['ticket']),
+            reason: CancellationReasonEnum::from($request['reason']),
         );
 
         $result = $bus->dispatch($command);
@@ -305,6 +305,56 @@ to. Everything else - how your bounded context processes and responds to the act
 implementation detail_ of your domain.
 :::
 
+### Queuing Commands
+
+Commands can also be queued by the outside world. To indicate that a command should be queued, the `queue()` method is
+used instead of the `dispatch()` method.
+
+This allows the presentation and delivery layer to execute a command in a non-blocking way. For example, our controller
+implementation could be updated to return a `202 Accepted` response to indicate the command has been queued:
+
+```php
+namespace App\Http\Controllers\Api\Attendees;
+
+use App\Modules\EventManagement\BoundedContext\Application\Commands\{
+    CancelAttendeeTicket\CancelAttendeeTicketCommand,
+    EventManagementCommandBusInterface,
+};
+use App\Modules\EventManagement\Shared\Enums\CancellationReasonEnum;
+use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
+use Illuminate\Validation\Rule;
+
+class CancellationController extends Controller
+{
+    public function __invoke(
+        Request $request,
+        EventManagementCommandBusInterface $bus,
+        string $attendeeId,
+    ) {
+        $validated = $request->validate([
+            'ticket' => ['required', 'integer'],
+            'reason' => ['required', Rule::enum(CancellationReasonEnum::class)]
+        ]);
+
+        $command = new CancelAttendeeTicketCommand(
+            attendeeId: new IntegerId((int) $attendeeId),
+            ticketId: new IntegerId((int) $validated['ticket']),
+            reason: CancellationReasonEnum::from($request['reason']),
+        );
+
+        $bus->queue($command);
+
+        return response()->noContent(status: 202);
+    }
+}
+```
+
+:::warning
+To allow commands to be queued, you **must** provide a queue factory to the command bus when creating it. This topic is
+covered in the [Asynchronous Processing](../infrastructure/queues#external-queuing) chapter, with specific examples
+in the _External Queuing_ section.
+:::
+
 ## Middleware
 
 Our command bus implementation gives you complete control over how to compose the handling of your commands, via
@@ -325,11 +375,12 @@ middleware to suit your specific needs.
 
 ### Setup and Teardown
 
-Our `SetupBeforeDispatch` middleware allows your to run setup work before the command is dispatched, and optionally
+Our `SetupBeforeDispatch` middleware allows setup work to be run before the command is dispatched, and optionally
 teardown work when the command has completed.
 
 This allows you to set up any state and guarantee that the state is cleaned up, regardless of the outcome of the
-command. The primary use case for this is to boostrap [Domain Services](../domain/services).
+command. The primary use case for this is to boostrap [Domain Services](../domain/services) and to garbage collect any
+singleton instances of dependencies.
 
 For example:
 
@@ -425,6 +476,8 @@ $middleware->bind(
         $this->dependencies->getLogger(),
     ),
 );
+
+$bus->through([LogMessageDispatch::class]);
 ```
 
 The middleware will log a message before executing the command, with a log level of _debug_. It will then log a message
@@ -444,6 +497,8 @@ $middleware->bind(
         dispatchedLevel: LogLevel::NOTICE,
     ),
 );
+
+$bus->through([LogMessageDispatch::class]);
 ```
 
 #### Log Context
@@ -518,4 +573,7 @@ final class MyMiddleware
 :::tip
 If you're writing middleware that is only meant to be used for a specific command, type-hint that command instead of
 the generic `CommandInterface`.
+
+If you're writing middleware that can be used for both commands and queries, use a union type i.e.
+`CommandInterface|QueryInterface`.
 :::

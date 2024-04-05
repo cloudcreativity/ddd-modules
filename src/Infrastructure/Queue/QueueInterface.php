@@ -11,21 +11,15 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\Queue;
 
+use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
+
 interface QueueInterface
 {
     /**
-     * Push a message onto the queue.
+     * Push a command or commands onto the queue.
      *
-     * @param QueueableInterface $queueable
+     * @param CommandInterface|iterable<CommandInterface> $command
      * @return void
      */
-    public function push(QueueableInterface $queueable): void;
-
-    /**
-     * Push a batch of messages onto the queue.
-     *
-     * @param QueueableBatch $batch
-     * @return void
-     */
-    public function pushBatch(QueueableBatch $batch): void;
+    public function push(CommandInterface|iterable $command): void;
 }

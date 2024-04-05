@@ -407,4 +407,7 @@ final class MyMiddleware
 :::tip
 If you're writing middleware that is only meant to be used for a specific query, type-hint that query instead of
 the generic `QueryInterface`.
+
+If you're writing middleware that can be used for both commands and queries, use a union type i.e.
+`CommandInterface|QueryInterface`.
 :::
