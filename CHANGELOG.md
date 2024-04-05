@@ -13,6 +13,14 @@ All notable changes to this project will be documented in this file. This projec
     - `SetupBeforeEvent` for doing setup work before an integration event is published or notified, and optionally
       teardown work after.
     - `TeardownAfterEvent` for doing teardown work after an integration event is published or notified.
+    - `LogInboundEvent` for logging that an integration event is being received.
+    - `LogOutboundEvent` for logging that an integration event is being published.
+
+### Deprecated
+
+- The following integration event middleware are deprecated and will be removed in 2.0:
+    - `LogInboundIntegrationEvent`: use `LogInboundEvent` instead.
+    - `LogOutboundIntegrationEvent`: use `LogOutboundEvent` instead.
 
 ## [1.1.0] - 2024-03-14
 

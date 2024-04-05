@@ -300,7 +300,7 @@ use App\Modules\EventManagement\Shared\IntegrationEvents\{
 };
 use CloudCreativity\Modules\EventBus\{
     IntegrationEventHandlerContainer,
-    Middleware\LogOutboundIntegrationEvent,
+    Middleware\LogOutboundEvent,
     Outbound\Publisher,
 };
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
@@ -334,15 +334,15 @@ final class EventManagementApplication implements EventManagementEventBusInterfa
 
         /** Bind middleware factories */
         $middleware->bind(
-            LogOutboundIntegrationEvent::class,
-            fn () => new LogOutboundIntegrationEvent(
+            LogOutboundEvent::class,
+            fn () => new LogOutboundEvent(
                 $this->dependencies->getLogger(),
             ),
         );
 
         /** Attach middleware that runs for all events */
         $bus->through([
-            LogOutboundIntegrationEvent::class,
+            LogOutboundEvent::class,
         ]);
 
         return $publisher;
@@ -448,7 +448,7 @@ use App\Modules\Ordering\Shared\IntegrationEvents\OrderWasFulfilled;
 use CloudCreativity\Modules\EventBus\{
     IntegrationEventHandlerContainer,
     Inbound\Notifier,
-    Middleware\LogInboundIntegrationEvent,
+    Middleware\LogInboundEvent,
 };
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 
@@ -480,15 +480,15 @@ final class EventManagementApplication implements EventManagementEventBusInterfa
 
         /** Bind middleware factories */
         $middleware->bind(
-            LogInboundIntegrationEvent::class,
-            fn () => new LogInboundIntegrationEvent(
+            LogInboundEvent::class,
+            fn () => new LogInboundEvent(
                 $this->dependencies->getLogger(),
             ),
         );
 
         /** Attach middleware that runs for all events */
         $bus->through([
-            LogInboundIntegrationEvent::class,
+            LogInboundEvent::class,
         ]);
 
         return $notifier;
@@ -695,7 +695,7 @@ $middleware->bind(
 );
 
 $bus->through([
-    LogInboundIntegrationEvent::class,
+    LogInboundEvent::class,
     SetupBeforeEvent::class,
 ]);
 ```
@@ -718,7 +718,7 @@ $middleware->bind(
 );
 
 $bus->through([
-    LogInboundIntegrationEvent::class,
+    LogInboundEvent::class,
     TearDownAfterEvent::class,
 ]);
 ```
@@ -760,19 +760,19 @@ of the singleton instance once the handler has been executed.
 
 ### Logging
 
-Use our `LogInboundIntegrationEvent` or `LogOutboundIntegrationEvent` middleware to log the receiving or publishing
-an integration event. Both take a [PSR Logger](https://php-fig.org/psr/psr-3/).
+Use our `LogInboundEvent` or `LogOutboundEvent` middleware to log when an integration event is received or published.
+Both take a [PSR Logger](https://php-fig.org/psr/psr-3/).
 
 The only difference between these two middleware is they log a different message that makes it clear whether the
 integration event is inbound or outbound. Make sure you use the correct one for the publisher or notifier! The publisher
-needs to use `LogOutboundIntegrationEvent` and the notifier needs to use `LogInboundIntegrationEvent`.
+needs to use `LogOutboundEvent` and the notifier needs to use `LogInboundEvent`.
 
 ```php
-use CloudCreativity\Modules\EventBus\Middleware\LogMessageDispatch;
+use CloudCreativity\Modules\EventBus\Middleware\LogInboundEvent;
 
 $middleware->bind(
-    LogMessageDispatch::class,
-    fn (): LogMessageDispatch => new LogMessageDispatch(
+    LogInboundEvent::class,
+    fn () => new LogInboundEvent(
         $this->dependencies->getLogger(),
     ),
 );
