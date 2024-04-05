@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+### Added
+
+- New `NotifyInUnitOfWork` integration event middleware. This should be used instead of `ExecuteInUnitOfWork` for
+  integration events - the documentation for Integration Events incorrectly showed the wrong middleware being used.
+
 ## [1.1.0] - 2024-03-14
 
 ### Added

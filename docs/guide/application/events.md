@@ -566,8 +566,8 @@ namespace App\Modules\EventManagement\BoundedContext\Application\IntegrationEven
 
 use App\Modules\EventManagement\BoundedContext\Domain\Events\SalesAtEventDidChange;
 use App\Modules\Ordering\Shared\IntegrationEvents\OrderWasFulfilled;
-use CloudCreativity\Modules\Bus\Middleware\ExecuteInUnitOfWork;
 use CloudCreativity\Modules\Domain\Events\DispatcherInterface;
+use CloudCreativity\Modules\EventBus\Middleware\NotifyInUnitOfWork;
 use CloudCreativity\Modules\Toolkit\Messages\DispatchThroughMiddleware;
 
 final readonly class OrderWasFulfilledHandler implements
@@ -588,7 +588,7 @@ final readonly class OrderWasFulfilledHandler implements
     public function middleware(): array
     {
         return [
-            ExecuteInUnitOfWork::class,
+            NotifyInUnitOfWork::class,
         ];
     }
 }
@@ -668,6 +668,41 @@ the order they should be executed. Handler middleware are always executed _after
 
 This package provides several useful middleware, which are described below. Additionally, you can write your own
 middleware to suit your specific needs.
+
+### Unit of Work
+
+Ideally notifiers that are not dispatching commands should always be executed in a unit of work. 
+We cover this in detail in the [Units of Work chapter.](../infrastructure/units-of-work)
+
+:::tip
+If your notifier only dispatches a command, then it will not need to be wrapped in a unit of work. This is because the
+command itself should use a unit of work.
+:::
+
+To notify an event in a unit of work, you will need to use our `NotifyInUnitOfWork` middleware. You should always
+implement this as handler middleware - because typically you need it to be the final middleware that runs before a
+handler is invoked. It also makes it clear to developers looking at the handler that it is expected to run
+in a unit of work. The example `OrderWasFulfilledHandler` above demonstrates this.
+
+An example binding for this middleware is:
+
+```php
+use CloudCreativity\Modules\EventBus\Middleware\NotifyInUnitOfWork;
+
+$middleware->bind(
+    NotifyInUnitOfWork::class,
+    fn () => new NotifyInUnitOfWork($this->getUnitOfWorkManager()),
+);
+```
+
+:::warning
+If you're using a unit of work, you should be combining this with our "unit of work domain event dispatcher".
+One really important thing to note is that you **must inject both the middleware and the domain event dispatcher with
+exactly the same instance of the unit of work manager.**
+
+I.e. use a singleton instance of the unit of work manager. Plus use the teardown middleware (described above) to dispose
+of the singleton instance once the handler has been executed.
+:::
 
 ### Logging
 
