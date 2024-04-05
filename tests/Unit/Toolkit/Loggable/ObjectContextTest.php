@@ -9,10 +9,10 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Log;
+namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Loggable;
 
-use CloudCreativity\Modules\Infrastructure\Log\ObjectContext;
 use CloudCreativity\Modules\Toolkit\Loggable\ContextProviderInterface;
+use CloudCreativity\Modules\Toolkit\Loggable\ObjectContext;
 use PHPUnit\Framework\TestCase;
 
 class ObjectContextTest extends TestCase

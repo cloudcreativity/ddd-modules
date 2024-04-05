@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\EventBus\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Infrastructure\Log\ObjectContext;
+use CloudCreativity\Modules\Toolkit\Loggable\ObjectContext;
 use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use Psr\Log\LoggerInterface;

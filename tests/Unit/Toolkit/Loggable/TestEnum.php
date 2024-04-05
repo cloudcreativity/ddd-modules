@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Log;
+namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Loggable;
 
 enum TestEnum: string
 {
