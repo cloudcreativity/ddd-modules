@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [1.2.0] - 2024-04-05
+
 ### Added
 
 - New integration event middleware:
