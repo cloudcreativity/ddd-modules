@@ -794,9 +794,10 @@ following signature:
 namespace App\Bus\Middleware;
 
 use Closure;
+use CloudCreativity\Modules\EventBus\Middleware\EventBusMiddlewareInterface;
 use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 
-final class MyMiddleware
+final class MyMiddleware implements EventBusMiddlewareInterface
 {
     /**
      * Execute the middleware.
@@ -820,6 +821,7 @@ final class MyMiddleware
 ```
 
 :::tip
-If you're writing middleware that is only meant to be used for a specific integration event, type-hint that event
-instead of the generic `IntegrationEventInterface`.
+If you're writing middleware that is only meant to be used for a specific integration event, do not use the
+`EventBusMiddlewareInterface`. Instead, use the same signature but change the event type-hint to the event class your
+middleware is designed to be used with.
 :::
