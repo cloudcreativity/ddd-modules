@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\EventBus\Middleware;
 
-use CloudCreativity\Modules\EventBus\Middleware\LogInboundIntegrationEvent;
+use CloudCreativity\Modules\EventBus\Middleware\LogInboundEvent;
 use CloudCreativity\Modules\Tests\Unit\EventBus\TestIntegrationEvent;
 use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 use CloudCreativity\Modules\Toolkit\ModuleBasename;
@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-class LogInboundIntegrationEventTest extends TestCase
+class LogInboundEventTest extends TestCase
 {
     /**
      * @var LoggerInterface&MockObject
@@ -59,7 +59,7 @@ class LogInboundIntegrationEventTest extends TestCase
                 return true;
             });
 
-        $middleware = new LogInboundIntegrationEvent($this->logger);
+        $middleware = new LogInboundEvent($this->logger);
         $middleware($this->event, function (IntegrationEventInterface $received): void {
             $this->assertSame($this->event, $received);
         });
@@ -91,7 +91,7 @@ class LogInboundIntegrationEventTest extends TestCase
                 return true;
             });
 
-        $middleware = new LogInboundIntegrationEvent($this->logger, LogLevel::NOTICE, LogLevel::WARNING);
+        $middleware = new LogInboundEvent($this->logger, LogLevel::NOTICE, LogLevel::WARNING);
         $middleware($this->event, function (IntegrationEventInterface $received) {
             $this->assertSame($this->event, $received);
         });
@@ -125,7 +125,7 @@ class LogInboundIntegrationEventTest extends TestCase
             ->method('log')
             ->with(LogLevel::DEBUG, "Receiving integration event {$eventName}.", $context);
 
-        $middleware = new LogInboundIntegrationEvent($this->logger);
+        $middleware = new LogInboundEvent($this->logger);
 
         try {
             $middleware($this->event, static function () use ($expected) {
