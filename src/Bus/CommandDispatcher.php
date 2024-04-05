@@ -16,18 +16,12 @@ use CloudCreativity\Modules\Infrastructure\Queue\QueueInterface;
 use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactoryInterface;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 use RuntimeException;
 
 class CommandDispatcher implements CommandDispatcherInterface
 {
-    /**
-     * @var PipelineBuilderFactoryInterface
-     */
-    private readonly PipelineBuilderFactoryInterface $pipelineFactory;
-
     /**
      * @var null|QueueInterface|Closure(): QueueInterface
      */
@@ -42,15 +36,14 @@ class CommandDispatcher implements CommandDispatcherInterface
      * CommandDispatcher constructor.
      *
      * @param CommandHandlerContainerInterface $handlers
-     * @param PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipeline
+     * @param PipeContainerInterface|null $middleware
      * @param null|Closure(): QueueInterface $queue
      */
     public function __construct(
         private readonly CommandHandlerContainerInterface $handlers,
-        PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipeline = null,
-        Closure|null $queue = null,
+        private readonly ?PipeContainerInterface $middleware = null,
+        ?Closure $queue = null,
     ) {
-        $this->pipelineFactory = PipelineBuilderFactory::make($pipeline);
         $this->queue = $queue;
     }
 
@@ -74,8 +67,7 @@ class CommandDispatcher implements CommandDispatcherInterface
     {
         $handler = $this->handlers->get($command::class);
 
-        $pipeline = $this->pipelineFactory
-            ->getPipelineBuilder()
+        $pipeline = PipelineBuilder::make($this->middleware)
             ->through([...$this->pipes, ...array_values($handler->middleware())])
             ->build(MiddlewareProcessor::wrap($handler));
 

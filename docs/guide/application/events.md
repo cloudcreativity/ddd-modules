@@ -320,7 +320,7 @@ final class EventManagementApplication implements EventManagementEventBusInterfa
     {
         $publisher = new Publisher(
             handlers: $handlers = new IntegrationEventHandlerContainer(),
-            pipeline: $middleware = new PipeContainer(),
+            middleware: $middleware = new PipeContainer(),
         );
 
         /** Bind events to handlers. */
@@ -467,7 +467,7 @@ final class EventManagementApplication implements EventManagementEventBusInterfa
     {
         $notifier = new Notifier(
             handlers: $handlers = new IntegrationEventHandlerContainer(),
-            pipeline: $middleware = new PipeContainer(),
+            middleware: $middleware = new PipeContainer(),
         );
 
         /** Bind events to handlers. */

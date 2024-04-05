@@ -15,6 +15,7 @@ use Closure;
 use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
 use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\Dispatcher;
 use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\ListenerContainerInterface;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -23,7 +24,12 @@ class DispatcherTest extends TestCase
     /**
      * @var ListenerContainerInterface&MockObject
      */
-    private ListenerContainerInterface $container;
+    private ListenerContainerInterface&MockObject $listeners;
+
+    /**
+     * @var MockObject&PipeContainerInterface
+     */
+    private PipeContainerInterface&MockObject $middleware;
 
     /**
      * @var Dispatcher
@@ -38,7 +44,8 @@ class DispatcherTest extends TestCase
         parent::setUp();
 
         $this->dispatcher = new Dispatcher(
-            $this->container = $this->createMock(ListenerContainerInterface::class),
+            listeners: $this->listeners = $this->createMock(ListenerContainerInterface::class),
+            middleware: $this->middleware = $this->createMock(PipeContainerInterface::class),
         );
     }
 
@@ -58,7 +65,7 @@ class DispatcherTest extends TestCase
 
         $listener2Closure = static fn ($event) => $listener2->handle($event);
 
-        $this->container
+        $this->listeners
             ->expects($this->exactly(2))
             ->method('get')
             ->willReturnCallback(fn (string $name) => match ($name) {
@@ -111,7 +118,7 @@ class DispatcherTest extends TestCase
     public function testNoListeners(): void
     {
         $event = $this->createMock(DomainEventInterface::class);
-        $this->container->expects($this->never())->method($this->anything());
+        $this->listeners->expects($this->never())->method($this->anything());
         $this->dispatcher->dispatch($event);
     }
 
@@ -134,6 +141,12 @@ class DispatcherTest extends TestCase
             return $next($event3);
         };
 
+        $this->middleware
+            ->expects($this->once())
+            ->method('get')
+            ->with('Middleware2')
+            ->willReturn($b);
+
         $listener = $this->createMock(TestListener::class);
 
         $listener
@@ -141,13 +154,13 @@ class DispatcherTest extends TestCase
             ->method('handle')
             ->with($this->identicalTo($event3));
 
-        $this->container
+        $this->listeners
             ->expects($this->once())
             ->method('get')
             ->with('MyListener')
             ->willReturn($listener);
 
-        $this->dispatcher->through([$a, $b]);
+        $this->dispatcher->through([$a, 'Middleware2']);
         $this->dispatcher->listen($event3::class, 'MyListener');
         $this->dispatcher->dispatch($event1);
     }
@@ -159,7 +172,7 @@ class DispatcherTest extends TestCase
     {
         $event = new TestImmediateDomainEvent();
 
-        $this->container
+        $this->listeners
             ->expects($this->once())
             ->method('get')
             ->with('Listener1')

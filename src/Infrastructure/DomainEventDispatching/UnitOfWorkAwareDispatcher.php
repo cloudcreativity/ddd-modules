@@ -15,7 +15,6 @@ use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
 use CloudCreativity\Modules\Domain\Events\OccursImmediately;
 use CloudCreativity\Modules\Infrastructure\Persistence\UnitOfWorkManagerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactoryInterface;
 
 class UnitOfWorkAwareDispatcher extends Dispatcher implements DispatcherInterface
 {
@@ -24,14 +23,14 @@ class UnitOfWorkAwareDispatcher extends Dispatcher implements DispatcherInterfac
      *
      * @param ListenerContainerInterface $listeners
      * @param UnitOfWorkManagerInterface $unitOfWorkManager
-     * @param PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipeline
+     * @param PipeContainerInterface|null $middleware
      */
     public function __construct(
         ListenerContainerInterface $listeners,
         private readonly UnitOfWorkManagerInterface $unitOfWorkManager,
-        PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipeline = null,
+        ?PipeContainerInterface $middleware = null,
     ) {
-        parent::__construct($listeners, $pipeline);
+        parent::__construct($listeners, $middleware);
     }
 
     /**

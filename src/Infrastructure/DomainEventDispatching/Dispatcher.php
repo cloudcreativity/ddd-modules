@@ -15,18 +15,12 @@ use Closure;
 use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactoryInterface;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 use Generator;
 use InvalidArgumentException;
 
 class Dispatcher implements DispatcherInterface
 {
-    /**
-     * @var PipelineBuilderFactoryInterface
-     */
-    private readonly PipelineBuilderFactoryInterface $pipelineFactory;
-
     /**
      * @var array<string, array<string|callable>>
      */
@@ -41,13 +35,12 @@ class Dispatcher implements DispatcherInterface
      * Dispatcher constructor.
      *
      * @param ListenerContainerInterface $listeners
-     * @param PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipeline
+     * @param PipeContainerInterface|null $middleware
      */
     public function __construct(
         private readonly ListenerContainerInterface $listeners,
-        PipelineBuilderFactoryInterface|PipeContainerInterface|null $pipeline = null,
+        private readonly ?PipeContainerInterface $middleware = null,
     ) {
-        $this->pipelineFactory = PipelineBuilderFactory::make($pipeline);
     }
 
     /**
@@ -58,7 +51,7 @@ class Dispatcher implements DispatcherInterface
      */
     public function through(array $pipes): void
     {
-        assert(array_is_list($pipes));
+        assert(array_is_list($pipes), 'Expecting a list of middleware.');
 
         $this->pipes = $pipes;
     }
@@ -98,8 +91,7 @@ class Dispatcher implements DispatcherInterface
      */
     protected function dispatchNow(DomainEventInterface $event): void
     {
-        $pipeline = $this->pipelineFactory
-            ->getPipelineBuilder()
+        $pipeline = PipelineBuilder::make($this->middleware)
             ->through($this->pipes)
             ->build(new MiddlewareProcessor($this->dispatcher()));
 

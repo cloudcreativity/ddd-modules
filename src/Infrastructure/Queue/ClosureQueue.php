@@ -20,14 +20,9 @@ use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 final class ClosureQueue implements QueueInterface
 {
     /**
-     * @var PipelineBuilder
-     */
-    private readonly PipelineBuilder $pipelineBuilder;
-
-    /**
      * @var array<class-string<CommandInterface>, Closure>
      */
-    private array $bind = [];
+    private array $bindings = [];
 
     /**
      * @var array<string|callable>
@@ -41,9 +36,8 @@ final class ClosureQueue implements QueueInterface
      */
     public function __construct(
         private readonly Closure $fn,
-        PipeContainerInterface|null $middleware = null,
+        private readonly ?PipeContainerInterface $middleware = null,
     ) {
-        $this->pipelineBuilder = new PipelineBuilder($middleware);
     }
 
     /**
@@ -55,7 +49,7 @@ final class ClosureQueue implements QueueInterface
      */
     public function bind(string $command, Closure $fn): void
     {
-        $this->bind[$command] = $fn;
+        $this->bindings[$command] = $fn;
     }
 
     /**
@@ -76,13 +70,12 @@ final class ClosureQueue implements QueueInterface
     {
         $commands = ($command instanceof CommandInterface) ? [$command] : $command;
 
+        $builder = PipelineBuilder::make($this->middleware)
+            ->through($this->pipes);
+
         foreach ($commands as $cmd) {
-            $enqueuer = $this->bind[$cmd::class] ?? $this->fn;
-
-            $pipeline = $this->pipelineBuilder
-                ->through($this->pipes)
-                ->build(new MiddlewareProcessor($enqueuer));
-
+            $enqueuer = $this->bindings[$cmd::class] ?? $this->fn;
+            $pipeline = $builder->build(new MiddlewareProcessor($enqueuer));
             $pipeline->process($cmd);
         }
     }

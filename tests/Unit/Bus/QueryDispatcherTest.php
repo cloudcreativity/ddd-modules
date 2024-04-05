@@ -16,7 +16,6 @@ use CloudCreativity\Modules\Bus\QueryHandlerContainerInterface;
 use CloudCreativity\Modules\Bus\QueryHandlerInterface;
 use CloudCreativity\Modules\Toolkit\Messages\QueryInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilderFactory;
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -26,12 +25,12 @@ class QueryDispatcherTest extends TestCase
     /**
      * @var QueryHandlerContainerInterface&MockObject
      */
-    private QueryHandlerContainerInterface $container;
+    private QueryHandlerContainerInterface $handlers;
 
     /**
      * @var PipeContainerInterface&MockObject
      */
-    private PipeContainerInterface $pipeContainer;
+    private PipeContainerInterface $middleware;
 
     /**
      * @var QueryDispatcher
@@ -46,10 +45,8 @@ class QueryDispatcherTest extends TestCase
         parent::setUp();
 
         $this->dispatcher = new QueryDispatcher(
-            $this->container = $this->createMock(QueryHandlerContainerInterface::class),
-            new PipelineBuilderFactory(
-                $this->pipeContainer = $this->createMock(PipeContainerInterface::class),
-            ),
+            handlers: $this->handlers = $this->createMock(QueryHandlerContainerInterface::class),
+            middleware: $this->middleware = $this->createMock(PipeContainerInterface::class),
         );
     }
 
@@ -60,7 +57,7 @@ class QueryDispatcherTest extends TestCase
     {
         $query = $this->createMock(QueryInterface::class);
 
-        $this->container
+        $this->handlers
             ->expects($this->once())
             ->method('get')
             ->with($query::class)
@@ -102,13 +99,13 @@ class QueryDispatcherTest extends TestCase
             return $next($query4);
         };
 
-        $this->container
+        $this->handlers
             ->expects($this->once())
             ->method('get')
             ->with(TestQuery::class)
             ->willReturn($handler = $this->createMock(QueryHandlerInterface::class));
 
-        $this->pipeContainer
+        $this->middleware
             ->expects($this->once())
             ->method('get')
             ->with('MySecondMiddleware')

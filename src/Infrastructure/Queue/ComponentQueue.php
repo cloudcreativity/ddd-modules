@@ -19,26 +19,20 @@ use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 class ComponentQueue implements QueueInterface
 {
     /**
-     * @var PipelineBuilder
-     */
-    private readonly PipelineBuilder $pipelineBuilder;
-
-    /**
      * @var array<string|callable>
      */
     private array $pipes = [];
 
     /**
-     * Queue constructor.
+     * ComponentQueue constructor.
      *
      * @param EnqueuerContainerInterface $enqueuers
      * @param PipeContainerInterface|null $middleware
      */
     public function __construct(
         private readonly EnqueuerContainerInterface $enqueuers,
-        PipeContainerInterface|null $middleware = null,
+        private readonly ?PipeContainerInterface $middleware = null,
     ) {
-        $this->pipelineBuilder = new PipelineBuilder($middleware);
     }
 
     /**
@@ -59,13 +53,12 @@ class ComponentQueue implements QueueInterface
     {
         $commands = ($command instanceof CommandInterface) ? [$command] : $command;
 
+        $builder = PipelineBuilder::make($this->middleware)
+            ->through($this->pipes);
+
         foreach ($commands as $cmd) {
             $enqueuer = $this->enqueuers->get($cmd::class);
-
-            $pipeline = $this->pipelineBuilder
-                ->through($this->pipes)
-                ->build(MiddlewareProcessor::wrap($enqueuer));
-
+            $pipeline = $builder->build(MiddlewareProcessor::call($enqueuer));
             $pipeline->process($cmd);
         }
     }

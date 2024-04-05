@@ -18,6 +18,7 @@ use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\DispatchBefore
 use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\ListenerContainerInterface;
 use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\UnitOfWorkAwareDispatcher;
 use CloudCreativity\Modules\Infrastructure\Persistence\UnitOfWorkManagerInterface;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -26,12 +27,17 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
     /**
      * @var ListenerContainerInterface&MockObject
      */
-    private ListenerContainerInterface $container;
+    private ListenerContainerInterface&MockObject $listeners;
 
     /**
      * @var UnitOfWorkManagerInterface&MockObject
      */
     private UnitOfWorkManagerInterface $unitOfWorkManager;
+
+    /**
+     * @var MockObject&PipeContainerInterface
+     */
+    private PipeContainerInterface&MockObject $middleware;
 
     /**
      * @var UnitOfWorkAwareDispatcher
@@ -46,8 +52,9 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
         parent::setUp();
 
         $this->dispatcher = new UnitOfWorkAwareDispatcher(
-            $this->container = $this->createMock(ListenerContainerInterface::class),
-            $this->unitOfWorkManager = $this->createMock(UnitOfWorkManagerInterface::class),
+            listeners: $this->listeners = $this->createMock(ListenerContainerInterface::class),
+            unitOfWorkManager: $this->unitOfWorkManager = $this->createMock(UnitOfWorkManagerInterface::class),
+            middleware: $this->middleware = $this->createMock(PipeContainerInterface::class),
         );
     }
 
@@ -69,7 +76,7 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
 
         $listener2Closure = static fn ($event) => $listener2->handle($event);
 
-        $this->container
+        $this->listeners
             ->expects($this->exactly(5))
             ->method('get')
             ->willReturnCallback(fn (string $name) => match ($name) {
@@ -154,7 +161,7 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
         $listener1 = $this->createMock(TestListener::class);
         $listener2 = $this->createMock(TestListener::class);
 
-        $this->container
+        $this->listeners
             ->expects($this->never())
             ->method('get');
 
@@ -193,7 +200,7 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
         $listener1 = $this->createMock(TestListener::class);
         $listener2 = $this->createMock(TestListener::class);
 
-        $this->container
+        $this->listeners
             ->expects($this->exactly(2))
             ->method('get')
             ->willReturnCallback(static fn (string $name) => match ($name) {
@@ -252,7 +259,7 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
             ->expects($this->never())
             ->method('afterCommit');
 
-        $this->container
+        $this->listeners
             ->expects($this->once())
             ->method('get')
             ->with('BeforeCommitListener')
@@ -286,7 +293,7 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
             ->expects($this->never())
             ->method('beforeCommit');
 
-        $this->container
+        $this->listeners
             ->expects($this->once())
             ->method('get')
             ->with('AfterCommitListener')
@@ -302,7 +309,7 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
     public function testNoListeners(): void
     {
         $event = $this->createMock(DomainEventInterface::class);
-        $this->container->expects($this->never())->method($this->anything());
+        $this->listeners->expects($this->never())->method($this->anything());
         $this->dispatcher->dispatch($event);
     }
 
@@ -325,6 +332,12 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
             return $next($event3);
         };
 
+        $this->middleware
+            ->expects($this->once())
+            ->method('get')
+            ->with('Middleware2')
+            ->willReturn($b);
+
         $listener = $this->createMock(TestListener::class);
 
         $listener
@@ -332,13 +345,13 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
             ->method('handle')
             ->with($this->identicalTo($event3));
 
-        $this->container
+        $this->listeners
             ->expects($this->once())
             ->method('get')
             ->with('MyListener')
             ->willReturn($listener);
 
-        $this->dispatcher->through([$a, $b]);
+        $this->dispatcher->through([$a, 'Middleware2']);
         $this->dispatcher->listen($event3::class, 'MyListener');
         $this->dispatcher->dispatch($event1);
     }
@@ -350,7 +363,7 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
     {
         $event = new TestImmediateDomainEvent();
 
-        $this->container
+        $this->listeners
             ->expects($this->once())
             ->method('get')
             ->with('Listener1')
@@ -375,7 +388,7 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
             }
         };
 
-        $this->container
+        $this->listeners
             ->method('get')
             ->with('InvalidListener')
             ->willReturn($listener);
