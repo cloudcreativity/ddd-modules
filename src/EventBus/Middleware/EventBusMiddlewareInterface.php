@@ -14,7 +14,7 @@ namespace CloudCreativity\Modules\EventBus\Middleware;
 use Closure;
 use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 
-interface IntegrationEventMiddlewareInterface
+interface EventBusMiddlewareInterface
 {
     /**
      * Handle the integration event.
