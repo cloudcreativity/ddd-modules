@@ -10,22 +10,14 @@ All notable changes to this project will be documented in this file. This projec
 - **BREAKING** The command bus interface now has a `queue()` method. Our command dispatcher implementation has been
   updated to accept a queue factory closure as its third constructor argument. This is an optional argument, so this
   change only breaks your implementation if you have manually implemented the command dispatch interface.
+- The `FailedResultException` now implements the `ContextProviderInterface` to get log context from the exception's
+  result object. In Laravel applications, this means the exception context will automatically be logged.
 
 ### Changed
 
 - **BREAKING** Refactored the queue implementation so that commands are queued. The queue implementation was previously
   not documented. There is now complete documentation in the [Asynchronous Processing](docs/guide/infrastructure/queues)
   chapter. Refer to that documentation to upgrade your implementation.
-
-## Unreleased
-
-### Added
-
-- The `FailedResultException` now implements the `ContextProviderInterface` to get log context from the exception's
-  result object. In Laravel applications, this means the exception context will automatically be logged.
-
-### Changed
-
 - **BREAKING** the `ResultContext` and `ObjectContext` helper classes have been moved to the `Toolkit\Loggable`
   namespace.
 
