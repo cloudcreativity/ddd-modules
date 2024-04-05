@@ -27,7 +27,7 @@
         "ramsey/uuid": "^4.7"
     },
     "require-dev": {
-        "laravel/pint": "^1.13",
+        "laravel/pint": "^1.15",
         "phpstan/phpstan": "^1.10",
         "phpunit/phpunit": "^10.4"
     },
@@ -56,7 +56,8 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-develop": "1.x-dev"
+            "dev-develop": "1.x-dev",
+            "dev-next": "2.x-dev"
         }
     },
     "minimum-stability": "stable",

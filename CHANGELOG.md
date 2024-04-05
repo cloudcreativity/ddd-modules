@@ -19,6 +19,35 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+### Added
+
+- The `FailedResultException` now implements the `ContextProviderInterface` to get log context from the exception's
+  result object. In Laravel applications, this means the exception context will automatically be logged.
+
+### Changed
+
+- **BREAKING** the `ResultContext` and `ObjectContext` helper classes have been moved to the `Toolkit\Loggable`
+  namespace.
+
+## [1.2.0] - 2024-04-05
+
+### Added
+
+- New integration event middleware:
+    - `NotifyInUnitOfWork` for notifiers that need to be executed in a unit of work. Note that the documentation for
+      Integration Events incorrectly showed the `ExecuteInUnitOfWork` command middleware being used.
+    - `SetupBeforeEvent` for doing setup work before an integration event is published or notified, and optionally
+      teardown work after.
+    - `TeardownAfterEvent` for doing teardown work after an integration event is published or notified.
+    - `LogInboundEvent` for logging that an integration event is being received.
+    - `LogOutboundEvent` for logging that an integration event is being published.
+
+### Deprecated
+
+- The following integration event middleware are deprecated and will be removed in 2.0:
+    - `LogInboundIntegrationEvent`: use `LogInboundEvent` instead.
+    - `LogOutboundIntegrationEvent`: use `LogOutboundEvent` instead.
+
 ## [1.1.0] - 2024-03-14
 
 ### Added

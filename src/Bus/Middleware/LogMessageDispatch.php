@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Bus\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Infrastructure\Log\ObjectContext;
-use CloudCreativity\Modules\Infrastructure\Log\ResultContext;
+use CloudCreativity\Modules\Toolkit\Loggable\ObjectContext;
+use CloudCreativity\Modules\Toolkit\Loggable\ResultContext;
 use CloudCreativity\Modules\Toolkit\Messages\MessageInterface;
 use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;

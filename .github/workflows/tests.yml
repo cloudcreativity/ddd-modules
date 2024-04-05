@@ -2,9 +2,9 @@ name: Tests
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, develop, next ]
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main, develop, next ]
 
 jobs:
   build:
@@ -37,7 +37,7 @@ jobs:
           command: composer update --prefer-dist --no-interaction --no-progress
 
       - name: Execute style
-        run: composer run style
+        run: composer run style -- --bail
 
       - name: Execute static analysis
         run: composer run static

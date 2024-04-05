@@ -164,12 +164,14 @@ use Ramsey\Uuid\Uuid as BaseUuid;
 $id = new Uuid(BaseUuid::uuid4());
 ```
 
+We also provide a `UuidFactoryInterface` which is a wrapper around the one from the `ramsey/uuid` package. It has the
+same methods, but returns an instance of the `Uuid` class from this package instead.
+
 For example, in a repository you might use this as follows:
 
 ```php
 use App\Modules\UserManagement\Domain\User;
-use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
-use Ramsey\Uuid\UuidFactoryInterface;
+use CloudCreativity\Modules\Toolkit\Identifiers\UuidFactoryInterface;
 
 class UserRepository implements UserRepositoryInterface
 {
@@ -179,7 +181,7 @@ class UserRepository implements UserRepositoryInterface
 
     public function create(User $entity): void
     {
-        $id = new Uuid($this->uuidFactory->uuid4());
+        $id = $this->uuidFactory->uuid4();
         $data = $this->mapper->toDatabaseRow($entity);
         $data['id'] = $id->value->toString();
 
@@ -192,7 +194,12 @@ class UserRepository implements UserRepositoryInterface
 }
 ```
 
-Use the `Uuid::from()` method where you receive an identifier and need to ensure it is a UUID:
+:::tip
+The default concrete implementation of this factory can be accessed using the static `Uuid::getFactory()` method.
+:::
+
+Use the `Uuid::from()` method where you receive an identifier and need to ensure it is a UUID. Or alternatively,
+use the `UuidFactoryInterface::from()` method.
 
 ```php
 class UserRepository implements UserRepositoryInterface
@@ -204,6 +211,9 @@ class UserRepository implements UserRepositoryInterface
         // Here `getId()` returns the identifier interface.
         // So we ensure it is definitely a UUID.
         $id = Uuid::from($entity->getId());
+
+        // or if we had injected the uuid factory:
+        $id = $this->factory->from($entity->getId());
 
         $values = $this->mapper->toDatabaseRow($entity);
         $values['id'] = $id->value->toString();

@@ -9,9 +9,7 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Infrastructure\Log;
-
-use CloudCreativity\Modules\Toolkit\Loggable\ContextProviderInterface;
+namespace CloudCreativity\Modules\Toolkit\Loggable;
 
 final class ObjectContext implements ContextProviderInterface
 {

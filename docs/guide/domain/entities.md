@@ -203,3 +203,32 @@ public function cancelTicket(
 As shown in the example, this also allows your entity to emit domain events when its state changes.
 See the [Domain Events chapter](./events) for more detail on this topic.
 :::
+
+## Serialization
+
+It can be tempting to implement PHP's `JsonSerializable` interface on aggregates or entities, so that they can
+be easily serialized to JSON. **This must never be implemented on a domain aggregate or entity.**
+
+The reason is that when you implement serialization logic on an aggregate or entity, you have no context to understand
+_why_ the object is being serialized, and _how_ it should be serialized.
+
+For example, if you had both a v1 and v2 version of your API, which is the entity being serialized for? If you have
+a separate "backend-for-frontend", is the entity being serialized for that?
+
+The answer is that only the _presentation_ layer knows - as JSON is a data delivery mechanism. As we know, the domain
+layer is the inner-most layer, that should have no knowledge of the outer layers - including the presentation layer.
+
+Therefore, an aggregate or entity can never be serialized by the domain layer. We must leave that to the concern of
+the presentation layer.
+
+:::info
+Another reason why an aggregate or entity can never implement serialization logic is that they are your domain's
+"write model". They represent the structure required to execute business logic and mutate state.
+
+In contrast, JSON returned by your presentation layer represents your "read model". In the CQRS pattern, the read
+model is obtained by dispatching a query - which should never return domain entities and aggregates. Instead, they
+should return immutable read models that represent the data model of the current state of your domain. It is these
+read models that should be serialized to JSON.
+
+Learn about [read models in the Query chapter.](../application/queries#read-models)
+:::
