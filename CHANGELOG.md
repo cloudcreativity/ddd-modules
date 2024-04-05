@@ -40,6 +40,9 @@ All notable changes to this project will be documented in this file. This projec
   within our bus and dispatch implementations.
     - `Toolkit\Pipeline\PipelineBuilderFactoryInterface`
     - `Toolkit\Pipeline\PipelineBuilderFactory`
+- **BREAKING** Removed the following previously deprecated event bus middleware:
+    - `EventBus\Middleware\LogOutboundIntegrationEvent` - use `LogOutboundEvent` instead.
+    - `EventBus\Middleware\LogInboundIntegrationEvent` - use `LogInboundEvent` instead.
 
 ## [1.2.0] - 2024-04-05
 
