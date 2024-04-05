@@ -70,15 +70,13 @@ final class ClosureQueue implements QueueInterface
     {
         $commands = ($command instanceof CommandInterface) ? [$command] : $command;
 
-        $pipelineBuilder = PipelineBuilder::make($this->middleware)
+        $builder = PipelineBuilder::make($this->middleware)
             ->through($this->pipes);
 
         foreach ($commands as $cmd) {
             $enqueuer = $this->bindings[$cmd::class] ?? $this->fn;
-
-            $pipelineBuilder
-                ->build(new MiddlewareProcessor($enqueuer))
-                ->process($cmd);
+            $pipeline = $builder->build(new MiddlewareProcessor($enqueuer));
+            $pipeline->process($cmd);
         }
     }
 }

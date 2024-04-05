@@ -58,7 +58,6 @@ class ComponentQueue implements QueueInterface
 
         foreach ($commands as $cmd) {
             $enqueuer = $this->enqueuers->get($cmd::class);
-
             $pipeline = $builder->build(MiddlewareProcessor::call($enqueuer));
             $pipeline->process($cmd);
         }
