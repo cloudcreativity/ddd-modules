@@ -669,9 +669,63 @@ the order they should be executed. Handler middleware are always executed _after
 This package provides several useful middleware, which are described below. Additionally, you can write your own
 middleware to suit your specific needs.
 
+### Setup and Teardown
+
+Our `SetupBeforeEvent` middleware allows your to run setup work before the event is published or notified, and
+optionally teardown work after.
+
+This allows you to set up any state, services or singletons - and guarantee that these are cleaned up, regardless of
+whether the notifying or publishing completes or throws an exception.
+
+For example:
+
+```php
+use App\Modules\EventManagement\BoundedContext\Domain\Services;
+use CloudCreativity\Modules\EventBus\Middleware\SetupBeforeEvent;
+
+$middleware->bind(
+    SetupBeforeEvent::class,
+    fn () => new SetupBeforeEvent(function (): Closure {
+        // setup singletons, dependencies etc here.
+        return function (): void {
+            // teardown singletons, dependencies etc here.
+            // returning a teardown closure is optional.
+        };
+    }),
+);
+
+$bus->through([
+    LogInboundIntegrationEvent::class,
+    SetupBeforeEvent::class,
+]);
+```
+
+Here our setup middleware takes a setup closure as its only constructor argument. This setup closure can optionally
+return a closure to do any teardown work. The teardown callback is guaranteed to always be executed - i.e. it will run
+even if an exception is thrown.
+
+If you only need to do any teardown work, use the `TeardownAfterEvent` middleware instead. This takes a single teardown
+closure as its only constructor argument:
+
+```php
+use CloudCreativity\Modules\EventBus\Middleware\TearDownAfterEvent;
+
+$middleware->bind(
+    TearDownAfterEvent::class,
+    fn () => new TearDownAfterEvent(function (): Closure {
+        // teardown here
+    }),
+);
+
+$bus->through([
+    LogInboundIntegrationEvent::class,
+    TearDownAfterEvent::class,
+]);
+```
+
 ### Unit of Work
 
-Ideally notifiers that are not dispatching commands should always be executed in a unit of work. 
+Ideally notifiers that are not dispatching commands should always be executed in a unit of work.
 We cover this in detail in the [Units of Work chapter.](../infrastructure/units-of-work)
 
 :::tip

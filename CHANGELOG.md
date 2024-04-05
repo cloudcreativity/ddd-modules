@@ -7,8 +7,12 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Added
 
-- New `NotifyInUnitOfWork` integration event middleware. This should be used instead of `ExecuteInUnitOfWork` for
-  integration events - the documentation for Integration Events incorrectly showed the wrong middleware being used.
+- New integration event middleware:
+    - `NotifyInUnitOfWork` for notifiers that need to be executed in a unit of work. Note that the documentation for
+      Integration Events incorrectly showed the `ExecuteInUnitOfWork` command middleware being used.
+    - `SetupBeforeEvent` for doing setup work before an integration event is published or notified, and optionally
+      teardown work after.
+    - `TeardownAfterEvent` for doing teardown work after an integration event is published or notified.
 
 ## [1.1.0] - 2024-03-14
 
