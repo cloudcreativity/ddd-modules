@@ -23,11 +23,6 @@ use RuntimeException;
 class CommandDispatcher implements CommandDispatcherInterface
 {
     /**
-     * @var PipelineBuilder
-     */
-    private readonly PipelineBuilder $pipelineBuilder;
-
-    /**
      * @var null|QueueInterface|Closure(): QueueInterface
      */
     private QueueInterface|Closure|null $queue;
@@ -46,10 +41,9 @@ class CommandDispatcher implements CommandDispatcherInterface
      */
     public function __construct(
         private readonly CommandHandlerContainerInterface $handlers,
-        ?PipeContainerInterface $middleware = null,
+        private readonly ?PipeContainerInterface $middleware = null,
         ?Closure $queue = null,
     ) {
-        $this->pipelineBuilder = new PipelineBuilder($middleware);
         $this->queue = $queue;
     }
 
@@ -73,7 +67,7 @@ class CommandDispatcher implements CommandDispatcherInterface
     {
         $handler = $this->handlers->get($command::class);
 
-        $pipeline = $this->pipelineBuilder
+        $pipeline = PipelineBuilder::make($this->middleware)
             ->through([...$this->pipes, ...array_values($handler->middleware())])
             ->build(MiddlewareProcessor::wrap($handler));
 

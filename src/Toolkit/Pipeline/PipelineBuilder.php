@@ -21,6 +21,17 @@ final class PipelineBuilder implements PipelineBuilderInterface
     private array $stages = [];
 
     /**
+     * Fluent constructor.
+     *
+     * @param PipeContainerInterface|null $container
+     * @return self
+     */
+    public static function make(?PipeContainerInterface $container = null): self
+    {
+        return new self($container);
+    }
+
+    /**
      * PipelineBuilder constructor.
      *
      * @param PipeContainerInterface|null $container

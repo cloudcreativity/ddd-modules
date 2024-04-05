@@ -21,23 +21,17 @@ use CloudCreativity\Modules\Toolkit\Result\ListOfErrorsInterface;
 abstract class AbstractValidator implements ValidatorInterface
 {
     /**
-     * @var PipelineBuilder
-     */
-    private readonly PipelineBuilder $pipelineFactory;
-
-    /**
      * @var iterable<string|callable>
      */
-    private iterable $rules = [];
+    private iterable $using = [];
 
     /**
      * AbstractValidator constructor
      *
      * @param PipeContainerInterface|null $rules
      */
-    public function __construct(?PipeContainerInterface $rules = null)
+    public function __construct(private readonly ?PipeContainerInterface $rules = null)
     {
-        $this->pipelineFactory = new PipelineBuilder($rules);
     }
 
     /**
@@ -46,7 +40,7 @@ abstract class AbstractValidator implements ValidatorInterface
      */
     public function using(iterable $rules): self
     {
-        $this->rules = $rules;
+        $this->using = $rules;
 
         return $this;
     }
@@ -56,8 +50,8 @@ abstract class AbstractValidator implements ValidatorInterface
      */
     protected function getPipeline(): PipelineInterface
     {
-        return $this->pipelineFactory
-            ->through($this->rules)
+        return PipelineBuilder::make($this->rules)
+            ->through($this->using)
             ->build($this->processor());
     }
 

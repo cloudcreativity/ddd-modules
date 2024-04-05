@@ -20,11 +20,6 @@ use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 class QueryDispatcher implements QueryDispatcherInterface
 {
     /**
-     * @var PipelineBuilder
-     */
-    private readonly PipelineBuilder $pipelineBuilder;
-
-    /**
      * @var array<string|callable>
      */
     private array $pipes = [];
@@ -37,9 +32,8 @@ class QueryDispatcher implements QueryDispatcherInterface
      */
     public function __construct(
         private readonly QueryHandlerContainerInterface $handlers,
-        ?PipeContainerInterface $middleware = null,
+        private readonly ?PipeContainerInterface $middleware = null,
     ) {
-        $this->pipelineBuilder = new PipelineBuilder($middleware);
     }
 
     /**
@@ -62,7 +56,7 @@ class QueryDispatcher implements QueryDispatcherInterface
     {
         $handler = $this->handlers->get($query::class);
 
-        $pipeline = $this->pipelineBuilder
+        $pipeline = PipelineBuilder::make($this->middleware)
             ->through([...$this->pipes, ...array_values($handler->middleware())])
             ->build(MiddlewareProcessor::wrap($handler));
 

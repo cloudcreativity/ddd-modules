@@ -20,11 +20,6 @@ use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 final class Notifier implements NotifierInterface
 {
     /**
-     * @var PipelineBuilder
-     */
-    private readonly PipelineBuilder $pipelineBuilder;
-
-    /**
      * @var array<string|callable>
      */
     private array $pipes = [];
@@ -37,9 +32,8 @@ final class Notifier implements NotifierInterface
      */
     public function __construct(
         private readonly IntegrationEventHandlerContainerInterface $handlers,
-        ?PipeContainerInterface $middleware = null,
+        private readonly ?PipeContainerInterface $middleware = null,
     ) {
-        $this->pipelineBuilder = new PipelineBuilder($middleware);
     }
 
     /**
@@ -62,9 +56,9 @@ final class Notifier implements NotifierInterface
     {
         $handler = $this->handlers->get($event::class);
 
-        $pipeline = $this->pipelineBuilder
+        $pipeline = PipelineBuilder::make($this->middleware)
             ->through([...$this->pipes, ...$handler->middleware()])
-            ->build(MiddlewareProcessor::wrap($handler));
+            ->build(MiddlewareProcessor::call($handler));
 
         $pipeline->process($event);
     }

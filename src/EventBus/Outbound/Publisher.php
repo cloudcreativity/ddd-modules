@@ -20,11 +20,6 @@ use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 final class Publisher implements PublisherInterface
 {
     /**
-     * @var PipelineBuilder
-     */
-    private readonly PipelineBuilder $pipelineBuilder;
-
-    /**
      * @var array<string|callable>
      */
     private array $pipes = [];
@@ -37,9 +32,8 @@ final class Publisher implements PublisherInterface
      */
     public function __construct(
         private readonly IntegrationEventHandlerContainerInterface $handlers,
-        ?PipeContainerInterface $middleware = null,
+        private readonly ?PipeContainerInterface $middleware = null,
     ) {
-        $this->pipelineBuilder = new PipelineBuilder($middleware);
     }
 
     /**
@@ -62,11 +56,9 @@ final class Publisher implements PublisherInterface
     {
         $handler = $this->handlers->get($event::class);
 
-        $pipeline = $this->pipelineBuilder
+        $pipeline = PipelineBuilder::make($this->middleware)
             ->through([...$this->pipes, ...$handler->middleware()])
-            ->build(new MiddlewareProcessor(function (IntegrationEventInterface $passed) use ($handler): void {
-                $handler($passed);
-            }));
+            ->build(MiddlewareProcessor::call($handler));
 
         $pipeline->process($event);
     }

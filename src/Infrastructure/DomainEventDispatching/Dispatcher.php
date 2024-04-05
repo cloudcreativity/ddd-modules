@@ -22,11 +22,6 @@ use InvalidArgumentException;
 class Dispatcher implements DispatcherInterface
 {
     /**
-     * @var PipelineBuilder
-     */
-    private readonly PipelineBuilder $pipelineBuilder;
-
-    /**
      * @var array<string, array<string|callable>>
      */
     private array $bindings = [];
@@ -44,9 +39,8 @@ class Dispatcher implements DispatcherInterface
      */
     public function __construct(
         private readonly ListenerContainerInterface $listeners,
-        ?PipeContainerInterface $middleware = null,
+        private readonly ?PipeContainerInterface $middleware = null,
     ) {
-        $this->pipelineBuilder = new PipelineBuilder($middleware);
     }
 
     /**
@@ -97,7 +91,7 @@ class Dispatcher implements DispatcherInterface
      */
     protected function dispatchNow(DomainEventInterface $event): void
     {
-        $pipeline = $this->pipelineBuilder
+        $pipeline = PipelineBuilder::make($this->middleware)
             ->through($this->pipes)
             ->build(new MiddlewareProcessor($this->dispatcher()));
 
