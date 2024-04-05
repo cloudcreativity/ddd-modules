@@ -15,7 +15,7 @@ use Closure;
 use CloudCreativity\Modules\Infrastructure\Persistence\UnitOfWorkManagerInterface;
 use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 
-final class NotifyInUnitOfWork implements IntegrationEventMiddlewareInterface
+final class NotifyInUnitOfWork implements EventBusMiddlewareInterface
 {
     /**
      * NotifyInUnitOfWork constructor.

@@ -32,6 +32,7 @@ All notable changes to this project will be documented in this file. This projec
   your implementation if you are using named arguments when constructing either of these validators.
 - **BREAKING** the `ResultContext` and `ObjectContext` helper classes have been moved to the `Toolkit\Loggable`
   namespace.
+- **BREAKING** The event bus's `IntegrationEventMiddlewareInterface` has been renamed to `EventBusMiddlewareInterface`.
 
 ### Removed
 

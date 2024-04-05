@@ -14,7 +14,7 @@ namespace CloudCreativity\Modules\EventBus\Middleware;
 use Closure;
 use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 
-final class SetupBeforeEvent implements IntegrationEventMiddlewareInterface
+final class SetupBeforeEvent implements EventBusMiddlewareInterface
 {
     /**
      * SetupBeforeEvent constructor.

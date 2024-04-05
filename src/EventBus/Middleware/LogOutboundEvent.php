@@ -18,7 +18,7 @@ use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-final class LogOutboundEvent implements IntegrationEventMiddlewareInterface
+final class LogOutboundEvent implements EventBusMiddlewareInterface
 {
     /**
      * LogOutboundEvent constructor.
