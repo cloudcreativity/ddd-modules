@@ -13,7 +13,8 @@ namespace CloudCreativity\Modules\Tests\Unit\Bus\Middleware;
 
 use CloudCreativity\Modules\Bus\Middleware\FlushDeferredEvents;
 use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\DeferredDispatcherInterface;
-use CloudCreativity\Modules\Toolkit\Messages\MessageInterface;
+use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
+use CloudCreativity\Modules\Toolkit\Messages\QueryInterface;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -52,7 +53,7 @@ class FlushDeferredEventsTest extends TestCase
      */
     public function testItFlushesDeferredEvents(): void
     {
-        $message = $this->createMock(MessageInterface::class);
+        $message = $this->createMock(CommandInterface::class);
         $expected = Result::ok();
 
         $this->dispatcher
@@ -73,6 +74,7 @@ class FlushDeferredEventsTest extends TestCase
         });
 
         $this->assertSame(['next', 'flush'], $this->sequence);
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -80,7 +82,7 @@ class FlushDeferredEventsTest extends TestCase
      */
     public function testItForgetsDeferredEventsOnFailedResult(): void
     {
-        $message = $this->createMock(MessageInterface::class);
+        $message = $this->createMock(QueryInterface::class);
         $expected = Result::failed('Something went wrong.');
 
         $this->dispatcher
@@ -109,7 +111,7 @@ class FlushDeferredEventsTest extends TestCase
      */
     public function testItForgetsDeferredEventsOnException(): void
     {
-        $message = $this->createMock(MessageInterface::class);
+        $message = $this->createMock(CommandInterface::class);
         $expected = new \LogicException('Boom!');
 
         $this->dispatcher

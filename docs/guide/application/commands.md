@@ -199,7 +199,7 @@ use App\Modules\EventManagement\BoundedContext\Application\Commands\{
 use CloudCreativity\Modules\Bus\{
     CommandHandlerContainer,
     Middleware\ExecuteInUnitOfWork,
-    Middleware\LogMessageDispatch,
+    Middleware\LogBusDispatch,
 };
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 
@@ -229,15 +229,15 @@ final class EventManagementApplication implements EventManagementApplicationInte
         );
 
         $middleware->bind(
-            LogMessageDispatch::class,
-            fn () => new LogMessageDispatch(
+            LogBusDispatch::class,
+            fn () => new LogBusDispatch(
                 $this->dependencies->getLogger(),
             ),
         );
 
         /** Attach middleware that runs for all commands */
         $bus->through([
-            LogMessageDispatch::class,
+            LogBusDispatch::class,
         ]);
 
         return $bus;
@@ -468,16 +468,16 @@ Use our `LogMessageDispatch` middleware to log the dispatch of a command, and th
 [PSR Logger](https://php-fig.org/psr/psr-3/).
 
 ```php
-use CloudCreativity\Modules\Bus\Middleware\LogMessageDispatch;
+use CloudCreativity\Modules\Bus\Middleware\LogBusDispatch;
 
 $middleware->bind(
-    LogMessageDispatch::class,
-    fn (): LogMessageDispatch => new LogMessageDispatch(
+    LogBusDispatch::class,
+    fn (): LogBusDispatch => new LogBusDispatch(
         $this->dependencies->getLogger(),
     ),
 );
 
-$bus->through([LogMessageDispatch::class]);
+$bus->through([LogBusDispatch::class]);
 ```
 
 The middleware will log a message before executing the command, with a log level of _debug_. It will then log a message

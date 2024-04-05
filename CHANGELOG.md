@@ -30,6 +30,9 @@ All notable changes to this project will be documented in this file. This projec
 - **BREAKING** The single constructor argument for the `Bus\Validation\CommandValidator`
   and `Bus\Validation\QueryValidator` has been renamed `rules` for clarity. Although breaking, this will only affect
   your implementation if you are using named arguments when constructing either of these validators.
+- **BREAKING** Renamed the bus `MessageMiddlewareInterface` to `BusMiddlewareInterface`. Also changed the type-hint for
+  the message from `MessageInterface` to `CommandInterface|QueryInterface`. This makes this interface clearer about its
+  purpose, as it is intended only for use with commands and queries - i.e. not integration event messages.
 - **BREAKING** the `ResultContext` and `ObjectContext` helper classes have been moved to the `Toolkit\Loggable`
   namespace.
 

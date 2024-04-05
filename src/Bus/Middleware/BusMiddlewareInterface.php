@@ -12,17 +12,19 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Bus\Middleware;
 
 use Closure;
+use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 use CloudCreativity\Modules\Toolkit\Messages\MessageInterface;
+use CloudCreativity\Modules\Toolkit\Messages\QueryInterface;
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
-interface MessageMiddlewareInterface
+interface BusMiddlewareInterface
 {
     /**
-     * Handle the message.
+     * Handle the command or query.
      *
-     * @param MessageInterface $message
+     * @param CommandInterface|QueryInterface $message
      * @param Closure(MessageInterface): ResultInterface<mixed> $next
      * @return ResultInterface<mixed>
      */
-    public function __invoke(MessageInterface $message, Closure $next): ResultInterface;
+    public function __invoke(CommandInterface|QueryInterface $message, Closure $next): ResultInterface;
 }
