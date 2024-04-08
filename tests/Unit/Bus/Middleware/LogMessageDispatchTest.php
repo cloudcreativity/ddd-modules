@@ -14,7 +14,9 @@ namespace CloudCreativity\Modules\Tests\Unit\Bus\Middleware;
 use CloudCreativity\Modules\Bus\Middleware\LogMessageDispatch;
 use CloudCreativity\Modules\Toolkit\Loggable\ObjectContext;
 use CloudCreativity\Modules\Toolkit\Loggable\ResultContext;
+use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 use CloudCreativity\Modules\Toolkit\Messages\MessageInterface;
+use CloudCreativity\Modules\Toolkit\Messages\QueryInterface;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -30,9 +32,9 @@ class LogMessageDispatchTest extends TestCase
     private LoggerInterface $logger;
 
     /**
-     * @var MessageInterface
+     * @var CommandInterface
      */
-    private MessageInterface $message;
+    private CommandInterface $message;
 
     /**
      * @return void
@@ -42,7 +44,7 @@ class LogMessageDispatchTest extends TestCase
         parent::setUp();
 
         $this->logger = $this->createMock(LoggerInterface::class);
-        $this->message = new class () implements MessageInterface {
+        $this->message = new class () implements CommandInterface {
             public string $foo = 'bar';
             public string $baz = 'bat';
         };
@@ -114,17 +116,18 @@ class LogMessageDispatchTest extends TestCase
     public function testItLogsAfterTheNextClosureIsInvoked(): void
     {
         $expected = new LogicException();
-        $name = $this->message::class;
+        $message = $this->createMock(QueryInterface::class);
+        $name = $message::class;
 
         $this->logger
             ->expects($this->once())
             ->method('log')
-            ->with(LogLevel::DEBUG, "Bus dispatching {$name}.", ObjectContext::from($this->message)->context());
+            ->with(LogLevel::DEBUG, "Bus dispatching {$name}.", ObjectContext::from($message)->context());
 
         $middleware = new LogMessageDispatch($this->logger);
 
         try {
-            $middleware($this->message, static function () use ($expected) {
+            $middleware($message, static function () use ($expected) {
                 throw $expected;
             });
             $this->fail('No exception thrown.');

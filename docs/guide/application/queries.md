@@ -376,10 +376,11 @@ following signature:
 namespace App\Bus\Middleware;
 
 use Closure;
+use CloudCreativity\Modules\Bus\Middleware\QueryMiddlewareInterface;
 use CloudCreativity\Modules\Toolkit\Messages\QueryInterface;
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
-final class MyMiddleware
+final class MyMiddleware implements QueryMiddlewareInterface
 {
     /**
      * Execute the middleware.
@@ -405,9 +406,44 @@ final class MyMiddleware
 ```
 
 :::tip
-If you're writing middleware that is only meant to be used for a specific query, type-hint that query instead of
-the generic `QueryInterface`.
-
-If you're writing middleware that can be used for both commands and queries, use a union type i.e.
-`CommandInterface|QueryInterface`.
+If you're writing middleware that is only meant to be used for a specific query, do not implement the
+`QueryMiddlewareInterface`. Instead, use the same signature but change the type-hint for the query to the query
+class your middleware is designed to be used with.
 :::
+
+If you want to write middleware that can be used with both commands and queries, implement the `BusMiddlewareInterface`
+instead:
+
+```php
+namespace App\Bus\Middleware;
+
+use Closure;
+use CloudCreativity\Modules\Bus\Middleware\BusMiddlewareInterface;
+use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
+use CloudCreativity\Modules\Toolkit\Messages\QueryInterface;
+use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
+
+class MyBusMiddleware implements BusMiddlewareInterface
+{
+    /**
+     * Handle the command or query.
+     *
+     * @param CommandInterface|QueryInterface $message
+     * @param Closure(CommandInterface|QueryInterface): ResultInterface<mixed> $next
+     * @return ResultInterface<mixed>
+     */
+    public function __invoke(
+        CommandInterface|QueryInterface $message, 
+        Closure $next,
+    ): ResultInterface
+    {
+        // code here executes before the handler
+
+        $result = $next($command);
+
+        // code here executes after the handler
+
+        return $result;
+    }
+}
+```

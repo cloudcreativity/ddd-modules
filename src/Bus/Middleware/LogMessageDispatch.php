@@ -14,13 +14,14 @@ namespace CloudCreativity\Modules\Bus\Middleware;
 use Closure;
 use CloudCreativity\Modules\Toolkit\Loggable\ObjectContext;
 use CloudCreativity\Modules\Toolkit\Loggable\ResultContext;
-use CloudCreativity\Modules\Toolkit\Messages\MessageInterface;
+use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
+use CloudCreativity\Modules\Toolkit\Messages\QueryInterface;
 use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-final class LogMessageDispatch implements MessageMiddlewareInterface
+final class LogMessageDispatch implements BusMiddlewareInterface
 {
     /**
      * LogMessageDispatch constructor.
@@ -39,7 +40,7 @@ final class LogMessageDispatch implements MessageMiddlewareInterface
     /**
      * @inheritDoc
      */
-    public function __invoke(MessageInterface $message, Closure $next): ResultInterface
+    public function __invoke(CommandInterface|QueryInterface $message, Closure $next): ResultInterface
     {
         $name = ModuleBasename::tryFrom($message)?->toString() ?? $message::class;
 

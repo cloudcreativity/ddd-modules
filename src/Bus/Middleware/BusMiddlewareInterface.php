@@ -16,26 +16,14 @@ use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 use CloudCreativity\Modules\Toolkit\Messages\QueryInterface;
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
-final class TearDownAfterDispatch implements BusMiddlewareInterface
+interface BusMiddlewareInterface
 {
     /**
-     * TearDownAfterDispatch constructor.
+     * Handle the command or query.
      *
-     * @param Closure(): void $callback
+     * @param CommandInterface|QueryInterface $message
+     * @param Closure(CommandInterface|QueryInterface): ResultInterface<mixed> $next
+     * @return ResultInterface<mixed>
      */
-    public function __construct(private readonly Closure $callback)
-    {
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function __invoke(CommandInterface|QueryInterface $message, Closure $next): ResultInterface
-    {
-        try {
-            return $next($message);
-        } finally {
-            ($this->callback)();
-        }
-    }
+    public function __invoke(CommandInterface|QueryInterface $message, Closure $next): ResultInterface;
 }
