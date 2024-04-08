@@ -169,7 +169,7 @@ use App\Modules\EventManagement\BoundedContext\Application\Queries\{
 };
 use CloudCreativity\Modules\Bus\{
     QueryHandlerContainer,
-    Middleware\LogBusDispatch,
+    Middleware\LogMessageDispatch,
 };
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 
@@ -194,15 +194,15 @@ final class EventManagementApplication implements EventManagementApplicationInte
 
         /** Bind middleware factories */
         $middleware->bind(
-            LogBusDispatch::class,
-            fn () => new LogBusDispatch(
+            LogMessageDispatch::class,
+            fn () => new LogMessageDispatch(
                 $this->dependencies->getLogger(),
             ),
         );
 
         /** Attach middleware that runs for all queries */
         $bus->through([
-            LogBusDispatch::class,
+            LogMessageDispatch::class,
         ]);
 
         return $bus;
@@ -351,11 +351,11 @@ Use our `LogMessageDispatch` middleware to log the dispatch of a query, and the 
 [PSR Logger](https://php-fig.org/psr/psr-3/).
 
 ```php
-use CloudCreativity\Modules\Bus\Middleware\LogBusDispatch;
+use CloudCreativity\Modules\Bus\Middleware\LogMessageDispatch;
 
 $middleware->bind(
-    LogBusDispatch::class,
-    fn (): LogBusDispatch => new LogBusDispatch(
+    LogMessageDispatch::class,
+    fn (): LogMessageDispatch => new LogMessageDispatch(
         $this->dependencies->getLogger(),
     ),
 );

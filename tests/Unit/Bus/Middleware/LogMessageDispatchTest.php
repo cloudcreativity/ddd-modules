@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Bus\Middleware;
 
-use CloudCreativity\Modules\Bus\Middleware\LogBusDispatch;
+use CloudCreativity\Modules\Bus\Middleware\LogMessageDispatch;
 use CloudCreativity\Modules\Toolkit\Loggable\ObjectContext;
 use CloudCreativity\Modules\Toolkit\Loggable\ResultContext;
 use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
@@ -67,7 +67,7 @@ class LogMessageDispatchTest extends TestCase
                 return true;
             });
 
-        $middleware = new LogBusDispatch($this->logger);
+        $middleware = new LogMessageDispatch($this->logger);
         $actual = $middleware($this->message, function (MessageInterface $received) use ($expected) {
             $this->assertSame($this->message, $received);
             return $expected;
@@ -97,7 +97,7 @@ class LogMessageDispatchTest extends TestCase
                 return true;
             });
 
-        $middleware = new LogBusDispatch($this->logger, LogLevel::NOTICE, LogLevel::WARNING);
+        $middleware = new LogMessageDispatch($this->logger, LogLevel::NOTICE, LogLevel::WARNING);
         $actual = $middleware($this->message, function (MessageInterface $received) use ($expected) {
             $this->assertSame($this->message, $received);
             return $expected;
@@ -124,7 +124,7 @@ class LogMessageDispatchTest extends TestCase
             ->method('log')
             ->with(LogLevel::DEBUG, "Bus dispatching {$name}.", ObjectContext::from($message)->context());
 
-        $middleware = new LogBusDispatch($this->logger);
+        $middleware = new LogMessageDispatch($this->logger);
 
         try {
             $middleware($message, static function () use ($expected) {

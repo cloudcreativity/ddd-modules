@@ -21,7 +21,7 @@ use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-final class LogBusDispatch implements BusMiddlewareInterface
+final class LogMessageDispatch implements BusMiddlewareInterface
 {
     /**
      * LogMessageDispatch constructor.
