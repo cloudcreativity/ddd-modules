@@ -32,7 +32,7 @@ final class ClosureQueue implements QueueInterface
     /**
      * ClosureEnqueuer constructor.
      *
-     * @param Closure(CommandInterface): void $fn
+     * @param Closure $fn
      */
     public function __construct(
         private readonly Closure $fn,
@@ -66,17 +66,14 @@ final class ClosureQueue implements QueueInterface
     /**
      * @inheritDoc
      */
-    public function push(CommandInterface|iterable $command): void
+    public function push(CommandInterface|QueueJobInterface $queueable): void
     {
-        $commands = ($command instanceof CommandInterface) ? [$command] : $command;
+        $enqueuer = $this->bindings[$queueable::class] ?? $this->fn;
 
-        $builder = PipelineBuilder::make($this->middleware)
-            ->through($this->pipes);
+        $pipeline = PipelineBuilder::make($this->middleware)
+            ->through($this->pipes)
+            ->build(new MiddlewareProcessor($enqueuer));
 
-        foreach ($commands as $cmd) {
-            $enqueuer = $this->bindings[$cmd::class] ?? $this->fn;
-            $pipeline = $builder->build(new MiddlewareProcessor($enqueuer));
-            $pipeline->process($cmd);
-        }
+        $pipeline->process($queueable);
     }
 }

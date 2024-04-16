@@ -12,8 +12,9 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue;
 
 use CloudCreativity\Modules\Infrastructure\Queue\ComponentQueue;
-use CloudCreativity\Modules\Infrastructure\Queue\EnqueuerContainerInterface;
-use CloudCreativity\Modules\Infrastructure\Queue\EnqueuerInterface;
+use CloudCreativity\Modules\Infrastructure\Queue\Enqueuers\EnqueuerContainerInterface;
+use CloudCreativity\Modules\Infrastructure\Queue\Enqueuers\EnqueuerInterface;
+use CloudCreativity\Modules\Infrastructure\Queue\QueueJobInterface;
 use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -73,29 +74,22 @@ class ComponentQueueTest extends TestCase
     /**
      * @return void
      */
-    public function testItQueuesCommands(): void
+    public function testItQueuesJob(): void
     {
-        $command1 = $this->createMock(CommandInterface::class);
-        $command2 = $this->createMock(CommandInterface::class);
-        $command3 = $this->createMock(CommandInterface::class);
-        $actual = [];
+        $job = $this->createMock(QueueJobInterface::class);
 
         $this->enqueuers
-            ->expects($this->exactly(3))
+            ->expects($this->once())
             ->method('get')
+            ->with($job::class)
             ->willReturn($enqueuer = $this->createMock(EnqueuerInterface::class));
 
         $enqueuer
-            ->expects($this->exactly(3))
+            ->expects($this->once())
             ->method('__invoke')
-            ->with($this->callback(function ($cmd) use (&$actual): bool {
-                $actual[] = $cmd;
-                return true;
-            }));
+            ->with($this->identicalTo($job));
 
-        $this->queue->push($expected = [$command1, $command2, $command3]);
-
-        $this->assertSame($expected, $actual);
+        $this->queue->push($job);
     }
 
     /**
@@ -104,7 +98,7 @@ class ComponentQueueTest extends TestCase
     public function testItQueuesThroughMiddleware(): void
     {
         $command1 = $this->createMock(CommandInterface::class);
-        $command2 = $this->createMock(CommandInterface::class);
+        $command2 = $this->createMock(QueueJobInterface::class);
         $command3 = $this->createMock(CommandInterface::class);
 
         $middleware1 = function ($actual, \Closure $next) use ($command1, $command2) {

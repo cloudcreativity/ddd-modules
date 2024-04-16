@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Infrastructure\Queue\Middleware;
 
 use Closure;
+use CloudCreativity\Modules\Infrastructure\Queue\QueueJobInterface;
 use CloudCreativity\Modules\Toolkit\Loggable\ObjectContext;
 use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 use CloudCreativity\Modules\Toolkit\ModuleBasename;
@@ -37,17 +38,17 @@ final class LogPushedToQueue implements QueueMiddlewareInterface
     /**
      * @inheritDoc
      */
-    public function __invoke(CommandInterface $command, Closure $next): void
+    public function __invoke(CommandInterface|QueueJobInterface $queueable, Closure $next): void
     {
-        $name = ModuleBasename::tryFrom($command)?->toString() ?? $command::class;
+        $name = ModuleBasename::tryFrom($queueable)?->toString() ?? $queueable::class;
 
         $this->log->log(
             $this->queueLevel,
             "Queuing command {$name}.",
-            $context = ObjectContext::from($command)->context(),
+            $context = ObjectContext::from($queueable)->context(),
         );
 
-        $next($command);
+        $next($queueable);
 
         $this->log->log($this->queuedLevel, "Queued command {$name}.", $context);
     }

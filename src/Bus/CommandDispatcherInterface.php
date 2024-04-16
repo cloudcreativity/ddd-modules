@@ -27,8 +27,8 @@ interface CommandDispatcherInterface
     /**
      * Queue a command or commands for asynchronous dispatching.
      *
-     * @param CommandInterface|iterable<CommandInterface> $command
+     * @param CommandInterface $command
      * @return void
      */
-    public function queue(CommandInterface|iterable $command): void;
+    public function queue(CommandInterface $command): void;
 }

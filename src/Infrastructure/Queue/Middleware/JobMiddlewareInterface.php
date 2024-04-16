@@ -13,16 +13,16 @@ namespace CloudCreativity\Modules\Infrastructure\Queue\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Infrastructure\Queue\QueueJobInterface;
-use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
+use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
-interface QueueMiddlewareInterface
+interface JobMiddlewareInterface
 {
     /**
-     * Handle the command being queued.
+     * Handle the queue job.
      *
-     * @param CommandInterface|QueueJobInterface $queueable
-     * @param Closure(CommandInterface|QueueJobInterface): void $next
-     * @return void
+     * @param QueueJobInterface $queueable
+     * @param Closure(QueueJobInterface): ResultInterface<mixed> $next
+     * @return ResultInterface<mixed>
      */
-    public function __invoke(CommandInterface|QueueJobInterface $queueable, Closure $next): void;
+    public function __invoke(QueueJobInterface $queueable, Closure $next): ResultInterface;
 }

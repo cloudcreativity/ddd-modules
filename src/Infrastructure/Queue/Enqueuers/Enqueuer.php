@@ -9,8 +9,9 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Infrastructure\Queue;
+namespace CloudCreativity\Modules\Infrastructure\Queue\Enqueuers;
 
+use CloudCreativity\Modules\Infrastructure\Queue\QueueJobInterface;
 use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 
 final class Enqueuer implements EnqueuerInterface
@@ -27,14 +28,14 @@ final class Enqueuer implements EnqueuerInterface
     /**
      * @inheritDoc
      */
-    public function __invoke(CommandInterface $command): void
+    public function __invoke(CommandInterface|QueueJobInterface $queueable): void
     {
         assert(method_exists($this->enqueuer, 'push'), sprintf(
             'Cannot queue "%s" - enqueuer "%s" does not have a push method.',
-            $command::class,
+            $queueable::class,
             $this->enqueuer::class,
         ));
 
-        $this->enqueuer->push($command);
+        $this->enqueuer->push($queueable);
     }
 }

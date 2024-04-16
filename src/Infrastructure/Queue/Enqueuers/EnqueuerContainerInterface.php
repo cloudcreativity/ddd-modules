@@ -9,19 +9,18 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue;
+namespace CloudCreativity\Modules\Infrastructure\Queue\Enqueuers;
 
 use CloudCreativity\Modules\Infrastructure\Queue\QueueJobInterface;
 use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 
-class TestEnqueuer
+interface EnqueuerContainerInterface
 {
     /**
-     * @param CommandInterface|QueueJobInterface $queueable
-     * @return void
+     * Get an enqueuer for the provided command.
+     *
+     * @param class-string<CommandInterface|QueueJobInterface> $queueable
+     * @return EnqueuerInterface
      */
-    public function push(CommandInterface|QueueJobInterface $queueable): void
-    {
-        // no-op
-    }
+    public function get(string $queueable): EnqueuerInterface;
 }

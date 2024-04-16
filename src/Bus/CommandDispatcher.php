@@ -81,7 +81,7 @@ class CommandDispatcher implements CommandDispatcherInterface
     /**
      * @inheritDoc
      */
-    public function queue(CommandInterface|iterable $command): void
+    public function queue(CommandInterface $command): void
     {
         if ($this->queue === null) {
             throw new RuntimeException(

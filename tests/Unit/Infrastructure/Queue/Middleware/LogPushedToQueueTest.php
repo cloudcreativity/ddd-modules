@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue\Middleware;
 
 use CloudCreativity\Modules\Infrastructure\Queue\Middleware\LogPushedToQueue;
+use CloudCreativity\Modules\Infrastructure\Queue\QueueJobInterface;
 use CloudCreativity\Modules\Toolkit\Loggable\ObjectContext;
 use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 use LogicException;
@@ -28,11 +29,6 @@ class LogPushedToQueueTest extends TestCase
     private LoggerInterface $logger;
 
     /**
-     * @var CommandInterface
-     */
-    private CommandInterface $message;
-
-    /**
      * @return void
      */
     protected function setUp(): void
@@ -40,10 +36,6 @@ class LogPushedToQueueTest extends TestCase
         parent::setUp();
 
         $this->logger = $this->createMock(LoggerInterface::class);
-        $this->message = new class () implements CommandInterface {
-            public string $foo = 'bar';
-            public string $baz = 'bat';
-        };
     }
 
     /**
@@ -51,7 +43,12 @@ class LogPushedToQueueTest extends TestCase
      */
     public function testWithDefaultLevels(): void
     {
-        $name = $this->message::class;
+        $command = new class () implements CommandInterface {
+            public string $foo = 'bar';
+            public string $baz = 'bat';
+        };
+
+        $name = $command::class;
         $logs = [];
 
         $this->logger
@@ -63,11 +60,14 @@ class LogPushedToQueueTest extends TestCase
             });
 
         $middleware = new LogPushedToQueue($this->logger);
-        $middleware($this->message, function (CommandInterface $received): void {
-            $this->assertSame($this->message, $received);
-        });
+        $middleware(
+            $command,
+            function (CommandInterface|QueueJobInterface $received) use ($command): void {
+                $this->assertSame($command, $received);
+            },
+        );
 
-        $context = ObjectContext::from($this->message)->context();
+        $context = ObjectContext::from($command)->context();
 
         $this->assertSame([
             [LogLevel::DEBUG, "Queuing command {$name}.", $context],
@@ -80,7 +80,12 @@ class LogPushedToQueueTest extends TestCase
      */
     public function testWithCustomLevels(): void
     {
-        $name = $this->message::class;
+        $job = new class () implements QueueJobInterface {
+            public string $foo = 'bar';
+            public string $baz = 'bat';
+        };
+
+        $name = $job::class;
         $logs = [];
 
         $this->logger
@@ -92,11 +97,11 @@ class LogPushedToQueueTest extends TestCase
             });
 
         $middleware = new LogPushedToQueue($this->logger, LogLevel::NOTICE, LogLevel::WARNING);
-        $middleware($this->message, function (CommandInterface $received): void {
-            $this->assertSame($this->message, $received);
+        $middleware($job, function (CommandInterface|QueueJobInterface $received) use ($job): void {
+            $this->assertSame($job, $received);
         });
 
-        $context = ObjectContext::from($this->message)->context();
+        $context = ObjectContext::from($job)->context();
 
         $this->assertSame([
             [LogLevel::NOTICE, "Queuing command {$name}.", $context],
@@ -109,18 +114,23 @@ class LogPushedToQueueTest extends TestCase
      */
     public function testItLogsAfterTheNextClosureIsInvoked(): void
     {
+        $command = new class () implements CommandInterface {
+            public string $foo = 'bar';
+            public string $baz = 'bat';
+        };
+
         $expected = new LogicException();
-        $name = $this->message::class;
+        $name = $command::class;
 
         $this->logger
             ->expects($this->once())
             ->method('log')
-            ->with(LogLevel::DEBUG, "Queuing command {$name}.", ObjectContext::from($this->message)->context());
+            ->with(LogLevel::DEBUG, "Queuing command {$name}.", ObjectContext::from($command)->context());
 
         $middleware = new LogPushedToQueue($this->logger);
 
         try {
-            $middleware($this->message, static function () use ($expected): never {
+            $middleware($command, static function () use ($expected): never {
                 throw $expected;
             });
             $this->fail('No exception thrown.');

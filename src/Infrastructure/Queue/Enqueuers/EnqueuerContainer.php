@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Infrastructure\Queue;
+namespace CloudCreativity\Modules\Infrastructure\Queue\Enqueuers;
 
 use Closure;
 
@@ -42,13 +42,13 @@ final class EnqueuerContainer implements EnqueuerContainerInterface
     /**
      * @inheritDoc
      */
-    public function get(string $command): EnqueuerInterface
+    public function get(string $queueable): EnqueuerInterface
     {
-        $factory = $this->bindings[$command] ?? $this->default;
+        $factory = $this->bindings[$queueable] ?? $this->default;
 
         $enqueuer = $factory();
 
-        assert(is_object($enqueuer), "Enqueuer binding for {$command} must return an object.");
+        assert(is_object($enqueuer), "Enqueuer binding for {$queueable} must return an object.");
 
         return new Enqueuer($enqueuer);
     }

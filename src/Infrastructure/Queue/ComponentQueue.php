@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\Queue;
 
+use CloudCreativity\Modules\Infrastructure\Queue\Enqueuers\EnqueuerContainerInterface;
 use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
@@ -49,17 +50,14 @@ class ComponentQueue implements QueueInterface
     /**
      * @inheritDoc
      */
-    public function push(CommandInterface|iterable $command): void
+    public function push(CommandInterface|QueueJobInterface $queueable): void
     {
-        $commands = ($command instanceof CommandInterface) ? [$command] : $command;
+        $enqueuer = $this->enqueuers->get($queueable::class);
 
-        $builder = PipelineBuilder::make($this->middleware)
-            ->through($this->pipes);
+        $pipeline = PipelineBuilder::make($this->middleware)
+            ->through($this->pipes)
+            ->build(MiddlewareProcessor::call($enqueuer));
 
-        foreach ($commands as $cmd) {
-            $enqueuer = $this->enqueuers->get($cmd::class);
-            $pipeline = $builder->build(MiddlewareProcessor::call($enqueuer));
-            $pipeline->process($cmd);
-        }
+        $pipeline->process($queueable);
     }
 }

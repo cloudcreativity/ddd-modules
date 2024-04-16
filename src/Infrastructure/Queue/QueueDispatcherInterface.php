@@ -11,15 +11,15 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\Queue;
 
-use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
+use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
-interface EnqueuerContainerInterface
+interface QueueDispatcherInterface
 {
     /**
-     * Get an enqueuer for the provided command.
+     * Dispatch the given queue job.
      *
-     * @param class-string<CommandInterface> $command
-     * @return EnqueuerInterface
+     * @param QueueJobInterface $queueable
+     * @return ResultInterface<mixed>
      */
-    public function get(string $command): EnqueuerInterface;
+    public function dispatch(QueueJobInterface $queueable): ResultInterface;
 }

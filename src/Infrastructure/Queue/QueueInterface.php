@@ -16,10 +16,10 @@ use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 interface QueueInterface
 {
     /**
-     * Push a command or commands onto the queue.
+     * Push a command or queue job onto thw queue.
      *
-     * @param CommandInterface|iterable<CommandInterface> $command
+     * @param CommandInterface|QueueJobInterface $queueable
      * @return void
      */
-    public function push(CommandInterface|iterable $command): void;
+    public function push(CommandInterface|QueueJobInterface $queueable): void;
 }

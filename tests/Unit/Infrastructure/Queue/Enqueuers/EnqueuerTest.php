@@ -9,9 +9,11 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue;
+namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue\Enqueuers;
 
-use CloudCreativity\Modules\Infrastructure\Queue\Enqueuer;
+use CloudCreativity\Modules\Infrastructure\Queue\Enqueuers\Enqueuer;
+use CloudCreativity\Modules\Infrastructure\Queue\QueueJobInterface;
+use CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue\TestEnqueuer;
 use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -20,7 +22,7 @@ class EnqueuerTest extends TestCase
     /**
      * @return void
      */
-    public function test(): void
+    public function testItPushesCommand(): void
     {
         $command = $this->createMock(CommandInterface::class);
         $innerEnqueuer = $this->createMock(TestEnqueuer::class);
@@ -32,5 +34,22 @@ class EnqueuerTest extends TestCase
 
         $enqueuer = new Enqueuer($innerEnqueuer);
         $enqueuer($command);
+    }
+
+    /**
+     * @return void
+     */
+    public function testItPushesJob(): void
+    {
+        $job = $this->createMock(QueueJobInterface::class);
+        $innerEnqueuer = $this->createMock(TestEnqueuer::class);
+
+        $innerEnqueuer
+            ->expects($this->once())
+            ->method('push')
+            ->with($this->identicalTo($job));
+
+        $enqueuer = new Enqueuer($innerEnqueuer);
+        $enqueuer($job);
     }
 }

@@ -175,25 +175,6 @@ class CommandDispatcherTest extends TestCase
     /**
      * @return void
      */
-    public function testItQueuesManyCommands(): void
-    {
-        $commands = [
-            new TestCommand(),
-            new TestCommand(),
-            new TestCommand(),
-        ];
-
-        $this->queue
-            ->expects($this->once())
-            ->method('push')
-            ->with($this->identicalTo($commands));
-
-        $this->dispatcher->queue($commands);
-    }
-
-    /**
-     * @return void
-     */
     private function willNotQueue(): void
     {
         $this->queue
