@@ -18,7 +18,7 @@ use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 interface QueueMiddlewareInterface
 {
     /**
-     * Handle the command being queued.
+     * Handle the command message or queue job being queued.
      *
      * @param CommandInterface|QueueJobInterface $queueable
      * @param Closure(CommandInterface|QueueJobInterface): void $next
