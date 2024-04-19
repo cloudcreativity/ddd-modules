@@ -259,5 +259,5 @@ if ($result->didFail()) {
 The exception message will be set to the first error message in the result, if there is one. Any code that catches
 this exception can access the result object using the `getResult()` method.
 
-When you call the `abort()` method on a result, the result object will throw a `FailedResultException` if it is a
-failure.
+When you call the `abort()` or `value()` methods on a result, the result object will throw a `FailedResultException` if
+it is not a successful result.
