@@ -63,7 +63,7 @@ interface CancelAttendeeTicketHandlerInterface
      * @param CancelAttendeeTicketCommand $command
      * @return ResultInterface<null>
      */
-    public function handle(CancelAttendeeTicketCommand $command): ResultInterface;
+    public function execute(CancelAttendeeTicketCommand $command): ResultInterface;
 }
 ```
 
@@ -86,7 +86,7 @@ final readonly class CancelAttendeeTicketHandler implements
     ) {
     }
 
-    public function handle(CancelAttendeeTicketCommand $command): Result
+    public function execute(CancelAttendeeTicketCommand $command): Result
     {
         $attendee = $this->attendees->findOrFail($command->attendeeId);
 

@@ -53,7 +53,7 @@ interface CancelAttendeeTicketHandlerInterface
      * @param GetAttendeeTicketsQuery $query
      * @return ResultInterface<AttendeeTicketsModel>
      */
-    public function handle(GetAttendeeTicketsQuery $query): ResultInterface;
+    public function execute(GetAttendeeTicketsQuery $query): ResultInterface;
 }
 ```
 
@@ -77,7 +77,7 @@ final readonly class GetAttendeeTicketsHandler implements
     ) {
     }
 
-    public function handle(GetAttendeeTicketsQuery $query): Result
+    public function execute(GetAttendeeTicketsQuery $query): Result
     {
         $model = $this->repository->find($query->attendeeId);
 
