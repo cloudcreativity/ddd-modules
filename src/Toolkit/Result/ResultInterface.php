@@ -29,6 +29,14 @@ interface ResultInterface
     public function didFail(): bool;
 
     /**
+     * Abort execution if the result failed.
+     *
+     * @return void
+     * @throws FailedResultException if the result is not a success.
+     */
+    public function abort(): void;
+
+    /**
      * Get the result value, if the result was successful.
      *
      * @return TValue

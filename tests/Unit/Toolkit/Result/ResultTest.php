@@ -14,6 +14,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Result;
 use CloudCreativity\Modules\Tests\Unit\Toolkit\Loggable\TestEnum;
 use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Result\Error;
+use CloudCreativity\Modules\Toolkit\Result\FailedResultException;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrorsInterface;
 use CloudCreativity\Modules\Toolkit\Result\Meta;
@@ -29,6 +30,7 @@ class ResultTest extends TestCase
     public function testOk(): void
     {
         $result = Result::ok();
+        $result->abort();
 
         $this->assertInstanceOf(ResultInterface::class, $result);
         $this->assertNull($result->value());
@@ -73,6 +75,21 @@ class ResultTest extends TestCase
         $this->assertSame('Something went wrong.', $result->error());
 
         return $result;
+    }
+
+    /**
+     * @param Result<mixed> $result
+     * @return void
+     * @depends testFailed
+     */
+    public function testAbort(Result $result): void
+    {
+        try {
+            $result->abort();
+            $this->fail('No exception thrown.');
+        } catch (FailedResultException $ex) {
+            $this->assertSame($result, $ex->getResult());
+        }
     }
 
     /**

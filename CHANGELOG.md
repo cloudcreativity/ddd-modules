@@ -12,6 +12,8 @@ All notable changes to this project will be documented in this file. This projec
   change only breaks your implementation if you have manually implemented the command dispatch interface.
 - The `FailedResultException` now implements the `ContextProviderInterface` to get log context from the exception's
   result object. In Laravel applications, this means the exception context will automatically be logged.
+- The `ResultInterface` has a new `abort()` method. This throws a `FailedResultException` if the result is not
+  successful.
 
 ### Changed
 
