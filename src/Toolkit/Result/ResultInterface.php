@@ -11,8 +11,6 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Result;
 
-use CloudCreativity\Modules\Toolkit\ContractException;
-
 /**
  * @template-covariant TValue
  */
@@ -40,7 +38,7 @@ interface ResultInterface
      * Get the result value, if the result was successful.
      *
      * @return TValue
-     * @throws ContractException if the result was not successful.
+     * @throws FailedResultException if the result was not successful.
      */
     public function value(): mixed;
 
