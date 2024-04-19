@@ -89,6 +89,16 @@ final class Result implements ResultInterface
     /**
      * @inheritDoc
      */
+    public function abort(): void
+    {
+        if ($this->didFail()) {
+            throw new FailedResultException($this);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function value(): mixed
     {
         Contracts::assert($this->success, 'Result did not succeed.');
