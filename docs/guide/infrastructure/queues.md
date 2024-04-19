@@ -424,7 +424,7 @@ interface RecalculateSalesAtEventHandlerInterface
      * @param RecalculateSalesAtEventJob $job
      * @return ResultInterface<null>
      */
-    public function handle(RecalculateSalesAtEventJob $job): ResultInterface;
+    public function execute(RecalculateSalesAtEventJob $job): ResultInterface;
 }
 ```
 
@@ -446,7 +446,7 @@ final readonly class RecalculateSalesAtEventHandler implements
     {
     }
 
-    public function handle(RecalculateSalesAtEventJob $job): Result
+    public function execute(RecalculateSalesAtEventJob $job): Result
     {
         $report = $this->repository->findOrCreate($job->eventId);
         
