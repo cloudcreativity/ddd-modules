@@ -38,6 +38,8 @@ All notable changes to this project will be documented in this file. This projec
 - **BREAKING** the `ResultContext` and `ObjectContext` helper classes have been moved to the `Toolkit\Loggable`
   namespace.
 - **BREAKING** The event bus's `IntegrationEventMiddlewareInterface` has been renamed to `EventBusMiddlewareInterface`.
+- **BREAKING** The `ResultInterface::value()` method now throws a `FailedResultException` if the result is not
+  successful. Previously it threw a `ContractException`.
 
 ### Removed
 

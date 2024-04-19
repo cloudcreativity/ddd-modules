@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Toolkit\Result;
 
 use BackedEnum;
-use CloudCreativity\Modules\Toolkit\Contracts;
 
 /**
  * @template TValue
@@ -91,7 +90,7 @@ final class Result implements ResultInterface
      */
     public function abort(): void
     {
-        if ($this->didFail()) {
+        if ($this->success === false) {
             throw new FailedResultException($this);
         }
     }
@@ -101,9 +100,11 @@ final class Result implements ResultInterface
      */
     public function value(): mixed
     {
-        Contracts::assert($this->success, 'Result did not succeed.');
+        if ($this->success === true) {
+            return $this->value;
+        }
 
-        return $this->value;
+        throw new FailedResultException($this);
     }
 
     /**

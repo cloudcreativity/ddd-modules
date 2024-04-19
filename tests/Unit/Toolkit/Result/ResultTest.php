@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Result;
 
 use CloudCreativity\Modules\Tests\Unit\Toolkit\Loggable\TestEnum;
-use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Result\Error;
 use CloudCreativity\Modules\Toolkit\Result\FailedResultException;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
@@ -116,10 +115,12 @@ class ResultTest extends TestCase
      */
     public function testItThrowsWhenGettingValueOnFailedResult(Result $result): void
     {
-        $this->expectException(ContractException::class);
-        $this->expectExceptionMessage('Result did not succeed.');
-
-        $result->value();
+        try {
+            $result->value();
+            $this->fail('No exception thrown.');
+        } catch (FailedResultException $ex) {
+            $this->assertSame($result, $ex->getResult());
+        }
     }
 
     /**
