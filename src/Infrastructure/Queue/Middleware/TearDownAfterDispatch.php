@@ -15,14 +15,26 @@ use Closure;
 use CloudCreativity\Modules\Infrastructure\Queue\QueueJobInterface;
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
-interface JobMiddlewareInterface
+final class TearDownAfterDispatch implements JobMiddlewareInterface
 {
     /**
-     * Handle the queue job.
+     * TearDownAfterDispatch constructor.
      *
-     * @param QueueJobInterface $job
-     * @param Closure(QueueJobInterface): ResultInterface<mixed> $next
-     * @return ResultInterface<mixed>
+     * @param Closure(): void $callback
      */
-    public function __invoke(QueueJobInterface $job, Closure $next): ResultInterface;
+    public function __construct(private readonly Closure $callback)
+    {
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function __invoke(QueueJobInterface $job, Closure $next): ResultInterface
+    {
+        try {
+            return $next($job);
+        } finally {
+            ($this->callback)();
+        }
+    }
 }

@@ -25,7 +25,7 @@ final class ClosureQueue implements QueueInterface
     private array $bindings = [];
 
     /**
-     * @var array<string|callable>
+     * @var list<string|callable>
      */
     private array $pipes = [];
 
@@ -55,7 +55,7 @@ final class ClosureQueue implements QueueInterface
     /**
      * Queue messages through the provided pipes.
      *
-     * @param array<string|callable> $pipes
+     * @param list<string|callable> $pipes
      * @return void
      */
     public function through(array $pipes): void

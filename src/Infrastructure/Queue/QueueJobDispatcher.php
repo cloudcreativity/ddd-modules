@@ -11,13 +11,12 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\Queue;
 
-use CloudCreativity\Modules\Infrastructure\Queue\Enqueuers\EnqueuerContainerInterface;
-use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
+use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
-class ComponentQueue implements QueueInterface
+class QueueJobDispatcher implements QueueJobDispatcherInterface
 {
     /**
      * @var list<string|callable>
@@ -25,39 +24,45 @@ class ComponentQueue implements QueueInterface
     private array $pipes = [];
 
     /**
-     * ComponentQueue constructor.
+     * QueueJobDispatcher constructor.
      *
-     * @param EnqueuerContainerInterface $enqueuers
+     * @param QueueJobHandlerContainerInterface $handlers
      * @param PipeContainerInterface|null $middleware
      */
     public function __construct(
-        private readonly EnqueuerContainerInterface $enqueuers,
+        private readonly QueueJobHandlerContainerInterface $handlers,
         private readonly ?PipeContainerInterface $middleware = null,
     ) {
     }
 
     /**
-     * Dispatch messages through the provided pipes.
+     * Dispatch queue jobs through the provided pipes.
      *
      * @param list<string|callable> $pipes
      * @return void
      */
     public function through(array $pipes): void
     {
-        $this->pipes = array_values($pipes);
+        assert(array_is_list($pipes), 'Expecting a list of pipes.');
+
+        $this->pipes = $pipes;
     }
 
     /**
      * @inheritDoc
      */
-    public function push(CommandInterface|QueueJobInterface $queueable): void
+    public function dispatch(QueueJobInterface $job): ResultInterface
     {
-        $enqueuer = $this->enqueuers->get($queueable::class);
+        $handler = $this->handlers->get($job::class);
 
         $pipeline = PipelineBuilder::make($this->middleware)
-            ->through($this->pipes)
-            ->build(MiddlewareProcessor::call($enqueuer));
+            ->through([...$this->pipes, ...$handler->middleware()])
+            ->build(MiddlewareProcessor::wrap($handler));
 
-        $pipeline->process($queueable);
+        $result = $pipeline->process($job);
+
+        assert($result instanceof ResultInterface, 'Expecting pipeline to return a result object.');
+
+        return $result;
     }
 }

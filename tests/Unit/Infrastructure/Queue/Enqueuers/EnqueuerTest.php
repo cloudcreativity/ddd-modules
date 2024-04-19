@@ -13,7 +13,6 @@ namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue\Enqueuers;
 
 use CloudCreativity\Modules\Infrastructure\Queue\Enqueuers\Enqueuer;
 use CloudCreativity\Modules\Infrastructure\Queue\QueueJobInterface;
-use CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue\TestEnqueuer;
 use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 use PHPUnit\Framework\TestCase;
 

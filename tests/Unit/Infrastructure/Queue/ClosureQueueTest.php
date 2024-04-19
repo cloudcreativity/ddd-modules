@@ -54,6 +54,15 @@ class ClosureQueueTest extends TestCase
     /**
      * @return void
      */
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        unset($this->queue, $this->middleware, $this->actual);
+    }
+
+    /**
+     * @return void
+     */
     public function testItQueuesCommand(): void
     {
         $command = $this->createMock(CommandInterface::class);

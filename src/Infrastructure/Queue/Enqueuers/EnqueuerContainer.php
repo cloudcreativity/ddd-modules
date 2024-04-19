@@ -16,7 +16,7 @@ use Closure;
 final class EnqueuerContainer implements EnqueuerContainerInterface
 {
     /**
-     * @var array<string,Closure>
+     * @var array<string, Closure>
      */
     private array $bindings = [];
 

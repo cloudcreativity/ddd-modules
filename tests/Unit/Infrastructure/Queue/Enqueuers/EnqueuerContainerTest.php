@@ -14,7 +14,6 @@ namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue\Enqueuers;
 use CloudCreativity\Modules\Infrastructure\Queue\Enqueuers\Enqueuer;
 use CloudCreativity\Modules\Infrastructure\Queue\Enqueuers\EnqueuerContainer;
 use CloudCreativity\Modules\Tests\Unit\Bus\TestCommand;
-use CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue\TestEnqueuer;
 use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 use PHPUnit\Framework\TestCase;
 

@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue;
+namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue\Enqueuers;
 
 use CloudCreativity\Modules\Infrastructure\Queue\QueueJobInterface;
 use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;

@@ -483,9 +483,9 @@ Extend the generic interface:
 ```php
 namespace App\Modules\EventManagement\BoundedContext\Infrastructure\Queue;
 
-use CloudCreativity\Modules\Infrastructure\Queue\QueueDispatcherInterface;
+use CloudCreativity\Modules\Infrastructure\Queue\QueueJobDispatcherInterface;
 
-interface EventManagementQueueBusInterface extends QueueDispatcherInterface
+interface EventManagementQueueBusInterface extends QueueJobDispatcherInterface
 {
 }
 ```
@@ -495,9 +495,9 @@ Then create the concrete implementation:
 ```php
 namespace App\Modules\EventManagement\BoundedContext\Infrastructure\Queue;
 
-use CloudCreativity\Modules\Infrastructure\Queue\QueueDispatcher;
+use CloudCreativity\Modules\Infrastructure\Queue\QueueJobDispatcher;
 
-final class EventManagementQueueBus extends QueueDispatcher implements 
+final class EventManagementQueueBus extends QueueJobDispatcher implements 
     EventManagementQueueBusInterface
 {
 }

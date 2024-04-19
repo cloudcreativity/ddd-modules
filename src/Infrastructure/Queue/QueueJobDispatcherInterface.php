@@ -13,13 +13,13 @@ namespace CloudCreativity\Modules\Infrastructure\Queue;
 
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
-interface QueueDispatcherInterface
+interface QueueJobDispatcherInterface
 {
     /**
      * Dispatch the given queue job.
      *
-     * @param QueueJobInterface $queueable
+     * @param QueueJobInterface $job
      * @return ResultInterface<mixed>
      */
-    public function dispatch(QueueJobInterface $queueable): ResultInterface;
+    public function dispatch(QueueJobInterface $job): ResultInterface;
 }
