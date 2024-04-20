@@ -11,15 +11,15 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\Queue;
 
-use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
+use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
-interface QueueInterface
+interface QueueJobHandlerInterface extends DispatchThroughMiddleware
 {
     /**
-     * Push a command or queue job onto the queue.
+     * Execute the queue job.
      *
-     * @param CommandInterface|QueueJobInterface $queueable
-     * @return void
+     * @param QueueJobInterface $job
+     * @return ResultInterface<mixed>
      */
-    public function push(CommandInterface|QueueJobInterface $queueable): void;
+    public function __invoke(QueueJobInterface $job): ResultInterface;
 }

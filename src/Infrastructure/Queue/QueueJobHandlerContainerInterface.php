@@ -11,15 +11,13 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\Queue;
 
-use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
-
-interface QueueInterface
+interface QueueJobHandlerContainerInterface
 {
     /**
-     * Push a command or queue job onto the queue.
+     * Get a queue job handler for the provided queue job.
      *
-     * @param CommandInterface|QueueJobInterface $queueable
-     * @return void
+     * @param string $jobClass
+     * @return QueueJobHandlerInterface
      */
-    public function push(CommandInterface|QueueJobInterface $queueable): void;
+    public function get(string $jobClass): QueueJobHandlerInterface;
 }

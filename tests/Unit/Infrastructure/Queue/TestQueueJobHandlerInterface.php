@@ -11,16 +11,13 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue;
 
-use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
+use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
-class TestEnqueuer
+interface TestQueueJobHandlerInterface
 {
     /**
-     * @param CommandInterface $command
-     * @return void
+     * @param TestQueueJob $job
+     * @return ResultInterface<null>
      */
-    public function push(CommandInterface $command): void
-    {
-        // no-op
-    }
+    public function execute(TestQueueJob $job): ResultInterface;
 }

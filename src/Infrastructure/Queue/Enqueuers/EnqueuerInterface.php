@@ -9,17 +9,18 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Infrastructure\Queue;
+namespace CloudCreativity\Modules\Infrastructure\Queue\Enqueuers;
 
+use CloudCreativity\Modules\Infrastructure\Queue\QueueJobInterface;
 use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 
 interface EnqueuerInterface
 {
     /**
-     * Put the command on the queue.
+     * Put the command or queue job on the queue.
      *
-     * @param CommandInterface $command
+     * @param CommandInterface|QueueJobInterface $queueable
      * @return void
      */
-    public function __invoke(CommandInterface $command): void;
+    public function __invoke(CommandInterface|QueueJobInterface $queueable): void;
 }

@@ -307,11 +307,15 @@ implementation detail_ of your domain.
 
 ### Queuing Commands
 
-Commands can also be queued by the outside world. To indicate that a command should be queued, the `queue()` method is
-used instead of the `dispatch()` method.
+The `dispatch()` method executes the bounded context's logic immediately via a command handler. Or in other words - 
+commands are dispatched synchronously. But what happens if the presentation and delivery layer does not need to wait 
+for the result of the command being dispatched, and instead wants the command to be handled in a non-blocking way?
 
-This allows the presentation and delivery layer to execute a command in a non-blocking way. For example, our controller
-implementation could be updated to return a `202 Accepted` response to indicate the command has been queued:
+In this scenario, the presentation and delivery layer can choose to queue the command for asynchronous processing. To 
+indicate that a command should be queued, the `queue()` method is used instead of the `dispatch()` method.
+
+This can be used to execute a command in a non-blocking way. For example, our controller implementation could be 
+updated to return a `202 Accepted` response to indicate the command has been queued:
 
 ```php
 namespace App\Http\Controllers\Api\Attendees;
@@ -349,11 +353,9 @@ class CancellationController extends Controller
 }
 ```
 
-:::warning
 To allow commands to be queued, you **must** provide a queue factory to the command bus when creating it. This topic is
 covered in the [Asynchronous Processing](../infrastructure/queues#external-queuing) chapter, with specific examples
 in the _External Queuing_ section.
-:::
 
 ## Middleware
 
