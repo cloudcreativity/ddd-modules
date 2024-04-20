@@ -46,8 +46,17 @@ export default defineConfig({
                     ],
                 },
                 {
+                    text: 'Application Layer',
+                    collapsed: false,
+                    items: [
+                        {text: 'Commands', link: '/guide/application/commands'},
+                        {text: 'Queries', link: '/guide/application/queries'},
+                        {text: 'Integration Events', link: '/guide/application/events'},
+                    ],
+                },
+                {
                     text: 'Infrastructure Layer',
-                    collapsed: true,
+                    collapsed: false,
                     items: [
                         {text: 'Asynchronous Processing', link: '/guide/infrastructure/queues'},
                         {text: 'Domain Event Dispatching', link: '/guide/infrastructure/domain-event-dispatchers'},
@@ -55,15 +64,6 @@ export default defineConfig({
                         {text: 'Outbox & Inbox', link: '/guide/infrastructure/outbox-inbox'},
                         {text: 'Persistence', link: '/guide/infrastructure/persistence'},
                         {text: 'Units of Work', link: '/guide/infrastructure/units-of-work'},
-                    ],
-                },
-                {
-                    text: 'Application Layer',
-                    collapsed: false,
-                    items: [
-                        {text: 'Commands', link: '/guide/application/commands'},
-                        {text: 'Queries', link: '/guide/application/queries'},
-                        {text: 'Integration Events', link: '/guide/application/events'},
                     ],
                 },
                 {
