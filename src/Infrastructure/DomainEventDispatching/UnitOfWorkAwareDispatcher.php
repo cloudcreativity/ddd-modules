@@ -13,7 +13,7 @@ namespace CloudCreativity\Modules\Infrastructure\DomainEventDispatching;
 
 use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
 use CloudCreativity\Modules\Domain\Events\OccursImmediately;
-use CloudCreativity\Modules\Infrastructure\Persistence\UnitOfWorkManagerInterface;
+use CloudCreativity\Modules\Infrastructure\UnitOfWork\UnitOfWorkManagerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 
 class UnitOfWorkAwareDispatcher extends Dispatcher implements DispatcherInterface

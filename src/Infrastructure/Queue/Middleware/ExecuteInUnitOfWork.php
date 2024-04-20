@@ -12,9 +12,9 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Infrastructure\Queue\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Infrastructure\Persistence\AbortOnFailureException;
-use CloudCreativity\Modules\Infrastructure\Persistence\UnitOfWorkManagerInterface;
 use CloudCreativity\Modules\Infrastructure\Queue\QueueJobInterface;
+use CloudCreativity\Modules\Infrastructure\UnitOfWork\AbortOnFailureException;
+use CloudCreativity\Modules\Infrastructure\UnitOfWork\UnitOfWorkManagerInterface;
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
 final class ExecuteInUnitOfWork implements JobMiddlewareInterface

@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue\Middleware;
 
-use CloudCreativity\Modules\Infrastructure\Persistence\UnitOfWorkManagerInterface;
 use CloudCreativity\Modules\Infrastructure\Queue\Middleware\ExecuteInUnitOfWork;
 use CloudCreativity\Modules\Infrastructure\Queue\QueueJobInterface;
+use CloudCreativity\Modules\Infrastructure\UnitOfWork\UnitOfWorkManagerInterface;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\TestCase;
 use Throwable;

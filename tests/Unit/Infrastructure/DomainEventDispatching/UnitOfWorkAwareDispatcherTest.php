@@ -17,7 +17,7 @@ use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\DispatchAfterC
 use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\DispatchBeforeCommit;
 use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\ListenerContainerInterface;
 use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\UnitOfWorkAwareDispatcher;
-use CloudCreativity\Modules\Infrastructure\Persistence\UnitOfWorkManagerInterface;
+use CloudCreativity\Modules\Infrastructure\UnitOfWork\UnitOfWorkManagerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;

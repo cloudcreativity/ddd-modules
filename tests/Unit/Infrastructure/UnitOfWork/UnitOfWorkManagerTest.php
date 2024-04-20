@@ -9,13 +9,13 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Persistence;
+namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\UnitOfWork;
 
 use Closure;
 use CloudCreativity\Modules\Infrastructure\InfrastructureException;
 use CloudCreativity\Modules\Infrastructure\Log\ExceptionReporterInterface;
-use CloudCreativity\Modules\Infrastructure\Persistence\UnitOfWorkInterface;
-use CloudCreativity\Modules\Infrastructure\Persistence\UnitOfWorkManager;
+use CloudCreativity\Modules\Infrastructure\UnitOfWork\UnitOfWorkInterface;
+use CloudCreativity\Modules\Infrastructure\UnitOfWork\UnitOfWorkManager;
 use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
