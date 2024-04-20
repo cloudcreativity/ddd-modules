@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Infrastructure\Persistence;
+namespace CloudCreativity\Modules\Infrastructure\UnitOfWork;
 
 use Closure;
 use CloudCreativity\Modules\Infrastructure\InfrastructureException;

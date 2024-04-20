@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Bus\Middleware;
 
 use CloudCreativity\Modules\Bus\Middleware\ExecuteInUnitOfWork;
-use CloudCreativity\Modules\Infrastructure\Persistence\UnitOfWorkManagerInterface;
+use CloudCreativity\Modules\Infrastructure\UnitOfWork\UnitOfWorkManagerInterface;
 use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\TestCase;

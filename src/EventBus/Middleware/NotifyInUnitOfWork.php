@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\EventBus\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Infrastructure\Persistence\UnitOfWorkManagerInterface;
+use CloudCreativity\Modules\Infrastructure\UnitOfWork\UnitOfWorkManagerInterface;
 use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 
 final class NotifyInUnitOfWork implements EventBusMiddlewareInterface

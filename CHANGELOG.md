@@ -40,6 +40,7 @@ All notable changes to this project will be documented in this file. This projec
 - **BREAKING** The event bus's `IntegrationEventMiddlewareInterface` has been renamed to `EventBusMiddlewareInterface`.
 - **BREAKING** The `ResultInterface::value()` method now throws a `FailedResultException` if the result is not
   successful. Previously it threw a `ContractException`.
+- **BREAKING** The `Infrastructure\Persistence` namespace has been renamed `Infrastructure\UnitOfWork`.
 
 ### Removed
 

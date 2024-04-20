@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\EventBus\Middleware;
 
 use CloudCreativity\Modules\EventBus\Middleware\NotifyInUnitOfWork;
-use CloudCreativity\Modules\Infrastructure\Persistence\UnitOfWorkManagerInterface;
+use CloudCreativity\Modules\Infrastructure\UnitOfWork\UnitOfWorkManagerInterface;
 use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 use PHPUnit\Framework\TestCase;
 use Throwable;
