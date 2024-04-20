@@ -509,12 +509,16 @@ context is likely to be unique for the scenario the event represents.
 
 Typically a bounded context subscribes to an event from another bounded context because it needs to mutate its state
 as a result of that event occurring. There are several strategies for handling inbound integration events. Choose the
-one that is best for your particular use-case. Two suggested strategies are:
+one that is best for your particular use-case. The suggested strategies are:
 
-- **Dispatching command messages** - the inbound event triggers a command that is dispatched,
-  either synchronously to the command bus or asynchronously via the queue. One of the advantages of this approach is
-  that it allows you to reuse the command for other delivery mechanisms. For example, if you wanted to trigger the same
-  state mutation via a console command or HTTP controller.
+- **Dispatching or queuing command messages** - the inbound event triggers a command that is dispatched via the command
+  bus, either synchronously or asynchronously. One of the advantages of this approach is that it allows you to reuse
+  the command for other delivery mechanisms. For example, if you wanted to trigger the same state mutation via a console
+  command or HTTP controller.
+- **Queuing internal work** - the inbound event results in a job being pushed onto a queue for asynchronous processing.
+  This is useful where the work is _internal_ to the bounded context, and does not need to be exposed in your
+  application layer as a command message. See the [asynchronous processing chapter](../infrastructure/queues) for the
+  distinction between internal and external processing.
 - **Dispatching domain events** - the inbound event is mapped to a domain event that has _meaning_ within the receiving
   bounded context. This allows multiple side-effects to be triggered by the domain event. This strategy is
   advantageous if you dispatch the same domain event in other places within your domain code, e.g. from an
