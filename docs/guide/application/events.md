@@ -83,6 +83,23 @@ final readonly class AttendeeTicketWasCancelled implements IntegrationEventInter
 }
 ```
 
+### Versioning
+
+As your integration events are consumed by other bounded contexts, you cannot make breaking changes to the data contract
+without updating every single consumer to use the new contract.
+
+In large systems, this can be a significant challenge. To mitigate this, you can version your integration events. This
+allows you to introduce breaking changes to the data contract, while still supporting older versions of the event. For
+example, our integration events could be in `IntegrationEvents\V1` and `IntegrationEvents\V2` namespaces.
+
+This allows you to introduce a new version of the event, while retaining the event name. Retaining the event name is
+important because it is an expression of your domain, using the ubiquitous language of your bounded context. If you do
+not version your integration events, you'll be forced to rename the event just to introduce a new data contract. Whereas
+the priority should be to keep the language of the domain.
+
+This means that when you introduce a new version of the event, the originating bounded context can publish multiple
+versions of the event. Over time you can migrate all consumers to the new version, and then remove the old version.
+
 ## Event Bus
 
 The event bus is the mechanism by which integration events are published and received. It is a _message broker_ that
