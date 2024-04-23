@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue\Middleware;
 
 use CloudCreativity\Modules\Infrastructure\Queue\Middleware\LogPushedToQueue;
-use CloudCreativity\Modules\Infrastructure\Queue\QueueJobInterface;
 use CloudCreativity\Modules\Toolkit\Loggable\ObjectContext;
 use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 use LogicException;
@@ -71,7 +70,7 @@ class LogPushedToQueueTest extends TestCase
         $middleware = new LogPushedToQueue($this->logger);
         $middleware(
             $command,
-            function (CommandInterface|QueueJobInterface $received) use ($command): void {
+            function (CommandInterface $received) use ($command): void {
                 $this->assertSame($command, $received);
             },
         );
@@ -89,12 +88,12 @@ class LogPushedToQueueTest extends TestCase
      */
     public function testWithCustomLevels(): void
     {
-        $job = new class () implements QueueJobInterface {
+        $command = new class () implements CommandInterface {
             public string $foo = 'bar';
             public string $baz = 'bat';
         };
 
-        $name = $job::class;
+        $name = $command::class;
         $logs = [];
 
         $this->logger
@@ -106,11 +105,11 @@ class LogPushedToQueueTest extends TestCase
             });
 
         $middleware = new LogPushedToQueue($this->logger, LogLevel::NOTICE, LogLevel::WARNING);
-        $middleware($job, function (CommandInterface|QueueJobInterface $received) use ($job): void {
-            $this->assertSame($job, $received);
+        $middleware($command, function (CommandInterface $received) use ($command): void {
+            $this->assertSame($command, $received);
         });
 
-        $context = ObjectContext::from($job)->context();
+        $context = ObjectContext::from($command)->context();
 
         $this->assertSame([
             [LogLevel::NOTICE, "Queuing command {$name}.", $context],

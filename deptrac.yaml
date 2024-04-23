@@ -12,26 +12,28 @@ deptrac:
       collectors:
         - type: className
           value: CloudCreativity\\Modules\\Domain\\*
+    - name: Application
+      collectors:
+        - type: className
+          value: CloudCreativity\\Modules\\Application\\*
     - name: Infrastructure
       collectors:
         - type: className
           value: CloudCreativity\\Modules\\Infrastructure\\*
-        - type: className
-          value: Psr\\Log\\*
-    - name: Application
+    - name: PSR Log
       collectors:
         - type: className
-          value: CloudCreativity\\Modules\\Bus\\*
-        - type: className
-          value: CloudCreativity\\Modules\\EventBus\\*
+          value: Psr\\Log\\*
   ruleset:
     Toolkit:
     Domain:
       - Toolkit
-    Infrastructure:
-      - Toolkit
-      - Domain
     Application:
       - Toolkit
       - Domain
-      - Infrastructure
+      - PSR Log
+    Infrastructure:
+      - Toolkit
+      - Domain
+      - Application
+      - PSR Log

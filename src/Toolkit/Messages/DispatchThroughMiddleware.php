@@ -16,7 +16,7 @@ interface DispatchThroughMiddleware
     /**
      * Get the middleware to dispatch the message through.
      *
-     * @return array<callable|string>
+     * @return list<callable|string>
      */
     public function middleware(): array;
 }

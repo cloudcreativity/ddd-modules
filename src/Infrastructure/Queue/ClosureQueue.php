@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Infrastructure\Queue;
 
 use Closure;
+use CloudCreativity\Modules\Application\Ports\Driven\Queue\QueueInterface;
 use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
@@ -30,7 +31,7 @@ final class ClosureQueue implements QueueInterface
     private array $pipes = [];
 
     /**
-     * ClosureEnqueuer constructor.
+     * ClosureQueue constructor.
      *
      * @param Closure $fn
      */
@@ -41,7 +42,7 @@ final class ClosureQueue implements QueueInterface
     }
 
     /**
-     * Register an enqueuer for the specified command.
+     * Bind an enqueuer for the specified command.
      *
      * @param class-string<CommandInterface> $command
      * @param Closure $fn
@@ -53,7 +54,7 @@ final class ClosureQueue implements QueueInterface
     }
 
     /**
-     * Queue messages through the provided pipes.
+     * Queue commands through the provided pipes.
      *
      * @param list<string|callable> $pipes
      * @return void
@@ -66,14 +67,14 @@ final class ClosureQueue implements QueueInterface
     /**
      * @inheritDoc
      */
-    public function push(CommandInterface|QueueJobInterface $queueable): void
+    public function push(CommandInterface $command): void
     {
-        $enqueuer = $this->bindings[$queueable::class] ?? $this->fn;
+        $enqueuer = $this->bindings[$command::class] ?? $this->fn;
 
         $pipeline = PipelineBuilder::make($this->middleware)
             ->through($this->pipes)
             ->build(new MiddlewareProcessor($enqueuer));
 
-        $pipeline->process($queueable);
+        $pipeline->process($command);
     }
 }

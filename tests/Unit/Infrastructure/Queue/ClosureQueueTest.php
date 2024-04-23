@@ -12,8 +12,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue;
 
 use CloudCreativity\Modules\Infrastructure\Queue\ClosureQueue;
-use CloudCreativity\Modules\Infrastructure\Queue\QueueJobInterface;
-use CloudCreativity\Modules\Tests\Unit\Bus\TestCommand;
+use CloudCreativity\Modules\Tests\Unit\Application\Bus\TestCommand;
 use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -27,7 +26,7 @@ class ClosureQueueTest extends TestCase
     private PipeContainerInterface&MockObject $middleware;
 
     /**
-     * @var array<CommandInterface|QueueJobInterface>
+     * @var array<CommandInterface>
      */
     private array $actual = [];
 
@@ -44,8 +43,8 @@ class ClosureQueueTest extends TestCase
         parent::setUp();
 
         $this->queue = new ClosureQueue(
-            function (CommandInterface|QueueJobInterface $queuable): void {
-                $this->actual[] = $queuable;
+            function (CommandInterface $command): void {
+                $this->actual[] = $command;
             },
             $this->middleware = $this->createMock(PipeContainerInterface::class),
         );
@@ -63,7 +62,7 @@ class ClosureQueueTest extends TestCase
     /**
      * @return void
      */
-    public function testItQueuesCommand(): void
+    public function test(): void
     {
         $command = $this->createMock(CommandInterface::class);
 
@@ -75,24 +74,12 @@ class ClosureQueueTest extends TestCase
     /**
      * @return void
      */
-    public function testItQueuesJob(): void
-    {
-        $job = $this->createMock(QueueJobInterface::class);
-
-        $this->queue->push($job);
-
-        $this->assertSame([$job], $this->actual);
-    }
-
-    /**
-     * @return void
-     */
     public function testWithMiddleware(): void
     {
         $command1 = $this->createMock(CommandInterface::class);
-        $command2 = $this->createMock(QueueJobInterface::class);
+        $command2 = $this->createMock(CommandInterface::class);
         $command3 = $this->createMock(CommandInterface::class);
-        $command4 = $this->createMock(QueueJobInterface::class);
+        $command4 = $this->createMock(CommandInterface::class);
 
         $middleware1 = function ($command, \Closure $next) use ($command1, $command2) {
             $this->assertSame($command1, $command);

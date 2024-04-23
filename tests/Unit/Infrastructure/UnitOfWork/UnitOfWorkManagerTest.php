@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\UnitOfWork;
 
 use Closure;
+use CloudCreativity\Modules\Application\Ports\Driven\Log\ExceptionReporterInterface;
 use CloudCreativity\Modules\Infrastructure\InfrastructureException;
-use CloudCreativity\Modules\Infrastructure\Log\ExceptionReporterInterface;
 use CloudCreativity\Modules\Infrastructure\UnitOfWork\UnitOfWorkInterface;
 use CloudCreativity\Modules\Infrastructure\UnitOfWork\UnitOfWorkManager;
 use LogicException;

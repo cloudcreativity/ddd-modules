@@ -12,8 +12,9 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Infrastructure\UnitOfWork;
 
 use Closure;
+use CloudCreativity\Modules\Application\Ports\Driven\Log\ExceptionReporterInterface;
+use CloudCreativity\Modules\Application\Ports\Driven\UnitOfWork\UnitOfWorkManagerInterface;
 use CloudCreativity\Modules\Infrastructure\InfrastructureException;
-use CloudCreativity\Modules\Infrastructure\Log\ExceptionReporterInterface;
 use Throwable;
 
 final class UnitOfWorkManager implements UnitOfWorkManagerInterface
