@@ -23,6 +23,15 @@ final class PublisherHandlerContainer implements PublisherHandlerContainerInterf
     private array $bindings = [];
 
     /**
+     * PublisherHandlerContainer constructor.
+     *
+     * @param Closure|null $default
+     */
+    public function __construct(private readonly ?Closure $default = null)
+    {
+    }
+
+    /**
      * Bind a handler factory into the container.
      *
      * @param class-string<IntegrationEventInterface> $eventName
@@ -39,7 +48,7 @@ final class PublisherHandlerContainer implements PublisherHandlerContainerInterf
      */
     public function get(string $eventName): PublisherHandlerInterface
     {
-        $factory = $this->bindings[$eventName] ?? null;
+        $factory = $this->bindings[$eventName] ?? $this->default;
 
         if ($factory) {
             $handler = $factory();

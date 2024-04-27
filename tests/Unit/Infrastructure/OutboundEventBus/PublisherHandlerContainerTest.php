@@ -21,7 +21,7 @@ class PublisherHandlerContainerTest extends TestCase
     /**
      * @return void
      */
-    public function test(): void
+    public function testItDoesNotHaveDefaultHandler(): void
     {
         $a = new TestPublisher();
         $b = $this->createMock(TestPublisher::class);
@@ -41,5 +41,25 @@ class PublisherHandlerContainerTest extends TestCase
         $this->expectExceptionMessage('No handler bound for integration event: ' . $event3::class);
 
         $container->get($event3::class);
+    }
+
+    /**
+     * @return void
+     */
+    public function testItHasDefaultHandler(): void
+    {
+        $a = new TestPublisher();
+        $b = $this->createMock(TestPublisher::class);
+
+        $event1 = new class () extends TestOutboundEvent {};
+        $event2 = new class () extends TestOutboundEvent {};
+        $event3 = new class () extends TestOutboundEvent {};
+
+        $container = new PublisherHandlerContainer(default: fn () => $b);
+        $container->bind($event1::class, fn () => $a);
+
+        $this->assertEquals(new PublisherHandler($a), $container->get($event1::class));
+        $this->assertEquals($default = new PublisherHandler($b), $container->get($event2::class));
+        $this->assertEquals($default, $container->get($event3::class));
     }
 }
