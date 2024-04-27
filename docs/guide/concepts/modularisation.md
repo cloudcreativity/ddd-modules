@@ -88,15 +88,15 @@ The structure here is identical to the bounded context namespace in the modular 
 
 ```
 - Modules
-     - <ModuleName>
-         - Application
-         - Domain
-         - Infrastructure
-     - <ModuleName>
-         - Application
-         - Domain
-         - Infrastructure
-     - <etc>
+    - <ModuleName>
+        - Application
+        - Domain
+        - Infrastructure
+    - <ModuleName>
+        - Application
+        - Domain
+        - Infrastructure
+    - <etc>
 ```
 
 So where have shared and consumer gone?
@@ -135,35 +135,41 @@ The application namespace can be structured as follows:
 
 ```
 - Application
-     - Ports
-          - Driving
-               - Commands
-               - Queries
-               - InboundEvents
-          - Driven
-               - OutboundEvents
-               - Queue
-               - Persistence
-               - ...
-       - UseCases
-               - Commands
-               - Queries
-               - InboundEvents
-       - Internal
-               - Commands
-               - DomainEvents
-                    - Listeners
-               - ...
+    - Ports
+        - Driving
+            - CommandBus
+            - QueryBus
+            - InboundEventBus
+        - Driven
+            - OutboundEvents
+            - Queue
+            - Persistence
+            - ...
+    - Adapters
+        - CommandBus
+        - QueryBus
+        - InboundEventBus
+    - UseCases
+        - Commands
+        - Queries
+        - InboundEvents
+    - Internal
+        - Commands
+        - DomainEvents
+            - Listeners
+        - ...
 ```
 
 The namespaces shown here are as follows:
 
-- **Ports** - contains the interfaces for the driving and driven ports of the application layer. The driving ports are
+- **Ports** - the driving and driven ports of the application layer expressed as interfaces. The driving ports are
   the interfaces that the application layer uses to interact with the outside world. The driven ports are the interfaces
   that the application layer expects to be implemented by the infrastructure layer.
-- **Use Cases** - contains the use cases that implement the business logic of the application layer. These use cases
-  are the adapters for the driving ports, expressed as our three message type - commands, queries and inbound
-  integration events.
+- **Adapters** - contains the implementations of the driving ports. The concrete implementations are the command bus,
+  query bus, and inbound event bus. Each bus ensures a message is dispatched to the correct handler.
+- **Use Cases** - the implementation of the business logic of the application layer. Use cases are expressed as the
+  command and query messages that can enter the application, and the handlers that implement what happens when a
+  command, query or inbound integration event is dispatched.
 - **Internal** - contains any internal concerns of the application layer, that are not exposed as ports. For example,
   domain event listeners, internal commands for asynchronous processing, etc.
 

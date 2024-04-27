@@ -76,18 +76,18 @@ This means your bounded context's interface could be expressed as follows:
 namespace App\Modules\EventManagement\Application\Ports\Driving;
 
 use App\Modules\EventManagement\Application\Ports\Driving\{
-    Commands\EventManagementCommandBusInterface,
-    InboundEvents\EventManagementEventBusInterface,
-    Queries\EventManagementQueryBusInterface,
+    CommandBus\CommandBusInterface,
+    InboundEventBus\EventBusInterface,
+    QueryBus\QueryBusInterface,
 };
 
 interface EventManagementApplicationInterface
 {
-    public function getCommandBus(): EventManagementCommandBusInterface;
+    public function getCommandBus(): CommandBusInterface;
 
-    public function getQueryBus(): EventManagementQueryBusInterface;
+    public function getQueryBus(): QueryBusInterface;
 
-    public function getEventBus(): EventManagementEventBusInterface;
+    public function getEventBus(): EventBusInterface;
 }
 ```
 
