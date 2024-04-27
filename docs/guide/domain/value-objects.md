@@ -76,8 +76,8 @@ PHP 8 introduced enumerations, or _enums_ for short. These are perfect for domai
 [PHP docs describe](https://www.php.net/manual/en/language.enumerations.overview.php):
 
 > Enumerations, or "Enums" allow a developer to define a custom type that is limited to one of a discrete number of
-possible values. That can be especially helpful when defining a domain model, as it enables "making invalid states
-unrepresentable."
+> possible values. That can be especially helpful when defining a domain model, as it enables "making invalid states
+> unrepresentable."
 
 Make good use of these. For example, if we needed to define the attendance status of an attendee:
 
@@ -255,6 +255,7 @@ public function __construct(DateTimeInterface $createdAt)
     $this->createdAt = DateTimeImmutable::createFromInterface($createdAt);
 }
 ```
+
 :::
 
 ### Generic Collections
@@ -330,20 +331,21 @@ Or like this?
 }
 ```
 
-Only the _presentation_ layer knows - as JSON is a data delivery mechanism. As we know, the domain layer is the
-inner-most layer, that should have no knowledge of the outer layers - including the presentation layer. The same
-applies for serializing to strings - this is a concern of the presentation layer.
+Only the _presentation_ layer knows if the JSON is being used as a data delivery mechanism. Or the _infrastructure_
+layer, if the JSON is being used as a storage or communication format. As we know, the domain layer is the inner-most
+layer and should have no knowledge of the other layers.
+
+The same applies for serializing to strings - this is a concern of the presentation or infrastructure layers.
 
 The only exception to this would be _scalar_ value objects - for example our `EmailAddress` value object. In this case,
 it is reasonable to implement `JsonSerializable` as the only possible representation of the value in JSON is
-its underlying scalar value - in this case, a string.
+its underlying scalar value - in this case, a string. It would also be reasonable to implement `Stringable` for the same
+reason.
 
 :::info
 The logic for this exception to the rule matches how PHP handles `BackedEnum`s - which in JSON are serialized to their
 backing scalar value (either a string or integer).
 :::
-
-Where the scalar value object is also a string, it is also reasonable to implement `Stringable`.
 
 So our `EmailAddress` class could look like this:
 

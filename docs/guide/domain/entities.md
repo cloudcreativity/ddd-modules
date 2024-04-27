@@ -4,7 +4,7 @@ The business logic in your domain layer will be defined in terms of the followin
 
 - **Entity** - an object that has an identity and has state that can change in-line with business logic.
 - **Aggregate Roots** - an entity that is the root of an aggregate. An aggregate is a group of entities that are treated
-  as a single unit for the purpose of state changes in-line with business logic.
+  as a single unit for the purpose of state changes in line with business logic.
 - **Value Object** - an object that has no identity and is immutable. It is used to describe a characteristic (or
   characteristics) of an entity, and to define data types specific to the domain that are not represented by primitives.
   (The [next chapter](./value-objects) covers these in detail.)
@@ -17,7 +17,7 @@ However, it is intentionally light-weight, because each domain should be modelle
 To define an entity, implement the `EntityInterface`. For example:
 
 ```php
-namespace App\Modules\EventManagement\BoundedContext\Domain;
+namespace App\Modules\EventManagement\Domain;
 
 use CloudCreativity\Modules\Domain\EntityInterface;
 use CloudCreativity\Modules\Domain\EntityTrait;
@@ -76,10 +76,9 @@ This trait provides a method for setting the identifier - `setId()`.
 To define an aggregate root, use the `AggregateInterface`:
 
 ```php
-namespace App\Modules\EventManagement\BoundedContext\Domain;
+namespace App\Modules\EventManagement\Domain;
 
-use App\Modules\EventManagement\BoundedContext\Domain\ListOfTickets;
-use App\Modules\EventManagement\BoundedContext\Domain\ValueObjects\Customer;
+use App\Modules\EventManagement\Domain\ValueObjects\Customer;
 use CloudCreativity\Modules\Domain\AggregateInterface;
 use CloudCreativity\Modules\Domain\EntityTrait;
 use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
@@ -213,13 +212,15 @@ The reason is that when you implement serialization logic on an aggregate or ent
 _why_ the object is being serialized, and _how_ it should be serialized.
 
 For example, if you had both a v1 and v2 version of your API, which is the entity being serialized for? If you have
-a separate "backend-for-frontend", is the entity being serialized for that?
+a separate "backend-for-frontend", is the entity being serialized for that? Or is it being serialized for storage by
+your infrastructure's persistence layer?
 
-The answer is that only the _presentation_ layer knows - as JSON is a data delivery mechanism. As we know, the domain
-layer is the inner-most layer, that should have no knowledge of the outer layers - including the presentation layer.
+The answer is that only the _presentation_ or _infrastructure_ layer knows - as JSON can be either a data delivery
+mechanism or a storage format. As we know, the domain layer is the inner-most layer, that should have no knowledge of
+other layers.
 
 Therefore, an aggregate or entity can never be serialized by the domain layer. We must leave that to the concern of
-the presentation layer.
+the presentation or infrastructure layer.
 
 :::info
 Another reason why an aggregate or entity can never implement serialization logic is that they are your domain's

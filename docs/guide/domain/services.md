@@ -25,10 +25,10 @@ Here, the domain service can be injected into the handler via constructor depend
 look something like this:
 
 ```php
-namespace App\Modules\BankAccounts\BoundedContext\Application\Commands\TransferFunds;
+namespace App\Modules\BankAccounts\Application\UseCases\Commands\TransferFunds;
 
-use App\Modules\BankAccounts\BoundedContext\Domain\Services\TransferFundsServiceInterface;
-use App\Modules\BankAccounts\BoundedContext\Infrastructure\Persistence\BankAccountRepositoryInterface;
+use App\Modules\BankAccounts\Application\Ports\Driven\Persistence\BankAccountRepositoryInterface;
+use App\Modules\BankAccounts\Domain\Services\TransferFundsServiceInterface;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 
 final readonly class TransferFundsHandler implements TransferFundsHandlerInterface
@@ -80,11 +80,11 @@ a customer can transfer funds between two accounts. It would make sense for this
 In this case, we can again use constructor dependency injection, with our query handler looking something like this:
 
 ```php
-namespace App\Modules\BankAccounts\BoundedContext\Application\Queries\CanTransferFunds;
+namespace App\Modules\BankAccounts\Application\UseCases\Queries\CanTransferFunds;
 
-use App\Modules\BankAccounts\BoundedContext\Domain\Services\TransferFundsServiceInterface;
-use App\Modules\BankAccounts\BoundedContext\Infrastructure\Persistence\BankAccountRepositoryInterface;
-use App\Modules\BankAccounts\Shared\ReadModels\CannotTransferFundsModel;
+use App\Modules\BankAccounts\Application\Ports\Driven\Persistence\BankAccountRepositoryInterface;
+use App\Modules\BankAccounts\Domain\Services\TransferFundsServiceInterface;
+use VendorName\BankAccounts\Shared\ReadModels\V1\CannotTransferFundsModel;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 
 final readonly class CanTransferFundsHandler implements CanTransferFundsHandlerInterface
@@ -99,7 +99,7 @@ final readonly class CanTransferFundsHandler implements CanTransferFundsHandlerI
      * Execute the query.
      *
      * @param CanTransferFundsQuery $query
-     * @return Result<array<CannotTransferFundsModel>>
+     * @return Result<list<CannotTransferFundsModel>>
      */
     public function execute(TransferFundsCommand $command): Result
     {

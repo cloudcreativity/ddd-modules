@@ -52,6 +52,8 @@ export default defineConfig({
                         {text: 'Commands', link: '/guide/application/commands'},
                         {text: 'Queries', link: '/guide/application/queries'},
                         {text: 'Integration Events', link: '/guide/application/events'},
+                        {text: 'Domain Event Dispatching', link: '/guide/application/domain-event-dispatchers'},
+                        {text: 'Asynchronous Processing', link: '/guide/application/asynchronous-processing'},
                     ],
                 },
                 {
@@ -59,7 +61,6 @@ export default defineConfig({
                     collapsed: false,
                     items: [
                         {text: 'Asynchronous Processing', link: '/guide/infrastructure/queues'},
-                        {text: 'Domain Event Dispatching', link: '/guide/infrastructure/domain-event-dispatchers'},
                         {text: 'Exception Reporting', link: '/guide/infrastructure/exception-reporting'},
                         {text: 'Outbox & Inbox', link: '/guide/infrastructure/outbox-inbox'},
                         {text: 'Persistence', link: '/guide/infrastructure/persistence'},

@@ -141,13 +141,19 @@ The application namespace can be structured as follows:
                - Queries
                - InboundEvents
           - Driven
+               - OutboundEvents
+               - Queue
+               - Persistence
                - ...
        - UseCases
-            - Commands
-            - Queries
-            - InboundEvents
+               - Commands
+               - Queries
+               - InboundEvents
        - Internal
-            - ...
+               - Commands
+               - DomainEvents
+                    - Listeners
+               - ...
 ```
 
 The namespaces shown here are as follows:

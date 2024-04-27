@@ -10,26 +10,29 @@ parts of your bounded context. Example usages (described by this chapter) are:
 1. Notifying changes to other entities or aggregate roots that are outside the scope of the aggregate root that raised
    the event.
 2. Queuing work for asynchronous processing.
-3. Publishing integration events to other bounded contexts.
+3. Publishing integration events for consumption by other bounded contexts.
 
 ## Domain vs Integration Events
 
 The design philosophy of this package is to implement highly-encapsulated bounded contexts. This encapsulation also
 applies to domain events.
 
-In DDD Modules, when an aggregate or entity dispatches a domain event, the domain event is only subscribed to by other
-parts of the same bounded context (aka module). **Domain events are never published outside the module, i.e. cannot
-be subscribed to by the outside world.**
+In DDD Modules, when an aggregate or entity dispatches a domain event, the domain event is only subscribed to by
+listeners in your application layer. These listeners then coordinate side-effects via driven ports (e.g. queues, event
+buses, etc).
+
+**Domain events never leave your application layer, and therefore cannot be subscribed to by the outside world.**
 
 Instead, integration events are used to communicate between bounded contexts.
 **Integration events are a different type of event, published to the outside world.**
 
 This approach establishes a clear _separation of concerns_. A domain event describes the data contract for
-communication _within_ the bounded context, and an integration event describes the data contract for communication
-_outside_ the bounded context. Each has a _single responsibility_.
+communication _within_ the bounded context - between the domain and the application layers. An integration event
+describes the data contract for communication _outside_ the bounded context. Each has a _single responsibility_.
 
 In fact, a domain event may not even have an equivalent integration event - for instance, if it is an event that does
-not need to be communicated outside the bounded context.
+not need to be communicated outside the bounded context. Or you may have multiple integration events that are triggered
+by a single domain event.
 
 ## Defining Events
 
@@ -37,12 +40,9 @@ Your domain events are simple classes that define the data contract for the even
 contain only data that is relevant to the event. They must not contain any business logic.
 
 ```php
-namespace App\Modules\EventManagement\BoundedContext\Domain\Events;
+namespace App\Modules\EventManagement\Domain\Events;
 
-use App\Modules\EventManagement\BoundedContext\Domain\{
-    Enums\CancellationReasonEnum,
-    Events\AttendeeTicketWasCancelled,
-};
+use App\Modules\EventManagement\Domain\Enums\CancellationReasonEnum;
 use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
 use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
 
@@ -87,15 +87,15 @@ originating aggregate or entity.
 
 ### Domain Service
 
-To dispatch events, you will need a [Domain Service](./services) that exposes our domain event dispatcher interface.
+To dispatch events, you will need a [Domain Service](./services) that exposes a domain event dispatcher.
 The pattern for exposing domain services is described in the linked chapter. But an example of how we would do this
 for domain events is as follows:
 
 ```php
-namespace App\Modules\EventManagement\BoundedContext\Domain;
+namespace App\Modules\EventManagement\Domain;
 
+use App\Modules\EventManagement\Domain\Events\DispatcherInterface;
 use Closure;
-use CloudCreativity\Modules\Domain\Events\DispatcherInterface;
 
 final class Services
 {
@@ -134,9 +134,9 @@ final class Services
 Within an entity or aggregate, you can now dispatch an event as follows:
 
 ```php
-namespace App\Modules\EventManagement\BoundedContext\Domain;
+namespace App\Modules\EventManagement\Domain;
 
-use App\Modules\EventManagement\BoundedContext\Domain\{
+use App\Modules\EventManagement\Domain\{
     Enums\CancellationReasonEnum,
     Events\AttendeeTicketWasCancelled,
 };
@@ -168,22 +168,16 @@ class Attendee implements AggregateInterface
 }
 ```
 
-### Available Dispatchers
+### Dispatchers & Listeners
 
-This package ships with two concrete domain dispatcher implementations:
+This package ships with several concrete dispatcher implementations.
 
-1. Unit of Work Aware Dispatcher - this is the recommended dispatcher.
-2. Deferred Dispatcher - useful if you have a module that is not using a unit of work.
+These dispatchers are covered in the documentation
+for [domain event dispatching.](../application/domain-event-dispatchers) That chapter is in the application layer
+because it is that layer that coordinates the side-effects of domain events via driven ports.
 
-As domain events trigger side-effects that typically require some interaction with your module's infrastructure layer,
-both of these concrete implementations are provided by the infrastructure layer. They are therefore covered in that
-section of the documentation.
-
-### Subscribing to Events
-
-Our dispatcher implementations allow listener classes to subscribe to events. The dispatchers expose a `listen()`
-method that allows you to attach listeners to specific domain events. This is covered in the documentation on each
-dispatcher.
+Our dispatcher implementations allow listener classes to subscribe to events. This is also covered in the linked
+chapter.
 
 ## Use Cases
 
@@ -196,9 +190,12 @@ aggregate root that raised the event. This ensures your entities remain encapsul
 other entities.
 
 :::warning
-This must only be used for _side effects_. A domain aggregate must complete all state changes to entities contained
-within the aggregate root _before_ dispatching a domain event. This is because the aggregate's state must be _settled_
-before any domain event is dispatched.
+This must only be used for side effects in _other_ aggregates or entities - not entities contained within the aggregate
+that emits the event.
+
+Why? A domain aggregate must complete all state changes to entities contained within the aggregate root _before_
+dispatching a domain event. This is because the aggregate's state must be _settled_ before any domain event is
+dispatched.
 :::
 
 Using our attendee ticket cancellation event as an example, we might have a separate aggregate that manages reporting
@@ -208,15 +205,15 @@ aggregate to update its state as a side-effect.
 Our listener for this scenario might look like this:
 
 ```php
-namespace App\Modules\EventManagement\BoundedContext\Infrastructure\DomainEventListeners;
+namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Listeners;
 
-use App\Modules\EventManagement\BoundedContext\Domain\Events\AttendeeTicketWasCancelled;
-use App\Modules\EventManagement\BoundedContext\Infrastructure\Persistence\TicketSalesReportRepository;
+use App\Modules\EventManagement\Domain\Events\AttendeeTicketWasCancelled;
+use App\Modules\EventManagement\Application\Ports\Driven\Persistence\TicketSalesReportRepositoryInterface;
 
 final readonly class UpdateTicketSalesReport
 {
     public function __construct(
-        private TicketSalesReportRepository $repository,
+        private TicketSalesReportRepositoryInterface $repository,
     ) {
     }
 
@@ -232,14 +229,14 @@ final readonly class UpdateTicketSalesReport
 ```
 
 :::tip
-Notice this listener is intentionally in the infrastructure layer, because it combines knowledge of the domain layer
-(the report entity) with the infrastructure layer (the persistence repository).
+Notice the listener is correctly in the application layer, because it combines knowledge of the domain layer
+(the report entity) with the driven port (the repository interface) needed to persist the changes.
 
-The advantage here is that if your persistence layer uses a _unit of work_, and you are using our "unit of
-work aware" dispatcher, the side-effect will be part of the same transaction as the original domain event. This is
-good practice, because it means the report recalculation will only be committed if the original changes to the
-originating aggregate are also committed. See the [Units of Work Chapter](../infrastructure/units-of-work) for more
-information.
+The advantage here is that if your application layer uses a _unit of work_, and you are using our "unit of work aware"
+domain event dispatcher, the side effect will be part of the same transaction as the mutation of the aggregate that
+emitted the event. This is good practice, because it means the report recalculation will only be committed if the
+changes to the originating aggregate are also committed. See
+the [Units of Work Chapter](../infrastructure/units-of-work) for more information.
 :::
 
 ### Asynchronous Processing
@@ -254,21 +251,23 @@ For this, we need a listener in the application layer that will queue a command 
 example:
 
 ```php
-namespace App\Modules\EventManagement\BoundedContext\Application\Listeners;
+namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Listeners;
 
-use App\Modules\EventManagement\BoundedContext\Application\Commands\RecalculateSalesAtEventCommand;
-use App\Modules\EventManagement\BoundedContext\Domain\Events\AttendeeTicketWasCancelled;
-use CloudCreativity\Modules\Infrastructure\Queue\QueueInterface;
+use App\Modules\EventManagement\Application\Internal\Commands\{
+    RecalculateSalesAtEvent\RecalculateSalesAtEventCommand,
+    InternalCommandBusInterface,
+};
+use App\Modules\EventManagement\Domain\Events\AttendeeTicketWasCancelled;
 
 final readonly class QueueTicketSalesReportRecalculation
 {
-    public function __construct(private QueueInterface $queue)
+    public function __construct(private InternalCommandBusInterface $bus)
     {
     }
 
     public function handle(AttendeeTicketWasCancelled $event): void
     {
-        $this->queue->push(new RecalculateSalesAtEventCommand(
+        $this->bus->queue(new RecalculateSalesAtEventCommand(
             $event->eventId,
         ));
     }
@@ -276,11 +275,8 @@ final readonly class QueueTicketSalesReportRecalculation
 ```
 
 :::tip
-The pattern of queuing work _within_ a bounded context is described in our
-[Asynchronous Processing chapter](../infrastructure/queues) in the infrastructure layer.
-
-Notice this listener is in the application layer. This is because it is combining an application concern (the command
-message) with an infrastructure component (the queue).
+The pattern of queuing work internal to a bounded context is described in our
+[Asynchronous Processing chapter](../application/asynchronous-processing) in the infrastructure layer.
 :::
 
 ### Publishing Integration Events
@@ -291,33 +287,33 @@ event is a _consequence_ of a domain event.
 :::info
 This makes sense when you think of it in terms of our bounded context's layers.
 
-An integration event is a message, defined in the application layer, and published to the outside world via the
-application's event bus. The application layer can depend on the domain layer - but not the other way round.
+An integration event is a message that is published to the outside world via a driven port in the application layer. The
+application layer can depend on the domain layer - but not the other way round.
 
-Therefore, there is no direct way for a domain entity to publish an integration event. It must always be a side-effect
+Therefore, there is no direct way for a domain entity to publish an integration event. It must always be a side effect
 of a domain event.
 :::
 
-Again, to do this we would need a listener in the application layer - because it will need to combine listening for
-the domain event with publishing the integration event to the event bus (which is an application layer component).
+Our listener to do this might look like this:
 
 ```php
-namespace App\Modules\EventManagement\BoundedContext\Application\Listeners;
+namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Listeners;
 
-use App\Modules\EventManagement\BoundedContext\Application\IntegrationEvents;
-use App\Modules\EventManagement\BoundedContext\Domain\Events\AttendeeTicketWasCancelled;
+use App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus\EventPublisherInterface;
+use App\Modules\EventManagement\Domain\Events\AttendeeTicketWasCancelled;
+use VendorName\EventManagement\Shared\IntegrationEvents\V1 as IntegrationEvents;
 
 final readonly class PublishAttendeeTicketWasCancelled
 {
     public function __construct(
         private UuidFactoryInterface $uuidFactory,
-        private IntegrationEvents\EventManagementEventBusInterface $eventBus,
+        private EventPublisherInterface $publisher,
     ) {
     }
 
     public function handle(AttendeeTicketWasCancelled $event): void
     {
-        $this->eventBus->publish(
+        $this->publisher->publish(
             new IntegrationEvents\AttendeeTicketWasCancelled(
                 uuid: $this->uuidFactory->uuid4(),
                 occurredAt: $event->occurredAt,
@@ -362,6 +358,7 @@ class AttendeeTest extends TestCase
     protected function tearDown(): void
     {
         Services::tearDown();
+        unset($this->events);
         parent::tearDown();
     }
 }
