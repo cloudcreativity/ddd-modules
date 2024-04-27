@@ -32,7 +32,7 @@ export default defineConfig({
                         {text: 'Bounded Contexts', link: '/guide/concepts/bounded-contexts'},
                         {text: 'Layers', link: '/guide/concepts/layers'},
                         {text: 'Encapsulation', link: '/guide/concepts/encapsulation'},
-                        {text: 'Modularisation', link: '/guide/concepts/modularisation'},
+                        {text: 'Modularisation & Structure', link: '/guide/concepts/modularisation'},
                     ],
                 },
                 {

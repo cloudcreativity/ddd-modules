@@ -1,4 +1,4 @@
-# Modularisation
+# Modularisation & Structure
 
 Modularisation is an approach to splitting up a monolith, particularly one that is considered _legacy_ code, into
 smaller, more manageable pieces. By adopting a domain-centric approach, this package provides the tooling needed to
@@ -17,7 +17,7 @@ microservices is easy; the questions it poses are:
 2. Is introducing significant infrastructure complexity appropriate for the software systems in question? Should you
    avoid this complexity now, but build in a way that provides an easy transition to microservices in the future?
 
-One option to solve these questions is to use _modular monolith_ architecture. Using this as an intermediary step
+One option to solve these questions is to use a _modular monolith_ architecture. Using this as an intermediary step
 between a monolith and a microservices architecture allows for a more controlled and incremental transition.
 
 This package provides a toolset for writing highly encapsulated and loosely coupled bounded contexts as modules. These
@@ -26,79 +26,244 @@ _lifting and shifting_ the module to an independent microservice. Or alternative
 immediately as a microservice while using this package to ensure they are implemented in a consistent way to all other
 modules.
 
-## Module Structure
+:::tip
+This chapters shows how we choose to structure our modules. There is nothing about the package's implementation that
+forces you to use this structure. However, we've described our preferred structure as we believe that it provides a good
+starting point for most projects.
+:::
 
-This chapter proposes a specific structure for each module. This structure is designed to provide predictability for
-developers moving between different modules. However, it is also designed so that the module can be _lifted and shifted_
-from a modular monolith to a microservice architecture.
+## Modular Monolith
 
-When writing a module in a modular monolith, the following top-level structure is proposed for the folders and
-namespaces of classes:
+In a modular monolith, we implement each module (i.e. bounded context) as a separate namespace within a `Modules`
+namespace. We follow a consistent structure for each module. This provides predictability for developers moving between
+different modules.
+
+However, it is also designed so that the module can be _lifted and shifted_ from a modular monolith to a microservice
+architecture.
+
+The top-level namespace of the `Modules` namespace looks like this:
 
 ```
 - Modules
-  - <ModuleName>
-    - BoundedContext
-    - Consumer
-    - Shared
-  - <ModuleName>
-    - BoundedContext
-    - Consumer
-    - Shared
-  - <etc>
+     - <ModuleName>
+          - BoundedContext
+               - Application
+               - Domain
+               - Infrastructure
+          - Consumer
+          - Shared
+     - <ModuleName>
+          - BoundedContext
+               - Application
+               - Domain
+               - Infrastructure
+          - Consumer
+          - Shared
+     - <etc>
 ```
-
-:::tip
-Note that there is no _presentation layer_ here. Presentation and delivery is _outside_ the `Modules` namespace. This is
-because presentation is the outermost layer of the architecture, which would consume the module's application interface
-to dispatch commands or queries.
-:::
 
 As a top-level summary, the three namespaces in each module are:
 
-1. **Bounded Context** - contains the domain-centric business logic, encapsulated in the domain, infrastructure and
-   application layers.
+1. **Bounded Context** - contains the domain-centric business logic, encapsulated in the domain and application layers.
+   It also contains the infrastructure adapters that implement the application's driven ports.
 2. **Consumer** - contains the contracts that define the coupling between the module and others, in particular defining
    the data contracts for information exchange.
 3. **Shared** - contains code that is shared between the bounded context and the consumer. This should be limited to
-   shared values such as enums, value objects, integration events etc.
+   shared data models - i.e. integration events and read models - and any value objects needed by these models.
 
-### Bounded Context
+:::tip
+Note that there is no _presentation layer_ here. Presentation and delivery is _outside_ the `Modules` namespace. This is
+because presentation is the outermost layer of the architecture.
 
-The bounded context namespace holds the domain-centric business logic. This will contain the domain, infrastructure
-and application layers.
-
-The following is an example structure of the bounded context namespace/folders:
-
-```
-- BoundedContext
-    - Application
-        - Commands
-            - ...
-        - Queries
-            - ...
-        - IntegrationEvents
-            - ...
-    - Domain
-        - Enums
-        - Entities
-        - Events
-        - ValueObjects
-        - ...
-    - Infrastructure
-        - DependencyInjection
-        - DomainEventDispatching
-        - Persistence
-        - Queue
-        - ...
-```
-
-This an indicative structure, which is explained in more detail in the chapters covering the tooling for each layer.
-
-:::warning
-The bounded context _may_ rely on values from the `Shared` module namespace, but must never use anything from the
-`Consumer` namespace.
+For example, in a Laravel application we would be using `App\Modules` as the module namespace. That means everything
+outside `App\Modules` is a concern of the presentation and delivery layer.
 :::
+
+## Microservices
+
+In a microservice, we would also have a `Modules` namespace. This would contain the one or more bounded contexts that
+the microservice represents.
+
+The structure here is identical to the bounded context namespace in the modular monolith. For example:
+
+```
+- Modules
+     - <ModuleName>
+         - Application
+         - Domain
+         - Infrastructure
+     - <ModuleName>
+         - Application
+         - Domain
+         - Infrastructure
+     - <etc>
+```
+
+So where have shared and consumer gone?
+
+The consumer namespace is not required by the microservice - as it cannot consume itself! Instead, this is a Composer
+package that is installed wherever another bounded context needs to consume this one. Consumption is either loose via
+integration events, or direct via a client interface that internally calls the microservice.
+
+This means we also put the shared namespace in a separate Composer package. This is so that the shared data models can
+be required by both the microservice and the consumer package.
+
+For example, the microservice would publish an integration event defined in the shared package. As consumers subscribe
+to the integration event, they would also depend on the shared package.
+
+### Transitioning to Microservices
+
+This means there is a clear pathway from a modular monolith to a microservice, by _lifting and shifting_ the code for
+the module from the monolith.
+
+If the module has a **shared** namespace, it is moved to a Composer package. This means it can be required by both
+the bounded context and the consumer code.
+
+The **bounded context namespace** would be _lifted and shifted_ to the `Modules` namespace in the microservice codebase.
+If there is a shared package, that can be installed into the microservice via Composer.
+
+The **consumer namespace** would be moved to a Composer package. This means any other module (including those split to
+other microservices) can require it as needed. This consumer package represents the allowed coupling to the
+microservice, and the client defines the interface for accessing the microservice directly. The consumer package would
+require the shared package.
+
+## Layers
+
+### Application Namespace
+
+The application namespace can be structured as follows:
+
+```
+- Application
+     - Ports
+          - Driving
+               - Commands
+               - Queries
+               - InboundEvents
+          - Driven
+               - ...
+       - UseCases
+            - Commands
+            - Queries
+            - InboundEvents
+       - Internal
+            - ...
+```
+
+The namespaces shown here are as follows:
+
+- **Ports** - contains the interfaces for the driving and driven ports of the application layer. The driving ports are
+  the interfaces that the application layer uses to interact with the outside world. The driven ports are the interfaces
+  that the application layer expects to be implemented by the infrastructure layer.
+- **Use Cases** - contains the use cases that implement the business logic of the application layer. These use cases
+  are the adapters for the driving ports, expressed as our three message type - commands, queries and inbound
+  integration events.
+- **Internal** - contains any internal concerns of the application layer, that are not exposed as ports. For example,
+  domain event listeners, internal commands for asynchronous processing, etc.
+
+### Domain Namespace
+
+The domain namespace can be structured as follows:
+
+```
+- Domain
+      - Enums
+      - Events
+      - ValueObjects
+      . Aggregate1
+      . Aggregate2
+      . Entity1
+      . ...
+```
+
+We are however less prescriptive about the structure of the domain namespace, as each domain is unique.
+
+For example, the above structure places aggregate roots and entities at the top level. However, you may prefer to group
+them by aggregate root - particularly if your domain has a large number of aggregates and entities. That could result in
+a structure like this:
+
+ ```
+ - Domain
+      - <Aggregate1>
+            - Enums
+            - ValueObjects 
+            . AggrateRoot1
+            . ContainedEntity1
+            . ContainedEntity2
+      - <Aggregate2>
+            - Enums
+            - ValueObjects 
+            . AggrateRoot2
+            . ContainedEntity1
+            . ContainedEntity2
+ ```
+
+### Infrastructure Namespace
+
+The infrastructure namespace contains the adapters that implement the driven ports of the application layer. We would
+structure this according to the structure of the ports in the application namespace, so that it's easy to conceptually
+tie the two together.
+
+For example, if our application driven ports looked like this:
+
+```
+- Application
+     - Ports
+          - Driven
+               - OutboundEventBus
+               - Persistence
+               - Queue
+```
+
+Then our infrastructure namespace would look like this:
+
+```
+- Infrastructure
+      - OutboundEventBus
+      - Persistence
+      - Queue 
+```
+
+## Packages
+
+### Shared
+
+The shared namespace is optional, and is only required if the module bounded context is consumed by other bounded
+contexts. Where this is the case, the package contains data models that are shared between the bounded context and
+consumers.
+
+There are two types of shared data models:
+
+- **Integration events**: these are shared so that the bounded context can publish them, while consumers of the module
+  can receive and react to them. This is a loose coupling via a data contract defined on the integration event. This
+  contract is identical at the point it is sent outbound from the bounded context (i.e. published) and when it is
+  received by the consuming bounded context.
+- **Read models**: these share the current state of a bounded context between the bounded context and the consumer. In
+  the bounded context, queries dispatched by the query bus can return read models representing the current state. The
+  same read model might need to be shared with a consumer. For example, if the client interface the consumer can call
+  returns the same read model - e.g. an HTTP JSON response containing a serialised read model.
+
+Your shared package may also contain enums and value objects, where these help to define and describe the data model on
+integration events and/or read models.
+
+One thing to note is that as these data models are shared between the bounded context and the consumer, you cannot make
+breaking changes to the data contract without updating every single consumer. In large systems, this can be challenging.
+Therefore, it is sensible to version the integration events and read models - allowing you to incrementally update
+consumers to the new version.
+
+Therefore the shared namespace could look like this:
+
+```
+- Shared
+    - Enums
+    - IntegrationEvents
+         - V1
+         - V2
+    - ReadModels
+         - V1
+         - V2
+    - ValueObjects
+```
 
 ### Consumer
 
@@ -115,68 +280,4 @@ The consumer namespace must not contain any business logic - therefore it must n
 context. Instead it contains the interfaces for the direct consumption of the module by other bounded contexts. I.e.
 it is the _client_ or Software Development Kit (SDK) for the module.
 
-### Shared
 
-The shared namespace is optional, and is only required if the module needs to share values between its bounded context
-and consumers.
-
-**Enums and value objects** can be shared across both. This is because they can be used to define data contracts in both
-the bounded context and the consumer. For example, an enum might be used by an entity in the domain layer of the bounded
-context. The same enum might also be present in the data structure given to a consumer when it queries the bounded
-context via a client interface.
-
-**Read models** can be used to share the current state of a bounded context between the bounded context and the consumer.
-In the bounded context, queries dispatched by the query bus can return read models representing the current state.
-The same read model might need to be shared with the consumer, if the client interface the consumer can call returns
-the same state. E.g. an HTTP JSON response containing a serialised read model.
-
-**Integration events** are another example of something that should sit in the shared namespace. This is so the
-bounded context can publish them, while consumers of the module can subscribe to them. The integration event
-defines the data contract for the exchange - which should be identical at the point it is sent outbound from the
-bounded context (i.e. published) and when it is received inbound (subscribed to) by the consumer.
-
-Therefore, an example structure for the shared namespace is:
-
-```
-Shared
-    - Enums
-    - IntegrationEvents
-    - ReadModels
-    - ValueObjects
-```
-
-:::warning
-It is sensible to not "over-share" values via the shared namespace.
-
-For example, when you decide that a new value object is needed by a domain entity, that value object should start its
-life in the bounded context namespace.
-
-It should only be moved to the shared namespace at the point you decide that
-the value object is also needed on a defined data contract that is exposed to consumers. E.g. if you decide to use
-that value object on a published integration event.
-:::
-
-## Transition to Microservices
-
-The module structure described above is designed to be _lifted and shifted_ to a microservice architecture. This is
-achieved as follows.
-
-:::tip
-Alternatively, if the bounded context is starting life in a microservice, this is the structure you can use from the
-inception of the code to ensure it is shared between the bounded context and the consumer.
-:::
-
-If the module has a **shared** namespace, it must be moved to a Composer package. This means it can be required by both
-the bounded context and the consumer code.
-
-The **bounded context namespace** would be _lifted and shifted_ to the microservice codebase. This is because the
-microservice is the architectural representation of the bounded context. This means the microservice can execute
-the module's encapsulated business logic via the application layer - dispatching either commands or queries, and
-publishing integration events. If there is a shared package, that can be installed into the microservice via Composer.
-
-The **consumer namespace** would be moved to a Composer package. This means any other module (including those split to
-other microservices) can require it as needed - for example, to call the microservice via a client interface.
-
-This consumer package represents the allowed coupling to the module (which is now in a microservice), and defines the
-data contracts for information that is passed to and from consumers. The consumer package would require the shared
-package.

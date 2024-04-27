@@ -3,23 +3,24 @@
 This package provides a design pattern for implementing and structuring code in a domain-centric approach. Within each
 bounded context it uses clearly defined layers, which are organized by domain, not by technical concerns.
 
-The layers within each bounded context are as follows - starting from the inner-most domain layer:
+The layers within this architecture are as follows - starting from the inner-most layer:
 
 1. [Domain](#domain-layer)
-2. [Infrastructure](#infrastructure-layer)
-3. [Application](#application-layer)
+2. [Application](#application-layer)
+3. [Infrastructure](#infrastructure-layer)
 4. [Presentation](#presentation-layer)
 
 ## Domain Layer
 
 The domain layer contains the domain entities, aggregate roots and business logic. It is the core of the module and
 should be entirely encapsulated - i.e. it must not depend on any other layer. This allows you to structure your domain
-entities and aggregate roots in a way that ensures they cleanly encapsulate business logic, ensuring the logic is easy
-to reason about and test.
+entities and aggregate roots in a way that cleanly encapsulate business logic, ensuring the logic is easy to reason
+about and test.
 
 :::tip
 It is common, particularly in monoliths, for entities (or _models_) to be entwined with the database layer, or entirely
-coupled via the use of an ORM or Active Record implementation. This is a database-centric approach, and must be avoided in a
+coupled via the use of an ORM or Active Record implementation. This is a database-centric approach, and must be avoided
+in a
 domain-centric approach.
 
 The domain layer should be entirely independent of the database structure. The mapping of these entities to and from a
@@ -29,40 +30,55 @@ Internally within your persistence implementation, you can use an ORM or Active 
 this must never be exposed outside of the infrastructure layer.
 :::
 
+## Application Layer
+
+The application layer contains the use cases of the bounded context. These are the business processes that can be
+executed by passing information _into_ the application, and the information that can be read _out_ of the application.
+
+This package embraces hexagonal architecture to define the boundary of the application layer. This boundary is expressed
+by _ports_ - interfaces that define the use cases of the module - and _adapters_ - the implementations of these
+interfaces. There are two types of ports:
+
+- **Driving Ports** (aka _primary_ or _input_ ports) - interfaces that define the use cases of the bounded context. The
+  adapters that implement these interfaces are in the application layer and are used by the outside world to interact
+  with the module.
+- **Driven Ports** (aka _secondary_ or _output_ ports) - interfaces that define the dependencies of the application
+  layer. The adapters that implement these interfaces are in the infrastructure layer.
+
+When defining the driving ports in the application layer, we follow the Command Query Responsibility Segregation (CQRS)
+pattern. This pattern separates read (query) and write (command) operations, which makes it completely clear what is
+happening in the bounded context. It also allows for different models to be used for reading and writing, which can be
+optimized for their specific use case.
+
+Additionally, the bounded context can emit integration events that can be consumed by other bounded contexts.
+Integration events allow loose coupling between modules and can be used to trigger side-effects in other modules.
+
+This means that there are three types of _messages_ that define the use cases of the domain-centric application:
+
+1. **Commands** - that mutate the state of the domain;
+2. **Queries** - that read the state of the domain; and
+3. **Integration Events** - that are emitted and consumed by other bounded contexts.
+
 ## Infrastructure Layer
 
-This layer accesses any external services or resources required for the implementation. Examples include:
+This layer contains adapters that implement the driven ports defined in the application layer.
+
+This is an _dependency inversion_ principle. The application defines what it needs from the infrastructure layer, and
+the infrastructure layer provides the implementations. This means that the application layer never depends on the
+infrastructure layer. Anything it needs to interact with must be defined as a driven port.
+
+Infrastructure adapters will interact with external services or resources. Examples include:
 
 1. **Persistence**, e.g. database, file system, caching mechanism, etc.
 2. **Third-party services**, e.g. a payment gateway or email service.
 3. **External APIs**, e.g. a REST API or gRPC service - including microservices within your architecture.
 
-The infrastructure layer can depend on the domain layer, but not vice-versa. For example, your persistence
-implementations would need to map a domain entity or aggregate root to and from a database structure.
+Typically the driven ports should be defined in a way that prevents domain layer concepts - primarily aggregate roots
+and entities - from leaking into the infrastructure layer. For example, the port can define data transfer objects to
+pass information to the adapter, and receive information back.
 
-The infrastructure layer must not depend on any layers _above_ it, i.e. the application and presentation layers.
-
-## Application Layer
-
-The application layer contains the use cases of the module. These are the business processes that can be executed and
-the information that can be read out of the domain.
-
-In practice, the application layer composes the execution of business logic via the domain layer and how these changes
-are persisted and communicated via the infrastructure layer.
-
-This package uses three types of _messages_ that define the use cases of the domain-centric module:
-
-1. **Commands** - that mutate the state of the domain;
-2. **Queries** - that read the state of the domain; and
-3. **Integration Events** - that are published when a domain event occurs.
-
-:::tip
-The use of _commands_ and _queries_ means the application layer follows the Command Query Responsibility Segregation
-(CQRS) pattern. This pattern separates read (query) and write (command) operations, which aids clean architecture and
-makes the module easy to reason about and test.
-
-Integration events allow loose coupling between modules and can be used to trigger side-effects in other modules.
-:::
+However, there are some scenarios where passing domain concepts to the infrastructure layer is necessary. For example, a
+repository that is responsible for persisting an aggregate root must be given that aggregate root.
 
 ## Presentation Layer
 
@@ -73,17 +89,17 @@ mechanisms, including:
 - HTTP requests and responses - via controller actions, that return various presentation formats - for example, HTML,
   JSON, etc. :thinking: Yes, that's right - JSON is a _presentation_ format.
 - Console commands - taking console input and presenting results via console output.
-- Queued jobs - for dispatching commands asynchronously.
 - Notifications - e.g. presentation via an HTML email, a text message, or a Slack notification.
 - Etc.
 
-The presentation and delivery layer must _only_ depend on the application layer. Or - in other words - it can only:
+The presentation and delivery layer must _only_ depend on the application layer - specifically the driving ports that
+are provided by that layer. This means it can only:
 
 1. Dispatch commands to alter the state of the domain.
 2. Execute queries to read the state of the domain.
 3. Notify the application layer of an integration event inbound from another module.
 
-Which you may notice is what your application layer exposes to the outside world. :tada:
+Which you may notice is the three message types described in the application layer above. :tada:
 
 ## Frameworks
 
