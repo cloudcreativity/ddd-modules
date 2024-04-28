@@ -9,12 +9,11 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Tests\Unit\Application\Bus\Middleware;
+namespace CloudCreativity\Modules\Tests\Unit\Application\InboundEventBus\Middleware;
 
-use CloudCreativity\Modules\Application\Bus\Middleware\FlushDeferredEvents;
 use CloudCreativity\Modules\Application\DomainEventDispatching\DeferredDispatcherInterface;
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
-use CloudCreativity\Modules\Toolkit\Result\Result;
+use CloudCreativity\Modules\Application\InboundEventBus\Middleware\FlushDeferredEvents;
+use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -52,8 +51,7 @@ class FlushDeferredEventsTest extends TestCase
      */
     public function testItFlushesDeferredEvents(): void
     {
-        $command = $this->createMock(CommandInterface::class);
-        $expected = Result::ok();
+        $event = $this->createMock(IntegrationEventInterface::class);
 
         $this->dispatcher
             ->expects($this->once())
@@ -66,42 +64,12 @@ class FlushDeferredEventsTest extends TestCase
             ->expects($this->never())
             ->method('forget');
 
-        $actual = ($this->middleware)($command, function ($in) use ($command, $expected) {
-            $this->assertSame($command, $in);
+        ($this->middleware)($event, function ($in) use ($event): void {
+            $this->assertSame($event, $in);
             $this->sequence[] = 'next';
-            return $expected;
         });
 
         $this->assertSame(['next', 'flush'], $this->sequence);
-        $this->assertSame($expected, $actual);
-    }
-
-    /**
-     * @return void
-     */
-    public function testItForgetsDeferredEventsOnFailedResult(): void
-    {
-        $command = $this->createMock(CommandInterface::class);
-        $expected = Result::failed('Something went wrong.');
-
-        $this->dispatcher
-            ->expects($this->once())
-            ->method('forget')
-            ->willReturnCallback(function () {
-                $this->sequence[] = 'forget';
-            });
-
-        $this->dispatcher
-            ->expects($this->never())
-            ->method('flush');
-
-        $actual = ($this->middleware)($command, function ($in) use ($command, $expected) {
-            $this->assertSame($command, $in);
-            $this->sequence[] = 'next';
-            return $expected;
-        });
-
-        $this->assertSame(['next', 'forget'], $this->sequence);
     }
 
 
@@ -110,7 +78,7 @@ class FlushDeferredEventsTest extends TestCase
      */
     public function testItForgetsDeferredEventsOnException(): void
     {
-        $command = $this->createMock(CommandInterface::class);
+        $event = $this->createMock(IntegrationEventInterface::class);
         $expected = new \LogicException('Boom!');
 
         $this->dispatcher
@@ -125,8 +93,8 @@ class FlushDeferredEventsTest extends TestCase
             ->method('flush');
 
         try {
-            ($this->middleware)($command, function ($in) use ($command, $expected) {
-                $this->assertSame($command, $in);
+            ($this->middleware)($event, function ($in) use ($event, $expected): never {
+                $this->assertSame($event, $in);
                 $this->sequence[] = 'next';
                 throw $expected;
             });

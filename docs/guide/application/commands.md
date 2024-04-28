@@ -244,7 +244,8 @@ final class CommandBusAdapterProvider
 }
 ```
 
-As the presentation and delivery layer is the user of the driving ports, we can now bind the port and its adapter into a service container. For example, in Laravel:
+As the presentation and delivery layer is the user of the driving ports, we can now bind the port and its adapter into a
+service container. For example, in Laravel:
 
 ```php
 namespace App\Providers;
@@ -271,7 +272,6 @@ final class EventManagementServiceProvider extends ServiceProvider
 }
 
 ```
-
 
 ### Dispatching Commands
 
@@ -487,6 +487,33 @@ exactly the same instance of the unit of work manager.**
 
 I.e. use a singleton instance of the unit of work manager. Plus use the teardown middleware (described above) to dispose
 of the singleton instance once the command has executed.
+:::
+
+### Flushing Deferred Events
+
+If you are not using a unit of work, you will most likely be using our deferred domain event dispatcher. This is covered
+in the [Domain Events chapter.](./domain-events)
+
+When using this dispatcher, you will need to use our `FlushDeferredEvents` middleware. You should always
+implement this as handler middleware - because typically you need it to be the final middleware that runs before a
+handler is invoked. I.e. this is an equivalent middleware to the unit of work middleware.
+
+An example binding for this middleware is:
+
+```php
+use CloudCreativity\Modules\Application\Bus\Middleware\FlushDeferredEvents;
+
+$middleware->bind(
+    FlushDeferredEvents::class,
+    fn () => new FlushDeferredEvents(
+        $this->eventDispatcher,
+    ),
+);
+```
+
+:::warning
+When using this middleware, it is important that you inject it with a singleton instance of the deferred event
+dispatcher. This must be the same instance that is exposed to your domain layer as a service.
 :::
 
 ### Logging

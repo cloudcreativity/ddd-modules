@@ -9,15 +9,14 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Application\Bus\Middleware;
+namespace CloudCreativity\Modules\Application\InboundEventBus\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Application\DomainEventDispatching\DeferredDispatcherInterface;
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
+use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
 use Throwable;
 
-final class FlushDeferredEvents implements CommandMiddlewareInterface
+final class FlushDeferredEvents implements InboundEventMiddlewareInterface
 {
     /**
      * FlushDeferredEvents constructor.
@@ -31,21 +30,15 @@ final class FlushDeferredEvents implements CommandMiddlewareInterface
     /**
      * @inheritDoc
      */
-    public function __invoke(CommandInterface $command, Closure $next): ResultInterface
+    public function __invoke(IntegrationEventInterface $event, Closure $next): void
     {
         try {
-            $result = $next($command);
+            $next($event);
         } catch (Throwable $ex) {
             $this->dispatcher->forget();
             throw $ex;
         }
 
-        if ($result->didSucceed()) {
-            $this->dispatcher->flush();
-        } else {
-            $this->dispatcher->forget();
-        }
-
-        return $result;
+        $this->dispatcher->flush();
     }
 }

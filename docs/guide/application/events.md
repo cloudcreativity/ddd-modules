@@ -622,15 +622,15 @@ $bus->through([
 
 ### Unit of Work
 
-Ideally notifiers that are not dispatching commands should always be executed in a unit of work.
+Ideally consumers that are not dispatching commands should always be executed in a unit of work.
 We cover this in detail in the [Units of Work chapter.](units-of-work.md)
 
 :::tip
-If your notifier only dispatches a command, then it will not need to be wrapped in a unit of work. This is because the
+If your consumer only dispatches a command, then it will not need to be wrapped in a unit of work. This is because the
 command itself should use a unit of work.
 :::
 
-To notify an event in a unit of work, you will need to use our `NotifyInUnitOfWork` middleware. You should always
+To consume an event in a unit of work, you will need to use our `HandleInUnitOfWork` middleware. You should always
 implement this as handler middleware - because typically you need it to be the final middleware that runs before a
 handler is invoked. It also makes it clear to developers looking at the handler that it is expected to run
 in a unit of work. The example `OrderWasFulfilledHandler` above demonstrates this.
@@ -653,6 +653,33 @@ exactly the same instance of the unit of work manager.**
 
 I.e. use a singleton instance of the unit of work manager. Plus use the teardown middleware (described above) to dispose
 of the singleton instance once the handler has been executed.
+:::
+
+### Flushing Deferred Events
+
+If you are not using a unit of work, you will most likely be using our deferred domain event dispatcher. This is covered
+in the [Domain Events chapter.](./domain-events)
+
+When using this dispatcher, you will need to use our `FlushDeferredEvents` middleware. You should always
+implement this as handler middleware - because typically you need it to be the final middleware that runs before a
+handler is invoked. I.e. this is an equivalent middleware to the unit of work middleware.
+
+An example binding for this middleware is:
+
+```php
+use CloudCreativity\Modules\Application\InboundEventBus\Middleware\FlushDeferredEvents;
+
+$middleware->bind(
+    FlushDeferredEvents::class,
+    fn () => new FlushDeferredEvents(
+        $this->eventDispatcher,
+    ),
+);
+```
+
+:::warning
+When using this middleware, it is important that you inject it with a singleton instance of the deferred event
+dispatcher. This must be the same instance that is exposed to your domain layer as a service.
 :::
 
 ### Logging
