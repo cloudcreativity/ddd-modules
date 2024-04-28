@@ -33,8 +33,8 @@ interface EventDispatcherInterface extends DispatcherInterface
 We provide two concrete dispatcher implementations that you can use:
 
 1. **Unit of work aware dispatcher.** This is the preferred implementation. It coordinates dispatching domain events and
-   executing listeners with the unit of work manager. [The unit of work chapter](../infrastructure/unit-of-work)
-   explains why this is important and how this works.
+   executing listeners with the unit of work manager. [The unit of work chapter](./units-of-work) explains why this is
+   important and how this works.
 2. **Deferred event dispatcher.** For use when you cannot use a unit of work in your application layer. This
    implementation attempts to achieve some of the benefits of the unit of work pattern without a full implementation.
 
