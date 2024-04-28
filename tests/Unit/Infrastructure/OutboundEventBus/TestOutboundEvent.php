@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\OutboundEventBus;
 
+use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
 use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
-use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 use DateTimeImmutable;
 
 class TestOutboundEvent implements IntegrationEventInterface

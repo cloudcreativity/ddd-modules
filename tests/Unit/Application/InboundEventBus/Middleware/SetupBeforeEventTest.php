@@ -13,7 +13,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Application\InboundEventBus\Middlew
 
 use Closure;
 use CloudCreativity\Modules\Application\InboundEventBus\Middleware\SetupBeforeEvent;
-use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
+use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;

@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Application\InboundEventBus;
 
-use CloudCreativity\Modules\Toolkit\Messages\DispatchThroughMiddleware;
+use CloudCreativity\Modules\Application\Messages\DispatchThroughMiddleware;
 
 class TestEventHandler implements DispatchThroughMiddleware
 {

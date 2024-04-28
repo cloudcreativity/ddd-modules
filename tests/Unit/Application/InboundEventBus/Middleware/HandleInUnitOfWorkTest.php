@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Application\InboundEventBus\Middleware;
 
 use CloudCreativity\Modules\Application\InboundEventBus\Middleware\HandleInUnitOfWork;
+use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
 use CloudCreativity\Modules\Application\UnitOfWork\UnitOfWorkManagerInterface;
-use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 use PHPUnit\Framework\TestCase;
 use Throwable;
 

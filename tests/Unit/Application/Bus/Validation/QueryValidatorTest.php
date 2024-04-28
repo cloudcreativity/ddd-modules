@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Application\Bus\Validation;
 
 use CloudCreativity\Modules\Application\Bus\Validation\QueryValidator;
-use CloudCreativity\Modules\Toolkit\Messages\QueryInterface;
+use CloudCreativity\Modules\Application\Messages\QueryInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Result\Error;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;

@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\InboundEventBus;
 
 use Closure;
-use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
+use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
 use RuntimeException;
 
 final class EventHandlerContainer implements EventHandlerContainerInterface

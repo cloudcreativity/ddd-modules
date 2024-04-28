@@ -13,8 +13,8 @@ namespace CloudCreativity\Modules\Tests\Unit\Application\Bus\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Application\Bus\Middleware\SetupBeforeDispatch;
-use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
-use CloudCreativity\Modules\Toolkit\Messages\QueryInterface;
+use CloudCreativity\Modules\Application\Messages\CommandInterface;
+use CloudCreativity\Modules\Application\Messages\QueryInterface;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;

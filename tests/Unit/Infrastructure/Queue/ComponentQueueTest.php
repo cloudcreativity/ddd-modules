@@ -11,10 +11,10 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue;
 
+use CloudCreativity\Modules\Application\Messages\CommandInterface;
 use CloudCreativity\Modules\Infrastructure\Queue\ComponentQueue;
 use CloudCreativity\Modules\Infrastructure\Queue\EnqueuerContainerInterface;
 use CloudCreativity\Modules\Infrastructure\Queue\EnqueuerInterface;
-use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;

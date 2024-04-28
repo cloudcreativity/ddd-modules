@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Application\Ports\Driving\InboundEvents;
 
-use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
+use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
 
 interface EventDispatcherInterface
 {

@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Application\InboundEventBus;
 
-use CloudCreativity\Modules\Toolkit\Messages\DispatchThroughMiddleware;
-use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
+use CloudCreativity\Modules\Application\Messages\DispatchThroughMiddleware;
+use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
 
 interface EventHandlerInterface extends DispatchThroughMiddleware
 {

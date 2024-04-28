@@ -13,8 +13,8 @@ namespace CloudCreativity\Modules\Application\Bus\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Application\Bus\Exceptions\AbortOnFailureException;
+use CloudCreativity\Modules\Application\Messages\CommandInterface;
 use CloudCreativity\Modules\Application\UnitOfWork\UnitOfWorkManagerInterface;
-use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
 final class ExecuteInUnitOfWork implements CommandMiddlewareInterface

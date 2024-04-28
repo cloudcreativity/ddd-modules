@@ -12,11 +12,11 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Application\Bus\Middleware;
 
 use CloudCreativity\Modules\Application\Bus\Middleware\LogMessageDispatch;
+use CloudCreativity\Modules\Application\Messages\CommandInterface;
+use CloudCreativity\Modules\Application\Messages\MessageInterface;
+use CloudCreativity\Modules\Application\Messages\QueryInterface;
 use CloudCreativity\Modules\Toolkit\Loggable\ObjectContext;
 use CloudCreativity\Modules\Toolkit\Loggable\ResultContext;
-use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
-use CloudCreativity\Modules\Toolkit\Messages\MessageInterface;
-use CloudCreativity\Modules\Toolkit\Messages\QueryInterface;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;

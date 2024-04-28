@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Application\Ports\Driven\Queue;
 
-use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
+use CloudCreativity\Modules\Application\Messages\CommandInterface;
 
 interface QueueInterface
 {

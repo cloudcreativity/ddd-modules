@@ -12,9 +12,9 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\Bus;
 
 use Closure;
+use CloudCreativity\Modules\Application\Messages\CommandInterface;
 use CloudCreativity\Modules\Application\Ports\Driven\Queue\QueueInterface;
 use CloudCreativity\Modules\Application\Ports\Driving\Commands\CommandDispatcherInterface;
-use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;

@@ -96,22 +96,29 @@ Given the above example, the correct order from the application perspective is:
 2. The aggregate root state change occurs and the domain event is emitted by the aggregate.
 3. The domain event dispatching is deferred until later in the unit of work. This means side-effects via event listeners
    will be triggered later.
-4. The aggregate root is persisted via the repository port. Internally within the adapter this may result in multiple database writes, that are within the transaction.
+4. The aggregate root is persisted via the repository port. Internally within the adapter this may result in multiple
+   database writes, that are within the transaction.
 5. With the persistence changes successful made (but not yet committed), the deferred domain event is dispatched.
 6. Side effects of the domain event are triggered, within the transaction boundary. Any side effects that affect the
    persistence layer via driven ports now occur _after_ the aggregate changes were persisted.
-7. The transaction is committed by closing the unit of work. The state changes to the aggregate root and the side effects are persisted together. They are atomic.
+7. The transaction is committed by closing the unit of work. The state changes to the aggregate root and the side
+   effects are persisted together. They are atomic.
 
 All this is achieved by this package by combining the following:
 
-- **Unit of work** - begins, commits and rolls back a transaction. This is a driven port in the application layer, with the adapter implemented by the infrastructure layer. This allows you to implement a transaction for whatever database solution you are using.
-- **Unit of work manager** - an application concern that handles the lifecycle of the unit of work, e.g. deferring operations for later execution.
+- **Unit of work** - begins, commits and rolls back a transaction. This is a driven port in the application layer, with
+  the adapter implemented by the infrastructure layer. This allows you to implement a transaction for whatever database
+  solution you are using.
+- **Unit of work manager** - an application concern that handles the lifecycle of the unit of work, e.g. deferring
+  operations for later execution.
 - **Unit of work aware domain event dispatcher** - coordinates domain event dispatching with the unit of work manager.
 - **Unit of work middleware** - that ensure command handlers and integration event consumers are executed in a unit of
   work.
 
 :::info
-The manager is high-level abstraction (provided by this package and part of the application layer) that manages the lifecycle of the unit of work. The unit of work itself is a low-level abstraction (part of the infrastructure layer) that actually starts, commits and rolls back the transaction.
+The manager is high-level abstraction (provided by this package and part of the application layer) that manages the
+lifecycle of the unit of work. The unit of work itself is a low-level abstraction (part of the infrastructure layer)
+that actually starts, commits and rolls back the transaction.
 :::
 
 Our previous example can be updated to add a unit of work that wraps the command handler execution via middleware:
@@ -121,7 +128,7 @@ namespace App\Modules\EventManagement\Application\UseCases\Commands\CancelAttend
 
 use App\Modules\EventManagement\Application\Ports\Driven\Persistence\AttendeeRepositoryInterface;
 use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;
-use CloudCreativity\Modules\Toolkit\Messages\DispatchThroughMiddleware;
+use CloudCreativity\Modules\Application\Messages\DispatchThroughMiddleware;
 use CloudCreativity\Modules\Toolkit\Results\Result;
 
 final readonly class CancelAttendeeTicketHandler implements
@@ -206,7 +213,9 @@ final readonly class IlluminateUnitOfWork implements UnitOfWorkInterface
 
 ## Unit of Work Manager
 
-The unit of work manager is an application layer concern. It handles the complexities of the unit of work lifecycle. When combined with the unit of work aware domain event dispatcher, it ensures domain event dispatching and side effects (via listeners) are coordinated within the unit of work.
+The unit of work manager is an application layer concern. It handles the complexities of the unit of work lifecycle.
+When combined with the unit of work aware domain event dispatcher, it ensures domain event dispatching and side
+effects (via listeners) are coordinated within the unit of work.
 
 The adapter just requires your concrete unit of work implementation:
 
@@ -220,9 +229,9 @@ $manager = new UnitOfWorkManager(
 ```
 
 :::info
-The second constructor argument of the unit of work manager is an [exception reporter.](./exception-reporting)
-This is useful if the unit of work manager is handling multiple commit attempts. It allows it to report any exceptions
-that occur prior to a re-attempt.
+The second constructor argument of the unit of work manager is
+an [exception reporter.](../infrastructure/exception-reporting) This is useful if the unit of work manager is handling
+multiple commit attempts. It allows it to report any exceptions that occur prior to a re-attempt.
 :::
 
 ### Singleton Instance
@@ -377,7 +386,7 @@ If any work pushed to after the unit of work has committed fails, it is not poss
 means that the domain's new state will be committed, but your side effect has not occurred. This could lead to data
 inconsistencies.
 
-Use an [Outbox pattern](./outbox-inbox) to ensure data consistency.
+Use an [Outbox pattern](../infrastructure/outbox-inbox) to ensure data consistency.
 :::
 
 ## Using Unit of Works
@@ -401,7 +410,7 @@ namespace App\Modules\EventManagement\Application\UseCases\Commands\CancelAttend
 
 use App\Modules\EventManagement\Application\Ports\Driven\Persistence\AttendeeRepositoryInterface;
 use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;
-use CloudCreativity\Modules\Toolkit\Messages\DispatchThroughMiddleware;
+use CloudCreativity\Modules\Application\Messages\DispatchThroughMiddleware;
 use CloudCreativity\Modules\Toolkit\Results\Result;
 
 final readonly class CancelAttendeeTicketHandler implements
@@ -457,7 +466,7 @@ namespace App\Modules\EventManagement\Application\UseCases\InboundEvents;
 use App\Modules\EventManagement\Domain\Events\DispatcherInterface;
 use App\Modules\EventManagement\Domain\Events\SalesAtEventDidChange;
 use CloudCreativity\Modules\Application\InboundEventBus\Middleware\HandleInUnitOfWork;
-use CloudCreativity\Modules\Toolkit\Messages\DispatchThroughMiddleware;
+use CloudCreativity\Modules\Application\Messages\DispatchThroughMiddleware;
 use VendorName\Ordering\Shared\IntegrationEvents\V1\OrderWasFulfilled;
 
 final readonly class OrderWasFulfilledHandler implements

@@ -36,9 +36,9 @@ For example:
 ```php
 namespace VendorName\EventManagement\Shared\IntegrationEvents\V1;
 
+use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
 use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
 use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
-use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 use VendorName\EventManagement\Shared\Enums\CancellationReasonEnum;
 
 final readonly class AttendeeTicketWasCancelled implements IntegrationEventInterface
@@ -333,7 +333,7 @@ namespace App\Modules\EventManagement\Application\UseCases\InboundEvents;
 use App\Modules\EventManagement\Domain\Events\DispatcherInterface;
 use App\Modules\EventManagement\Domain\Events\SalesAtEventDidChange;
 use CloudCreativity\Modules\Application\InboundEventBus\Middleware\HandleInUnitOfWork;
-use CloudCreativity\Modules\Toolkit\Messages\DispatchThroughMiddleware;
+use CloudCreativity\Modules\Application\Messages\DispatchThroughMiddleware;
 use VendorName\Ordering\Shared\IntegrationEvents\V1\OrderWasFulfilled;
 
 final readonly class OrderWasFulfilledHandler implements
@@ -688,7 +688,7 @@ namespace App\Modules\EventManagement\Application\Adapters\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Application\InboundEventBus\Middleware\InboundEventMiddlewareInterface;
-use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
+use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
 
 final class MyMiddleware implements InboundEventMiddlewareInterface
 {

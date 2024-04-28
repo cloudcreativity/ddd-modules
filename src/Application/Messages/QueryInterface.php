@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Toolkit\Messages;
+namespace CloudCreativity\Modules\Application\Messages;
 
 interface QueryInterface extends MessageInterface
 {

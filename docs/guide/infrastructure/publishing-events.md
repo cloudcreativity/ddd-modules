@@ -56,10 +56,10 @@ specific closures to specific events, and add middleware to the publisher. Here'
 namespace App\Modules\EventManagement\Infrastructure\OutboundEventBus;
 
 use App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus\OutboundEventBusInterface;
-use App\Modules\EventManagement\Infrastructure\GooglePubSub\SecureTopicFactoryInterface;
 use App\Modules\EventManagement\Infrastructure\GooglePubSub\EventSerializerInterface;
+use App\Modules\EventManagement\Infrastructure\GooglePubSub\SecureTopicFactoryInterface;
+use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
 use CloudCreativity\Modules\Infrastructure\OutboundEventBus\Middleware\LogOutboundEvent;
-use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 use Psr\Log\LoggerInterface;
 use VendorName\EventManagement\Shared\IntegrationEvents\V1\AttendeeTicketWasCancelled;
@@ -192,11 +192,10 @@ namespace App\Modules\EventManagement\Infrastructure\OutboundEventBus;
 
 use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependenciesInterface;
 use App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus\OutboundEventBusInterface;
-use App\Modules\EventManagement\Infrastructure\GooglePubSub\SecureTopicFactoryInterface;
 use App\Modules\EventManagement\Infrastructure\GooglePubSub\EventSerializerInterface;
+use App\Modules\EventManagement\Infrastructure\GooglePubSub\SecureTopicFactoryInterface;
 use CloudCreativity\Modules\Infrastructure\OutboundEventBus\Middleware\LogOutboundEvent;
 use CloudCreativity\Modules\Infrastructure\OutboundEventBus\PublisherHandlerContainer;
-use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 use Psr\Log\LoggerInterface;
 use VendorName\EventManagement\Shared\IntegrationEvents\V1\AttendeeTicketWasCancelled;
@@ -257,7 +256,7 @@ implement the following interface that was extended by the driven port:
 ```php
 namespace CloudCreativity\Modules\Application\Ports\Driven\OutboundEventBus;
 
-use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
+use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
 
 interface EventPublisherInterface
 {
@@ -316,8 +315,8 @@ following signature:
 namespace App\Modules\EventManagement\Application\Adapters\Middleware;
 
 use Closure;
+use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
 use CloudCreativity\Modules\Infrastructure\OutboundEventBus\Middleware\OutboundEventMiddlewareInterface;
-use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 
 final class MyMiddleware implements OutboundEventMiddlewareInterface
 {

@@ -18,8 +18,8 @@ For example:
 ```php
 namespace App\Modules\EventManagement\Application\UseCases\Queries\GetAttendeeTickets;
 
+use CloudCreativity\Modules\Application\Messages\QueryInterface;
 use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
-use CloudCreativity\Modules\Toolkit\Messages\QueryInterface;
 
 final readonly class GetAttendeeTicketsQuery implements QueryInterface
 {
@@ -418,7 +418,7 @@ namespace App\Modules\EventManagement\Application\Adapters\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Application\Bus\Middleware\QueryMiddlewareInterface;
-use CloudCreativity\Modules\Toolkit\Messages\QueryInterface;
+use CloudCreativity\Modules\Application\Messages\QueryInterface;
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
 final class MyMiddleware implements QueryMiddlewareInterface
@@ -460,8 +460,8 @@ namespace App\Modules\EventManagement\Application\Adapters\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Application\Bus\Middleware\BusMiddlewareInterface;
-use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
-use CloudCreativity\Modules\Toolkit\Messages\QueryInterface;
+use CloudCreativity\Modules\Application\Messages\CommandInterface;
+use CloudCreativity\Modules\Application\Messages\QueryInterface;
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
 class MyBusMiddleware implements BusMiddlewareInterface

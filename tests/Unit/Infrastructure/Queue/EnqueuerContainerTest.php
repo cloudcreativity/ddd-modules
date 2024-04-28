@@ -11,10 +11,10 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue;
 
+use CloudCreativity\Modules\Application\Messages\CommandInterface;
 use CloudCreativity\Modules\Infrastructure\Queue\Enqueuer;
 use CloudCreativity\Modules\Infrastructure\Queue\EnqueuerContainer;
 use CloudCreativity\Modules\Tests\Unit\Application\Bus\TestCommand;
-use CloudCreativity\Modules\Toolkit\Messages\CommandInterface;
 use PHPUnit\Framework\TestCase;
 
 class EnqueuerContainerTest extends TestCase
