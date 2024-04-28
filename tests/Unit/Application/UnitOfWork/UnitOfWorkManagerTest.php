@@ -9,16 +9,16 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\UnitOfWork;
+namespace CloudCreativity\Modules\Tests\Unit\Application\UnitOfWork;
 
 use Closure;
 use CloudCreativity\Modules\Application\Ports\Driven\Log\ExceptionReporterInterface;
-use CloudCreativity\Modules\Infrastructure\InfrastructureException;
-use CloudCreativity\Modules\Infrastructure\UnitOfWork\UnitOfWorkInterface;
-use CloudCreativity\Modules\Infrastructure\UnitOfWork\UnitOfWorkManager;
+use CloudCreativity\Modules\Application\Ports\Driven\UnitOfWork\UnitOfWorkInterface;
+use CloudCreativity\Modules\Application\UnitOfWork\UnitOfWorkManager;
 use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class UnitOfWorkManagerTest extends TestCase
 {
@@ -477,7 +477,7 @@ class UnitOfWorkManagerTest extends TestCase
             ->expects($this->never())
             ->method('execute');
 
-        $this->expectException(InfrastructureException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Cannot queue a before commit callback when not executing a unit of work.');
 
         $this->manager->beforeCommit(fn () => null);
@@ -488,7 +488,7 @@ class UnitOfWorkManagerTest extends TestCase
      */
     public function testItFailsIfAfterCallbacksAreQueuedBeforeTransaction(): void
     {
-        $this->expectException(InfrastructureException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Cannot queue an after commit callback when not executing a unit of work.');
 
         $this->manager->afterCommit(fn () => null);
@@ -504,7 +504,7 @@ class UnitOfWorkManagerTest extends TestCase
             ->method('execute')
             ->willReturnCallback(fn (Closure $callback) => $callback());
 
-        $this->expectException(InfrastructureException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(
             'Not expecting unit of work manager to start a unit of work within an existing one.',
         );
@@ -523,7 +523,7 @@ class UnitOfWorkManagerTest extends TestCase
             ->method('execute')
             ->willReturnCallback(fn (Closure $callback) => $callback());
 
-        $this->expectException(InfrastructureException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Cannot queue a before commit callback as unit of work has been committed.');
 
         $this->manager->execute(function () {
@@ -538,7 +538,7 @@ class UnitOfWorkManagerTest extends TestCase
      */
     public function testAttemptsMustBeGreaterThanZero(): void
     {
-        $this->expectException(InfrastructureException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Attempts must be greater than zero.');
 
         /**

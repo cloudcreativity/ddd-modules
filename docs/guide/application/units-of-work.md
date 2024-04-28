@@ -64,7 +64,7 @@ This implementation poses a number of issues:
 3. The domain event is correctly dispatched when the aggregate root is in a new consistent state. However, at this point
    the changes have not been persisted. This means side-effects - including other changes in our infrastructure layer -
    will occur _before_ the ticket cancellation is actually persisted.
-4. As the persistence layer is correctly abstracted behind a repository interface, the command handler has no knowledge
+4. As the persistence layer is correctly abstracted behind a driven port the command handler has no knowledge
    of how the changes are persisted. Will the repository do a single write of the new data, or perform multiple
    writes to persist the updated state?
 5. If the persistence fails, the side-effects of the domain event will have already occurred. This could lead to
@@ -79,46 +79,39 @@ aggregate root handles both the state mutation and emits the domain event. This 
 of the business logic and emitting the domain event is part of this logic.
 
 Ultimately the problem we're facing is that the domain is correctly modelled, but the sequencing of operations is
-not correct _from an infrastructure perspective_.
+not correct _from an application perspective_.
 
 ### Solution
 
-As we prioritise the domain model over infrastructure concerns, we will leave the domain model as-is. Instead, we need
-to introduce an infrastructure concern that can orchestrate the sequence of operations in the correct order from its
+As we prioritise the domain model over application concerns, we will leave the domain model as-is. Instead, we need
+to introduce an application concern that can orchestrate the sequence of operations in the correct order from its
 perspective.
 
 This is where the unit of work comes in. By declaring a start and end to a transaction, operations can be atomic
-and sequenced in the correct infrastructure order.
+and sequenced in the correct order.
 
-Given the above example, the correct order from the infrastructure perspective is:
+Given the above example, the correct order from the application perspective is:
 
 1. Unit of work begins by starting a transaction.
 2. The aggregate root state change occurs and the domain event is emitted by the aggregate.
 3. The domain event dispatching is deferred until later in the unit of work. This means side-effects via event listeners
    will be triggered later.
-4. The aggregate root is persisted via the repository interface. Internally this may result in multiple database writes,
-   that are within the transaction.
+4. The aggregate root is persisted via the repository port. Internally within the adapter this may result in multiple database writes, that are within the transaction.
 5. With the persistence changes successful made (but not yet committed), the deferred domain event is dispatched.
-6. Side-effects of the domain event are triggered, within the transaction boundary. Any side-effects that affect the
-   persistence layer now occur _after_ the aggregate changes were persisted.
-7. The transaction is committed by closing the unit of work. The state changes to the aggregate root and the
-   side-effects are persisted together. They are atomic.
+6. Side effects of the domain event are triggered, within the transaction boundary. Any side effects that affect the
+   persistence layer via driven ports now occur _after_ the aggregate changes were persisted.
+7. The transaction is committed by closing the unit of work. The state changes to the aggregate root and the side effects are persisted together. They are atomic.
 
 All this is achieved by this package by combining the following:
 
-- **Unit of work** - begins, commits and rolls back a transaction. This is provided by a `UnitOfWorkInterface`, which
-  allows you to implement a transaction for whatever database solution you are using.
-- **Unit of work manager** - handles the lifecycle of the unit of work, e.g. deferring operations for later execution.
+- **Unit of work** - begins, commits and rolls back a transaction. This is a driven port in the application layer, with the adapter implemented by the infrastructure layer. This allows you to implement a transaction for whatever database solution you are using.
+- **Unit of work manager** - an application concern that handles the lifecycle of the unit of work, e.g. deferring operations for later execution.
 - **Unit of work aware domain event dispatcher** - coordinates domain event dispatching with the unit of work manager.
 - **Unit of work middleware** - that ensure command handlers and integration event consumers are executed in a unit of
   work.
 
 :::info
-The "unit of work" and "unit of work manager" are separate implementations, solely to allow you to integrate with your
-preferred database solution.
-
-The manager is a higher-level abstraction (provided by this package) that manages the lifecycle of the unit of work. It
-is a driven port in the application layer. The unit of work is an infrastructure concern that is implemented by you.
+The manager is high-level abstraction (provided by this package and part of the application layer) that manages the lifecycle of the unit of work. The unit of work itself is a low-level abstraction (part of the infrastructure layer) that actually starts, commits and rolls back the transaction.
 :::
 
 Our previous example can be updated to add a unit of work that wraps the command handler execution via middleware:
@@ -166,15 +159,15 @@ final readonly class CancelAttendeeTicketHandler implements
 
 ## Unit of Work
 
-To implement a unit of work, you need to implement the `UnitOfWorkInterface` in your infrastructure layer:
+To implement a unit of work, you need an adapter in your infrastructure layer that implements the following driven port:
 
 ```php
-namespace CloudCreativity\Modules\Infrastructure\UnitOfWork;
+namespace CloudCreativity\Modules\Application\Ports\Driven\UnitOfWork;
 
 interface UnitOfWorkInterface
 {
     /**
-     * Execute the callback in a unit of work.
+     * Execute the callback in a transaction.
      *
      * @param \Closure $callback
      * @param int $attempts
@@ -184,14 +177,14 @@ interface UnitOfWorkInterface
 }
 ```
 
-This allows you to plug our unit of work manager into any database solution you are using. For example, a concrete
-implementation in Laravel could look like this:
+This allows you to plug our unit of work manager into any database solution you are using. For example, an adapter
+implementation for Laravel could look like this:
 
 ```php
 namespace App\Modules\Shared\Infrastructure;
 
 use Closure;
-use CloudCreativity\Modules\Infrastructure\Persistence\UnitOfWorkInterface;
+use CloudCreativity\Modules\Application\Ports\Driven\UnitOfWork\UnitOfWorkInterface;
 use Illuminate\Database\ConnectionInterface;
 use Psr\Log\LoggerInterface;
 
@@ -213,31 +206,21 @@ final readonly class IlluminateUnitOfWork implements UnitOfWorkInterface
 
 ## Unit of Work Manager
 
-The unit of work manager is an adapter in the infrastructure layer that implements a driven port.
-
-This adapter handles the complexities of the unit of work lifecycle. When combined with the unit of work aware domain
-event dispatcher, it ensures domain event dispatching and side effects (via listeners) are coordinated within the unit
-of work.
+The unit of work manager is an application layer concern. It handles the complexities of the unit of work lifecycle. When combined with the unit of work aware domain event dispatcher, it ensures domain event dispatching and side effects (via listeners) are coordinated within the unit of work.
 
 The adapter just requires your concrete unit of work implementation:
 
 ```php
-use App\Modules\Shared\Infrastructure\IlluminateUnitOfWork;
-use CloudCreativity\Modules\Application\Ports\Driven\Log\ExceptionReporterInterface;
-use CloudCreativity\Modules\Infrastructure\UnitOfWork\UnitOfWorkManager;
-use Illuminate\Database\ConnectionInterface;
-
-$db = $this->app->make(ConnectionInterface::class);
-$reporter = $this->app->make(ExceptionReporterInterface::class);
+use CloudCreativity\Modules\Application\UnitOfWork\UnitOfWorkManager;
 
 $manager = new UnitOfWorkManager(
-    db: new IlluminateUnitOfWork($db),
-    reporter: $reporter, // optional
+    db: $this->dependencies->getUnitOfWork(),
+    reporter: $this->dependencies->getExceptionReporter(),
 );
 ```
 
 :::info
-The second optional constructor argument of the unit of work manager is an [exception reporter.](./exception-reporting)
+The second constructor argument of the unit of work manager is an [exception reporter.](./exception-reporting)
 This is useful if the unit of work manager is handling multiple commit attempts. It allows it to report any exceptions
 that occur prior to a re-attempt.
 :::
@@ -262,7 +245,10 @@ $middleware->bind(
     SetupBeforeDispatch::class,
     fn () => new SetupBeforeDispatch(function (): Closure {
         // setup
-        $this->unitOfWorkManager = $this->dependencies->getUnitOfWorkManager();
+        $this->unitOfWorkManager = new UnitOfWorkManager(
+            db: $this->dependencies->getUnitOfWork(),
+            reporter: $this->dependencies->getExceptionReporter(),
+        );
         // tear down
         return function (): void {
             $this->unitOfWorkManager = null;
@@ -304,7 +290,7 @@ When using the unit of work pattern, you **must** use the unit of work aware dom
 the dispatching of domain events with the unit of work manager.
 
 The unit of work manager is injected into the domain event dispatcher via its constructor. This is covered in
-the [domain event dispatching chapter](../application/domain-event-dispatchers.md), which also describes how to
+the [domain event dispatching chapter](../application/domain-events), which also describes how to
 configure listeners.
 
 For the purposes of this chapter, we'll focus on how the domain event dispatcher works with the unit of work manager.
@@ -346,12 +332,12 @@ the domain design and/or whether a unit of work pattern can actually be followed
 :::
 
 This immediate dispatch of the domain events allows listeners to be triggered immediately. However, what happens if some
-listeners can actually deferred? Indicate this by implementing the `DispatchBeforeCommit` interface on the listener:
+listeners can actually be deferred? Indicate this by implementing the `DispatchBeforeCommit` interface on the listener:
 
 ```php
 namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Listeners;
 
-use CloudCreativity\Modules\Application\Ports\Driven\UnitOfWork\DispatchBeforeCommit;
+use CloudCreativity\Modules\Application\UnitOfWork\DispatchBeforeCommit;
 
 final readonly class QueueAttendeeCancellationEmail implements
     DispatchBeforeCommit
@@ -377,7 +363,7 @@ interface:
 ```php
 namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Listeners;
 
-use CloudCreativity\Modules\Application\Ports\Driven\UnitOfWork\DispatchAfterCommit;
+use CloudCreativity\Modules\Application\UnitOfWork\DispatchAfterCommit;
 
 final readonly class QueueAttendeeCancellationEmail implements
     DispatchAfterCommit

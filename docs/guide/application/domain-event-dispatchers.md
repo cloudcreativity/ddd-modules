@@ -1,3 +1,0 @@
-# Dispatching Domain Events
-
-TODO

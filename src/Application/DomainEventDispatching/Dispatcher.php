@@ -38,7 +38,7 @@ class Dispatcher implements DispatcherInterface
      * @param PipeContainerInterface|null $middleware
      */
     public function __construct(
-        private readonly ListenerContainerInterface $listeners,
+        private readonly ListenerContainerInterface $listeners = new ListenerContainer(),
         private readonly ?PipeContainerInterface $middleware = null,
     ) {
     }

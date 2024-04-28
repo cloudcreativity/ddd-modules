@@ -9,12 +9,12 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Infrastructure\UnitOfWork;
+namespace CloudCreativity\Modules\Application\UnitOfWork;
 
 use Closure;
 use CloudCreativity\Modules\Application\Ports\Driven\Log\ExceptionReporterInterface;
-use CloudCreativity\Modules\Application\Ports\Driven\UnitOfWork\UnitOfWorkManagerInterface;
-use CloudCreativity\Modules\Infrastructure\InfrastructureException;
+use CloudCreativity\Modules\Application\Ports\Driven\UnitOfWork\UnitOfWorkInterface;
+use RuntimeException;
 use Throwable;
 
 final class UnitOfWorkManager implements UnitOfWorkManagerInterface
@@ -57,13 +57,13 @@ final class UnitOfWorkManager implements UnitOfWorkManagerInterface
     public function execute(Closure $callback, int $attempts = 1): mixed
     {
         if ($this->active) {
-            throw new InfrastructureException(
+            throw new RuntimeException(
                 'Not expecting unit of work manager to start a unit of work within an existing one.',
             );
         }
 
         if ($attempts < 1) {
-            throw new InfrastructureException('Attempts must be greater than zero.');
+            throw new RuntimeException('Attempts must be greater than zero.');
         }
 
         return $this->retry($callback, $attempts);
@@ -125,12 +125,12 @@ final class UnitOfWorkManager implements UnitOfWorkManagerInterface
         }
 
         if ($this->committed) {
-            throw new InfrastructureException(
+            throw new RuntimeException(
                 'Cannot queue a before commit callback as unit of work has been committed.',
             );
         }
 
-        throw new InfrastructureException('Cannot queue a before commit callback when not executing a unit of work.');
+        throw new RuntimeException('Cannot queue a before commit callback when not executing a unit of work.');
     }
 
     /**
@@ -143,7 +143,7 @@ final class UnitOfWorkManager implements UnitOfWorkManagerInterface
             return;
         }
 
-        throw new InfrastructureException('Cannot queue an after commit callback when not executing a unit of work.');
+        throw new RuntimeException('Cannot queue an after commit callback when not executing a unit of work.');
     }
 
     /**

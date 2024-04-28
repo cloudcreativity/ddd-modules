@@ -9,14 +9,14 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Infrastructure\UnitOfWork;
+namespace CloudCreativity\Modules\Application\Ports\Driven\UnitOfWork;
 
 use Closure;
 
 interface UnitOfWorkInterface
 {
     /**
-     * Execute the callback in a unit of work.
+     * Execute the callback in a transaction.
      *
      * @template TReturn
      * @param Closure(): TReturn $callback

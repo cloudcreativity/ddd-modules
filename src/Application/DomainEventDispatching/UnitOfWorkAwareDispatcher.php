@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Application\DomainEventDispatching;
 
-use CloudCreativity\Modules\Application\Ports\Driven\UnitOfWork\UnitOfWorkManagerInterface;
+use CloudCreativity\Modules\Application\UnitOfWork\UnitOfWorkManagerInterface;
 use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
 use CloudCreativity\Modules\Domain\Events\OccursImmediately;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
@@ -21,13 +21,13 @@ class UnitOfWorkAwareDispatcher extends Dispatcher implements DispatcherInterfac
     /**
      * UnitOfWorkAwareDispatcher constructor.
      *
-     * @param ListenerContainerInterface $listeners
      * @param UnitOfWorkManagerInterface $unitOfWorkManager
+     * @param ListenerContainerInterface $listeners
      * @param PipeContainerInterface|null $middleware
      */
     public function __construct(
-        ListenerContainerInterface $listeners,
         private readonly UnitOfWorkManagerInterface $unitOfWorkManager,
+        ListenerContainerInterface $listeners = new ListenerContainer(),
         ?PipeContainerInterface $middleware = null,
     ) {
         parent::__construct($listeners, $middleware);

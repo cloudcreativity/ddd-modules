@@ -14,9 +14,9 @@ namespace CloudCreativity\Modules\Tests\Unit\Application\DomainEventDispatching;
 use Closure;
 use CloudCreativity\Modules\Application\DomainEventDispatching\ListenerContainerInterface;
 use CloudCreativity\Modules\Application\DomainEventDispatching\UnitOfWorkAwareDispatcher;
-use CloudCreativity\Modules\Application\Ports\Driven\UnitOfWork\DispatchAfterCommit;
-use CloudCreativity\Modules\Application\Ports\Driven\UnitOfWork\DispatchBeforeCommit;
-use CloudCreativity\Modules\Application\Ports\Driven\UnitOfWork\UnitOfWorkManagerInterface;
+use CloudCreativity\Modules\Application\UnitOfWork\DispatchAfterCommit;
+use CloudCreativity\Modules\Application\UnitOfWork\DispatchBeforeCommit;
+use CloudCreativity\Modules\Application\UnitOfWork\UnitOfWorkManagerInterface;
 use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -52,8 +52,8 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
         parent::setUp();
 
         $this->dispatcher = new UnitOfWorkAwareDispatcher(
-            listeners: $this->listeners = $this->createMock(ListenerContainerInterface::class),
             unitOfWorkManager: $this->unitOfWorkManager = $this->createMock(UnitOfWorkManagerInterface::class),
+            listeners: $this->listeners = $this->createMock(ListenerContainerInterface::class),
             middleware: $this->middleware = $this->createMock(PipeContainerInterface::class),
         );
     }

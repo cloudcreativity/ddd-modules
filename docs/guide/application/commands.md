@@ -460,7 +460,7 @@ $bus->through([
 ### Unit of Work
 
 Ideally command handlers should always be executed in a unit of work. We cover this in detail in the
-[Units of Work chapter.](../infrastructure/units-of-work)
+[Units of Work chapter.](units-of-work.md)
 
 To execute a handler in a unit of work, you will need to use our `ExecuteInUnitOfWork` middleware. You should always
 implement this as handler middleware - because typically you need it to be the final middleware that runs before a

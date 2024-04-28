@@ -9,8 +9,8 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Application\Ports\Driven\UnitOfWork;
+namespace CloudCreativity\Modules\Application\UnitOfWork;
 
-interface DispatchBeforeCommit
+interface DispatchAfterCommit
 {
 }

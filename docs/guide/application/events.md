@@ -623,7 +623,7 @@ $bus->through([
 ### Unit of Work
 
 Ideally notifiers that are not dispatching commands should always be executed in a unit of work.
-We cover this in detail in the [Units of Work chapter.](../infrastructure/units-of-work)
+We cover this in detail in the [Units of Work chapter.](units-of-work.md)
 
 :::tip
 If your notifier only dispatches a command, then it will not need to be wrapped in a unit of work. This is because the

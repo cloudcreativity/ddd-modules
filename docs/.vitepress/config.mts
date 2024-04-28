@@ -41,7 +41,7 @@ export default defineConfig({
                     items: [
                         {text: 'Entities & Aggregates', link: '/guide/domain/entities'},
                         {text: 'Value Objects', link: '/guide/domain/value-objects'},
-                        {text: 'Domain Events', link: '/guide/domain/events'},
+                        {text: 'Events', link: '/guide/domain/events'},
                         {text: 'Services', link: '/guide/domain/services'},
                     ],
                 },
@@ -52,7 +52,8 @@ export default defineConfig({
                         {text: 'Commands', link: '/guide/application/commands'},
                         {text: 'Queries', link: '/guide/application/queries'},
                         {text: 'Integration Events', link: '/guide/application/events'},
-                        {text: 'Domain Event Dispatching', link: '/guide/application/domain-event-dispatchers'},
+                        {text: 'Domain Events', link: '/guide/application/domain-events'},
+                        {text: 'Units of Work', link: '/guide/application/units-of-work'},
                         {text: 'Asynchronous Processing', link: '/guide/application/asynchronous-processing'},
                     ],
                 },
@@ -65,7 +66,6 @@ export default defineConfig({
                         {text: 'Persistence', link: '/guide/infrastructure/persistence'},
                         {text: 'Publishing Events', link: '/guide/infrastructure/publishing-events'},
                         {text: 'Queues', link: '/guide/infrastructure/queues'},
-                        {text: 'Units of Work', link: '/guide/infrastructure/units-of-work'},
                     ],
                 },
                 {

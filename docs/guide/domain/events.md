@@ -4,8 +4,8 @@ In DDD, domain events are events that occur within a domain, and are relevant to
 these events in an Event Storming session, held with your business stakeholders - in an ideal world, before you even
 started writing code!
 
-Domain events are a way to capture these business events in your code. They enable communication between different
-parts of your bounded context. Example usages (described by this chapter) are:
+Domain events are a way to capture these business events in your code. They enable communication between the domain and
+application layers of your bounded context. Example usages (described by this chapter) are:
 
 1. Notifying changes to other entities or aggregate roots that are outside the scope of the aggregate root that raised
    the event.
@@ -84,6 +84,33 @@ originating aggregate or entity.
 :::
 
 ## Dispatching Events
+
+### Event Dispatcher
+
+To dispatch domain events, you will need a domain event dispatcher. While there is a generic interface for this in the
+package, our domain layer needs its _specific_ instance of the domain dispatcher. This is indicated by extending the
+interface in your domain layer:
+
+```php
+namespace App\Modules\EventManagement\Domain\Events;
+
+use CloudCreativity\Modules\Domain\Events\DispatcherInterface as BaseDispatcher;
+
+interface DispatcherInterface extends BaseDispatcher
+{
+}
+```
+
+Here we are using the _dependency inversion_ principle. Our domain layer defines that it needs an event dispatcher, but
+it does not provide the concrete implementation.
+
+Instead, a dispatcher is provided by the application layer. By inverting the dependency, we allow domain events to reach
+the application layer. Here listeners can subscribe to events, and coordinate infrastructure concerns via driven ports
+in the application layer.
+
+This package ships with several concrete dispatcher implementations. These dispatchers are covered in
+the [domain events chapter in the application layer.](../application/domain-events) Our dispatcher implementations allow
+listener classes to subscribe to events. This is also covered in the linked chapter.
 
 ### Domain Service
 
@@ -168,22 +195,11 @@ class Attendee implements AggregateInterface
 }
 ```
 
-### Dispatchers & Listeners
-
-This package ships with several concrete dispatcher implementations.
-
-These dispatchers are covered in the documentation
-for [domain event dispatching.](../application/domain-event-dispatchers) That chapter is in the application layer
-because it is that layer that coordinates the side-effects of domain events via driven ports.
-
-Our dispatcher implementations allow listener classes to subscribe to events. This is also covered in the linked
-chapter.
-
 ## Use Cases
 
-This section covers examples of typical use-cases for the consumption of domain events.
+This section covers examples of typical use cases for the consumption of domain events.
 
-### Domain Side-Effects
+### Domain Side Effects
 
 Use domain events to trigger side-effects in other entities or aggregate roots that are outside the scope of the
 aggregate root that raised the event. This ensures your entities remain encapsulated and free from dependencies on
@@ -236,7 +252,7 @@ The advantage here is that if your application layer uses a _unit of work_, and 
 domain event dispatcher, the side effect will be part of the same transaction as the mutation of the aggregate that
 emitted the event. This is good practice, because it means the report recalculation will only be committed if the
 changes to the originating aggregate are also committed. See
-the [Units of Work Chapter](../infrastructure/units-of-work) for more information.
+the [Units of Work Chapter](../application/units-of-work.md) for more information.
 :::
 
 ### Asynchronous Processing
@@ -253,10 +269,8 @@ example:
 ```php
 namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Listeners;
 
-use App\Modules\EventManagement\Application\Internal\Commands\{
-    RecalculateSalesAtEvent\RecalculateSalesAtEventCommand,
-    InternalCommandBusInterface,
-};
+use App\Modules\EventManagement\Application\Ports\Driving\CommandBus\InternalCommandBusInterface;
+use App\Modules\EventManagement\Application\Internal\Commands\RecalculateSalesAtEvent\RecalculateSalesAtEventCommand;
 use App\Modules\EventManagement\Domain\Events\AttendeeTicketWasCancelled;
 
 final readonly class QueueTicketSalesReportRecalculation
