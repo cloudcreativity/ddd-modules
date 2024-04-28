@@ -18,7 +18,7 @@ use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 
-final class ClosureQueue implements QueueInterface
+class ClosureQueue implements QueueInterface
 {
     /**
      * @var array<class-string<CommandInterface>, Closure>

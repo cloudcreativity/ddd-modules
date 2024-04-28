@@ -25,7 +25,7 @@ interface CommandDispatcherInterface
     public function dispatch(CommandInterface $command): ResultInterface;
 
     /**
-     * Queue a command or commands for asynchronous dispatching.
+     * Queue a command for asynchronous dispatching.
      *
      * @param CommandInterface $command
      * @return void

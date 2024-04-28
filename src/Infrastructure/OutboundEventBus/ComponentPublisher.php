@@ -17,7 +17,7 @@ use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 
-final class ComponentPublisher implements EventPublisherInterface
+class ComponentPublisher implements EventPublisherInterface
 {
     /**
      * @var array<string|callable>
