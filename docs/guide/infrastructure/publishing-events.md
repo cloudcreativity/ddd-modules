@@ -23,8 +23,8 @@ interface OutboundEventBusInterface extends EventPublisherInterface
 }
 ```
 
-We provide several implementations of the event publisher interface that is referenced in that example. These allow you
-either to publish events via closures, or by class-based handlers.
+We provide several adapter classes for this port. These allow you either to publish events via closures, or by
+class-based handlers.
 
 Closures are useful for simple event publishing logic, while class-based publishers are useful for more complex logic or
 where you want to use constructor dependency injection for reusable concerns.
@@ -35,6 +35,20 @@ If you want to publish via closures, use our `ClosurePublisher` implementation. 
 logic is simple. This is the case in the following example, where the publisher just needs to hand off the event to a
 Google Pub/Sub implementation.
 
+Define an adapter by extending this class:
+
+```php
+namespace App\Modules\EventManagement\Infrastructure\OutboundEventBus;
+
+use App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus\OutboundEventBusInterface;
+use CloudCreativity\Modules\Infrastructure\OutboundEventBus\ClosurePublisher;
+
+final class OutboundEventBusAdapter extends ClosurePublisher
+    implements OutboundEventBusInterface
+{
+}
+```
+
 Create a closure-based publisher by providing it with the default closure for publishing events. You can then bind
 specific closures to specific events, and add middleware to the publisher. Here's an example:
 
@@ -44,7 +58,6 @@ namespace App\Modules\EventManagement\Infrastructure\OutboundEventBus;
 use App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus\OutboundEventBusInterface;
 use App\Modules\EventManagement\Infrastructure\GooglePubSub\SecureTopicFactoryInterface;
 use App\Modules\EventManagement\Infrastructure\GooglePubSub\EventSerializerInterface;
-use CloudCreativity\Modules\Infrastructure\OutboundEventBus\ClosurePublisher;
 use CloudCreativity\Modules\Infrastructure\OutboundEventBus\Middleware\LogOutboundEvent;
 use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
@@ -62,7 +75,7 @@ final readonly class OutboundEventBusAdapterProvider
 
     public function getEventBus(): OutboundEventBusInterface
     {
-        $publisher = new ClosurePublisher(
+        $publisher = new OutboundEventBusAdapter(
             // default publisher
             fn: function (IntegrationEventInterface $event): void {
                 $this->topicFactory->defaultTopic()->send([
@@ -104,6 +117,20 @@ final readonly class OutboundEventBusAdapterProvider
 
 If you want to use class-based publishers, use our `ComponentPublisher` implementation. This is a similar approach to
 the class-based handlers that are used in the application layer for the command, query and inbound event buses.
+
+Define an adapter by extending this class:
+
+```php
+namespace App\Modules\EventManagement\Infrastructure\OutboundEventBus;
+
+use App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus\OutboundEventBusInterface;
+use CloudCreativity\Modules\Infrastructure\OutboundEventBus\ComponentPublisher;
+
+final class OutboundEventBusAdapter extends ComponentPublisher
+    implements OutboundEventBusInterface
+{
+}
+```
 
 ### Event Handlers
 
@@ -156,10 +183,9 @@ final class AttendeeTicketWasCancelledPublisher
 
 ### Creating the Adapter
 
-We can then create our adapter using the `ComponentPublisher` implementation. This is injected with a handler container
-that knows how to construct each of your handler classes. This container allows you to define a default handler to be
-used when no specific handler is bound to an event. You can then bind specific handlers to specific events, and add
-middleware to the publisher.
+We can now create our adapter. This is injected with a handler container that knows how to construct each of your
+handler classes. This container allows you to define a default handler to be used when no specific handler is bound to
+an event. You can then bind specific handlers to specific events, and add middleware to the publisher.
 
 ```php
 namespace App\Modules\EventManagement\Infrastructure\OutboundEventBus;
@@ -168,7 +194,6 @@ use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\Ext
 use App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus\OutboundEventBusInterface;
 use App\Modules\EventManagement\Infrastructure\GooglePubSub\SecureTopicFactoryInterface;
 use App\Modules\EventManagement\Infrastructure\GooglePubSub\EventSerializerInterface;
-use CloudCreativity\Modules\Infrastructure\OutboundEventBus\ComponentPublisher;
 use CloudCreativity\Modules\Infrastructure\OutboundEventBus\Middleware\LogOutboundEvent;
 use CloudCreativity\Modules\Infrastructure\OutboundEventBus\PublisherHandlerContainer;
 use CloudCreativity\Modules\Toolkit\Messages\IntegrationEventInterface;
@@ -187,7 +212,7 @@ final readonly class OutboundEventBusAdapterProvider
 
     public function getEventBus(): OutboundEventBusInterface
     {
-        $publisher = new ComponentPublisher(
+        $publisher = new OutboundEventBusAdapter(
             handlers: $handlers = new PublisherHandlerContainer(
                 default: fn () => new Publishers\DefaultPublisher(
                     $this->topicFactory,

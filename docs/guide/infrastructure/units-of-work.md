@@ -14,16 +14,15 @@ your domain model has no concept of how it is persisted.
 ## Scenario
 
 Consider the following scenario. Our domain models the attendees at an in-person event as having one-to-many tickets.
-When we want to cancel a ticket for an attendee, we do this via the attendee aggregate root that contains the ticket
-entities. This is because our domain logic says that state of the attendee may change as a consequence of cancelling
-the ticket.
+When we want to cancel a ticket, we do this via the attendee aggregate root that contains the ticket entities. This is
+because our domain logic says that state of the attendee may change when the ticket is cancelled.
 
 Our command handler might look like this:
 
 ```php
-namespace App\Modules\EventManagement\BoundedContext\Application\Commands\CancelAttendeeTicket;
+namespace App\Modules\EventManagement\Application\UseCases\Commands\CancelAttendeeTicket;
 
-use App\Modules\EventManagement\BoundedContext\Infrastructure\Persistence\AttendeeRepositoryInterface;
+use App\Modules\EventManagement\Application\Ports\Driven\Persistence\AttendeeRepositoryInterface;
 use CloudCreativity\Modules\Toolkit\Results\Result;
 
 final readonly class CancelAttendeeTicketHandler implements
@@ -88,8 +87,8 @@ As we prioritise the domain model over infrastructure concerns, we will leave th
 to introduce an infrastructure concern that can orchestrate the sequence of operations in the correct order from its
 perspective.
 
-This is where the unit of work comes in. By declaring a start and end to a transaction, operations can be both sequenced
-in the correct infrastructure order and atomic.
+This is where the unit of work comes in. By declaring a start and end to a transaction, operations can be atomic
+and sequenced in the correct infrastructure order.
 
 Given the above example, the correct order from the infrastructure perspective is:
 
@@ -107,26 +106,28 @@ Given the above example, the correct order from the infrastructure perspective i
 
 All this is achieved by this package by combining the following:
 
-- **Unit of work** - begins, commits and rolls back a transaction. This is provided by the `UnitOfWorkInterface`, which
+- **Unit of work** - begins, commits and rolls back a transaction. This is provided by a `UnitOfWorkInterface`, which
   allows you to implement a transaction for whatever database solution you are using.
 - **Unit of work manager** - handles the lifecycle of the unit of work, e.g. deferring operations for later execution.
 - **Unit of work aware domain event dispatcher** - coordinates domain event dispatching with the unit of work manager.
-- **Unit of work middleware** - that ensure command handlers, integration event notifiers and queue job handlers are
-  executed in a unit of work.
+- **Unit of work middleware** - that ensure command handlers and integration event consumers are executed in a unit of
+  work.
 
 :::info
-The unit of work and unit of work manager are separate implementations, solely to allow you to integrate with your
-preferred database solution. The  manager is a higher-level abstraction (provided by this package) that manages the
-lifecycle of the unit of work.
+The "unit of work" and "unit of work manager" are separate implementations, solely to allow you to integrate with your
+preferred database solution.
+
+The manager is a higher-level abstraction (provided by this package) that manages the lifecycle of the unit of work. It
+is a driven port in the application layer. The unit of work is an infrastructure concern that is implemented by you.
 :::
 
 Our previous example can be updated to add a unit of work that wraps the command handler execution via middleware:
 
 ```php
-namespace App\Modules\EventManagement\BoundedContext\Application\Commands\CancelAttendeeTicket;
+namespace App\Modules\EventManagement\Application\UseCases\Commands\CancelAttendeeTicket;
 
-use App\Modules\EventManagement\BoundedContext\Infrastructure\Persistence\AttendeeRepositoryInterface;
-use CloudCreativity\Modules\Bus\Middleware\ExecuteInUnitOfWork;
+use App\Modules\EventManagement\Application\Ports\Driven\Persistence\AttendeeRepositoryInterface;
+use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;
 use CloudCreativity\Modules\Toolkit\Messages\DispatchThroughMiddleware;
 use CloudCreativity\Modules\Toolkit\Results\Result;
 
@@ -165,7 +166,7 @@ final readonly class CancelAttendeeTicketHandler implements
 
 ## Unit of Work
 
-To implement a unit of work, you need to implement the `UnitOfWorkInterface`:
+To implement a unit of work, you need to implement the `UnitOfWorkInterface` in your infrastructure layer:
 
 ```php
 namespace CloudCreativity\Modules\Infrastructure\UnitOfWork;
@@ -212,19 +213,27 @@ final readonly class IlluminateUnitOfWork implements UnitOfWorkInterface
 
 ## Unit of Work Manager
 
-Our unit of work manager implementation handles the complexities of the unit of work lifecycle. When combined with the
-unit of work aware domain event dispatcher, it ensures domain event dispatching and side effects (via listeners) are
-coordinated within the unit of work.
+The unit of work manager is an adapter in the infrastructure layer that implements a driven port.
 
-The implementation just requires your concrete unit of work implementation:
+This adapter handles the complexities of the unit of work lifecycle. When combined with the unit of work aware domain
+event dispatcher, it ensures domain event dispatching and side effects (via listeners) are coordinated within the unit
+of work.
+
+The adapter just requires your concrete unit of work implementation:
 
 ```php
 use App\Modules\Shared\Infrastructure\IlluminateUnitOfWork;
+use CloudCreativity\Modules\Application\Ports\Driven\Log\ExceptionReporterInterface;
 use CloudCreativity\Modules\Infrastructure\UnitOfWork\UnitOfWorkManager;
+use Illuminate\Database\ConnectionInterface;
 
-$manager = new UnitOfWorkManager(new IlluminateUnitOfWork(
-    $this->dependencies->getDatabaseConnection(),
-));
+$db = $this->app->make(ConnectionInterface::class);
+$reporter = $this->app->make(ExceptionReporterInterface::class);
+
+$manager = new UnitOfWorkManager(
+    db: new IlluminateUnitOfWork($db),
+    reporter: $reporter, // optional
+);
 ```
 
 :::info
@@ -238,8 +247,8 @@ that occur prior to a re-attempt.
 One really important point to note is that you **must** use a singleton instance of the unit of work manager for the
 duration of the unit of work.
 
-The same instance must be injected both into the domain dispatcher, plus the middleware that wraps command handlers,
-integration event notifiers and queue job handlers.
+The same instance must be injected both into the domain event dispatcher, plus the middleware that wraps command
+handlers and integration event consumers.
 
 You can (and should) dispose of this instance once the unit of work is complete. To do this, we provide middleware that
 allows you to setup and tear down the unit of work manager for each operation.
@@ -247,20 +256,14 @@ allows you to setup and tear down the unit of work manager for each operation.
 For example, we can use the setup before dispatch middleware on our command bus:
 
 ```php
-use App\Modules\Shared\Infrastructure\IlluminateUnitOfWork;
-use CloudCreativity\Modules\Bus\Middleware\SetupBeforeDispatch;
-use CloudCreativity\Modules\Infrastructure\UnitOfWork\UnitOfWorkManager;
+use CloudCreativity\Modules\Application\Bus\Middleware\SetupBeforeDispatch;
 
 $middleware->bind(
     SetupBeforeDispatch::class,
     fn () => new SetupBeforeDispatch(function (): Closure {
         // setup
-        $this->unitOfWorkManager = new UnitOfWorkManager(
-            new IlluminateUnitOfWork(
-                $this->dependencies->getDatabaseConnection(),
-            ),
-        );
-        // tear down        
+        $this->unitOfWorkManager = $this->dependencies->getUnitOfWorkManager();
+        // tear down
         return function (): void {
             $this->unitOfWorkManager = null;
         };
@@ -269,9 +272,8 @@ $middleware->bind(
 ```
 
 :::tip
-Middleware is documented in the relevant chapters for
-the [commands](../application/commands#middleware), [integration events](../application/events#middleware)
-and [queue jobs.](./queues#job-middleware)
+Middleware is documented in the relevant chapters for [commands](../application/commands#middleware)
+and [inbound integration events.](../application/events#inbound-middleware)
 :::
 
 ### Deferring Work
@@ -288,7 +290,7 @@ $manager->beforeCommit(function (): void {
 });
 ```
 
-It is also possible to defer work to after the unit of work is committed:
+It is also possible to defer work to after the transaction is committed:
 
 ```php
 $manager->afterCommit(function (): void {
@@ -302,18 +304,18 @@ When using the unit of work pattern, you **must** use the unit of work aware dom
 the dispatching of domain events with the unit of work manager.
 
 The unit of work manager is injected into the domain event dispatcher via its constructor. This is covered in
-the [domain event dispatching chapter](./domain-event-dispatchers), which also describes how to configure listeners and
-domain event middleware.
+the [domain event dispatching chapter](../application/domain-event-dispatchers.md), which also describes how to
+configure listeners.
 
 For the purposes of this chapter, we'll focus on how the domain event dispatcher works with the unit of work manager.
 
 ### Event Dispatch
 
-When the dispatcher is asked to emit a domain event (i.e. from an aggregate root or entity), it will defer the event
+When the dispatcher is asked to dispatch a domain event (i.e. from an aggregate root or entity), it will defer the event
 dispatching to before the unit of work commits. This means all listeners to that domain event are also deferred.
 
 For clarity, this means that **by default domain events and listeners occur before the unit of work commits**, i.e. any
-side-effects will occur _within_ the unit of work's transaction.
+side-effects will occur _within_ the unit of work's transaction boundary.
 
 ### Immediate Dispatch
 
@@ -325,7 +327,7 @@ To trigger those side effects immediately, you need to indicate that the domain 
 emitted. Implement the `OccursImmediately` interface on the domain event:
 
 ```php
-namespace App\Modules\EventManagement\BoundedContext\Domain\Events;
+namespace App\Modules\EventManagement\Domain\Events;
 
 use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
 use CloudCreativity\Modules\Domain\Events\OccursImmediately;
@@ -347,9 +349,9 @@ This immediate dispatch of the domain events allows listeners to be triggered im
 listeners can actually deferred? Indicate this by implementing the `DispatchBeforeCommit` interface on the listener:
 
 ```php
-namespace App\Modules\EventManagement\BoundedContext\Infrastructure\DomainEventListeners;
+namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Listeners;
 
-use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\DispatchBeforeCommit;
+use CloudCreativity\Modules\Application\Ports\Driven\UnitOfWork\DispatchBeforeCommit;
 
 final readonly class QueueAttendeeCancellationEmail implements
     DispatchBeforeCommit
@@ -373,9 +375,9 @@ To indicate that a listener should be deferred to after the unit of work commits
 interface:
 
 ```php
-namespace App\Modules\EventManagement\BoundedContext\Infrastructure\DomainEventListeners;
+namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Listeners;
 
-use CloudCreativity\Modules\Infrastructure\DomainEventDispatching\DispatchAfterCommit;
+use CloudCreativity\Modules\Application\Ports\Driven\UnitOfWork\DispatchAfterCommit;
 
 final readonly class QueueAttendeeCancellationEmail implements
     DispatchAfterCommit
@@ -394,25 +396,25 @@ Use an [Outbox pattern](./outbox-inbox) to ensure data consistency.
 
 ## Using Unit of Works
 
-The unit of work pattern can be implemented on command handlers, integration event notifiers and queue job handlers.
+The unit of work pattern can be implemented on command handlers and integration event consumers.
 There is a consistent approach to all - use a middleware that wraps the execution in a unit of work.
 
 As already noted, ensure this middleware is injected with your singleton unit of work manager instance.
 
 :::tip
-In all three scenarios, ensure the unit of work middleware is the last middleware to be executed before the handler.
+Ensure the unit of work middleware is the last middleware to be executed before the handler.
 This means you should implement it on the handler itself, rather than adding it as bus middleware.
 :::
 
 ### Command Handlers
 
-Use the `Bus\Middleware\ExecuteInUnitOfWork` middleware to wrap command handlers in a unit of work:
+Use the `ExecuteInUnitOfWork` middleware to wrap command handlers in a unit of work:
 
 ```php
-namespace App\Modules\EventManagement\BoundedContext\Application\Commands\CancelAttendeeTicket;
+namespace App\Modules\EventManagement\Application\UseCases\Commands\CancelAttendeeTicket;
 
-use App\Modules\EventManagement\BoundedContext\Infrastructure\Persistence\AttendeeRepositoryInterface;
-use CloudCreativity\Modules\Bus\Middleware\ExecuteInUnitOfWork;
+use App\Modules\EventManagement\Application\Ports\Driven\Persistence\AttendeeRepositoryInterface;
+use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;
 use CloudCreativity\Modules\Toolkit\Messages\DispatchThroughMiddleware;
 use CloudCreativity\Modules\Toolkit\Results\Result;
 
@@ -449,69 +451,28 @@ final readonly class CancelAttendeeTicketHandler implements
 }
 ```
 
-### Queue Job Handlers
-
-Use the `Infrastructure\Queue\Middleware\ExecuteInUnitOfWork` middleware to wrap queue job handlers in a unit of work.
-Note that in this scenario, the `DispatchThroughMiddleware` interface is also in the `Infrastructre\Queue` namespace:
-
-```php
-namespace App\Modules\EventManagement\BoundedContext\Infrastructure\Queue\RecalculateSalesAtEvent;
-
-use App\Modules\EventManagement\BoundedContext\Infrastructure\Persistence\AttendanceReportRepositoryInterface;
-use CloudCreativity\Modules\Infrastructure\Queue\DispatchThroughMiddleware;
-use CloudCreativity\Modules\Infrastructure\Queue\Middleware\ExecuteInUnitOfWork;
-use CloudCreativity\Modules\Toolkit\Result\Result;
-
-final readonly class RecalculateSalesAtEventHandler implements 
-    RecalculateSalesAtEventHandlerInterface,
-    DispatchThroughMiddleware
-{
-    public function __construct(private AttendanceReportRepositoryInterface $repository)
-    {
-    }
-
-    public function execute(RecalculateSalesAtEventJob $job): Result
-    {
-        $report = $this->repository->findOrCreate($job->eventId);
-        
-        $report->recalculate();
-        
-        $this->repository->save($report);
-        
-        return Result::ok();
-    }
-    
-    public function middleware(): array
-    {
-        return [
-            ExecuteInUnitOfWork::class,
-        ];
-    }
-}
-```
-
 ### Integration Event Handlers
 
-As explained in the [integration events chapter](../application/events), there are several strategies that can be used
-to handle inbound events.
+As explained in the [integration events chapter](../application/events#strategies), there are several strategies that
+can be used to handle inbound events.
 
-If you dispatch a command or queue job as a result of the inbound event, you do not need to worry about the unit of work
-on the inbound event handler. Instead, the unit of work should be implemented by the command or queue job handler.
+If you dispatch a command as a result of the inbound event, you do not need to worry about the unit of work
+on the inbound event handler. Instead, the unit of work should be implemented by the command handler.
 
 However, an alternative approach is to map the inbound integration event to a domain event. If using this approach, you
 will need to wrap the dispatch of the domain event in a unit of work. This ensures side effects are properly
 orchestrated by the unit of work manager and are atomic.
 
-This can be achieved via the `EventBus\Middleware\NotifyInUnitOfWork` middleware on the inbound event handler:
+This can be achieved via the `HandleInUnitOfWork` middleware on the inbound event handler:
 
 ```php
-namespace App\Modules\EventManagement\BoundedContext\Application\IntegrationEvents\Inbound;
+namespace App\Modules\EventManagement\Application\UseCases\InboundEvents;
 
-use App\Modules\EventManagement\BoundedContext\Domain\Events\SalesAtEventDidChange;
-use App\Modules\Ordering\Shared\IntegrationEvents\OrderWasFulfilled;
-use CloudCreativity\Modules\Domain\Events\DispatcherInterface;
-use CloudCreativity\Modules\EventBus\Middleware\NotifyInUnitOfWork;
+use App\Modules\EventManagement\Domain\Events\DispatcherInterface;
+use App\Modules\EventManagement\Domain\Events\SalesAtEventDidChange;
+use CloudCreativity\Modules\Application\InboundEventBus\Middleware\HandleInUnitOfWork;
 use CloudCreativity\Modules\Toolkit\Messages\DispatchThroughMiddleware;
+use VendorName\Ordering\Shared\IntegrationEvents\V1\OrderWasFulfilled;
 
 final readonly class OrderWasFulfilledHandler implements
     DispatchThroughMiddleware
@@ -531,7 +492,8 @@ final readonly class OrderWasFulfilledHandler implements
     public function middleware(): array
     {
         return [
-            NotifyInUnitOfWork::class,
+            // the last middleware to be executed before the event is handled
+            HandleInUnitOfWork::class,
         ];
     }
 }

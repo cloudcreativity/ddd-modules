@@ -60,11 +60,11 @@ export default defineConfig({
                     text: 'Infrastructure Layer',
                     collapsed: false,
                     items: [
-                        {text: 'Asynchronous Processing', link: '/guide/infrastructure/queues'},
                         {text: 'Exception Reporting', link: '/guide/infrastructure/exception-reporting'},
                         {text: 'Outbox & Inbox', link: '/guide/infrastructure/outbox-inbox'},
                         {text: 'Persistence', link: '/guide/infrastructure/persistence'},
                         {text: 'Publishing Events', link: '/guide/infrastructure/publishing-events'},
+                        {text: 'Queues', link: '/guide/infrastructure/queues'},
                         {text: 'Units of Work', link: '/guide/infrastructure/units-of-work'},
                     ],
                 },
