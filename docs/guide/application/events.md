@@ -198,10 +198,47 @@ final readonly class PublishAttendeeTicketWasCancelled
 }
 ```
 
-:::tip
-You can improve the example publishing of outbound integration events by domain event listeners using an
-[Outbox pattern.](../infrastructure/outbox-inbox)
-:::
+### Transactional Outbox
+
+If you are using [Units of Work](./units-of-work), the above example can be improved by using a [Transactional Outbox](../infrastructure/outbox) pattern.
+
+Instead of immediately publishing the integration event to the outbound port, the event is stored in an outbox for later publishing. This ensures the publishing of the event is atomic, as it will only be stored in the outbox if the unit of work is committed.
+
+In this scenario, the above listener would be changed to use the outbox instead:
+
+```php
+namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Listeners;
+
+use App\Modules\EventManagement\Application\Ports\Driven\OutboundEvents\Outbox;
+use App\Modules\EventManagement\Domain\Events\AttendeeTicketWasCancelled;
+use CloudCreativity\Modules\Toolkit\Identifiers\UuidFactoryInterface;
+use VendorName\EventManagement\Shared\IntegrationEvents\V1 as IntegrationEvents;
+
+final readonly class PublishAttendeeTicketWasCancelled
+{
+    public function __construct(
+        private UuidFactoryInterface $uuidFactory,
+        private Outbox $outbox,
+    ) {
+    }
+
+    public function handle(AttendeeTicketWasCancelled $event): void
+    {
+        $this->outbox->push(
+            new IntegrationEvents\AttendeeTicketWasCancelled(
+                uuid: $this->uuidFactory->uuid4(),
+                occurredAt: $event->occurredAt,
+                eventId: $event->eventId,
+                attendeeId: $event->attendeeId,
+                ticketId: $event->ticketId,
+                reason: $event->reason,
+            ),
+        );
+    }
+}
+```
+
+See the [Transactional Outbox](../infrastructure/outbox) chapter for an explanation of this approach.
 
 ## Inbound Events
 
@@ -545,9 +582,107 @@ In a modular monolith or a microservice with multiple bounded contexts, you will
 correct bounded context. Or notify all bounded contexts of the inbound event and leave it up to each to decide if they
 need to react to it.
 
+### Inbox
+
+As your application grows in complexity and scale, maintaining consistency of state within bounded contexts gets
+increasingly challenging. Approaches that give you more control over processing rates and handling errors can help to
+maintain consistency.
+
+We can improve the previous example by using an **Inbox Pattern**. Instead of immediately processing an inbound
+integration event, we will instead store the event in an inbox. This separates receiving the event from processing it.
+
+This approach delivers a number of benefits:
+
+1. The rate at which inbound events are processed can be controlled by the receiving bounded context, rather than the
+   infrastructure component that delivers events to our application.
+2. We can prevent an event that has previously been processed from being processed again, by only storing an event once
+   in the inbox. We need to do this, because we cannot assume that the inbound event will only ever be sent to our
+   application once.
+3. Our inbox processor can handle processing failures, and is therefore in control of retry and back-off strategies.
+
+The following examples illustrate how you could implement this. This package does not provide an inbox implementation,
+because the implementation is too dependent on the requirements of your use case.
+
+Firstly, our application layer will need an inbox driving port. This will allow events to be pushed into the inbox. For
+example:
+
+```php
+namespace App\Modules\EventManagement\Application\Ports\Driving\InboundEvents;
+
+use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
+
+interface Inbox
+{
+    public function push(IntegrationEventInterface $event): void;
+}
+```
+
+The adapter implementation would then check if the event has been received before, and if not, persist the event in the
+inbox. For both these actions - checking whether it exists, and storing - the adapter will need a driven port. That
+might look like this:
+
+```php
+namespace App\Modules\EventManagement\Application\Ports\Driven\Inbox;
+
+use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
+
+interface InboxRepository
+{
+    public function exists(IntegrationEvent $event): bool;
+    
+    public function store(IntegrationEventInterface $event): void;
+}
+```
+
+Your infrastructure layer will then need to implement an inbox processor. This will need to pull unprocessed events from
+the inbox, and then dispatch them to the inbound event bus driving port in the application layer. This processing
+component will need to handle retry and back-off when processing fails.
+
+This means we can now update the previous controller example to use the inbox instead:
+
+```php
+namespace App\Http\Controllers\Api\PubSub;
+
+use App\Modules\EventManagement\Application\Ports\Driving\InboundEvents\Inbox;
+use VendorName\Ordering\Shared\IntegrationEvents\V1\Serializers\JsonSerializerInterface;
+
+class InboundEventController extends Controller
+{
+    public function __invoke(
+        Request $request,
+        Inbox $inbox,
+        JsonSerializerInterface $serializer,
+    ) {
+        $validated = $request->validate([
+            // ... validation rules
+        ]);
+
+        // see the section on serialization patterns
+        /** @var IntegrationEventInterface $event */
+        $event = $serializer->deserialize($validated['data']);
+
+        $inbox->push($event);
+
+        return response()->noContent();
+    }
+}
+```
+
 :::tip
-You can improve the example processing of inbound integration events by your presentation and delivery layer by using
-an [Inbox pattern.](../infrastructure/outbox-inbox)
+This example implements an inbox within our bounded context's application layer. What should you do if you have multiple
+bounded contexts e.g. in the same microservice?
+
+You have several choices:
+
+1. Each bounded context could have its own inbox. When the controller receives the inbound event, it pushes it into the
+   inboxes of all bounded contexts.
+2. You implement an inbox in the presentation and delivery layer. When the inbox processes an event, it dispatches it to
+   each bounded context.
+3. A combination of the two - i.e. place the event in an initial inbox, that then pushes the event into each bounded
+   context's inbox.
+
+The advantage with each bounded context having its own inbox is processing can then be tuned for each bounded context's
+requirements. It also allows for different retry and back-off policies.
 :::
 
 ## Inbound Middleware

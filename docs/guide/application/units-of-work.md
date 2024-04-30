@@ -386,7 +386,7 @@ If any work pushed to after the unit of work has committed fails, it is not poss
 means that the domain's new state will be committed, but your side effect has not occurred. This could lead to data
 inconsistencies.
 
-Use an [Outbox pattern](../infrastructure/outbox-inbox) to ensure data consistency.
+Use an [Outbox pattern](../infrastructure/outbox) to ensure data consistency.
 :::
 
 ## Using Unit of Works

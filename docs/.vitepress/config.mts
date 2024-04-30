@@ -62,9 +62,9 @@ export default defineConfig({
                     collapsed: false,
                     items: [
                         {text: 'Exception Reporting', link: '/guide/infrastructure/exception-reporting'},
-                        {text: 'Outbox & Inbox', link: '/guide/infrastructure/outbox-inbox'},
                         {text: 'Persistence', link: '/guide/infrastructure/persistence'},
                         {text: 'Publishing Events', link: '/guide/infrastructure/publishing-events'},
+                        {text: 'Transactional Outbox', link: '/guide/infrastructure/outbox'},
                         {text: 'Queues', link: '/guide/infrastructure/queues'},
                     ],
                 },

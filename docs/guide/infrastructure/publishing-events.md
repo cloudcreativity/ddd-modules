@@ -23,6 +23,12 @@ interface OutboundEventBusInterface extends EventPublisherInterface
 }
 ```
 
+:::warning
+We strongly advocate for using a [transactional outbox](./outbox) pattern for outbound integration events. I.e. place
+the outbound integration event in an outbox, which when processed then publishes the event. See the linked chapter for
+details.
+:::
+
 We provide several adapter classes for this port. These allow you either to publish events via closures, or by
 class-based handlers.
 
