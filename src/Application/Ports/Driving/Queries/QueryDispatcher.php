@@ -14,7 +14,7 @@ namespace CloudCreativity\Modules\Application\Ports\Driving\Queries;
 use CloudCreativity\Modules\Application\Messages\QueryInterface;
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
-interface QueryDispatcherInterface
+interface QueryDispatcher
 {
     /**
      * Dispatch the given query.

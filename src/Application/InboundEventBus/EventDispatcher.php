@@ -12,12 +12,12 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\InboundEventBus;
 
 use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
-use CloudCreativity\Modules\Application\Ports\Driving\InboundEvents\EventDispatcherInterface;
+use CloudCreativity\Modules\Application\Ports\Driving\InboundEvents\EventDispatcher as EventPort;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 
-class EventDispatcher implements EventDispatcherInterface
+class EventDispatcher implements EventPort
 {
     /**
      * @var array<string|callable>

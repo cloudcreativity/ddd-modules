@@ -13,7 +13,7 @@ namespace CloudCreativity\Modules\Application\Ports\Driven\Queue;
 
 use CloudCreativity\Modules\Application\Messages\CommandInterface;
 
-interface QueueInterface
+interface Queue
 {
     /**
      * Push a command on to the queue.

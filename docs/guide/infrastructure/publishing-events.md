@@ -16,9 +16,9 @@ The following is an example port:
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus;
 
-use CloudCreativity\Modules\Application\Ports\Driven\OutboundEventBus\EventPublisherInterface;
+use CloudCreativity\Modules\Application\Ports\Driven\OutboundEventBus\EventPublisher;
 
-interface OutboundEventBusInterface extends EventPublisherInterface
+interface OutboundEventBusInterface extends EventPublisher
 {
 }
 ```
@@ -264,7 +264,7 @@ namespace CloudCreativity\Modules\Application\Ports\Driven\OutboundEventBus;
 
 use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
 
-interface EventPublisherInterface
+interface EventPublisher
 {
     /**
      * Publish an outbound integration event.

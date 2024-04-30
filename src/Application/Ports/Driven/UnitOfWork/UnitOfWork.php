@@ -13,7 +13,7 @@ namespace CloudCreativity\Modules\Application\Ports\Driven\UnitOfWork;
 
 use Closure;
 
-interface UnitOfWorkInterface
+interface UnitOfWork
 {
     /**
      * Execute the callback in a transaction.

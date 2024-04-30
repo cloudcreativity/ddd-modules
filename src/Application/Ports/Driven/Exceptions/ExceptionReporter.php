@@ -9,11 +9,11 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Application\Ports\Driven\Log;
+namespace CloudCreativity\Modules\Application\Ports\Driven\Exceptions;
 
 use Throwable;
 
-interface ExceptionReporterInterface
+interface ExceptionReporter
 {
     /**
      * Report the exception.

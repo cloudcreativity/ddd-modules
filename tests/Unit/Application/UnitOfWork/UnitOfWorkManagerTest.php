@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Application\UnitOfWork;
 
 use Closure;
-use CloudCreativity\Modules\Application\Ports\Driven\Log\ExceptionReporterInterface;
-use CloudCreativity\Modules\Application\Ports\Driven\UnitOfWork\UnitOfWorkInterface;
+use CloudCreativity\Modules\Application\Ports\Driven\Exceptions\ExceptionReporter;
+use CloudCreativity\Modules\Application\Ports\Driven\UnitOfWork\UnitOfWork;
 use CloudCreativity\Modules\Application\UnitOfWork\UnitOfWorkManager;
 use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -23,14 +23,14 @@ use RuntimeException;
 class UnitOfWorkManagerTest extends TestCase
 {
     /**
-     * @var UnitOfWorkInterface&MockObject
+     * @var UnitOfWork&MockObject
      */
-    private UnitOfWorkInterface&MockObject $unitOfWork;
+    private UnitOfWork&MockObject $unitOfWork;
 
     /**
-     * @var MockObject&ExceptionReporterInterface
+     * @var MockObject&ExceptionReporter
      */
-    private ExceptionReporterInterface&MockObject $reporter;
+    private ExceptionReporter&MockObject $reporter;
 
     /**
      * @var UnitOfWorkManager
@@ -45,8 +45,8 @@ class UnitOfWorkManagerTest extends TestCase
         parent::setUp();
 
         $this->manager = new UnitOfWorkManager(
-            $this->unitOfWork = $this->createMock(UnitOfWorkInterface::class),
-            $this->reporter = $this->createMock(ExceptionReporterInterface::class),
+            $this->unitOfWork = $this->createMock(UnitOfWork::class),
+            $this->reporter = $this->createMock(ExceptionReporter::class),
         );
     }
 

@@ -13,7 +13,7 @@ namespace CloudCreativity\Modules\Application\Ports\Driven\OutboundEventBus;
 
 use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
 
-interface EventPublisherInterface
+interface EventPublisher
 {
     /**
      * Publish an outbound integration event.

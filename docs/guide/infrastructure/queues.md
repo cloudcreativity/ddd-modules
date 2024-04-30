@@ -17,9 +17,9 @@ We do this by defining an interface in our application's driven ports:
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driven\Queue;
 
-use CloudCreativity\Modules\Application\Ports\Driven\Queue\QueueInterface as Port;
+use CloudCreativity\Modules\Application\Ports\Driven\Queue\Queue as Port;
 
-interface QueueInterface extends Port
+interface Queue extends Port
 {
 }
 ```
@@ -55,9 +55,9 @@ In this scenario, define another driven port in your application layer:
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driven\Queue;
 
-use CloudCreativity\Modules\Application\Ports\Driven\Queue\QueueInterface as Port;
+use CloudCreativity\Modules\Application\Ports\Driven\Queue\Queue as Port;
 
-interface InternalQueueInterface extends Port
+interface InternalQueue extends Port
 {
 }
 ```
@@ -82,11 +82,11 @@ Define a queue adapter by extending this class:
 ```php
 namespace App\Modules\EventManagement\Infrastructure\Queue;
 
-use App\Modules\EventManagement\Application\Ports\Driven\Queue\QueueInterface;
+use App\Modules\EventManagement\Application\Ports\Driven\Queue\Queue;
 use CloudCreativity\Modules\Infrastructure\Queue\ClosureQueue;
 
 final class QueueAdapter extends ClosureQueue
-    implements QueueInterface
+    implements Queue
 {
 }
 ```
@@ -96,7 +96,7 @@ Then you can create the adapter by providing it with the default closure for que
 ```php
 namespace App\Modules\EventManagement\Infrastructure\Queue;
 
-use App\Modules\EventManagement\Application\Ports\Driven\Queue\QueueInterface;
+use App\Modules\EventManagement\Application\Ports\Driven\Queue\Queue;
 use CloudCreativity\Modules\Infrastructure\Queue\Middleware\LogPushedToQueue;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 
@@ -107,7 +107,7 @@ final class QueueAdapterProvider
     ) {
     }
 
-    public function getQueue(): QueueInterface
+    public function getQueue(): Queue
     {
         $adapter = new QueueAdapter(
             fn: function (CommandInterface $command): void {
@@ -164,11 +164,11 @@ Define a queue adapter by extending this class:
 ```php
 namespace App\Modules\EventManagement\Infrastructure\Queue;
 
-use App\Modules\EventManagement\Application\Ports\Driven\Queue\QueueInterface;
+use App\Modules\EventManagement\Application\Ports\Driven\Queue\Queue;
 use CloudCreativity\Modules\Infrastructure\Queue\ComponentQueue;
 
 final class QueueAdapter extends ComponentQueue
-    implements QueueInterface
+    implements Queue
 {
 }
 ```
@@ -178,7 +178,7 @@ Then you can create the adapter by providing it with a default enqueuer for queu
 ```php
 namespace App\Modules\EventManagement\Infrastructure\Queue;
 
-use App\Modules\EventManagement\Application\Ports\Driven\Queue\QueueInterface;
+use App\Modules\EventManagement\Application\Ports\Driven\Queue\Queue;
 use CloudCreativity\Modules\Infrastructure\Queue\Middleware\LogPushedToQueue;
 use CloudCreativity\Modules\Infrastructure\Queue\EnqueuerContainer;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
@@ -190,7 +190,7 @@ final class QueueAdapterProvider
     ) {
     }
 
-    public function getQueue(): QueueInterface
+    public function getQueue(): Queue
     {
         $queue = new QueueAdapter(
             enqueuers: new EnqueuerContainer(
@@ -265,7 +265,7 @@ namespace CloudCreativity\Modules\Application\Ports\Driven\Queue;
 
 use CloudCreativity\Modules\Application\Messages\CommandInterface;
 
-interface QueueInterface
+interface Queue
 {
     /**
      * Push a command on to the queue.

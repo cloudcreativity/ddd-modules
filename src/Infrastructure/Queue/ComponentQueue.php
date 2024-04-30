@@ -12,12 +12,12 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Infrastructure\Queue;
 
 use CloudCreativity\Modules\Application\Messages\CommandInterface;
-use CloudCreativity\Modules\Application\Ports\Driven\Queue\QueueInterface;
+use CloudCreativity\Modules\Application\Ports\Driven\Queue\Queue;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 
-class ComponentQueue implements QueueInterface
+class ComponentQueue implements Queue
 {
     /**
      * @var list<string|callable>

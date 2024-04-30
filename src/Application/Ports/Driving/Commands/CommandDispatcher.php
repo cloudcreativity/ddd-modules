@@ -14,7 +14,7 @@ namespace CloudCreativity\Modules\Application\Ports\Driving\Commands;
 use CloudCreativity\Modules\Application\Messages\CommandInterface;
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
-interface CommandDispatcherInterface
+interface CommandDispatcher
 {
     /**
      * Dispatch the given command.

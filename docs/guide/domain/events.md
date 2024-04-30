@@ -313,7 +313,7 @@ Our listener to do this might look like this:
 ```php
 namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Listeners;
 
-use App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus\EventPublisherInterface;
+use App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus\EventPublisher;
 use App\Modules\EventManagement\Domain\Events\AttendeeTicketWasCancelled;
 use VendorName\EventManagement\Shared\IntegrationEvents\V1 as IntegrationEvents;
 
@@ -321,7 +321,7 @@ final readonly class PublishAttendeeTicketWasCancelled
 {
     public function __construct(
         private UuidFactoryInterface $uuidFactory,
-        private EventPublisherInterface $publisher,
+        private EventPublisher $publisher,
     ) {
     }
 

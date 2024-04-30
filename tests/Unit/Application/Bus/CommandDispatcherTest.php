@@ -15,7 +15,7 @@ use CloudCreativity\Modules\Application\Bus\CommandDispatcher;
 use CloudCreativity\Modules\Application\Bus\CommandHandlerContainerInterface;
 use CloudCreativity\Modules\Application\Bus\CommandHandlerInterface;
 use CloudCreativity\Modules\Application\Messages\CommandInterface;
-use CloudCreativity\Modules\Application\Ports\Driven\Queue\QueueInterface;
+use CloudCreativity\Modules\Application\Ports\Driven\Queue\Queue;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -34,9 +34,9 @@ class CommandDispatcherTest extends TestCase
     private PipeContainerInterface&MockObject $middleware;
 
     /**
-     * @var MockObject&QueueInterface
+     * @var MockObject&Queue
      */
-    private QueueInterface&MockObject $queue;
+    private Queue&MockObject $queue;
 
     /**
      * @var CommandDispatcher
@@ -50,7 +50,7 @@ class CommandDispatcherTest extends TestCase
     {
         parent::setUp();
 
-        $this->queue = $this->createMock(QueueInterface::class);
+        $this->queue = $this->createMock(Queue::class);
 
         $this->dispatcher = new CommandDispatcher(
             handlers: $this->handlers = $this->createMock(CommandHandlerContainerInterface::class),

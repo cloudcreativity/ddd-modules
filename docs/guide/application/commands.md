@@ -149,9 +149,9 @@ We do this by defining an interface in our application's driving ports.
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driving\CommandBus;
 
-use CloudCreativity\Modules\Application\Ports\Driving\CommandBus\CommandDispatcherInterface;
+use CloudCreativity\Modules\Application\Ports\Driving\CommandBus\CommandDispatcher;
 
-interface CommandBusInterface extends CommandDispatcherInterface
+interface CommandBus extends CommandDispatcher
 {
 }
 ```

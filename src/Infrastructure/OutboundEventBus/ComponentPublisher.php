@@ -12,12 +12,12 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Infrastructure\OutboundEventBus;
 
 use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
-use CloudCreativity\Modules\Application\Ports\Driven\OutboundEventBus\EventPublisherInterface;
+use CloudCreativity\Modules\Application\Ports\Driven\OutboundEventBus\EventPublisher;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 
-class ComponentPublisher implements EventPublisherInterface
+class ComponentPublisher implements EventPublisher
 {
     /**
      * @var array<string|callable>

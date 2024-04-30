@@ -13,7 +13,7 @@ namespace CloudCreativity\Modules\Application\Ports\Driving\InboundEvents;
 
 use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
 
-interface EventDispatcherInterface
+interface EventDispatcher
 {
     /**
      * Dispatch an inbound integration event.

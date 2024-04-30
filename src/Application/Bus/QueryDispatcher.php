@@ -12,13 +12,13 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\Bus;
 
 use CloudCreativity\Modules\Application\Messages\QueryInterface;
-use CloudCreativity\Modules\Application\Ports\Driving\Queries\QueryDispatcherInterface;
+use CloudCreativity\Modules\Application\Ports\Driving\Queries\QueryDispatcher as QueryPort;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
-class QueryDispatcher implements QueryDispatcherInterface
+class QueryDispatcher implements QueryPort
 {
     /**
      * @var array<string|callable>

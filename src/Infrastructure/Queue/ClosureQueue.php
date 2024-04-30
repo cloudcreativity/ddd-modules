@@ -13,12 +13,12 @@ namespace CloudCreativity\Modules\Infrastructure\Queue;
 
 use Closure;
 use CloudCreativity\Modules\Application\Messages\CommandInterface;
-use CloudCreativity\Modules\Application\Ports\Driven\Queue\QueueInterface;
+use CloudCreativity\Modules\Application\Ports\Driven\Queue\Queue;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 
-class ClosureQueue implements QueueInterface
+class ClosureQueue implements Queue
 {
     /**
      * @var array<class-string<CommandInterface>, Closure>

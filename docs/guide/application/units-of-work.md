@@ -171,7 +171,7 @@ To implement a unit of work, you need an adapter in your infrastructure layer th
 ```php
 namespace CloudCreativity\Modules\Application\Ports\Driven\UnitOfWork;
 
-interface UnitOfWorkInterface
+interface UnitOfWork
 {
     /**
      * Execute the callback in a transaction.
@@ -191,11 +191,11 @@ implementation for Laravel could look like this:
 namespace App\Modules\Shared\Infrastructure;
 
 use Closure;
-use CloudCreativity\Modules\Application\Ports\Driven\UnitOfWork\UnitOfWorkInterface;
+use CloudCreativity\Modules\Application\Ports\Driven\UnitOfWork\UnitOfWork;
 use Illuminate\Database\ConnectionInterface;
 use Psr\Log\LoggerInterface;
 
-final readonly class IlluminateUnitOfWork implements UnitOfWorkInterface
+final readonly class IlluminateUnitOfWork implements UnitOfWork
 {
     public function __construct(private ConnectionInterface $db)
     {

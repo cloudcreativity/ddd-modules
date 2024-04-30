@@ -13,20 +13,20 @@ namespace CloudCreativity\Modules\Application\Bus;
 
 use Closure;
 use CloudCreativity\Modules\Application\Messages\CommandInterface;
-use CloudCreativity\Modules\Application\Ports\Driven\Queue\QueueInterface;
-use CloudCreativity\Modules\Application\Ports\Driving\Commands\CommandDispatcherInterface;
+use CloudCreativity\Modules\Application\Ports\Driven\Queue\Queue;
+use CloudCreativity\Modules\Application\Ports\Driving\Commands\CommandDispatcher as CommandPort;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 use RuntimeException;
 
-class CommandDispatcher implements CommandDispatcherInterface
+class CommandDispatcher implements CommandPort
 {
     /**
-     * @var null|QueueInterface|Closure(): QueueInterface
+     * @var null|Queue|Closure(): Queue
      */
-    private QueueInterface|Closure|null $queue;
+    private Queue|Closure|null $queue;
 
     /**
      * @var array<string|callable>
@@ -38,7 +38,7 @@ class CommandDispatcher implements CommandDispatcherInterface
      *
      * @param CommandHandlerContainerInterface $handlers
      * @param PipeContainerInterface|null $middleware
-     * @param null|Closure(): QueueInterface $queue
+     * @param null|Closure(): Queue $queue
      */
     public function __construct(
         private readonly CommandHandlerContainerInterface $handlers,

@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\UnitOfWork;
 
 use Closure;
-use CloudCreativity\Modules\Application\Ports\Driven\Log\ExceptionReporterInterface;
-use CloudCreativity\Modules\Application\Ports\Driven\UnitOfWork\UnitOfWorkInterface;
+use CloudCreativity\Modules\Application\Ports\Driven\Exceptions\ExceptionReporter;
+use CloudCreativity\Modules\Application\Ports\Driven\UnitOfWork\UnitOfWork;
 use RuntimeException;
 use Throwable;
 
@@ -42,12 +42,12 @@ final class UnitOfWorkManager implements UnitOfWorkManagerInterface
     /**
      * UnitOfWorkManager constructor.
      *
-     * @param UnitOfWorkInterface $unitOfWork
-     * @param ExceptionReporterInterface|null $reporter
+     * @param UnitOfWork $unitOfWork
+     * @param ExceptionReporter|null $reporter
      */
     public function __construct(
-        private readonly UnitOfWorkInterface $unitOfWork,
-        private readonly ?ExceptionReporterInterface $reporter = null,
+        private readonly UnitOfWork $unitOfWork,
+        private readonly ?ExceptionReporter $reporter = null,
     ) {
     }
 

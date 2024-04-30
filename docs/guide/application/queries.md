@@ -121,9 +121,9 @@ We do this by defining an interface in our application's driving ports:
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driving\QueryBus;
 
-use CloudCreativity\Modules\Application\Ports\Driving\Queries\QueryDispatcherInterface;
+use CloudCreativity\Modules\Application\Ports\Driving\Queries\QueryDispatcher;
 
-interface QueryBusInterface extends QueryDispatcherInterface
+interface QueryBusInterface extends QueryDispatcher
 {
 }
 ```

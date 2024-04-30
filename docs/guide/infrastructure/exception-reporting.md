@@ -59,11 +59,11 @@ try {
 This package provides a driven port in the application layer that allows that layer to report exceptions:
 
 ```php
-namespace CloudCreativity\Modules\Application\Ports\Driven\Log;
+namespace CloudCreativity\Modules\Application\Ports\Driven\Exceptions;
 
 use Throwable;
 
-interface ExceptionReporterInterface
+interface ExceptionReporter
 {
     /**
      * Report the exception.
@@ -84,14 +84,14 @@ For example, it is easy to implement this port in Laravel as it already provides
 implementation looks like this:
 
 ```php
-namespace App\Modules\Shared\Infrastructure\Log;
+namespace App\Modules\Shared\Infrastructure\Exceptions;
 
-use CloudCreativity\Modules\Application\Ports\Driven\Log\ExceptionReporterInterface;
+use CloudCreativity\Modules\Application\Ports\Driven\Exceptions\ExceptionReporter;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Throwable;
 
 final readonly class ExceptionReporterAdapter implements 
-    ExceptionReporterInterface
+    ExceptionReporter
 {
     public function __construct(private ExceptionHandler $handler)
     {
