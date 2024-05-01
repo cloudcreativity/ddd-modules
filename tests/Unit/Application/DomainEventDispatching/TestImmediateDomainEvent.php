@@ -11,16 +11,16 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Application\DomainEventDispatching;
 
-use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
-use CloudCreativity\Modules\Domain\Events\OccursImmediately;
+use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
+use CloudCreativity\Modules\Contracts\Domain\Events\OccursImmediately;
 use DateTimeImmutable;
 
-class TestImmediateDomainEvent implements DomainEventInterface, OccursImmediately
+class TestImmediateDomainEvent implements DomainEvent, OccursImmediately
 {
     /**
      * @inheritDoc
      */
-    public function occurredAt(): DateTimeImmutable
+    public function getOccurredAt(): DateTimeImmutable
     {
         return new DateTimeImmutable();
     }

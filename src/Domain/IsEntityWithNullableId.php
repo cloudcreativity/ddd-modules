@@ -11,10 +11,11 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Domain;
 
+use CloudCreativity\Modules\Contracts\Domain\Entity;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Toolkit\Contracts;
 
-trait EntityWithNullableIdTrait
+trait IsEntityWithNullableId
 {
     /**
      * @var Identifier|null
@@ -63,7 +64,7 @@ trait EntityWithNullableIdTrait
     /**
      * @inheritDoc
      */
-    public function is(?EntityInterface $other): bool
+    public function is(?Entity $other): bool
     {
         if ($other instanceof $this && $this->id) {
             return $this->id->is(
@@ -77,7 +78,7 @@ trait EntityWithNullableIdTrait
     /**
      * @inheritDoc
      */
-    public function isNot(?EntityInterface $other): bool
+    public function isNot(?Entity $other): bool
     {
         return !$this->is($other);
     }

@@ -9,11 +9,11 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Domain;
+namespace CloudCreativity\Modules\Contracts\Domain;
 
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 
-interface EntityInterface
+interface Entity
 {
     /**
      * Get the entity's identifier.
@@ -25,16 +25,16 @@ interface EntityInterface
     /**
      * Is this entity the same as the provided entity?
      *
-     * @param EntityInterface|null $other
+     * @param Entity|null $other
      * @return bool
      */
-    public function is(?EntityInterface $other): bool;
+    public function is(?Entity $other): bool;
 
     /**
      * Is this entity not the same as the provided entity?
      *
-     * @param EntityInterface|null $other
+     * @param Entity|null $other
      * @return bool
      */
-    public function isNot(?EntityInterface $other): bool;
+    public function isNot(?Entity $other): bool;
 }

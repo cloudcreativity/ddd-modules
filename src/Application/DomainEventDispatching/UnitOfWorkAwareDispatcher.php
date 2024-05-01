@@ -13,8 +13,8 @@ namespace CloudCreativity\Modules\Application\DomainEventDispatching;
 
 use CloudCreativity\Modules\Application\UnitOfWork\UnitOfWorkManagerInterface;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
-use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
-use CloudCreativity\Modules\Domain\Events\OccursImmediately;
+use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
+use CloudCreativity\Modules\Contracts\Domain\Events\OccursImmediately;
 
 class UnitOfWorkAwareDispatcher extends Dispatcher implements DispatcherInterface
 {
@@ -36,7 +36,7 @@ class UnitOfWorkAwareDispatcher extends Dispatcher implements DispatcherInterfac
     /**
      * @inheritDoc
      */
-    public function dispatch(DomainEventInterface $event): void
+    public function dispatch(DomainEvent $event): void
     {
         if ($event instanceof OccursImmediately) {
             $this->dispatchNow($event);
@@ -51,11 +51,11 @@ class UnitOfWorkAwareDispatcher extends Dispatcher implements DispatcherInterfac
     /**
      * Execute the listener or queue it in the unit of work manager.
      *
-     * @param DomainEventInterface $event
+     * @param DomainEvent $event
      * @param EventHandler $listener
      * @return void
      */
-    protected function execute(DomainEventInterface $event, EventHandler $listener): void
+    protected function execute(DomainEvent $event, EventHandler $listener): void
     {
         if ($listener->beforeCommit()) {
             $this->unitOfWorkManager->beforeCommit(static function () use ($event, $listener): void {

@@ -11,9 +11,10 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Domain;
 
+use CloudCreativity\Modules\Contracts\Domain\Entity;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 
-trait EntityTrait
+trait IsEntity
 {
     /**
      * @var Identifier
@@ -31,7 +32,7 @@ trait EntityTrait
     /**
      * @inheritDoc
      */
-    public function is(?EntityInterface $other): bool
+    public function is(?Entity $other): bool
     {
         if ($other instanceof $this) {
             return $this->id->is(
@@ -45,7 +46,7 @@ trait EntityTrait
     /**
      * @inheritDoc
      */
-    public function isNot(?EntityInterface $other): bool
+    public function isNot(?Entity $other): bool
     {
         return !$this->is($other);
     }

@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Application\DomainEventDispatching\Middleware;
 
 use CloudCreativity\Modules\Application\DomainEventDispatching\Middleware\LogDomainEventDispatch;
-use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
+use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 use DateTimeImmutable;
 use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -28,9 +28,9 @@ class LogDomainEventDispatchTest extends TestCase
     private LoggerInterface $logger;
 
     /**
-     * @var DomainEventInterface
+     * @var DomainEvent
      */
-    private DomainEventInterface $event;
+    private DomainEvent $event;
 
     /**
      * @return void
@@ -48,11 +48,11 @@ class LogDomainEventDispatchTest extends TestCase
          * if we automatically logged context there would be no way for the developer
          * to prevent sensitive properties from being logged.
          */
-        $this->event = new class () implements DomainEventInterface {
+        $this->event = new class () implements DomainEvent {
             public string $foo = 'foo';
             public string $bar = 'bar';
 
-            public function occurredAt(): DateTimeImmutable
+            public function getOccurredAt(): DateTimeImmutable
             {
                 return new DateTimeImmutable();
             }
@@ -76,7 +76,7 @@ class LogDomainEventDispatchTest extends TestCase
             });
 
         $middleware = new LogDomainEventDispatch($this->logger);
-        $middleware($this->event, function (DomainEventInterface $received) {
+        $middleware($this->event, function (DomainEvent $received) {
             $this->assertSame($this->event, $received);
         });
 
@@ -103,7 +103,7 @@ class LogDomainEventDispatchTest extends TestCase
             });
 
         $middleware = new LogDomainEventDispatch($this->logger, LogLevel::NOTICE, LogLevel::WARNING);
-        $middleware($this->event, function (DomainEventInterface $received) {
+        $middleware($this->event, function (DomainEvent $received) {
             $this->assertSame($this->event, $received);
         });
 

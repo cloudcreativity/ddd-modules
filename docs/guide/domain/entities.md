@@ -19,13 +19,13 @@ To define an entity, implement the `EntityInterface`. For example:
 ```php
 namespace App\Modules\EventManagement\Domain;
 
+use CloudCreativity\Modules\Contracts\Domain\Entity;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
-use CloudCreativity\Modules\Domain\EntityInterface;
-use CloudCreativity\Modules\Domain\EntityTrait;
+use CloudCreativity\Modules\Domain\IsEntity;
 
-class BookableEvent implements EntityInterface
+class BookableEvent implements Entity
 {
-    use EntityTrait;
+    use IsEntity;
 
     public function __construct(
         Identifier $id,
@@ -48,13 +48,13 @@ layer before they are persisted for the first time. In this case, use the `Entit
 `EntityTrait`, for example:
 
 ```php
+use CloudCreativity\Modules\Contracts\Domain\Entity;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
-use CloudCreativity\Modules\Domain\EntityInterface;
-use CloudCreativity\Modules\Domain\EntityWithNullableIdTrait;
+use CloudCreativity\Modules\Domain\IsEntityWithNullableId;
 
-class BookableEvent implements EntityInterface
+class BookableEvent implements Entity
 {
-    use EntityWithNullableIdTrait;
+    use IsEntityWithNullableId;
 
     public function __construct(
         private readonly ?Identifier $id,
@@ -79,13 +79,13 @@ To define an aggregate root, use the `AggregateInterface`:
 namespace App\Modules\EventManagement\Domain;
 
 use App\Modules\EventManagement\Domain\ValueObjects\Customer;
+use CloudCreativity\Modules\Contracts\Domain\Aggregate;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
-use CloudCreativity\Modules\Domain\AggregateInterface;
-use CloudCreativity\Modules\Domain\EntityTrait;
+use CloudCreativity\Modules\Domain\IsEntity;
 
-class Attendee implements AggregateInterface
+class Attendee implements Aggregate
 {
-    use EntityTrait;
+    use IsEntity;
 
     public function __construct(
         private readonly Identifier $id,

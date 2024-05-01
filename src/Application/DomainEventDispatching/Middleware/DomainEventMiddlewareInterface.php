@@ -12,16 +12,16 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\DomainEventDispatching\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
+use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 
 interface DomainEventMiddlewareInterface
 {
     /**
      * Handle the domain event.
      *
-     * @param DomainEventInterface $event
-     * @param Closure(DomainEventInterface): void $next
+     * @param DomainEvent $event
+     * @param Closure(DomainEvent): void $next
      * @return void
      */
-    public function __invoke(DomainEventInterface $event, Closure $next): void;
+    public function __invoke(DomainEvent $event, Closure $next): void;
 }

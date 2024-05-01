@@ -14,7 +14,7 @@ namespace CloudCreativity\Modules\Application\DomainEventDispatching;
 use Closure;
 use CloudCreativity\Modules\Application\UnitOfWork\DispatchAfterCommit;
 use CloudCreativity\Modules\Application\UnitOfWork\DispatchBeforeCommit;
-use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
+use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 
 final class EventHandler
 {
@@ -57,10 +57,10 @@ final class EventHandler
     /**
      * Execute the listener.
      *
-     * @param DomainEventInterface $event
+     * @param DomainEvent $event
      * @return void
      */
-    public function __invoke(DomainEventInterface $event): void
+    public function __invoke(DomainEvent $event): void
     {
         if ($this->listener instanceof Closure) {
             ($this->listener)($event);

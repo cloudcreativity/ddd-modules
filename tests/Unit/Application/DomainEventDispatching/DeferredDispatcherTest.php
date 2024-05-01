@@ -15,7 +15,7 @@ use Closure;
 use CloudCreativity\Modules\Application\DomainEventDispatching\DeferredDispatcher;
 use CloudCreativity\Modules\Application\DomainEventDispatching\ListenerContainerInterface;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
-use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
+use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -120,7 +120,7 @@ class DeferredDispatcherTest extends TestCase
     {
         $sequence = [];
         $event1 = new TestDomainEvent();
-        $event2 = $this->createMock(DomainEventInterface::class);
+        $event2 = $this->createMock(DomainEvent::class);
 
         $listener1 = $this->createMock(TestListener::class);
         $listener2 = $this->createMock(TestListener::class);
@@ -194,7 +194,7 @@ class DeferredDispatcherTest extends TestCase
     {
         $sequence = [];
         $event1 = new TestDomainEvent();
-        $event2 = $this->createMock(DomainEventInterface::class);
+        $event2 = $this->createMock(DomainEvent::class);
 
         $listener1 = $this->createMock(TestListener::class);
         $listener2 = $this->createMock(TestListener::class);
@@ -317,7 +317,7 @@ class DeferredDispatcherTest extends TestCase
     {
         $sequence = [];
         $event1 = new TestDomainEvent();
-        $event2 = $this->createMock(DomainEventInterface::class);
+        $event2 = $this->createMock(DomainEvent::class);
         $expected = new \LogicException('Boom!');
 
         $listener1 = $this->createMock(TestListener::class);
@@ -380,7 +380,7 @@ class DeferredDispatcherTest extends TestCase
      */
     public function testNoListeners(): void
     {
-        $event = $this->createMock(DomainEventInterface::class);
+        $event = $this->createMock(DomainEvent::class);
         $this->listeners->expects($this->never())->method($this->anything());
         $this->dispatcher->dispatch($event);
     }
@@ -394,12 +394,12 @@ class DeferredDispatcherTest extends TestCase
         $event2 = new TestImmediateDomainEvent();
         $event3 = new TestImmediateDomainEvent();
 
-        $a = function ($actual, Closure $next) use ($event1, $event2): DomainEventInterface {
+        $a = function ($actual, Closure $next) use ($event1, $event2): DomainEvent {
             $this->assertSame($event1, $actual);
             return $next($event2);
         };
 
-        $b = function ($actual, Closure $next) use ($event2, $event3): DomainEventInterface {
+        $b = function ($actual, Closure $next) use ($event2, $event3): DomainEvent {
             $this->assertSame($event2, $actual);
             return $next($event3);
         };

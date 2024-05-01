@@ -13,7 +13,7 @@ namespace CloudCreativity\Modules\Application\DomainEventDispatching;
 
 use Closure;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
-use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
+use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 use Generator;
@@ -78,7 +78,7 @@ class Dispatcher implements DispatcherInterface
     /**
      * @inheritDoc
      */
-    public function dispatch(DomainEventInterface $event): void
+    public function dispatch(DomainEvent $event): void
     {
         $this->dispatchNow($event);
     }
@@ -86,10 +86,10 @@ class Dispatcher implements DispatcherInterface
     /**
      * Dispatch the events immediately.
      *
-     * @param DomainEventInterface $event
+     * @param DomainEvent $event
      * @return void
      */
-    protected function dispatchNow(DomainEventInterface $event): void
+    protected function dispatchNow(DomainEvent $event): void
     {
         $pipeline = PipelineBuilder::make($this->middleware)
             ->through($this->pipes)
@@ -103,7 +103,7 @@ class Dispatcher implements DispatcherInterface
      */
     private function dispatcher(): Closure
     {
-        return function (DomainEventInterface $event): DomainEventInterface {
+        return function (DomainEvent $event): DomainEvent {
             foreach ($this->cursor($event::class) as $listener) {
                 $this->execute($event, $listener);
             }
@@ -133,11 +133,11 @@ class Dispatcher implements DispatcherInterface
     /**
      * Execute the listener.
      *
-     * @param DomainEventInterface $event
+     * @param DomainEvent $event
      * @param EventHandler $listener
      * @return void
      */
-    protected function execute(DomainEventInterface $event, EventHandler $listener): void
+    protected function execute(DomainEvent $event, EventHandler $listener): void
     {
         $listener($event);
     }

@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Domain;
 
+use CloudCreativity\Modules\Contracts\Domain\Entity;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
-use CloudCreativity\Modules\Domain\EntityInterface;
 use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
 use PHPUnit\Framework\TestCase;
 
@@ -85,7 +85,7 @@ class EntityTest extends TestCase
             $id1 = $this->createMock(Identifier::class),
         );
 
-        $b = $this->createMock(EntityInterface::class);
+        $b = $this->createMock(Entity::class);
         $b->method('getId')->willReturn($this->createMock(Identifier::class));
 
         $id1

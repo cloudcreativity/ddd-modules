@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Domain\Events;
+namespace CloudCreativity\Modules\Contracts\Domain\Events;
 
 interface OccursImmediately
 {

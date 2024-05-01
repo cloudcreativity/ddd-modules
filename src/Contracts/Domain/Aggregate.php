@@ -9,8 +9,8 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Domain;
+namespace CloudCreativity\Modules\Contracts\Domain;
 
-interface AggregateInterface extends EntityInterface
+interface Aggregate extends Entity
 {
 }

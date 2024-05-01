@@ -323,11 +323,11 @@ emitted. Implement the `OccursImmediately` interface on the domain event:
 ```php
 namespace App\Modules\EventManagement\Domain\Events;
 
-use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
-use CloudCreativity\Modules\Domain\Events\OccursImmediately;
+use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
+use CloudCreativity\Modules\Contracts\Domain\Events\OccursImmediately;
 
 final readonly class AttendeeTicketCancelled implements
-    DomainEventInterface,
+    DomainEvent,
     OccursImmediately
 {
     // ...

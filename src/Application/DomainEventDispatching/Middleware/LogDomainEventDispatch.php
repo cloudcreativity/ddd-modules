@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\DomainEventDispatching\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
+use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
@@ -36,7 +36,7 @@ class LogDomainEventDispatch implements DomainEventMiddlewareInterface
     /**
      * @inheritDoc
      */
-    public function __invoke(DomainEventInterface $event, Closure $next): void
+    public function __invoke(DomainEvent $event, Closure $next): void
     {
         $name = ModuleBasename::tryFrom($event)?->toString() ?? $event::class;
 

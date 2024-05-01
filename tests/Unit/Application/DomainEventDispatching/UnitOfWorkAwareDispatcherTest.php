@@ -18,7 +18,7 @@ use CloudCreativity\Modules\Application\UnitOfWork\DispatchAfterCommit;
 use CloudCreativity\Modules\Application\UnitOfWork\DispatchBeforeCommit;
 use CloudCreativity\Modules\Application\UnitOfWork\UnitOfWorkManagerInterface;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
-use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
+use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -156,7 +156,7 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
      */
     public function testItDoesNotDispatchImmediately(): void
     {
-        $event = $this->createMock(DomainEventInterface::class);
+        $event = $this->createMock(DomainEvent::class);
 
         $listener1 = $this->createMock(TestListener::class);
         $listener2 = $this->createMock(TestListener::class);
@@ -308,7 +308,7 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
      */
     public function testNoListeners(): void
     {
-        $event = $this->createMock(DomainEventInterface::class);
+        $event = $this->createMock(DomainEvent::class);
         $this->listeners->expects($this->never())->method($this->anything());
         $this->dispatcher->dispatch($event);
     }
@@ -322,12 +322,12 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
         $event2 = new TestImmediateDomainEvent();
         $event3 = new TestImmediateDomainEvent();
 
-        $a = function ($actual, Closure $next) use ($event1, $event2): DomainEventInterface {
+        $a = function ($actual, Closure $next) use ($event1, $event2): DomainEvent {
             $this->assertSame($event1, $actual);
             return $next($event2);
         };
 
-        $b = function ($actual, Closure $next) use ($event2, $event3): DomainEventInterface {
+        $b = function ($actual, Closure $next) use ($event2, $event3): DomainEvent {
             $this->assertSame($event2, $actual);
             return $next($event3);
         };

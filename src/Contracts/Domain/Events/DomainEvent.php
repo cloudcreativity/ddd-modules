@@ -9,16 +9,16 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Domain\Events;
+namespace CloudCreativity\Modules\Contracts\Domain\Events;
 
 use DateTimeImmutable;
 
-interface DomainEventInterface
+interface DomainEvent
 {
     /**
      * The date/time the event occurred.
      *
      * @return DateTimeImmutable
      */
-    public function occurredAt(): DateTimeImmutable;
+    public function getOccurredAt(): DateTimeImmutable;
 }

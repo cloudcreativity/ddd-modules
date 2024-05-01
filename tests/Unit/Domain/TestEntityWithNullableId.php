@@ -11,13 +11,13 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Domain;
 
+use CloudCreativity\Modules\Contracts\Domain\Entity;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
-use CloudCreativity\Modules\Domain\EntityInterface;
-use CloudCreativity\Modules\Domain\EntityWithNullableIdTrait;
+use CloudCreativity\Modules\Domain\IsEntityWithNullableId;
 
-class TestEntityWithNullableId implements EntityInterface
+class TestEntityWithNullableId implements Entity
 {
-    use EntityWithNullableIdTrait;
+    use IsEntityWithNullableId;
 
     /**
      * TestEntityWithNullableGuid constructor.

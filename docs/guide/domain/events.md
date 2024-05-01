@@ -44,10 +44,10 @@ namespace App\Modules\EventManagement\Domain\Events;
 
 use App\Modules\EventManagement\Domain\Enums\CancellationReasonEnum;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
-use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
+use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 
 final readonly class AttendeeTicketWasCancelled implements
-    DomainEventInterface
+    DomainEvent
 {
     public function __construct(
         public Identifier $eventId,
@@ -94,7 +94,7 @@ interface in your domain layer:
 ```php
 namespace App\Modules\EventManagement\Domain\Events;
 
-use CloudCreativity\Modules\Domain\Events\DispatcherInterface as BaseDispatcher;
+use CloudCreativity\Modules\Contracts\Domain\Events\Dispatcher as BaseDispatcher;
 
 interface DispatcherInterface extends BaseDispatcher
 {
@@ -163,11 +163,14 @@ Within an entity or aggregate, you can now dispatch an event as follows:
 ```php
 namespace App\Modules\EventManagement\Domain;
 
-use App\Modules\EventManagement\Domain\{Enums\CancellationReasonEnum,Events\AttendeeTicketWasCancelled,};
+use App\Modules\EventManagement\Domain\{
+   Enums\CancellationReasonEnum,
+   Events\AttendeeTicketWasCancelled,
+};
+use CloudCreativity\Modules\Contracts\Domain\Aggregate;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
-use CloudCreativity\Modules\Domain\AggregateInterface;
 
-class Attendee implements AggregateInterface
+class Attendee implements Aggregate
 {
     // ...other methods
 

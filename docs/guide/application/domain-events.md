@@ -23,9 +23,9 @@ This is what the interface looks like in our domain layer:
 ```php
 namespace App\Modules\EventManagement\Domain\Events;
 
-use CloudCreativity\Modules\Domain\Events\DispatcherInterface;
+use CloudCreativity\Modules\Contracts\Domain\Events\Dispatcher;
 
-interface EventDispatcherInterface extends DispatcherInterface
+interface EventDispatcherInterface extends Dispatcher
 {
 }
 ```
@@ -84,13 +84,13 @@ use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\Ext
 use CloudCreativity\Modules\Application\DomainEventDispatching\ListenerContainer;
 use CloudCreativity\Modules\Application\DomainEventDispatching\Middleware\LogDomainEventDispatch;
 use CloudCreativity\Modules\Application\UnitOfWork\UnitOfWorkManagerInterface;
-use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
+use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 
 final readonly class EventDispatcherProvider 
 {
     /**
-     * @var array<class-string<DomainEventInterface>, list<class-string>>  
+     * @var array<class-string<DomainEvent>, list<class-string>>  
      */
     private array $subscriptions = [
         AttendeeTicketWasCancelled::class => [
@@ -324,13 +324,13 @@ use App\Modules\EventManagement\Domain\Events\{
 use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependenciesInterface;
 use CloudCreativity\Modules\Application\DomainEventDispatching\ListenerContainer;
 use CloudCreativity\Modules\Application\DomainEventDispatching\Middleware\LogDomainEventDispatch;
-use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
+use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 
 final readonly class EventDispatcherProvider 
 {
     /**
-     * @var array<class-string<DomainEventInterface>, list<class-string>>  
+     * @var array<class-string<DomainEvent>, list<class-string>>  
      */
     private array $subscriptions = [
         AttendeeTicketWasCancelled::class => [
@@ -508,11 +508,11 @@ emitted. Implement the `OccursImmediately` interface on the domain event:
 ```php
 namespace App\Modules\EventManagement\Domain\Events;
 
-use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
-use CloudCreativity\Modules\Domain\Events\OccursImmediately;
+use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
+use CloudCreativity\Modules\Contracts\Domain\Events\OccursImmediately;
 
 final readonly class AttendeeTicketCancelled implements
-    DomainEventInterface,
+    DomainEvent,
     OccursImmediately
 {
     // ...
@@ -664,19 +664,19 @@ namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Middlewa
 use Closure;
 use CloudCreativity\Modules\Application\DomainEventDispatching\Middleware\DomainEventMiddlewareInterface;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
-use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
+use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 
 final class MyMiddleware implements DomainEventMiddlewareInterface
 {
     /**
      * Execute the middleware.
      *
-     * @param DomainEventInterface $event
-     * @param Closure(DomainEventInterface): void $next
+     * @param DomainEvent $event
+     * @param Closure(DomainEvent): void $next
      * @return void
      */
     public function __invoke(
-        DomainEventInterface $event, 
+        DomainEvent $event, 
         Closure $next,
     ): Result
     {

@@ -11,20 +11,20 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Application\DomainEventDispatching;
 
-use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
-use CloudCreativity\Modules\Domain\Events\OccursImmediately;
+use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
+use CloudCreativity\Modules\Contracts\Domain\Events\OccursImmediately;
 
 class DeferredDispatcher extends Dispatcher implements DeferredDispatcherInterface
 {
     /**
-     * @var array<DomainEventInterface>
+     * @var array<DomainEvent>
      */
     private array $deferred = [];
 
     /**
      * @inheritDoc
      */
-    public function dispatch(DomainEventInterface $event): void
+    public function dispatch(DomainEvent $event): void
     {
         if ($event instanceof OccursImmediately) {
             $this->dispatchNow($event);

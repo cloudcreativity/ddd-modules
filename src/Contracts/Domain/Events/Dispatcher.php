@@ -9,15 +9,15 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Domain\Events;
+namespace CloudCreativity\Modules\Contracts\Domain\Events;
 
-interface DispatcherInterface
+interface Dispatcher
 {
     /**
      * Dispatch a domain event.
      *
-     * @param DomainEventInterface $event
+     * @param DomainEvent $event
      * @return void
      */
-    public function dispatch(DomainEventInterface $event): void;
+    public function dispatch(DomainEvent $event): void;
 }

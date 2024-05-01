@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Domain;
 
-use CloudCreativity\Modules\Domain\EntityInterface;
+use CloudCreativity\Modules\Contracts\Domain\Entity;
 use CloudCreativity\Modules\Domain\IdentifierOrEntity;
 use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
 use PHPUnit\Framework\TestCase;
@@ -35,7 +35,7 @@ class IdentifierOrEntityTest extends TestCase
      */
     public function testItIsAnEntityWithGuid(): void
     {
-        $entity = $this->createMock(EntityInterface::class);
+        $entity = $this->createMock(Entity::class);
         $entity->method('getId')->willReturn($guid = Guid::fromInteger('SomeType', 1));
 
         $guidOrEntity = IdentifierOrEntity::make($entity);
@@ -50,7 +50,7 @@ class IdentifierOrEntityTest extends TestCase
      */
     public function testItIsAnEntityWithoutGuid(): void
     {
-        $entity = $this->createMock(EntityInterface::class);
+        $entity = $this->createMock(Entity::class);
         $entity->method('getId')->willReturn(null);
 
         $guidOrEntity = IdentifierOrEntity::make($entity);

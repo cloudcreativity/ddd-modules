@@ -11,17 +11,17 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Application\DomainEventDispatching;
 
-use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
+use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 
 class TestListener
 {
     /**
      * Handle the event.
      *
-     * @param DomainEventInterface $event
+     * @param DomainEvent $event
      * @return void
      */
-    public function handle(DomainEventInterface $event): void
+    public function handle(DomainEvent $event): void
     {
         // no-op
     }
