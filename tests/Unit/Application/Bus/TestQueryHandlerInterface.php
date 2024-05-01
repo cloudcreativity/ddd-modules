@@ -11,13 +11,13 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Application\Bus;
 
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 interface TestQueryHandlerInterface
 {
     /**
      * @param TestQuery $query
-     * @return ResultInterface<int>
+     * @return Result<int>
      */
-    public function execute(TestQuery $query): ResultInterface;
+    public function execute(TestQuery $query): Result;
 }

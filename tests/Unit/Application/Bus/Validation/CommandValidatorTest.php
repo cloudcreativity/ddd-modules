@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Application\Bus\Validation;
 
 use CloudCreativity\Modules\Application\Bus\Validation\CommandValidator;
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Toolkit\Result\Error;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
 use PHPUnit\Framework\TestCase;
@@ -25,7 +25,7 @@ class CommandValidatorTest extends TestCase
      */
     public function test(): void
     {
-        $command = $this->createMock(CommandInterface::class);
+        $command = $this->createMock(Command::class);
         $error1 = new Error(null, 'Message 1');
         $error2 = new Error(null, 'Message 2');
         $error3 = new Error(null, 'Message 3');
@@ -45,7 +45,7 @@ class CommandValidatorTest extends TestCase
             return new ListOfErrors($error2, $error3);
         };
 
-        $rules = $this->createMock(PipeContainerInterface::class);
+        $rules = $this->createMock(PipeContainer::class);
         $rules
             ->expects($this->exactly(2))
             ->method('get')
@@ -69,7 +69,7 @@ class CommandValidatorTest extends TestCase
      */
     public function testNoRules(): void
     {
-        $command = $this->createMock(CommandInterface::class);
+        $command = $this->createMock(Command::class);
         $validator = new CommandValidator();
 
         $this->assertEquals(new ListOfErrors(), $validator->validate($command));

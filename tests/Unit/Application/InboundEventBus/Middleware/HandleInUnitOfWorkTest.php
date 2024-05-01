@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Application\InboundEventBus\Middleware;
 
 use CloudCreativity\Modules\Application\InboundEventBus\Middleware\HandleInUnitOfWork;
-use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
 use CloudCreativity\Modules\Application\UnitOfWork\UnitOfWorkManagerInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 use PHPUnit\Framework\TestCase;
 use Throwable;
 
@@ -29,7 +29,7 @@ class HandleInUnitOfWorkTest extends TestCase
      */
     public function testItCommitsUnitOfWork(): void
     {
-        $event = $this->createMock(IntegrationEventInterface::class);
+        $event = $this->createMock(IntegrationEvent::class);
 
         $middleware = new HandleInUnitOfWork(
             $transactions = $this->createMock(UnitOfWorkManagerInterface::class),
@@ -60,7 +60,7 @@ class HandleInUnitOfWorkTest extends TestCase
      */
     public function testItDoesNotCatchExceptions(): void
     {
-        $event = $this->createMock(IntegrationEventInterface::class);
+        $event = $this->createMock(IntegrationEvent::class);
         $expected = new \RuntimeException('Boom! Something went wrong.');
 
         $middleware = new HandleInUnitOfWork(

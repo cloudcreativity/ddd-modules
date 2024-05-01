@@ -124,8 +124,6 @@ use App\Modules\EventManagement\Application\Internal\Commands\{
 };
 use App\Modules\EventManagement\Domain\Events\AttendeeTicketWasCancelled;
 
-use CloudCreativity\Modules\Application\Ports\Driven\Queue\Queue;
-
 final readonly class QueueTicketSalesReportRecalculation
 {
     public function __construct(private InternalCommandBusInterface $bus)
@@ -223,7 +221,7 @@ commands. I.e.:
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driven\Queue;
 
-use CloudCreativity\Modules\Application\Ports\Driven\Queue\Queue as Port;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue\Queue as Port;
 
 // queues public commands
 interface Queue extends Port

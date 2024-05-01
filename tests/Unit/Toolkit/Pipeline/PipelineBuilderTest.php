@@ -11,11 +11,11 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Pipeline;
 
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\Processor;
 use CloudCreativity\Modules\Toolkit\Pipeline\LazyPipe;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\Pipeline;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
-use CloudCreativity\Modules\Toolkit\Pipeline\ProcessorInterface;
 use PHPUnit\Framework\TestCase;
 
 class PipelineBuilderTest extends TestCase
@@ -26,7 +26,7 @@ class PipelineBuilderTest extends TestCase
     public function test(): void
     {
         $expected = new Pipeline(
-            $processor = $this->createMock(ProcessorInterface::class),
+            $processor = $this->createMock(Processor::class),
             $stages = ['strtoupper', 'strtolower'],
         );
 
@@ -43,8 +43,8 @@ class PipelineBuilderTest extends TestCase
      */
     public function testServiceString(): void
     {
-        $container = $this->createMock(PipeContainerInterface::class);
-        $processor = $this->createMock(ProcessorInterface::class);
+        $container = $this->createMock(PipeContainer::class);
+        $processor = $this->createMock(Processor::class);
 
         $expected = new Pipeline($processor, [
             'strtoupper',
@@ -64,7 +64,7 @@ class PipelineBuilderTest extends TestCase
      */
     public function testServiceStringWithoutContainer(): void
     {
-        $processor = $this->createMock(ProcessorInterface::class);
+        $processor = $this->createMock(Processor::class);
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Cannot use a string pipe name without a pipe container.');

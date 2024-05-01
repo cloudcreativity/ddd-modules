@@ -11,10 +11,10 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Domain;
 
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Domain\EntityInterface;
 use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
-use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
 use PHPUnit\Framework\TestCase;
 
 class EntityWithNullableGuidTest extends TestCase
@@ -64,11 +64,11 @@ class EntityWithNullableGuidTest extends TestCase
     public function testItIsTheSame(): void
     {
         $a = new TestEntityWithNullableId(
-            $id1 = $this->createMock(IdentifierInterface::class),
+            $id1 = $this->createMock(Identifier::class),
         );
 
         $b = new TestEntityWithNullableId(
-            $id2 = $this->createMock(IdentifierInterface::class),
+            $id2 = $this->createMock(Identifier::class),
         );
 
         $id1
@@ -89,7 +89,7 @@ class EntityWithNullableGuidTest extends TestCase
         $a = new TestEntityWithNullableId();
 
         $b = new TestEntityWithNullableId(
-            $id1 = $this->createMock(IdentifierInterface::class),
+            $id1 = $this->createMock(Identifier::class),
         );
 
         $id1
@@ -106,7 +106,7 @@ class EntityWithNullableGuidTest extends TestCase
     public function testItIsTheSameWhenOtherHasNullId(): void
     {
         $a = new TestEntityWithNullableId(
-            $id1 = $this->createMock(IdentifierInterface::class),
+            $id1 = $this->createMock(Identifier::class),
         );
 
         $b = new TestEntityWithNullableId();
@@ -127,11 +127,11 @@ class EntityWithNullableGuidTest extends TestCase
     public function testItIsNotTheSame(): void
     {
         $a = new TestEntityWithNullableId(
-            $id1 = $this->createMock(IdentifierInterface::class),
+            $id1 = $this->createMock(Identifier::class),
         );
 
         $b = new TestEntityWithNullableId(
-            $id2 = $this->createMock(IdentifierInterface::class),
+            $id2 = $this->createMock(Identifier::class),
         );
 
         $id1
@@ -150,11 +150,11 @@ class EntityWithNullableGuidTest extends TestCase
     public function testItIsDifferentClass(): void
     {
         $a = new TestEntityWithNullableId(
-            $id1 = $this->createMock(IdentifierInterface::class),
+            $id1 = $this->createMock(Identifier::class),
         );
 
         $b = $this->createMock(EntityInterface::class);
-        $b->method('getId')->willReturn($this->createMock(IdentifierInterface::class));
+        $b->method('getId')->willReturn($this->createMock(Identifier::class));
 
         $id1
             ->expects($this->never())

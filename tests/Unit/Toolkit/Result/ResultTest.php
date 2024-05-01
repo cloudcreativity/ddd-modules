@@ -11,14 +11,14 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Result;
 
+use CloudCreativity\Modules\Contracts\Toolkit\Result\ListOfErrors as IListOfErrors;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result as IResult;
 use CloudCreativity\Modules\Tests\Unit\Toolkit\Loggable\TestEnum;
 use CloudCreativity\Modules\Toolkit\Result\Error;
 use CloudCreativity\Modules\Toolkit\Result\FailedResultException;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
-use CloudCreativity\Modules\Toolkit\Result\ListOfErrorsInterface;
 use CloudCreativity\Modules\Toolkit\Result\Meta;
 use CloudCreativity\Modules\Toolkit\Result\Result;
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 use PHPUnit\Framework\TestCase;
 
 class ResultTest extends TestCase
@@ -31,7 +31,7 @@ class ResultTest extends TestCase
         $result = Result::ok();
         $result->abort();
 
-        $this->assertInstanceOf(ResultInterface::class, $result);
+        $this->assertInstanceOf(IResult::class, $result);
         $this->assertNull($result->value());
         $this->assertNull($result->safe());
         $this->assertTrue($result->didSucceed());
@@ -48,7 +48,6 @@ class ResultTest extends TestCase
     {
         $result = Result::ok($value = 99);
 
-        $this->assertInstanceOf(ResultInterface::class, $result);
         $this->assertSame($value, $result->value());
         $this->assertSame($value, $result->safe());
         $this->assertTrue($result->didSucceed());
@@ -128,7 +127,7 @@ class ResultTest extends TestCase
      */
     public function testFailedWithListOfErrorsInterface(): void
     {
-        $errors = $this->createMock(ListOfErrorsInterface::class);
+        $errors = $this->createMock(IListOfErrors::class);
         $errors->method('isNotEmpty')->willReturn(true);
         $result = Result::failed($errors);
 

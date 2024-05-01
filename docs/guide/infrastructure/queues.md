@@ -17,7 +17,7 @@ We do this by defining an interface in our application's driven ports:
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driven\Queue;
 
-use CloudCreativity\Modules\Application\Ports\Driven\Queue\Queue as Port;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue\Queue as Port;
 
 interface Queue extends Port
 {
@@ -55,7 +55,7 @@ In this scenario, define another driven port in your application layer:
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driven\Queue;
 
-use CloudCreativity\Modules\Application\Ports\Driven\Queue\Queue as Port;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue\Queue as Port;
 
 interface InternalQueue extends Port
 {
@@ -236,11 +236,11 @@ example:
 ```php
 namespace App\Modules\EventManagement\Infrastructure\Queue;
 
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 
 final class DefaultEnqueuer
 {
-    public function push(CommandInterface $command): void
+    public function push(Command $command): void
     {
         // ...implementation
     }
@@ -263,17 +263,17 @@ implements the port interface that is extended in your application layer:
 ```php
 namespace CloudCreativity\Modules\Application\Ports\Driven\Queue;
 
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 
 interface Queue
 {
     /**
      * Push a command on to the queue.
      *
-     * @param CommandInterface $command
+     * @param Command $command
      * @return void
      */
-    public function push(CommandInterface $command): void;
+    public function push(Command $command): void;
 }
 ```
 
@@ -299,7 +299,7 @@ For example, a default Laravel job for queuing and dispatching commands would be
 namespace App\Modules\EventManagement\Infrastructure\Queue;
 
 use App\Modules\EventManagement\Application\Ports\Driving\Commands\CommandBusInterface;
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 use CloudCreativity\Modules\Toolkit\Result\FailedResultException;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -313,7 +313,7 @@ class DispatchCommandJob implements ShouldQueue
     use Queueable;
     
     public function __construct(
-        public readonly CommandInterface $command
+        public readonly Command $command
     ) {
     }
     
@@ -480,7 +480,7 @@ following signature:
 namespace App\Modules\Shared\Infrastructure\Queue\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 use CloudCreativity\Modules\Infrastructure\Queue\Middleware\QueueMiddlewareInterface;
 
 final class MyQueueMiddleware implements QueueMiddlewareInterface
@@ -488,12 +488,12 @@ final class MyQueueMiddleware implements QueueMiddlewareInterface
     /**
      * Handle the command message being queued.
      *
-     * @param CommandInterface $command
-     * @param Closure(CommandInterface): void $next
+     * @param Command $command
+     * @param Closure(Command): void $next
      * @return void
      */
     public function __invoke(
-        CommandInterface $command, 
+        Command $command, 
         Closure $next,
     ): void
     {

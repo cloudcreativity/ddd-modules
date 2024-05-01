@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\OutboundEventBus\Middleware;
 
-use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 use CloudCreativity\Modules\Infrastructure\OutboundEventBus\Middleware\LogOutboundEvent;
 use CloudCreativity\Modules\Tests\Unit\Infrastructure\OutboundEventBus\TestOutboundEvent;
 use CloudCreativity\Modules\Toolkit\ModuleBasename;
@@ -60,7 +60,7 @@ class LogOutboundEventTest extends TestCase
             });
 
         $middleware = new LogOutboundEvent($this->logger);
-        $middleware($this->event, function (IntegrationEventInterface $received): void {
+        $middleware($this->event, function (IntegrationEvent $received): void {
             $this->assertSame($this->event, $received);
         });
 
@@ -92,7 +92,7 @@ class LogOutboundEventTest extends TestCase
             });
 
         $middleware = new LogOutboundEvent($this->logger, LogLevel::NOTICE, LogLevel::WARNING);
-        $middleware($this->event, function (IntegrationEventInterface $received) {
+        $middleware($this->event, function (IntegrationEvent $received) {
             $this->assertSame($this->event, $received);
         });
 

@@ -18,13 +18,13 @@ For example:
 ```php
 namespace App\Modules\EventManagement\Application\UseCases\Queries\GetAttendeeTickets;
 
-use CloudCreativity\Modules\Application\Messages\QueryInterface;
-use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Query;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 
-final readonly class GetAttendeeTicketsQuery implements QueryInterface
+final readonly class GetAttendeeTicketsQuery implements Query
 {
     public function __construct(
-        public IdentifierInterface $attendeeId,
+        public Identifier $attendeeId,
     ) {
     }
 }
@@ -121,7 +121,7 @@ We do this by defining an interface in our application's driving ports:
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driving\QueryBus;
 
-use CloudCreativity\Modules\Application\Ports\Driving\Queries\QueryDispatcher;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driving\Queries\QueryDispatcher;
 
 interface QueryBusInterface extends QueryDispatcher
 {
@@ -290,20 +290,20 @@ For example, our model returned by our "get attendee tickets" query might look l
 ```php
 namespace VendorName\EventManagement\Shared\ReadModels\V1;
 
-use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 
 final readonly class TicketModel
 {
     /**
      * TicketModel constructor.
      *
-     * @param IdentifierInterface $id
-     * @param IdentifierInterface $attendeeId
+     * @param Identifier $id
+     * @param Identifier $attendeeId
      * @param list<ActivitiesModel> $attending
      */
     public function __construct(
-        public IdentifierInterface $id,
-        public IdentifierInterface $attendeeId,
+        public Identifier $id,
+        public Identifier $attendeeId,
         public array $attending,
     ) {
     }
@@ -418,22 +418,22 @@ namespace App\Modules\EventManagement\Application\Adapters\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Application\Bus\Middleware\QueryMiddlewareInterface;
-use CloudCreativity\Modules\Application\Messages\QueryInterface;
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Query;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 final class MyMiddleware implements QueryMiddlewareInterface
 {
     /**
      * Execute the middleware.
      *
-     * @param QueryInterface $query
-     * @param Closure(QueryInterface): ResultInterface<mixed> $next
-     * @return ResultInterface<mixed>
+     * @param Query $query
+     * @param Closure(Query): Result<mixed> $next
+     * @return Result<mixed>
      */
     public function __invoke(
-        QueryInterface $query,
+        Query $query,
         Closure $next,
-    ): ResultInterface
+    ): Result
     {
         // code here executes before the handler
 
@@ -460,23 +460,23 @@ namespace App\Modules\EventManagement\Application\Adapters\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Application\Bus\Middleware\BusMiddlewareInterface;
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
-use CloudCreativity\Modules\Application\Messages\QueryInterface;
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Application\Messages\Query;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 class MyBusMiddleware implements BusMiddlewareInterface
 {
     /**
      * Handle the command or query.
      *
-     * @param CommandInterface|QueryInterface $message
-     * @param Closure(CommandInterface|QueryInterface): ResultInterface<mixed> $next
-     * @return ResultInterface<mixed>
+     * @param Command|Query $message
+     * @param Closure(Command|Query): Result<mixed> $next
+     * @return Result<mixed>
      */
     public function __invoke(
-        CommandInterface|QueryInterface $message, 
+        Command|Query $message, 
         Closure $next,
-    ): ResultInterface
+    ): Result
     {
         // code here executes before the handler
 

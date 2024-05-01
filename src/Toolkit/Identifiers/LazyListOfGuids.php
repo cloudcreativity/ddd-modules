@@ -12,18 +12,18 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
 use Closure;
+use CloudCreativity\Modules\Contracts\Toolkit\Iterables\LazyList;
 use CloudCreativity\Modules\Toolkit\Contracts;
-use CloudCreativity\Modules\Toolkit\Iterables\LazyListInterface;
-use CloudCreativity\Modules\Toolkit\Iterables\LazyListTrait;
+use CloudCreativity\Modules\Toolkit\Iterables\IsLazyList;
 use Generator;
 
 /**
- * @implements LazyListInterface<Guid>
+ * @implements LazyList<Guid>
  */
-final class LazyListOfGuids implements LazyListInterface
+final class LazyListOfGuids implements LazyList
 {
-    /** @use LazyListTrait<Guid> */
-    use LazyListTrait;
+    /** @use IsLazyList<Guid> */
+    use IsLazyList;
 
     /**
      * LazyListOfGuids constructor.

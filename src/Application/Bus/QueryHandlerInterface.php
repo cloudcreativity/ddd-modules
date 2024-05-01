@@ -11,17 +11,17 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Application\Bus;
 
-use CloudCreativity\Modules\Application\Messages\DispatchThroughMiddleware;
-use CloudCreativity\Modules\Application\Messages\QueryInterface;
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
+use CloudCreativity\Modules\Contracts\Application\Messages\Query;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 interface QueryHandlerInterface extends DispatchThroughMiddleware
 {
     /**
      * Execute the query.
      *
-     * @param QueryInterface $query
-     * @return ResultInterface<mixed>
+     * @param Query $query
+     * @return Result<mixed>
      */
-    public function __invoke(QueryInterface $query): ResultInterface;
+    public function __invoke(Query $query): Result;
 }

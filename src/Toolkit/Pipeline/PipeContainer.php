@@ -12,9 +12,10 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Toolkit\Pipeline;
 
 use Closure;
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer as IPipeContainer;
 use RuntimeException;
 
-final class PipeContainer implements PipeContainerInterface
+final class PipeContainer implements IPipeContainer
 {
     /**
      * @var array<string,Closure>

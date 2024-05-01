@@ -12,9 +12,10 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Toolkit\Result;
 
 use BackedEnum;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Error as IError;
 use CloudCreativity\Modules\Toolkit\Contracts;
 
-final class Error implements ErrorInterface
+final class Error implements IError
 {
     /**
      * @var string|null

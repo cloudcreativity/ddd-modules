@@ -12,16 +12,16 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Infrastructure\OutboundEventBus\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 
 interface OutboundEventMiddlewareInterface
 {
     /**
      * Handle the outbound integration event.
      *
-     * @param IntegrationEventInterface $event
-     * @param Closure(IntegrationEventInterface): void $next
+     * @param IntegrationEvent $event
+     * @param Closure(IntegrationEvent): void $next
      * @return void
      */
-    public function __invoke(IntegrationEventInterface $event, Closure $next): void;
+    public function __invoke(IntegrationEvent $event, Closure $next): void;
 }

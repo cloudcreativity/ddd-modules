@@ -11,20 +11,21 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Result;
 
-use CloudCreativity\Modules\Toolkit\Loggable\ContextProviderInterface;
+use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextProvider;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 use CloudCreativity\Modules\Toolkit\Loggable\ResultContext;
 use RuntimeException;
 use Throwable;
 
-class FailedResultException extends RuntimeException implements ContextProviderInterface
+class FailedResultException extends RuntimeException implements ContextProvider
 {
     /**
      * FailedResultException constructor.
      *
-     * @param ResultInterface<mixed> $result
+     * @param Result<mixed> $result
      */
     public function __construct(
-        private readonly ResultInterface $result,
+        private readonly Result $result,
         int $code = 0,
         Throwable $previous = null,
     ) {
@@ -33,9 +34,9 @@ class FailedResultException extends RuntimeException implements ContextProviderI
     }
 
     /**
-     * @return ResultInterface<mixed>
+     * @return Result<mixed>
      */
-    public function getResult(): ResultInterface
+    public function getResult(): Result
     {
         return $this->result;
     }

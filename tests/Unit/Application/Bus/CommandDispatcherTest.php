@@ -14,10 +14,10 @@ namespace CloudCreativity\Modules\Tests\Unit\Application\Bus;
 use CloudCreativity\Modules\Application\Bus\CommandDispatcher;
 use CloudCreativity\Modules\Application\Bus\CommandHandlerContainerInterface;
 use CloudCreativity\Modules\Application\Bus\CommandHandlerInterface;
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
-use CloudCreativity\Modules\Application\Ports\Driven\Queue\Queue;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue\Queue;
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -29,9 +29,9 @@ class CommandDispatcherTest extends TestCase
     private CommandHandlerContainerInterface&MockObject $handlers;
 
     /**
-     * @var PipeContainerInterface&MockObject
+     * @var PipeContainer&MockObject
      */
-    private PipeContainerInterface&MockObject $middleware;
+    private PipeContainer&MockObject $middleware;
 
     /**
      * @var MockObject&Queue
@@ -54,7 +54,7 @@ class CommandDispatcherTest extends TestCase
 
         $this->dispatcher = new CommandDispatcher(
             handlers: $this->handlers = $this->createMock(CommandHandlerContainerInterface::class),
-            middleware: $this->middleware = $this->createMock(PipeContainerInterface::class),
+            middleware: $this->middleware = $this->createMock(PipeContainer::class),
             queue: fn () => $this->queue,
         );
     }
@@ -66,7 +66,7 @@ class CommandDispatcherTest extends TestCase
     {
         $this->willNotQueue();
 
-        $command = $this->createMock(CommandInterface::class);
+        $command = $this->createMock(Command::class);
 
         $this->handlers
             ->expects($this->once())
@@ -78,7 +78,7 @@ class CommandDispatcherTest extends TestCase
             ->expects($this->once())
             ->method('__invoke')
             ->with($this->identicalTo($command))
-            ->willReturn($expected = $this->createMock(ResultInterface::class));
+            ->willReturn($expected = $this->createMock(Result::class));
 
         $actual = $this->dispatcher->dispatch($command);
 
@@ -132,7 +132,7 @@ class CommandDispatcherTest extends TestCase
             ->expects($this->once())
             ->method('__invoke')
             ->with($this->identicalTo($command4))
-            ->willReturn($expected = $this->createMock(ResultInterface::class));
+            ->willReturn($expected = $this->createMock(Result::class));
 
         $this->dispatcher->through([$middleware1]);
         $actual = $this->dispatcher->dispatch($command1);

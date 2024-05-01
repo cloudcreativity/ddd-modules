@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\OutboundEventBus;
 
-use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 
 final class PublisherHandler implements PublisherHandlerInterface
 {
@@ -27,7 +27,7 @@ final class PublisherHandler implements PublisherHandlerInterface
     /**
      * @inheritDoc
      */
-    public function __invoke(IntegrationEventInterface $event): void
+    public function __invoke(IntegrationEvent $event): void
     {
         assert(method_exists($this->handler, 'publish'), sprintf(
             'Cannot dispatch "%s" - handler "%s" does not have a publish method.',

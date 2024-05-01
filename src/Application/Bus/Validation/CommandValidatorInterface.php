@@ -11,16 +11,16 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Application\Bus\Validation;
 
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
-use CloudCreativity\Modules\Toolkit\Result\ListOfErrorsInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\ListOfErrors;
 
 interface CommandValidatorInterface extends ValidatorInterface
 {
     /**
      * Validate the provided command.
      *
-     * @param CommandInterface $command
-     * @return ListOfErrorsInterface
+     * @param Command $command
+     * @return ListOfErrors
      */
-    public function validate(CommandInterface $command): ListOfErrorsInterface;
+    public function validate(Command $command): ListOfErrors;
 }

@@ -13,8 +13,8 @@ namespace CloudCreativity\Modules\Tests\Unit\Application\Bus\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Application\Bus\Middleware\SetupBeforeDispatch;
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
-use CloudCreativity\Modules\Application\Messages\QueryInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Application\Messages\Query;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -31,7 +31,7 @@ class SetupBeforeDispatchTest extends TestCase
      */
     public function testItSetsUpAndSucceedsWithoutTeardown(): void
     {
-        $message = $this->createMock(CommandInterface::class);
+        $message = $this->createMock(Command::class);
         $result = Result::ok();
 
         $middleware = new SetupBeforeDispatch(function () {
@@ -54,7 +54,7 @@ class SetupBeforeDispatchTest extends TestCase
      */
     public function testItSetsUpAndSucceedsWithTeardown(): void
     {
-        $message = $this->createMock(QueryInterface::class);
+        $message = $this->createMock(Query::class);
         $result = Result::ok();
 
         $middleware = new SetupBeforeDispatch(function (): Closure {
@@ -79,7 +79,7 @@ class SetupBeforeDispatchTest extends TestCase
      */
     public function testItSetsUpAndFailsWithoutTeardown(): void
     {
-        $message = $this->createMock(CommandInterface::class);
+        $message = $this->createMock(Command::class);
         $result = Result::failed('Something went wrong.');
 
         $middleware = new SetupBeforeDispatch(function () {
@@ -102,7 +102,7 @@ class SetupBeforeDispatchTest extends TestCase
      */
     public function testItSetsUpAndFailsWithTeardown(): void
     {
-        $message = $this->createMock(CommandInterface::class);
+        $message = $this->createMock(Command::class);
         $result = Result::failed('Something went wrong.');
 
         $middleware = new SetupBeforeDispatch(function (): Closure {
@@ -127,7 +127,7 @@ class SetupBeforeDispatchTest extends TestCase
      */
     public function testItSetsUpAndThrowsExceptionWithoutTeardown(): void
     {
-        $message = $this->createMock(CommandInterface::class);
+        $message = $this->createMock(Command::class);
         $exception = new RuntimeException('Something went wrong.');
         $actual = null;
 
@@ -156,7 +156,7 @@ class SetupBeforeDispatchTest extends TestCase
      */
     public function testItSetsUpAndThrowsExceptionWithTeardown(): void
     {
-        $message = $this->createMock(QueryInterface::class);
+        $message = $this->createMock(Query::class);
         $exception = new RuntimeException('Something went wrong.');
         $actual = null;
 

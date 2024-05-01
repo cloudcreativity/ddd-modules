@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Identifiers;
 
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Toolkit\ContractException;
-use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
 use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
 use CloudCreativity\Modules\Toolkit\Identifiers\UuidFactory;
 use DateTimeImmutable;
@@ -89,7 +89,7 @@ class UuidFactoryTest extends TestCase
         $this->expectException(ContractException::class);
 
         $this->factory->from(
-            $this->createMock(IdentifierInterface::class),
+            $this->createMock(Identifier::class),
         );
     }
 

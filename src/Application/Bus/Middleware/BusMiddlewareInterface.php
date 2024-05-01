@@ -12,18 +12,18 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\Bus\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
-use CloudCreativity\Modules\Application\Messages\QueryInterface;
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Application\Messages\Query;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 interface BusMiddlewareInterface
 {
     /**
      * Handle the command or query.
      *
-     * @param CommandInterface|QueryInterface $message
-     * @param Closure(CommandInterface|QueryInterface): ResultInterface<mixed> $next
-     * @return ResultInterface<mixed>
+     * @param Command|Query $message
+     * @param Closure(Command|Query): Result<mixed> $next
+     * @return Result<mixed>
      */
-    public function __invoke(CommandInterface|QueryInterface $message, Closure $next): ResultInterface;
+    public function __invoke(Command|Query $message, Closure $next): Result;
 }

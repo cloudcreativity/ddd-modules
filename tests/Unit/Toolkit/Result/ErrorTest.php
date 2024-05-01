@@ -11,10 +11,10 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Result;
 
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Error as IError;
 use CloudCreativity\Modules\Tests\Unit\Toolkit\Loggable\TestEnum;
 use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Result\Error;
-use CloudCreativity\Modules\Toolkit\Result\ErrorInterface;
 use PHPUnit\Framework\TestCase;
 
 class ErrorTest extends TestCase
@@ -26,7 +26,7 @@ class ErrorTest extends TestCase
     {
         $error = new Error(key: 'foo', message: 'Bar', code: TestEnum::Foo);
 
-        $this->assertInstanceOf(ErrorInterface::class, $error);
+        $this->assertInstanceOf(IError::class, $error);
         $this->assertSame('foo', $error->key());
         $this->assertSame('Bar', $error->message());
         $this->assertSame(TestEnum::Foo, $error->code());

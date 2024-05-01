@@ -12,8 +12,9 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Toolkit\Pipeline;
 
 use Closure;
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\Processor;
 
-final class MiddlewareProcessor implements ProcessorInterface
+final class MiddlewareProcessor implements Processor
 {
     /**
      * @var Closure

@@ -12,23 +12,23 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Loggable;
 
 use BackedEnum;
-use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
-use CloudCreativity\Modules\Toolkit\Loggable\ContextProviderInterface;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
+use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextProvider;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Error as IError;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result as IResult;
 use CloudCreativity\Modules\Toolkit\Loggable\ResultContext;
 use CloudCreativity\Modules\Toolkit\Result\Error;
-use CloudCreativity\Modules\Toolkit\Result\ErrorInterface;
 use CloudCreativity\Modules\Toolkit\Result\Result;
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @extends ResultInterface<null>
+ * @extends IResult<null>
  */
-interface ResultWithContext extends ResultInterface, ContextProviderInterface
+interface ResultWithContext extends IResult, ContextProvider
 {
 }
 
-interface ErrorWithContext extends ErrorInterface, ContextProviderInterface
+interface ErrorWithContext extends IError, ContextProvider
 {
 }
 
@@ -61,7 +61,7 @@ class ResultContextTest extends TestCase
             ],
         ];
 
-        $value = $this->createMock(ContextProviderInterface::class);
+        $value = $this->createMock(ContextProvider::class);
         $value->method('context')->willReturn($expected['value']);
 
         $result = Result::ok($value);
@@ -79,7 +79,7 @@ class ResultContextTest extends TestCase
             'value' => 99,
         ];
 
-        $value = $this->createMock(IdentifierInterface::class);
+        $value = $this->createMock(Identifier::class);
         $value->method('context')->willReturn($expected['value']);
 
         $result = Result::ok($value);
@@ -136,7 +136,7 @@ class ResultContextTest extends TestCase
     }
 
     /**
-     * @return array<array<string|ErrorInterface>>
+     * @return array<array<string|Error>>
      */
     public static function onlyMessageProvider(): array
     {
@@ -147,11 +147,11 @@ class ResultContextTest extends TestCase
     }
 
     /**
-     * @param string|ErrorInterface $error
+     * @param string|Error $error
      * @return void
      * @dataProvider onlyMessageProvider
      */
-    public function testFailureContextWithErrorThatOnlyHasMessage(string|ErrorInterface $error): void
+    public function testFailureContextWithErrorThatOnlyHasMessage(string|Error $error): void
     {
         $result = Result::failed($error);
 
@@ -164,7 +164,7 @@ class ResultContextTest extends TestCase
     }
 
     /**
-     * @return array<array<BackedEnum|ErrorInterface>>
+     * @return array<array<BackedEnum|Error>>
      */
     public static function onlyCodeProvider(): array
     {
@@ -175,11 +175,11 @@ class ResultContextTest extends TestCase
     }
 
     /**
-     * @param BackedEnum|ErrorInterface $error
+     * @param BackedEnum|Error $error
      * @return void
      * @dataProvider onlyCodeProvider
      */
-    public function testFailureContextWithErrorThatOnlyHasCode(BackedEnum|ErrorInterface $error): void
+    public function testFailureContextWithErrorThatOnlyHasCode(BackedEnum|Error $error): void
     {
         $result = Result::failed($error);
 
@@ -227,7 +227,7 @@ class ResultContextTest extends TestCase
     }
 
     /**
-     * @param array<ErrorInterface> $errors
+     * @param array<Error> $errors
      * @param array<int, array<string, mixed>> $expected
      * @return void
      * @dataProvider errorsProvider

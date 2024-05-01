@@ -12,16 +12,16 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Infrastructure\OutboundEventBus;
 
 use Closure;
-use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
-use CloudCreativity\Modules\Application\Ports\Driven\OutboundEventBus\EventPublisher;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driven\OutboundEventBus\EventPublisher;
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 
 class ClosurePublisher implements EventPublisher
 {
     /**
-     * @var array<class-string<IntegrationEventInterface>, Closure>
+     * @var array<class-string<IntegrationEvent>, Closure>
      */
     private array $bindings = [];
 
@@ -37,14 +37,14 @@ class ClosurePublisher implements EventPublisher
      */
     public function __construct(
         private readonly Closure $fn,
-        private readonly ?PipeContainerInterface $middleware = null,
+        private readonly ?PipeContainer $middleware = null,
     ) {
     }
 
     /**
      * Bind a publisher for the specified event.
      *
-     * @param class-string<IntegrationEventInterface> $event
+     * @param class-string<IntegrationEvent> $event
      * @param Closure $fn
      * @return void
      */
@@ -67,7 +67,7 @@ class ClosurePublisher implements EventPublisher
     /**
      * @inheritDoc
      */
-    public function publish(IntegrationEventInterface $event): void
+    public function publish(IntegrationEvent $event): void
     {
         $publisher = $this->bindings[$event::class] ?? $this->fn;
 

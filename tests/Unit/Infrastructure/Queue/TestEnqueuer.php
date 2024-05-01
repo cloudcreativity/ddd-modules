@@ -11,15 +11,15 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue;
 
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 
 class TestEnqueuer
 {
     /**
-     * @param CommandInterface $command
+     * @param Command $command
      * @return void
      */
-    public function push(CommandInterface $command): void
+    public function push(Command $command): void
     {
         // no-op
     }

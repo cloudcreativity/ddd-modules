@@ -11,9 +11,12 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Pipeline;
 
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipelineBuilder as IPipelineBuilder;
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\Processor;
 use RuntimeException;
 
-final class PipelineBuilder implements PipelineBuilderInterface
+final class PipelineBuilder implements IPipelineBuilder
 {
     /**
      * @var callable[]
@@ -23,10 +26,10 @@ final class PipelineBuilder implements PipelineBuilderInterface
     /**
      * Fluent constructor.
      *
-     * @param PipeContainerInterface|null $container
+     * @param PipeContainer|null $container
      * @return self
      */
-    public static function make(?PipeContainerInterface $container = null): self
+    public static function make(?PipeContainer $container = null): self
     {
         return new self($container);
     }
@@ -34,16 +37,16 @@ final class PipelineBuilder implements PipelineBuilderInterface
     /**
      * PipelineBuilder constructor.
      *
-     * @param PipeContainerInterface|null $container
+     * @param PipeContainer|null $container
      */
-    public function __construct(private readonly ?PipeContainerInterface $container = null)
+    public function __construct(private readonly ?PipeContainer $container = null)
     {
     }
 
     /**
      * @inheritDoc
      */
-    public function add(callable|string $stage): PipelineBuilderInterface
+    public function add(callable|string $stage): static
     {
         $this->stages[] = $this->normalize($stage);
 
@@ -53,7 +56,7 @@ final class PipelineBuilder implements PipelineBuilderInterface
     /**
      * @inheritDoc
      */
-    public function through(iterable $stages): PipelineBuilderInterface
+    public function through(iterable $stages): static
     {
         foreach ($stages as $stage) {
             $this->add($stage);
@@ -65,7 +68,7 @@ final class PipelineBuilder implements PipelineBuilderInterface
     /**
      * @inheritDoc
      */
-    public function build(ProcessorInterface $processor = null): PipelineInterface
+    public function build(Processor $processor = null): Pipeline
     {
         return new Pipeline($processor, $this->stages);
     }

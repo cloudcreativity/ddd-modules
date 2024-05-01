@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Application\Bus\Middleware;
 
 use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
 use CloudCreativity\Modules\Application\UnitOfWork\UnitOfWorkManagerInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\TestCase;
 use Throwable;
@@ -30,7 +30,7 @@ class ExecuteInUnitOfWorkTest extends TestCase
      */
     public function testItCommitsUnitOfWorkOnSuccess(): void
     {
-        $command = $this->createMock(CommandInterface::class);
+        $command = $this->createMock(Command::class);
         $expected = Result::ok();
 
         $middleware = new ExecuteInUnitOfWork(
@@ -64,7 +64,7 @@ class ExecuteInUnitOfWorkTest extends TestCase
      */
     public function testItDoesNotCommitUnitOfWorkOnFailure(): void
     {
-        $command = $this->createMock(CommandInterface::class);
+        $command = $this->createMock(Command::class);
         $expected = Result::failed('Something went wrong.');
 
         $middleware = new ExecuteInUnitOfWork(
@@ -98,7 +98,7 @@ class ExecuteInUnitOfWorkTest extends TestCase
      */
     public function testItDoesNotCatchExceptions(): void
     {
-        $command = $this->createMock(CommandInterface::class);
+        $command = $this->createMock(Command::class);
         $expected = new \RuntimeException('Boom! Something went wrong.');
 
         $middleware = new ExecuteInUnitOfWork(

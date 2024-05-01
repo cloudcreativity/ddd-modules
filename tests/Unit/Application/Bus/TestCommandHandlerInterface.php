@@ -11,13 +11,13 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Application\Bus;
 
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 interface TestCommandHandlerInterface
 {
     /**
      * @param TestCommand $command
-     * @return ResultInterface<null>
+     * @return Result<null>
      */
-    public function execute(TestCommand $command): ResultInterface;
+    public function execute(TestCommand $command): Result;
 }

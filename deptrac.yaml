@@ -5,19 +5,27 @@ deptrac:
     - name: Toolkit
       collectors:
         - type: className
+          value: CloudCreativity\\Modules\\Contracts\\Toolkit\\*
+        - type: className
           value: CloudCreativity\\Modules\\Toolkit\\*
         - type: className
           value: Ramsey\\Uuid\\*
     - name: Domain
       collectors:
         - type: className
+          value: CloudCreativity\\Modules\\Contracts\\Domain\\*
+        - type: className
           value: CloudCreativity\\Modules\\Domain\\*
     - name: Application
       collectors:
         - type: className
+          value: CloudCreativity\\Modules\\Contracts\\Application\\*
+        - type: className
           value: CloudCreativity\\Modules\\Application\\*
     - name: Infrastructure
       collectors:
+        - type: className
+          value: CloudCreativity\\Modules\\Contracts\\Infrastructure\\*
         - type: className
           value: CloudCreativity\\Modules\\Infrastructure\\*
     - name: PSR Log

@@ -11,18 +11,18 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Pipeline;
 
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\Pipeline;
 use CloudCreativity\Modules\Toolkit\Pipeline\LazyPipe;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipelineInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class LazyPipeTest extends TestCase
 {
     /**
-     * @var PipeContainerInterface&MockObject
+     * @var PipeContainer&MockObject
      */
-    private PipeContainerInterface $container;
+    private PipeContainer $container;
 
     /**
      * @return void
@@ -30,7 +30,7 @@ class LazyPipeTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->container = $this->createMock(PipeContainerInterface::class);
+        $this->container = $this->createMock(PipeContainer::class);
     }
 
     /**
@@ -42,7 +42,7 @@ class LazyPipeTest extends TestCase
             ->expects($this->once())
             ->method('get')
             ->with('SomePipe')
-            ->willReturn($pipe = $this->createMock(PipelineInterface::class));
+            ->willReturn($pipe = $this->createMock(Pipeline::class));
 
         $pipe
             ->expects($this->once())

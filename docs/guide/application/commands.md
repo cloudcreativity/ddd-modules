@@ -18,15 +18,15 @@ For example:
 ```php
 namespace App\Modules\EventManagement\Application\UseCases\Commands\CancelAttendeeTicket;
 
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
-use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use VendorName\EventManagement\Shared\Enums\CancellationReasonEnum;
 
-final readonly class CancelAttendeeTicketCommand implements CommandInterface
+final readonly class CancelAttendeeTicketCommand implements Command
 {
     public function __construct(
-        public IdentifierInterface $attendeeId,
-        public IdentifierInterface $ticketId,
+        public Identifier $attendeeId,
+        public Identifier $ticketId,
         public CancellationReasonEnum $reason,
     ) {
     }
@@ -74,7 +74,7 @@ namespace App\Modules\EventManagement\Application\UseCases\Commands\CancelAttend
 
 use App\Modules\EventManagement\Application\Ports\Driven\Persistence\AttendeeRepositoryInterface;
 use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;
-use CloudCreativity\Modules\Application\Messages\DispatchThroughMiddleware;
+use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
 use CloudCreativity\Modules\Toolkit\Results\Result;
 
 final readonly class CancelAttendeeTicketHandler implements
@@ -565,11 +565,11 @@ that has sensitive customer data on it that you do not want to end up in your lo
 implement the `ContextProviderInterface` on your command message:
 
 ```php
-use CloudCreativity\Modules\Toolkit\Loggable\ContextProviderInterface;
+use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextProvider;
 
 final readonly class CancelAttendeeTicketCommand implements
   CommandInterface,
-  ContextProviderInterface
+  ContextProvider
 {
     public function __construct(
         public IdentifierInterface $attendeeId,
@@ -597,22 +597,22 @@ namespace App\Modules\EventManagement\Application\Adapters\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Application\Bus\Middleware\CommandMiddlewareInterface;
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 final class MyMiddleware implements CommandMiddlewareInterface
 {
     /**
      * Execute the middleware.
      *
-     * @param CommandInterface $command
-     * @param Closure(CommandInterface): ResultInterface<mixed> $next
-     * @return ResultInterface<mixed>
+     * @param Command $command
+     * @param Closure(Command): Result<mixed> $next
+     * @return Result<mixed>
      */
     public function __invoke(
-        CommandInterface $command, 
+        Command $command, 
         Closure $next,
-    ): ResultInterface
+    ): Result
     {
         // code here executes before the handler
 
@@ -639,23 +639,23 @@ namespace App\Modules\EventManagement\Application\Adapters\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Application\Bus\Middleware\BusMiddlewareInterface;
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
-use CloudCreativity\Modules\Application\Messages\QueryInterface;
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Application\Messages\Query;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 class MyBusMiddleware implements BusMiddlewareInterface
 {
     /**
      * Handle the command or query.
      *
-     * @param CommandInterface|QueryInterface $message
-     * @param Closure(CommandInterface|QueryInterface): ResultInterface<mixed> $next
-     * @return ResultInterface<mixed>
+     * @param Command|Query $message
+     * @param Closure(Command|Query): Result<mixed> $next
+     * @return Result<mixed>
      */
     public function __invoke(
-        CommandInterface|QueryInterface $message, 
+        Command|Query $message, 
         Closure $next,
-    ): ResultInterface
+    ): Result
     {
         // code here executes before the handler
 

@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Application\Bus;
 
-use CloudCreativity\Modules\Application\Messages\QueryInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Query;
 
-class TestQuery implements QueryInterface
+class TestQuery implements Query
 {
 }

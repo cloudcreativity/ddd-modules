@@ -16,7 +16,7 @@ The following is an example port:
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus;
 
-use CloudCreativity\Modules\Application\Ports\Driven\OutboundEventBus\EventPublisher;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driven\OutboundEventBus\EventPublisher;
 
 interface OutboundEventBusInterface extends EventPublisher
 {
@@ -64,7 +64,7 @@ namespace App\Modules\EventManagement\Infrastructure\OutboundEventBus;
 use App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus\OutboundEventBusInterface;
 use App\Modules\EventManagement\Infrastructure\GooglePubSub\EventSerializerInterface;
 use App\Modules\EventManagement\Infrastructure\GooglePubSub\SecureTopicFactoryInterface;
-use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 use CloudCreativity\Modules\Infrastructure\OutboundEventBus\Middleware\LogOutboundEvent;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 use Psr\Log\LoggerInterface;
@@ -83,7 +83,7 @@ final readonly class OutboundEventBusAdapterProvider
     {
         $publisher = new OutboundEventBusAdapter(
             // default publisher
-            fn: function (IntegrationEventInterface $event): void {
+            fn: function (IntegrationEvent $event): void {
                 $this->topicFactory->defaultTopic()->send([
                     'data' => $this->serializer->serialize($event),
                 ]);
@@ -262,17 +262,17 @@ implement the following interface that was extended by the driven port:
 ```php
 namespace CloudCreativity\Modules\Application\Ports\Driven\OutboundEventBus;
 
-use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 
 interface EventPublisher
 {
     /**
      * Publish an outbound integration event.
      *
-     * @param IntegrationEventInterface $event
+     * @param IntegrationEvent $event
      * @return void
      */
-    public function publish(IntegrationEventInterface $event): void;
+    public function publish(IntegrationEvent $event): void;
 }
 ```
 
@@ -321,7 +321,7 @@ following signature:
 namespace App\Modules\EventManagement\Application\Adapters\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 use CloudCreativity\Modules\Infrastructure\OutboundEventBus\Middleware\OutboundEventMiddlewareInterface;
 
 final class MyMiddleware implements OutboundEventMiddlewareInterface
@@ -329,12 +329,12 @@ final class MyMiddleware implements OutboundEventMiddlewareInterface
     /**
      * Execute the middleware.
      *
-     * @param IntegrationEventInterface $event
-     * @param Closure(IntegrationEventInterface): void $next
+     * @param IntegrationEvent $event
+     * @param Closure(IntegrationEvent): void $next
      * @return void
      */
     public function __invoke(
-        IntegrationEventInterface $event,
+        IntegrationEvent $event,
         Closure $next,
     ): void
     {

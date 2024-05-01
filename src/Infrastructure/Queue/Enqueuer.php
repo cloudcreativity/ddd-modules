@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\Queue;
 
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 
 final class Enqueuer implements EnqueuerInterface
 {
@@ -27,7 +27,7 @@ final class Enqueuer implements EnqueuerInterface
     /**
      * @inheritDoc
      */
-    public function __invoke(CommandInterface $command): void
+    public function __invoke(Command $command): void
     {
         assert(method_exists($this->enqueuer, 'push'), sprintf(
             'Cannot queue "%s" - enqueuer "%s" does not have a push method.',

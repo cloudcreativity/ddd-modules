@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Application\Bus;
 
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 
-class TestCommand implements CommandInterface
+class TestCommand implements Command
 {
 }

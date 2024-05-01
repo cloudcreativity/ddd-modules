@@ -12,9 +12,9 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Application\Bus\Middleware;
 
 use CloudCreativity\Modules\Application\Bus\Middleware\LogMessageDispatch;
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
-use CloudCreativity\Modules\Application\Messages\MessageInterface;
-use CloudCreativity\Modules\Application\Messages\QueryInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Application\Messages\Message;
+use CloudCreativity\Modules\Contracts\Application\Messages\Query;
 use CloudCreativity\Modules\Toolkit\Loggable\ObjectContext;
 use CloudCreativity\Modules\Toolkit\Loggable\ResultContext;
 use CloudCreativity\Modules\Toolkit\Result\Result;
@@ -32,9 +32,9 @@ class LogMessageDispatchTest extends TestCase
     private LoggerInterface $logger;
 
     /**
-     * @var CommandInterface
+     * @var Command
      */
-    private CommandInterface $message;
+    private Command $message;
 
     /**
      * @return void
@@ -44,7 +44,7 @@ class LogMessageDispatchTest extends TestCase
         parent::setUp();
 
         $this->logger = $this->createMock(LoggerInterface::class);
-        $this->message = new class () implements CommandInterface {
+        $this->message = new class () implements Command {
             public string $foo = 'bar';
             public string $baz = 'bat';
         };
@@ -68,7 +68,7 @@ class LogMessageDispatchTest extends TestCase
             });
 
         $middleware = new LogMessageDispatch($this->logger);
-        $actual = $middleware($this->message, function (MessageInterface $received) use ($expected) {
+        $actual = $middleware($this->message, function (Message $received) use ($expected) {
             $this->assertSame($this->message, $received);
             return $expected;
         });
@@ -98,7 +98,7 @@ class LogMessageDispatchTest extends TestCase
             });
 
         $middleware = new LogMessageDispatch($this->logger, LogLevel::NOTICE, LogLevel::WARNING);
-        $actual = $middleware($this->message, function (MessageInterface $received) use ($expected) {
+        $actual = $middleware($this->message, function (Message $received) use ($expected) {
             $this->assertSame($this->message, $received);
             return $expected;
         });
@@ -116,7 +116,7 @@ class LogMessageDispatchTest extends TestCase
     public function testItLogsAfterTheNextClosureIsInvoked(): void
     {
         $expected = new LogicException();
-        $message = $this->createMock(QueryInterface::class);
+        $message = $this->createMock(Query::class);
         $name = $message::class;
 
         $this->logger

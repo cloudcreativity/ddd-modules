@@ -13,9 +13,9 @@ namespace CloudCreativity\Modules\Application\Bus\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Application\Bus\Validation\CommandValidatorInterface;
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result as IResult;
 use CloudCreativity\Modules\Toolkit\Result\Result;
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
 abstract class ValidateCommand implements CommandMiddlewareInterface
 {
@@ -38,7 +38,7 @@ abstract class ValidateCommand implements CommandMiddlewareInterface
     /**
      * @inheritDoc
      */
-    public function __invoke(CommandInterface $command, Closure $next): ResultInterface
+    public function __invoke(Command $command, Closure $next): IResult
     {
         $errors = $this->validator
             ->using($this->rules())

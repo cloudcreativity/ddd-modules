@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\UnitOfWork;
 
 use Closure;
-use CloudCreativity\Modules\Application\Ports\Driven\Exceptions\ExceptionReporter;
-use CloudCreativity\Modules\Application\Ports\Driven\UnitOfWork\UnitOfWork;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Exceptions\ExceptionReporter;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driven\UnitOfWork\UnitOfWork;
 use RuntimeException;
 use Throwable;
 

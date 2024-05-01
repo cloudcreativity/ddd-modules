@@ -11,16 +11,16 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Application\Bus;
 
-use CloudCreativity\Modules\Application\Messages\DispatchThroughMiddleware;
+use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result as IResult;
 use CloudCreativity\Modules\Toolkit\Result\Result;
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
 class TestQueryHandler implements TestQueryHandlerInterface, DispatchThroughMiddleware
 {
     /**
      * @inheritDoc
      */
-    public function execute(TestQuery $query): ResultInterface
+    public function execute(TestQuery $query): IResult
     {
         return Result::ok(99);
     }

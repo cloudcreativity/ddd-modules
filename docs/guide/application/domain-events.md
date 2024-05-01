@@ -663,8 +663,8 @@ namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Middlewa
 
 use Closure;
 use CloudCreativity\Modules\Application\DomainEventDispatching\Middleware\DomainEventMiddlewareInterface;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
 final class MyMiddleware implements DomainEventMiddlewareInterface
 {
@@ -678,7 +678,7 @@ final class MyMiddleware implements DomainEventMiddlewareInterface
     public function __invoke(
         DomainEventInterface $event, 
         Closure $next,
-    ): ResultInterface
+    ): Result
     {
         // code here executes before the event is emitted.
 

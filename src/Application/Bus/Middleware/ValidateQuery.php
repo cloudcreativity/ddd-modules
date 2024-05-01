@@ -13,9 +13,9 @@ namespace CloudCreativity\Modules\Application\Bus\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Application\Bus\Validation\QueryValidatorInterface;
-use CloudCreativity\Modules\Application\Messages\QueryInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Query;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result as IResult;
 use CloudCreativity\Modules\Toolkit\Result\Result;
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
 abstract class ValidateQuery implements QueryMiddlewareInterface
 {
@@ -38,7 +38,7 @@ abstract class ValidateQuery implements QueryMiddlewareInterface
     /**
      * @inheritDoc
      */
-    public function __invoke(QueryInterface $query, Closure $next): ResultInterface
+    public function __invoke(Query $query, Closure $next): IResult
     {
         $errors = $this->validator
             ->using($this->rules())

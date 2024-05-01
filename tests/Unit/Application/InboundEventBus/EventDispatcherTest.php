@@ -14,8 +14,8 @@ namespace CloudCreativity\Modules\Tests\Unit\Application\InboundEventBus;
 use CloudCreativity\Modules\Application\InboundEventBus\EventDispatcher;
 use CloudCreativity\Modules\Application\InboundEventBus\EventHandlerContainerInterface;
 use CloudCreativity\Modules\Application\InboundEventBus\EventHandlerInterface;
-use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -27,9 +27,9 @@ class EventDispatcherTest extends TestCase
     private EventHandlerContainerInterface&MockObject $handlers;
 
     /**
-     * @var PipeContainerInterface&MockObject
+     * @var PipeContainer&MockObject
      */
-    private PipeContainerInterface&MockObject $middleware;
+    private PipeContainer&MockObject $middleware;
 
     /**
      * @var EventDispatcher
@@ -45,7 +45,7 @@ class EventDispatcherTest extends TestCase
 
         $this->dispatcher = new EventDispatcher(
             handlers: $this->handlers = $this->createMock(EventHandlerContainerInterface::class),
-            middleware: $this->middleware = $this->createMock(PipeContainerInterface::class),
+            middleware: $this->middleware = $this->createMock(PipeContainer::class),
         );
     }
 
@@ -54,7 +54,7 @@ class EventDispatcherTest extends TestCase
      */
     public function test(): void
     {
-        $event = $this->createMock(IntegrationEventInterface::class);
+        $event = $this->createMock(IntegrationEvent::class);
 
         $this->handlers
             ->expects($this->once())

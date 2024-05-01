@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Application\Bus\Middleware;
 
 use CloudCreativity\Modules\Application\Bus\Middleware\TearDownAfterDispatch;
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
-use CloudCreativity\Modules\Application\Messages\QueryInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Application\Messages\Query;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -25,7 +25,7 @@ class TearDownAfterDispatchTest extends TestCase
      */
     public function testItInvokesCallbackAfterSuccess(): void
     {
-        $message = $this->createMock(CommandInterface::class);
+        $message = $this->createMock(Command::class);
         $result = Result::ok();
         $sequence = [];
 
@@ -48,7 +48,7 @@ class TearDownAfterDispatchTest extends TestCase
      */
     public function testItInvokesCallbackAfterFailure(): void
     {
-        $message = $this->createMock(QueryInterface::class);
+        $message = $this->createMock(Query::class);
         $result = Result::failed('Something went wrong.');
         $sequence = [];
 
@@ -71,7 +71,7 @@ class TearDownAfterDispatchTest extends TestCase
      */
     public function testItInvokesCallbackAfterException(): void
     {
-        $message = $this->createMock(CommandInterface::class);
+        $message = $this->createMock(Command::class);
         $exception = new RuntimeException('Something went wrong.');
         $actual = null;
         $sequence = [];

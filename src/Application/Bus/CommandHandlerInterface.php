@@ -11,17 +11,17 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Application\Bus;
 
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
-use CloudCreativity\Modules\Application\Messages\DispatchThroughMiddleware;
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 interface CommandHandlerInterface extends DispatchThroughMiddleware
 {
     /**
      * Execute the command.
      *
-     * @param CommandInterface $command
-     * @return ResultInterface<mixed>
+     * @param Command $command
+     * @return Result<mixed>
      */
-    public function __invoke(CommandInterface $command): ResultInterface;
+    public function __invoke(Command $command): Result;
 }

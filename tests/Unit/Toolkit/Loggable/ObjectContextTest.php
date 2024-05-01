@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Loggable;
 
-use CloudCreativity\Modules\Toolkit\Loggable\ContextProviderInterface;
+use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextProvider;
 use CloudCreativity\Modules\Toolkit\Loggable\ObjectContext;
 use PHPUnit\Framework\TestCase;
 
@@ -41,7 +41,7 @@ class ObjectContextTest extends TestCase
      */
     public function testItUsesImplementedContext(): void
     {
-        $source = new class () implements ContextProviderInterface {
+        $source = new class () implements ContextProvider {
             public string $foo = 'bar';
             public string $baz = 'bat';
 

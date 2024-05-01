@@ -13,7 +13,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Application\InboundEventBus\Middlew
 
 use Closure;
 use CloudCreativity\Modules\Application\InboundEventBus\Middleware\SetupBeforeEvent;
-use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -30,7 +30,7 @@ class SetupBeforeEventTest extends TestCase
      */
     public function testItSetsUpAndSucceedsWithoutTeardown(): void
     {
-        $event = $this->createMock(IntegrationEventInterface::class);
+        $event = $this->createMock(IntegrationEvent::class);
 
         $middleware = new SetupBeforeEvent(function () {
             $this->sequence[] = 'setup';
@@ -50,7 +50,7 @@ class SetupBeforeEventTest extends TestCase
      */
     public function testItSetsUpAndSucceedsWithTeardown(): void
     {
-        $event = $this->createMock(IntegrationEventInterface::class);
+        $event = $this->createMock(IntegrationEvent::class);
 
         $middleware = new SetupBeforeEvent(function (): Closure {
             $this->sequence[] = 'setup';
@@ -72,7 +72,7 @@ class SetupBeforeEventTest extends TestCase
      */
     public function testItSetsUpAndThrowsExceptionWithoutTeardown(): void
     {
-        $event = $this->createMock(IntegrationEventInterface::class);
+        $event = $this->createMock(IntegrationEvent::class);
         $exception = new RuntimeException('Something went wrong.');
         $actual = null;
 
@@ -101,7 +101,7 @@ class SetupBeforeEventTest extends TestCase
      */
     public function testItSetsUpAndThrowsExceptionWithTeardown(): void
     {
-        $event = $this->createMock(IntegrationEventInterface::class);
+        $event = $this->createMock(IntegrationEvent::class);
         $exception = new RuntimeException('Something went wrong.');
         $actual = null;
 

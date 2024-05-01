@@ -128,7 +128,7 @@ namespace App\Modules\EventManagement\Application\UseCases\Commands\CancelAttend
 
 use App\Modules\EventManagement\Application\Ports\Driven\Persistence\AttendeeRepositoryInterface;
 use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;
-use CloudCreativity\Modules\Application\Messages\DispatchThroughMiddleware;
+use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
 use CloudCreativity\Modules\Toolkit\Results\Result;
 
 final readonly class CancelAttendeeTicketHandler implements
@@ -191,9 +191,8 @@ implementation for Laravel could look like this:
 namespace App\Modules\Shared\Infrastructure;
 
 use Closure;
-use CloudCreativity\Modules\Application\Ports\Driven\UnitOfWork\UnitOfWork;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driven\UnitOfWork\UnitOfWork;
 use Illuminate\Database\ConnectionInterface;
-use Psr\Log\LoggerInterface;
 
 final readonly class IlluminateUnitOfWork implements UnitOfWork
 {
@@ -410,7 +409,7 @@ namespace App\Modules\EventManagement\Application\UseCases\Commands\CancelAttend
 
 use App\Modules\EventManagement\Application\Ports\Driven\Persistence\AttendeeRepositoryInterface;
 use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;
-use CloudCreativity\Modules\Application\Messages\DispatchThroughMiddleware;
+use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
 use CloudCreativity\Modules\Toolkit\Results\Result;
 
 final readonly class CancelAttendeeTicketHandler implements
@@ -466,7 +465,7 @@ namespace App\Modules\EventManagement\Application\UseCases\InboundEvents;
 use App\Modules\EventManagement\Domain\Events\DispatcherInterface;
 use App\Modules\EventManagement\Domain\Events\SalesAtEventDidChange;
 use CloudCreativity\Modules\Application\InboundEventBus\Middleware\HandleInUnitOfWork;
-use CloudCreativity\Modules\Application\Messages\DispatchThroughMiddleware;
+use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
 use VendorName\Ordering\Shared\IntegrationEvents\V1\OrderWasFulfilled;
 
 final readonly class OrderWasFulfilledHandler implements

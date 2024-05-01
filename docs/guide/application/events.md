@@ -36,19 +36,19 @@ For example:
 ```php
 namespace VendorName\EventManagement\Shared\IntegrationEvents\V1;
 
-use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
-use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
 use VendorName\EventManagement\Shared\Enums\CancellationReasonEnum;
 
-final readonly class AttendeeTicketWasCancelled implements IntegrationEventInterface
+final readonly class AttendeeTicketWasCancelled implements IntegrationEvent
 {
     public function __construct(
         public Uuid $uuid,
         public \DateTimeImmutable $occurredAt,
-        public IdentifierInterface $eventId,
-        public IdentifierInterface $attendeeId,
-        public IdentifierInterface $ticketId,
+        public Identifier $eventId,
+        public Identifier $attendeeId,
+        public Identifier $ticketId,
         public CancellationReasonEnum $reason,
     ) {
     }
@@ -148,7 +148,7 @@ Your application layer should define the driven port:
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus;
 
-use CloudCreativity\Modules\Application\Ports\Driven\OutboundEventBus\EventPublisher;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driven\OutboundEventBus\EventPublisher;
 
 interface OutboundEventBusInterface extends EventPublisher
 {
@@ -171,13 +171,13 @@ namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Listener
 
 use App\Modules\EventManagement\Application\Ports\Driven\OutboundEvents\OutboundEventBusInterface;
 use App\Modules\EventManagement\Domain\Events\AttendeeTicketWasCancelled;
-use CloudCreativity\Modules\Toolkit\Identifiers\UuidFactoryInterface;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\UuidFactory;
 use VendorName\EventManagement\Shared\IntegrationEvents\V1 as IntegrationEvents;
 
 final readonly class PublishAttendeeTicketWasCancelled
 {
     public function __construct(
-        private UuidFactoryInterface $uuidFactory,
+        private UuidFactory $uuidFactory,
         private OutboundEventBusInterface $eventBus,
     ) {
     }
@@ -211,13 +211,13 @@ namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Listener
 
 use App\Modules\EventManagement\Application\Ports\Driven\OutboundEvents\Outbox;
 use App\Modules\EventManagement\Domain\Events\AttendeeTicketWasCancelled;
-use CloudCreativity\Modules\Toolkit\Identifiers\UuidFactoryInterface;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\UuidFactory;
 use VendorName\EventManagement\Shared\IntegrationEvents\V1 as IntegrationEvents;
 
 final readonly class PublishAttendeeTicketWasCancelled
 {
     public function __construct(
-        private UuidFactoryInterface $uuidFactory,
+        private UuidFactory $uuidFactory,
         private Outbox $outbox,
     ) {
     }
@@ -370,7 +370,7 @@ namespace App\Modules\EventManagement\Application\UseCases\InboundEvents;
 use App\Modules\EventManagement\Domain\Events\DispatcherInterface;
 use App\Modules\EventManagement\Domain\Events\SalesAtEventDidChange;
 use CloudCreativity\Modules\Application\InboundEventBus\Middleware\HandleInUnitOfWork;
-use CloudCreativity\Modules\Application\Messages\DispatchThroughMiddleware;
+use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
 use VendorName\Ordering\Shared\IntegrationEvents\V1\OrderWasFulfilled;
 
 final readonly class OrderWasFulfilledHandler implements
@@ -414,7 +414,7 @@ We do this by defining an interface in our application's driving ports:
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driving\InboundEventBus;
 
-use CloudCreativity\Modules\Application\Ports\Driving\InboundEvents\EventDispatcher;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driving\InboundEvents\EventDispatcher;
 
 interface InboundEventBus extends EventDispatcher
 {
@@ -609,11 +609,11 @@ example:
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driving\InboundEvents;
 
-use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 
 interface Inbox
 {
-    public function push(IntegrationEventInterface $event): void;
+    public function push(IntegrationEvent $event): void;
 }
 ```
 
@@ -624,13 +624,13 @@ might look like this:
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driven\Inbox;
 
-use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 
 interface InboxRepository
 {
     public function exists(IntegrationEvent $event): bool;
     
-    public function store(IntegrationEventInterface $event): void;
+    public function store(IntegrationEvent $event): void;
 }
 ```
 
@@ -850,19 +850,19 @@ namespace App\Modules\EventManagement\Application\Adapters\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Application\InboundEventBus\Middleware\InboundEventMiddlewareInterface;
-use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 
 final class MyMiddleware implements InboundEventMiddlewareInterface
 {
     /**
      * Execute the middleware.
      *
-     * @param IntegrationEventInterface $event
-     * @param Closure(IntegrationEventInterface): void $next
+     * @param IntegrationEvent $event
+     * @param Closure(IntegrationEvent): void $next
      * @return void
      */
     public function __invoke(
-        IntegrationEventInterface $event,
+        IntegrationEvent $event,
         Closure $next,
     ): void
     {

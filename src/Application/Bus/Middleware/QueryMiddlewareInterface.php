@@ -12,17 +12,17 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\Bus\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Application\Messages\QueryInterface;
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Query;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 interface QueryMiddlewareInterface
 {
     /**
      * Handle the query.
      *
-     * @param QueryInterface $query
-     * @param Closure(QueryInterface): ResultInterface<mixed> $next
-     * @return ResultInterface<mixed>
+     * @param Query $query
+     * @param Closure(Query): Result<mixed> $next
+     * @return Result<mixed>
      */
-    public function __invoke(QueryInterface $query, Closure $next): ResultInterface;
+    public function __invoke(Query $query, Closure $next): Result;
 }

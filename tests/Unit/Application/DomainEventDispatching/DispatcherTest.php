@@ -14,8 +14,8 @@ namespace CloudCreativity\Modules\Tests\Unit\Application\DomainEventDispatching;
 use Closure;
 use CloudCreativity\Modules\Application\DomainEventDispatching\Dispatcher;
 use CloudCreativity\Modules\Application\DomainEventDispatching\ListenerContainerInterface;
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -27,9 +27,9 @@ class DispatcherTest extends TestCase
     private ListenerContainerInterface&MockObject $listeners;
 
     /**
-     * @var MockObject&PipeContainerInterface
+     * @var MockObject&PipeContainer
      */
-    private PipeContainerInterface&MockObject $middleware;
+    private PipeContainer&MockObject $middleware;
 
     /**
      * @var Dispatcher
@@ -45,7 +45,7 @@ class DispatcherTest extends TestCase
 
         $this->dispatcher = new Dispatcher(
             listeners: $this->listeners = $this->createMock(ListenerContainerInterface::class),
-            middleware: $this->middleware = $this->createMock(PipeContainerInterface::class),
+            middleware: $this->middleware = $this->createMock(PipeContainer::class),
         );
     }
 

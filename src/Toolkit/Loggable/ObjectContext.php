@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Loggable;
 
-final class ObjectContext implements ContextProviderInterface
+use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextProvider;
+
+final class ObjectContext implements ContextProvider
 {
     /**
      * @param object $source
@@ -36,7 +38,7 @@ final class ObjectContext implements ContextProviderInterface
      */
     public function context(): array
     {
-        if ($this->source instanceof ContextProviderInterface) {
+        if ($this->source instanceof ContextProvider) {
             return $this->source->context();
         }
 

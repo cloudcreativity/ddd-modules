@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Pipeline;
 
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\Processor;
 use CloudCreativity\Modules\Toolkit\Pipeline\Pipeline;
-use CloudCreativity\Modules\Toolkit\Pipeline\ProcessorInterface;
 use PHPUnit\Framework\TestCase;
 
 class PipelineTest extends TestCase
@@ -22,7 +22,7 @@ class PipelineTest extends TestCase
         $payload = 'Hello World';
         $stages = ['strtoupper', 'strtolower'];
 
-        $processor = $this->createMock(ProcessorInterface::class);
+        $processor = $this->createMock(Processor::class);
 
         $processor
             ->expects($this->once())
@@ -42,7 +42,7 @@ class PipelineTest extends TestCase
         $payload = 'Hello World';
         $stages = ['strtoupper', 'strtolower'];
 
-        $processor = $this->createMock(ProcessorInterface::class);
+        $processor = $this->createMock(Processor::class);
 
         $processor
             ->expects($this->once())

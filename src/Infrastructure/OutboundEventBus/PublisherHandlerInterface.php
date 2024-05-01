@@ -11,15 +11,15 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\OutboundEventBus;
 
-use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 
 interface PublisherHandlerInterface
 {
     /**
      * Handle the integration event.
      *
-     * @param IntegrationEventInterface $event
+     * @param IntegrationEvent $event
      * @return void
      */
-    public function __invoke(IntegrationEventInterface $event): void;
+    public function __invoke(IntegrationEvent $event): void;
 }

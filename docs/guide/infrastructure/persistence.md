@@ -78,11 +78,11 @@ state back:
 namespace App\Modules\EventManagement\Application\Posts\Driven\Persistence\AttendeeRepositoryInterface;
 
 use App\Modules\EventManagement\Domain\Attendee;
-use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 
 interface AttendeeRepositoryInterface
 {
-    public function findOrFail(IdentifierInterface $attendeeId): Attendee;
+    public function findOrFail(Identifier $attendeeId): Attendee;
     public function update(Attendee $attendee): void;
 }
 ```
@@ -92,16 +92,16 @@ The second port would be used by our "get all tickets" query:
 ```php
 namespace App\Modules\EventManagement\Application\Posts\Driven\Persistence\ReadModels\V1\TicketModelRepositoryInterface;
 
-use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use VendorName\EventManagement\Shared\ReadModels\V1\TicketModel;
 
 interface TicketModelRepositoryInterface
 {
     /**
-     * @param IdentifierInterface $eventId
+     * @param Identifier $eventId
      * @return list<TicketModel>
      */
-    public function getByEventId(IdentifierInterface $eventId): array;
+    public function getByEventId(Identifier $eventId): array;
 }
 ```
 
@@ -124,11 +124,11 @@ store and retrieve the ticket entities. This means we only need one port:
 namespace App\Modules\EventManagement\Application\Posts\Driven\Persistence\AttendeeRepositoryInterface;
 
 use App\Modules\EventManagement\Domain\Attendee;
-use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 
 interface AttendeeRepositoryInterface
 {
-    public function findOrFail(IdentifierInterface $attendeeId): Attendee;
+    public function findOrFail(Identifier $attendeeId): Attendee;
     public function update(Attendee $attendee): void;
 }
 ```

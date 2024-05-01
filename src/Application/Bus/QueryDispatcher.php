@@ -11,12 +11,12 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Application\Bus;
 
-use CloudCreativity\Modules\Application\Messages\QueryInterface;
-use CloudCreativity\Modules\Application\Ports\Driving\Queries\QueryDispatcher as QueryPort;
+use CloudCreativity\Modules\Contracts\Application\Messages\Query;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driving\Queries\QueryDispatcher as QueryPort;
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 
 class QueryDispatcher implements QueryPort
 {
@@ -29,11 +29,11 @@ class QueryDispatcher implements QueryPort
      * QueryDispatcher constructor.
      *
      * @param QueryHandlerContainerInterface $handlers
-     * @param PipeContainerInterface|null $middleware
+     * @param PipeContainer|null $middleware
      */
     public function __construct(
         private readonly QueryHandlerContainerInterface $handlers,
-        private readonly ?PipeContainerInterface $middleware = null,
+        private readonly ?PipeContainer $middleware = null,
     ) {
     }
 
@@ -53,7 +53,7 @@ class QueryDispatcher implements QueryPort
     /**
      * @inheritDoc
      */
-    public function dispatch(QueryInterface $query): ResultInterface
+    public function dispatch(Query $query): Result
     {
         $handler = $this->handlers->get($query::class);
 
@@ -63,7 +63,7 @@ class QueryDispatcher implements QueryPort
 
         $result = $pipeline->process($query);
 
-        assert($result instanceof ResultInterface, 'Expecting pipeline to return a result object.');
+        assert($result instanceof Result, 'Expecting pipeline to return a result object.');
 
         return $result;
     }

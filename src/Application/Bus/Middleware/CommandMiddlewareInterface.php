@@ -12,17 +12,17 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\Bus\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 interface CommandMiddlewareInterface
 {
     /**
      * Handle the command.
      *
-     * @param CommandInterface $command
-     * @param Closure(CommandInterface): ResultInterface<mixed> $next
-     * @return ResultInterface<mixed>
+     * @param Command $command
+     * @param Closure(Command): Result<mixed> $next
+     * @return Result<mixed>
      */
-    public function __invoke(CommandInterface $command, Closure $next): ResultInterface;
+    public function __invoke(Command $command, Closure $next): Result;
 }

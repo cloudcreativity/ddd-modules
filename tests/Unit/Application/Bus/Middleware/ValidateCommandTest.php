@@ -13,10 +13,10 @@ namespace CloudCreativity\Modules\Tests\Unit\Application\Bus\Middleware;
 
 use CloudCreativity\Modules\Application\Bus\Middleware\ValidateCommand;
 use CloudCreativity\Modules\Application\Bus\Validation\CommandValidatorInterface;
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 use CloudCreativity\Modules\Toolkit\Result\Error;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -58,8 +58,8 @@ class ValidateCommandTest extends TestCase
     public function testItSucceeds(): void
     {
         $rules = [];
-        $command = $this->createMock(CommandInterface::class);
-        $expected = $this->createMock(ResultInterface::class);
+        $command = $this->createMock(Command::class);
+        $expected = $this->createMock(Result::class);
 
         $this->validator
             ->expects($this->once())
@@ -73,7 +73,7 @@ class ValidateCommandTest extends TestCase
         $this->validator
             ->expects($this->once())
             ->method('validate')
-            ->with($this->callback(function (CommandInterface $actual) use ($command, &$rules): bool {
+            ->with($this->callback(function (Command $actual) use ($command, &$rules): bool {
                 $this->assertSame(['foo', 'bar'], $rules);
                 $this->assertSame($command, $actual);
                 return true;
@@ -102,7 +102,7 @@ class ValidateCommandTest extends TestCase
         $this->validator
             ->expects($this->once())
             ->method('validate')
-            ->with($command = $this->createMock(CommandInterface::class))
+            ->with($command = $this->createMock(Command::class))
             ->willReturn($errors = new ListOfErrors(new Error(null, 'Something went wrong.')));
 
         $next = function () {

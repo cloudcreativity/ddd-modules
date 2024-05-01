@@ -11,16 +11,16 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Domain;
 
-use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 
 interface EntityInterface
 {
     /**
      * Get the entity's identifier.
      *
-     * @return IdentifierInterface|null
+     * @return Identifier|null
      */
-    public function getId(): ?IdentifierInterface;
+    public function getId(): ?Identifier;
 
     /**
      * Is this entity the same as the provided entity?

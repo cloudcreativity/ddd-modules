@@ -11,15 +11,15 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\Queue;
 
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 
 interface EnqueuerInterface
 {
     /**
      * Put the command on the queue.
      *
-     * @param CommandInterface $queueable
+     * @param Command $queueable
      * @return void
      */
-    public function __invoke(CommandInterface $queueable): void;
+    public function __invoke(Command $queueable): void;
 }

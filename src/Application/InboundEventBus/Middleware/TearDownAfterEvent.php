@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\InboundEventBus\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 
 final class TearDownAfterEvent implements InboundEventMiddlewareInterface
 {
@@ -28,7 +28,7 @@ final class TearDownAfterEvent implements InboundEventMiddlewareInterface
     /**
      * @inheritDoc
      */
-    public function __invoke(IntegrationEventInterface $event, Closure $next): void
+    public function __invoke(IntegrationEvent $event, Closure $next): void
     {
         try {
             $next($event);

@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Application\InboundEventBus;
 
-use CloudCreativity\Modules\Application\Messages\DispatchThroughMiddleware;
-use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 
 final class EventHandler implements EventHandlerInterface
 {
@@ -28,7 +28,7 @@ final class EventHandler implements EventHandlerInterface
     /**
      * @inheritDoc
      */
-    public function __invoke(IntegrationEventInterface $event): void
+    public function __invoke(IntegrationEvent $event): void
     {
         assert(method_exists($this->handler, 'handle'), sprintf(
             'Cannot dispatch "%s" - handler "%s" does not have a handle method.',

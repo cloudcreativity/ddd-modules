@@ -13,7 +13,7 @@ namespace CloudCreativity\Modules\Application\InboundEventBus\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Application\DomainEventDispatching\DeferredDispatcherInterface;
-use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 use Throwable;
 
 final class FlushDeferredEvents implements InboundEventMiddlewareInterface
@@ -30,7 +30,7 @@ final class FlushDeferredEvents implements InboundEventMiddlewareInterface
     /**
      * @inheritDoc
      */
-    public function __invoke(IntegrationEventInterface $event, Closure $next): void
+    public function __invoke(IntegrationEvent $event, Closure $next): void
     {
         try {
             $next($event);

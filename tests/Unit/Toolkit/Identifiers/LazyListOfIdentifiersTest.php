@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Identifiers;
 
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
-use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
 use CloudCreativity\Modules\Toolkit\Identifiers\LazyListOfIdentifiers;
 use CloudCreativity\Modules\Toolkit\Identifiers\StringId;
@@ -50,7 +50,7 @@ class LazyListOfIdentifiersTest extends TestCase
     {
         $ids = new LazyListOfIdentifiers(function () {
             yield Guid::fromInteger('SomeType', 1);
-            yield $this->createMock(IdentifierInterface::class);
+            yield $this->createMock(Identifier::class);
             yield Guid::fromString('SomeOtherType', '3');
         });
 
@@ -89,7 +89,7 @@ class LazyListOfIdentifiersTest extends TestCase
     {
         $ids = new LazyListOfIdentifiers(function () {
             yield IntegerId::from(1);
-            yield $this->createMock(IdentifierInterface::class);
+            yield $this->createMock(Identifier::class);
             yield IntegerId::from(3);
         });
 
@@ -128,7 +128,7 @@ class LazyListOfIdentifiersTest extends TestCase
     {
         $ids = new LazyListOfIdentifiers(function () {
             yield StringId::from('1');
-            yield $this->createMock(IdentifierInterface::class);
+            yield $this->createMock(Identifier::class);
             yield StringId::from('3');
         });
 
@@ -167,7 +167,7 @@ class LazyListOfIdentifiersTest extends TestCase
     {
         $ids = new LazyListOfIdentifiers(function () {
             yield Uuid::random();
-            yield $this->createMock(IdentifierInterface::class);
+            yield $this->createMock(Identifier::class);
             yield Uuid::random();
         });
 

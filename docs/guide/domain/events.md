@@ -43,16 +43,16 @@ contain only data that is relevant to the event. They must not contain any busin
 namespace App\Modules\EventManagement\Domain\Events;
 
 use App\Modules\EventManagement\Domain\Enums\CancellationReasonEnum;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
-use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
 
 final readonly class AttendeeTicketWasCancelled implements
     DomainEventInterface
 {
     public function __construct(
-        public IdentifierInterface $eventId,
-        public IdentifierInterface $attendeeId,
-        public IdentifierInterface $ticketId,
+        public Identifier $eventId,
+        public Identifier $attendeeId,
+        public Identifier $ticketId,
         public CancellationReasonEnum $reason,
         public \DateTimeImmutable $occurredAt = new \DateTimeImmutable(),
     ) {
@@ -163,19 +163,16 @@ Within an entity or aggregate, you can now dispatch an event as follows:
 ```php
 namespace App\Modules\EventManagement\Domain;
 
-use App\Modules\EventManagement\Domain\{
-    Enums\CancellationReasonEnum,
-    Events\AttendeeTicketWasCancelled,
-};
+use App\Modules\EventManagement\Domain\{Enums\CancellationReasonEnum,Events\AttendeeTicketWasCancelled,};
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Domain\AggregateInterface;
-use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
 
 class Attendee implements AggregateInterface
 {
     // ...other methods
 
     public function cancelTicket(
-        IdentifierInterface $ticketId,
+        Identifier $ticketId,
         CancellationReasonEnum $reason,
     ): void
     {

@@ -12,10 +12,10 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\OutboundEventBus;
 
 use Closure;
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Infrastructure\OutboundEventBus\ComponentPublisher;
 use CloudCreativity\Modules\Infrastructure\OutboundEventBus\PublisherHandlerContainerInterface;
 use CloudCreativity\Modules\Infrastructure\OutboundEventBus\PublisherHandlerInterface;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -27,9 +27,9 @@ class ComponentPublisherTest extends TestCase
     private PublisherHandlerContainerInterface $handlers;
 
     /**
-     * @var MockObject&PipeContainerInterface
+     * @var MockObject&PipeContainer
      */
-    private PipeContainerInterface&MockObject $middleware;
+    private PipeContainer&MockObject $middleware;
 
     /**
      * @var ComponentPublisher
@@ -45,7 +45,7 @@ class ComponentPublisherTest extends TestCase
 
         $this->publisher = new ComponentPublisher(
             handlers: $this->handlers = $this->createMock(PublisherHandlerContainerInterface::class),
-            middleware: $this->middleware = $this->createMock(PipeContainerInterface::class),
+            middleware: $this->middleware = $this->createMock(PipeContainer::class),
         );
     }
 

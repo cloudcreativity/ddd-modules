@@ -13,8 +13,8 @@ namespace CloudCreativity\Modules\Application\Bus\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Application\DomainEventDispatching\DeferredDispatcherInterface;
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 use Throwable;
 
 final class FlushDeferredEvents implements CommandMiddlewareInterface
@@ -31,7 +31,7 @@ final class FlushDeferredEvents implements CommandMiddlewareInterface
     /**
      * @inheritDoc
      */
-    public function __invoke(CommandInterface $command, Closure $next): ResultInterface
+    public function __invoke(Command $command, Closure $next): Result
     {
         try {
             $result = $next($command);

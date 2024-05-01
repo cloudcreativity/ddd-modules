@@ -12,9 +12,9 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\DomainEventDispatching;
 
 use Closure;
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Domain\Events\DomainEventInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 use Generator;
 use InvalidArgumentException;
@@ -35,11 +35,11 @@ class Dispatcher implements DispatcherInterface
      * Dispatcher constructor.
      *
      * @param ListenerContainerInterface $listeners
-     * @param PipeContainerInterface|null $middleware
+     * @param PipeContainer|null $middleware
      */
     public function __construct(
         private readonly ListenerContainerInterface $listeners = new ListenerContainer(),
-        private readonly ?PipeContainerInterface $middleware = null,
+        private readonly ?PipeContainer $middleware = null,
     ) {
     }
 

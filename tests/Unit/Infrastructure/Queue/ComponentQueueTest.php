@@ -11,11 +11,11 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue;
 
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Infrastructure\Queue\ComponentQueue;
 use CloudCreativity\Modules\Infrastructure\Queue\EnqueuerContainerInterface;
 use CloudCreativity\Modules\Infrastructure\Queue\EnqueuerInterface;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -27,9 +27,9 @@ class ComponentQueueTest extends TestCase
     private EnqueuerContainerInterface&MockObject $enqueuers;
 
     /**
-     * @var MockObject&PipeContainerInterface
+     * @var MockObject&PipeContainer
      */
-    private PipeContainerInterface&MockObject $middleware;
+    private PipeContainer&MockObject $middleware;
 
     /**
      * @var ComponentQueue
@@ -45,7 +45,7 @@ class ComponentQueueTest extends TestCase
 
         $this->queue = new ComponentQueue(
             enqueuers: $this->enqueuers = $this->createMock(EnqueuerContainerInterface::class),
-            middleware: $this->middleware = $this->createMock(PipeContainerInterface::class),
+            middleware: $this->middleware = $this->createMock(PipeContainer::class),
         );
     }
 
@@ -63,7 +63,7 @@ class ComponentQueueTest extends TestCase
      */
     public function test(): void
     {
-        $command = $this->createMock(CommandInterface::class);
+        $command = $this->createMock(Command::class);
 
         $this->enqueuers
             ->expects($this->once())
@@ -84,9 +84,9 @@ class ComponentQueueTest extends TestCase
      */
     public function testItQueuesThroughMiddleware(): void
     {
-        $command1 = $this->createMock(CommandInterface::class);
-        $command2 = $this->createMock(CommandInterface::class);
-        $command3 = $this->createMock(CommandInterface::class);
+        $command1 = $this->createMock(Command::class);
+        $command2 = $this->createMock(Command::class);
+        $command3 = $this->createMock(Command::class);
 
         $middleware1 = function ($actual, \Closure $next) use ($command1, $command2) {
             $this->assertSame($command1, $actual);

@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Application\InboundEventBus\Middleware;
 
 use CloudCreativity\Modules\Application\InboundEventBus\Middleware\TearDownAfterEvent;
-use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -23,7 +23,7 @@ class TearDownAfterEventTest extends TestCase
      */
     public function testItInvokesCallbackAfterSuccess(): void
     {
-        $event = $this->createMock(IntegrationEventInterface::class);
+        $event = $this->createMock(IntegrationEvent::class);
         $sequence = [];
 
         $middleware = new TearDownAfterEvent(function () use (&$sequence): void {
@@ -43,7 +43,7 @@ class TearDownAfterEventTest extends TestCase
      */
     public function testItInvokesCallbackAfterException(): void
     {
-        $event = $this->createMock(IntegrationEventInterface::class);
+        $event = $this->createMock(IntegrationEvent::class);
         $exception = new RuntimeException('Something went wrong.');
         $actual = null;
         $sequence = [];

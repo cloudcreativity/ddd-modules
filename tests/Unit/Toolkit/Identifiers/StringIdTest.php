@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Identifiers;
 
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
-use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
 use CloudCreativity\Modules\Toolkit\Identifiers\StringId;
 use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
@@ -79,7 +79,7 @@ class StringIdTest extends TestCase
     }
 
     /**
-     * @return array<int, array<IdentifierInterface>>
+     * @return array<int, array<Identifier>>
      */
     public static function notStringIdProvider(): array
     {
@@ -91,11 +91,11 @@ class StringIdTest extends TestCase
     }
 
     /**
-     * @param IdentifierInterface $other
+     * @param Identifier $other
      * @return void
      * @dataProvider notStringIdProvider
      */
-    public function testIsWithOtherIdentifiers(IdentifierInterface $other): void
+    public function testIsWithOtherIdentifiers(Identifier $other): void
     {
         $id = new StringId('1');
 
@@ -113,11 +113,11 @@ class StringIdTest extends TestCase
     }
 
     /**
-     * @param IdentifierInterface $other
+     * @param Identifier $other
      * @return void
      * @dataProvider notStringIdProvider
      */
-    public function testFromWithOtherIdentifiers(IdentifierInterface $other): void
+    public function testFromWithOtherIdentifiers(Identifier $other): void
     {
         $this->expectException(ContractException::class);
         $this->expectExceptionMessage('Unexpected identifier type, received: ' . get_debug_type($other));

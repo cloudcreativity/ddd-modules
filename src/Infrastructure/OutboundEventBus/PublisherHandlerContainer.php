@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Infrastructure\OutboundEventBus;
 
 use Closure;
-use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 use CloudCreativity\Modules\Infrastructure\InfrastructureException;
 
 final class PublisherHandlerContainer implements PublisherHandlerContainerInterface
@@ -34,7 +34,7 @@ final class PublisherHandlerContainer implements PublisherHandlerContainerInterf
     /**
      * Bind a handler factory into the container.
      *
-     * @param class-string<IntegrationEventInterface> $eventName
+     * @param class-string<IntegrationEvent> $eventName
      * @param Closure $binding
      * @return void
      */

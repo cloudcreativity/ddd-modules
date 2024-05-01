@@ -11,16 +11,16 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Application\InboundEventBus;
 
-use CloudCreativity\Modules\Application\Messages\DispatchThroughMiddleware;
-use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 
 interface EventHandlerInterface extends DispatchThroughMiddleware
 {
     /**
      * Handle the integration event.
      *
-     * @param IntegrationEventInterface $event
+     * @param IntegrationEvent $event
      * @return void
      */
-    public function __invoke(IntegrationEventInterface $event): void;
+    public function __invoke(IntegrationEvent $event): void;
 }

@@ -14,9 +14,9 @@ namespace CloudCreativity\Modules\Tests\Unit\Application\Bus;
 use CloudCreativity\Modules\Application\Bus\QueryDispatcher;
 use CloudCreativity\Modules\Application\Bus\QueryHandlerContainerInterface;
 use CloudCreativity\Modules\Application\Bus\QueryHandlerInterface;
-use CloudCreativity\Modules\Application\Messages\QueryInterface;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Query;
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -28,9 +28,9 @@ class QueryDispatcherTest extends TestCase
     private QueryHandlerContainerInterface $handlers;
 
     /**
-     * @var PipeContainerInterface&MockObject
+     * @var PipeContainer&MockObject
      */
-    private PipeContainerInterface $middleware;
+    private PipeContainer $middleware;
 
     /**
      * @var QueryDispatcher
@@ -46,7 +46,7 @@ class QueryDispatcherTest extends TestCase
 
         $this->dispatcher = new QueryDispatcher(
             handlers: $this->handlers = $this->createMock(QueryHandlerContainerInterface::class),
-            middleware: $this->middleware = $this->createMock(PipeContainerInterface::class),
+            middleware: $this->middleware = $this->createMock(PipeContainer::class),
         );
     }
 
@@ -55,7 +55,7 @@ class QueryDispatcherTest extends TestCase
      */
     public function test(): void
     {
-        $query = $this->createMock(QueryInterface::class);
+        $query = $this->createMock(Query::class);
 
         $this->handlers
             ->expects($this->once())
@@ -67,7 +67,7 @@ class QueryDispatcherTest extends TestCase
             ->expects($this->once())
             ->method('__invoke')
             ->with($this->identicalTo($query))
-            ->willReturn($expected = $this->createMock(ResultInterface::class));
+            ->willReturn($expected = $this->createMock(Result::class));
 
         $actual = $this->dispatcher->dispatch($query);
 
@@ -120,7 +120,7 @@ class QueryDispatcherTest extends TestCase
             ->expects($this->once())
             ->method('__invoke')
             ->with($this->identicalTo($query4))
-            ->willReturn($expected = $this->createMock(ResultInterface::class));
+            ->willReturn($expected = $this->createMock(Result::class));
 
         $this->dispatcher->through([$middleware1]);
         $actual = $this->dispatcher->dispatch($query1);

@@ -11,10 +11,10 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\OutboundEventBus;
 
-use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
-use CloudCreativity\Modules\Application\Ports\Driven\OutboundEventBus\EventPublisher;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driven\OutboundEventBus\EventPublisher;
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 
 class ComponentPublisher implements EventPublisher
@@ -28,11 +28,11 @@ class ComponentPublisher implements EventPublisher
      * ComponentPublisher constructor.
      *
      * @param PublisherHandlerContainerInterface $handlers
-     * @param PipeContainerInterface|null $middleware
+     * @param PipeContainer|null $middleware
      */
     public function __construct(
         private readonly PublisherHandlerContainerInterface $handlers,
-        private readonly ?PipeContainerInterface $middleware = null,
+        private readonly ?PipeContainer $middleware = null,
     ) {
     }
 
@@ -52,7 +52,7 @@ class ComponentPublisher implements EventPublisher
     /**
      * @inheritDoc
      */
-    public function publish(IntegrationEventInterface $event): void
+    public function publish(IntegrationEvent $event): void
     {
         $handler = $this->handlers->get($event::class);
 

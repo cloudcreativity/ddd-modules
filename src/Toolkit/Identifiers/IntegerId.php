@@ -11,17 +11,18 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Contracts;
 use JsonSerializable;
 
-final class IntegerId implements IdentifierInterface, JsonSerializable
+final class IntegerId implements Identifier, JsonSerializable
 {
     /**
-     * @param IdentifierInterface|int $value
+     * @param Identifier|int $value
      * @return self
      */
-    public static function from(IdentifierInterface|int $value): self
+    public static function from(Identifier|int $value): self
     {
         return match(true) {
             $value instanceof self => $value,
@@ -61,7 +62,7 @@ final class IntegerId implements IdentifierInterface, JsonSerializable
     /**
      * @inheritDoc
      */
-    public function is(?IdentifierInterface $other): bool
+    public function is(?Identifier $other): bool
     {
         if ($other instanceof self) {
             return $this->equals($other);

@@ -86,7 +86,7 @@ implementation looks like this:
 ```php
 namespace App\Modules\Shared\Infrastructure\Exceptions;
 
-use CloudCreativity\Modules\Application\Ports\Driven\Exceptions\ExceptionReporter;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Exceptions\ExceptionReporter;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Throwable;
 

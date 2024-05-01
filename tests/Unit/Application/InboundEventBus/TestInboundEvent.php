@@ -11,11 +11,11 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Application\InboundEventBus;
 
-use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
 use DateTimeImmutable;
 
-class TestInboundEvent implements IntegrationEventInterface
+class TestInboundEvent implements IntegrationEvent
 {
     /**
      * @return Uuid

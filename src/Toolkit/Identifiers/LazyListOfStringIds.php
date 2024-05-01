@@ -12,17 +12,17 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
 use Closure;
-use CloudCreativity\Modules\Toolkit\Iterables\LazyListInterface;
-use CloudCreativity\Modules\Toolkit\Iterables\LazyListTrait;
+use CloudCreativity\Modules\Contracts\Toolkit\Iterables\LazyList;
+use CloudCreativity\Modules\Toolkit\Iterables\IsLazyList;
 use Generator;
 
 /**
- * @implements LazyListInterface<StringId>
+ * @implements LazyList<StringId>
  */
-final class LazyListOfStringIds implements LazyListInterface
+final class LazyListOfStringIds implements LazyList
 {
-    /** @use LazyListTrait<StringId> */
-    use LazyListTrait;
+    /** @use IsLazyList<StringId> */
+    use IsLazyList;
 
     /**
      * LazyListOfStringIds constructor.

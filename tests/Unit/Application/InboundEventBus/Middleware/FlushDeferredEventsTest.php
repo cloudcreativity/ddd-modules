@@ -13,7 +13,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Application\InboundEventBus\Middlew
 
 use CloudCreativity\Modules\Application\DomainEventDispatching\DeferredDispatcherInterface;
 use CloudCreativity\Modules\Application\InboundEventBus\Middleware\FlushDeferredEvents;
-use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -51,7 +51,7 @@ class FlushDeferredEventsTest extends TestCase
      */
     public function testItFlushesDeferredEvents(): void
     {
-        $event = $this->createMock(IntegrationEventInterface::class);
+        $event = $this->createMock(IntegrationEvent::class);
 
         $this->dispatcher
             ->expects($this->once())
@@ -78,7 +78,7 @@ class FlushDeferredEventsTest extends TestCase
      */
     public function testItForgetsDeferredEventsOnException(): void
     {
-        $event = $this->createMock(IntegrationEventInterface::class);
+        $event = $this->createMock(IntegrationEvent::class);
         $expected = new \LogicException('Boom!');
 
         $this->dispatcher

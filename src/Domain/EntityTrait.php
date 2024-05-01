@@ -11,19 +11,19 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Domain;
 
-use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 
 trait EntityTrait
 {
     /**
-     * @var IdentifierInterface
+     * @var Identifier
      */
-    private IdentifierInterface $id;
+    private Identifier $id;
 
     /**
      * @inheritDoc
      */
-    public function getId(): IdentifierInterface
+    public function getId(): Identifier
     {
         return $this->id;
     }

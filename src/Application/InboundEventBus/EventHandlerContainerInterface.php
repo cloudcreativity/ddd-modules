@@ -11,14 +11,14 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Application\InboundEventBus;
 
-use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 
 interface EventHandlerContainerInterface
 {
     /**
      * Get a handler for the specified integration event.
      *
-     * @param class-string<IntegrationEventInterface> $eventName
+     * @param class-string<IntegrationEvent> $eventName
      * @return EventHandlerInterface
      */
     public function get(string $eventName): EventHandlerInterface;

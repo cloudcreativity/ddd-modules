@@ -11,21 +11,21 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\OutboundEventBus;
 
-use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Infrastructure\OutboundEventBus\ClosurePublisher;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ClosurePublisherTest extends TestCase
 {
     /**
-     * @var MockObject&PipeContainerInterface
+     * @var MockObject&PipeContainer
      */
-    private PipeContainerInterface&MockObject $middleware;
+    private PipeContainer&MockObject $middleware;
 
     /**
-     * @var array<IntegrationEventInterface>
+     * @var array<IntegrationEvent>
      */
     private array $actual = [];
 
@@ -42,10 +42,10 @@ class ClosurePublisherTest extends TestCase
         parent::setUp();
 
         $this->publisher = new ClosurePublisher(
-            function (IntegrationEventInterface $event): void {
+            function (IntegrationEvent $event): void {
                 $this->actual[] = $event;
             },
-            $this->middleware = $this->createMock(PipeContainerInterface::class),
+            $this->middleware = $this->createMock(PipeContainer::class),
         );
     }
 
@@ -63,7 +63,7 @@ class ClosurePublisherTest extends TestCase
      */
     public function test(): void
     {
-        $event = $this->createMock(IntegrationEventInterface::class);
+        $event = $this->createMock(IntegrationEvent::class);
 
         $this->publisher->publish($event);
 
@@ -75,10 +75,10 @@ class ClosurePublisherTest extends TestCase
      */
     public function testWithMiddleware(): void
     {
-        $event1 = $this->createMock(IntegrationEventInterface::class);
-        $event2 = $this->createMock(IntegrationEventInterface::class);
-        $event3 = $this->createMock(IntegrationEventInterface::class);
-        $event4 = $this->createMock(IntegrationEventInterface::class);
+        $event1 = $this->createMock(IntegrationEvent::class);
+        $event2 = $this->createMock(IntegrationEvent::class);
+        $event3 = $this->createMock(IntegrationEvent::class);
+        $event4 = $this->createMock(IntegrationEvent::class);
 
         $middleware1 = function ($event, \Closure $next) use ($event1, $event2) {
             $this->assertSame($event1, $event);
@@ -119,7 +119,7 @@ class ClosurePublisherTest extends TestCase
     public function testWithAlternativeHandlers(): void
     {
         $expected = new TestOutboundEvent();
-        $mock = $this->createMock(IntegrationEventInterface::class);
+        $mock = $this->createMock(IntegrationEvent::class);
         $actual = null;
 
         $this->publisher->bind($mock::class, function (): never {

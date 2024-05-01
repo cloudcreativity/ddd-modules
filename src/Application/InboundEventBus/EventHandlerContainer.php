@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\InboundEventBus;
 
 use Closure;
-use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 use RuntimeException;
 
 final class EventHandlerContainer implements EventHandlerContainerInterface
@@ -25,7 +25,7 @@ final class EventHandlerContainer implements EventHandlerContainerInterface
     /**
      * Bind a handler factory into the container.
      *
-     * @param class-string<IntegrationEventInterface> $eventName
+     * @param class-string<IntegrationEvent> $eventName
      * @param Closure $binding
      * @return void
      */

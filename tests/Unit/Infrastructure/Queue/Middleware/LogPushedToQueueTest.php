@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue\Middleware;
 
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 use CloudCreativity\Modules\Infrastructure\Queue\Middleware\LogPushedToQueue;
 use CloudCreativity\Modules\Toolkit\Loggable\ObjectContext;
 use LogicException;
@@ -51,7 +51,7 @@ class LogPushedToQueueTest extends TestCase
      */
     public function testWithDefaultLevels(): void
     {
-        $command = new class () implements CommandInterface {
+        $command = new class () implements Command {
             public string $foo = 'bar';
             public string $baz = 'bat';
         };
@@ -70,7 +70,7 @@ class LogPushedToQueueTest extends TestCase
         $middleware = new LogPushedToQueue($this->logger);
         $middleware(
             $command,
-            function (CommandInterface $received) use ($command): void {
+            function (Command $received) use ($command): void {
                 $this->assertSame($command, $received);
             },
         );
@@ -88,7 +88,7 @@ class LogPushedToQueueTest extends TestCase
      */
     public function testWithCustomLevels(): void
     {
-        $command = new class () implements CommandInterface {
+        $command = new class () implements Command {
             public string $foo = 'bar';
             public string $baz = 'bat';
         };
@@ -105,7 +105,7 @@ class LogPushedToQueueTest extends TestCase
             });
 
         $middleware = new LogPushedToQueue($this->logger, LogLevel::NOTICE, LogLevel::WARNING);
-        $middleware($command, function (CommandInterface $received) use ($command): void {
+        $middleware($command, function (Command $received) use ($command): void {
             $this->assertSame($command, $received);
         });
 
@@ -122,7 +122,7 @@ class LogPushedToQueueTest extends TestCase
      */
     public function testItLogsAfterTheNextClosureIsInvoked(): void
     {
-        $command = new class () implements CommandInterface {
+        $command = new class () implements Command {
             public string $foo = 'bar';
             public string $baz = 'bat';
         };

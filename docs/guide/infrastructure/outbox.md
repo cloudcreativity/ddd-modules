@@ -62,17 +62,17 @@ Our recommended approach is to first place these events into an outbox. This mea
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driven\OutboundEvents;
 
-use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 
 interface Outbox
 {
     /**
      * Push the event into the outbox.
      *
-     * @param IntegrationEventInterface $event
+     * @param IntegrationEvent $event
      * @return void 
      */
-    public function push(IntegrationEventInterface $event): void;
+    public function push(IntegrationEvent $event): void;
 }
 ```
 
@@ -83,13 +83,13 @@ namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Listener
 
 use App\Modules\EventManagement\Application\Ports\Driven\OutboundEvents\Outbox;
 use App\Modules\EventManagement\Domain\Events\AttendeeTicketWasCancelled;
-use CloudCreativity\Modules\Toolkit\Identifiers\UuidFactoryInterface;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\UuidFactory;
 use VendorName\EventManagement\Shared\IntegrationEvents\V1 as IntegrationEvents;
 
 final readonly class PublishAttendeeTicketWasCancelled
 {
     public function __construct(
-        private UuidFactoryInterface $uuidFactory,
+        private UuidFactory $uuidFactory,
         private Outbox $outbox,
     ) {
     }
@@ -126,7 +126,7 @@ port `Queue` - as suggested by the [Queues chapter](./queues) - call it `Outbox`
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driven\Queue;
 
-use CloudCreativity\Modules\Application\Ports\Driven\Queue\Queue;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue\Queue;
 
 interface Outbox extends Queue
 {

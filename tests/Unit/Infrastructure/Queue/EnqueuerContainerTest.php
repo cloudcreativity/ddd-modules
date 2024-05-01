@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue;
 
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 use CloudCreativity\Modules\Infrastructure\Queue\Enqueuer;
 use CloudCreativity\Modules\Infrastructure\Queue\EnqueuerContainer;
 use CloudCreativity\Modules\Tests\Unit\Application\Bus\TestCommand;
@@ -24,8 +24,8 @@ class EnqueuerContainerTest extends TestCase
      */
     public function test(): void
     {
-        $command1 = new class () implements CommandInterface {};
-        $command2 = new class () implements CommandInterface {};
+        $command1 = new class () implements Command {};
+        $command2 = new class () implements Command {};
 
         $a = new TestEnqueuer();
         $b = $this->createMock(TestEnqueuer::class);

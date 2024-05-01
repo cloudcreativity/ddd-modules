@@ -13,32 +13,34 @@ namespace CloudCreativity\Modules\Toolkit\Result;
 
 use BackedEnum;
 use Closure;
-use CloudCreativity\Modules\Toolkit\Iterables\ListTrait;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Error as IError;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\ListOfErrors as IListOfErrors;
+use CloudCreativity\Modules\Toolkit\Iterables\IsList;
 
-final class ListOfErrors implements ListOfErrorsInterface
+final class ListOfErrors implements IListOfErrors
 {
-    /** @use ListTrait<ErrorInterface> */
-    use ListTrait;
+    /** @use IsList<IError> */
+    use IsList;
 
     /**
-     * @param ListOfErrorsInterface|ErrorInterface|BackedEnum|array<ErrorInterface>|string $value
+     * @param IListOfErrors|IError|BackedEnum|array<IError>|string $value
      * @return self
      */
-    public static function from(ListOfErrorsInterface|ErrorInterface|BackedEnum|array|string $value): self
+    public static function from(IListOfErrors|IError|BackedEnum|array|string $value): self
     {
         return match(true) {
             $value instanceof self => $value,
-            $value instanceof ListOfErrorsInterface, is_array($value) => new self(...$value),
-            $value instanceof ErrorInterface => new self($value),
+            $value instanceof IListOfErrors, is_array($value) => new self(...$value),
+            $value instanceof IError => new self($value),
             is_string($value) => new self(new Error(message: $value)),
             $value instanceof BackedEnum => new self(new Error(code: $value)),
         };
     }
 
     /**
-     * @param ErrorInterface ...$errors
+     * @param IError ...$errors
      */
-    public function __construct(ErrorInterface ...$errors)
+    public function __construct(IError ...$errors)
     {
         $this->stack = $errors;
     }
@@ -46,14 +48,14 @@ final class ListOfErrors implements ListOfErrorsInterface
     /**
      * @inheritDoc
      */
-    public function first(Closure|BackedEnum|null $matcher = null): ?ErrorInterface
+    public function first(Closure|BackedEnum|null $matcher = null): ?IError
     {
         if ($matcher === null) {
             return $this->stack[0] ?? null;
         }
 
         if ($matcher instanceof BackedEnum) {
-            $matcher = static fn (ErrorInterface $error): bool => $error->is($matcher);
+            $matcher = static fn (IError $error): bool => $error->is($matcher);
         }
 
         foreach ($this->stack as $error) {
@@ -71,7 +73,7 @@ final class ListOfErrors implements ListOfErrorsInterface
     public function contains(Closure|BackedEnum $matcher): bool
     {
         if ($matcher instanceof BackedEnum) {
-            $matcher = static fn (ErrorInterface $error): bool => $error->is($matcher);
+            $matcher = static fn (IError $error): bool => $error->is($matcher);
         }
 
         foreach ($this->stack as $error) {
@@ -104,7 +106,7 @@ final class ListOfErrors implements ListOfErrorsInterface
     /**
      * @inheritDoc
      */
-    public function push(ErrorInterface $error): self
+    public function push(IError $error): self
     {
         $copy = clone $this;
         $copy->stack[] = $error;
@@ -115,7 +117,7 @@ final class ListOfErrors implements ListOfErrorsInterface
     /**
      * @inheritDoc
      */
-    public function merge(ListOfErrorsInterface $other): self
+    public function merge(IListOfErrors $other): self
     {
         $copy = clone $this;
         $copy->stack = [

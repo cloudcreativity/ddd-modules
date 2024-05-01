@@ -104,16 +104,16 @@ For example:
 ```php
 namespace App\Modules\EventManagement\BoundedContext\Domain;
 
-use CloudCreativity\Modules\Toolkit\Iterables\ListInterface;
-use CloudCreativity\Modules\Toolkit\Iterables\ListTrait;
+use CloudCreativity\Modules\Contracts\Toolkit\Iterables\ListIterator;
+use CloudCreativity\Modules\Toolkit\Iterables\IsList;
 
 /**
- * @implements ListInterface<Ticket>
+ * @implements ListIterator<Ticket>
  */
-class ListOfTickets implements ListInterface
+class ListOfTickets implements ListIterator
 {
-    /** @use ListTrait<Ticket> */
-    use ListTrait;
+    /** @use IsList<Ticket> */
+    use IsList;
 
     public function __construct(Ticket ...$tickets)
     {

@@ -12,9 +12,9 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\Bus\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
-use CloudCreativity\Modules\Application\Messages\QueryInterface;
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Application\Messages\Query;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 final class TearDownAfterDispatch implements BusMiddlewareInterface
 {
@@ -30,7 +30,7 @@ final class TearDownAfterDispatch implements BusMiddlewareInterface
     /**
      * @inheritDoc
      */
-    public function __invoke(CommandInterface|QueryInterface $message, Closure $next): ResultInterface
+    public function __invoke(Command|Query $message, Closure $next): Result
     {
         try {
             return $next($message);

@@ -11,23 +11,24 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
-use CloudCreativity\Modules\Toolkit\Iterables\ListInterface;
-use CloudCreativity\Modules\Toolkit\Iterables\ListTrait;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
+use CloudCreativity\Modules\Contracts\Toolkit\Iterables\ListIterator;
+use CloudCreativity\Modules\Toolkit\Iterables\IsList;
 
 /**
- * @implements ListInterface<IdentifierInterface>
+ * @implements ListIterator<Identifier>
  */
-final class ListOfIdentifiers implements ListInterface
+final class ListOfIdentifiers implements ListIterator
 {
-    /** @use ListTrait<IdentifierInterface> */
-    use ListTrait;
+    /** @use IsList<Identifier> */
+    use IsList;
 
     /**
      * ListOfIdentifiers constructor.
      *
-     * @param IdentifierInterface ...$identifiers
+     * @param Identifier ...$identifiers
      */
-    public function __construct(IdentifierInterface ...$identifiers)
+    public function __construct(Identifier ...$identifiers)
     {
         $this->stack = $identifiers;
     }

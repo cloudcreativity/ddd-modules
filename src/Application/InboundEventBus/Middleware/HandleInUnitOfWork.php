@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\InboundEventBus\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
 use CloudCreativity\Modules\Application\UnitOfWork\UnitOfWorkManagerInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 
 final class HandleInUnitOfWork implements InboundEventMiddlewareInterface
 {
@@ -32,7 +32,7 @@ final class HandleInUnitOfWork implements InboundEventMiddlewareInterface
     /**
      * @inheritDoc
      */
-    public function __invoke(IntegrationEventInterface $event, Closure $next): void
+    public function __invoke(IntegrationEvent $event, Closure $next): void
     {
         $this->unitOfWorkManager->execute(
             static function () use ($event, $next): void {

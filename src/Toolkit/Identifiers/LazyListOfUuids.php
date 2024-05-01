@@ -12,18 +12,18 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
 use Closure;
-use CloudCreativity\Modules\Toolkit\Iterables\LazyListInterface;
-use CloudCreativity\Modules\Toolkit\Iterables\LazyListTrait;
+use CloudCreativity\Modules\Contracts\Toolkit\Iterables\LazyList;
+use CloudCreativity\Modules\Toolkit\Iterables\IsLazyList;
 use Generator;
 use Ramsey\Uuid\UuidInterface;
 
 /**
- * @implements LazyListInterface<Uuid>
+ * @implements LazyList<Uuid>
  */
-final class LazyListOfUuids implements LazyListInterface
+final class LazyListOfUuids implements LazyList
 {
-    /** @use LazyListTrait<Uuid> */
-    use LazyListTrait;
+    /** @use IsLazyList<Uuid> */
+    use IsLazyList;
 
     /**
      * LazyListOfUuids constructor.

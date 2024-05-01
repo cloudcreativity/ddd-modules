@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Application\Bus;
 
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
-use CloudCreativity\Modules\Application\Messages\DispatchThroughMiddleware;
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 final class CommandHandler implements CommandHandlerInterface
 {
@@ -29,7 +29,7 @@ final class CommandHandler implements CommandHandlerInterface
     /**
      * @inheritDoc
      */
-    public function __invoke(CommandInterface $command): ResultInterface
+    public function __invoke(Command $command): Result
     {
         assert(method_exists($this->handler, 'execute'), sprintf(
             'Cannot dispatch "%s" - handler "%s" does not have an execute method.',

@@ -11,17 +11,18 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Loggable;
 
-use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
-use CloudCreativity\Modules\Toolkit\Result\ErrorInterface;
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
+use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextProvider;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Error;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
-final class ResultContext implements ContextProviderInterface
+final class ResultContext implements ContextProvider
 {
     /**
-     * @param ResultInterface<mixed> $result
+     * @param Result<mixed> $result
      * @return self
      */
-    public static function from(ResultInterface $result): self
+    public static function from(Result $result): self
     {
         return new self($result);
     }
@@ -29,9 +30,9 @@ final class ResultContext implements ContextProviderInterface
     /**
      * ResultContext constructor.
      *
-     * @param ResultInterface<mixed> $result
+     * @param Result<mixed> $result
      */
-    public function __construct(private readonly ResultInterface $result)
+    public function __construct(private readonly Result $result)
     {
     }
 
@@ -40,7 +41,7 @@ final class ResultContext implements ContextProviderInterface
      */
     public function context(): array
     {
-        if ($this->result instanceof ContextProviderInterface) {
+        if ($this->result instanceof ContextProvider) {
             return $this->result->context();
         }
 
@@ -60,8 +61,8 @@ final class ResultContext implements ContextProviderInterface
         return array_filter([
             'success' => $this->result->didSucceed(),
             'value' => match(true) {
-                $value instanceof ContextProviderInterface => $value->context(),
-                $value instanceof IdentifierInterface => $value->context(),
+                $value instanceof ContextProvider => $value->context(),
+                $value instanceof Identifier => $value->context(),
                 is_scalar($value) => $value,
                 default => null,
             },
@@ -77,18 +78,18 @@ final class ResultContext implements ContextProviderInterface
     private function errors(): array
     {
         return array_map(
-            fn (ErrorInterface $error): array => $this->error($error),
+            fn (Error $error): array => $this->error($error),
             $this->result->errors()->all(),
         );
     }
 
     /**
-     * @param ErrorInterface $error
+     * @param Error $error
      * @return array<string, mixed>
      */
-    private function error(ErrorInterface $error): array
+    private function error(Error $error): array
     {
-        if ($error instanceof ContextProviderInterface) {
+        if ($error instanceof ContextProvider) {
             return $error->context();
         }
 

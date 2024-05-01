@@ -171,11 +171,11 @@ For example, in a repository you might use this as follows:
 
 ```php
 use App\Modules\UserManagement\Domain\User;
-use CloudCreativity\Modules\Toolkit\Identifiers\UuidFactoryInterface;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\UuidFactory;
 
 class UserRepository implements UserRepositoryInterface
 {
-    private readonly UuidFactoryInterface $uuidFactory;
+    private readonly UuidFactory $uuidFactory;
 
     // ...
 

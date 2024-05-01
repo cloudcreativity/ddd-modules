@@ -11,10 +11,10 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Application\InboundEventBus;
 
-use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
-use CloudCreativity\Modules\Application\Ports\Driving\InboundEvents\EventDispatcher as EventPort;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driving\InboundEvents\EventDispatcher as EventPort;
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 
 class EventDispatcher implements EventPort
@@ -28,11 +28,11 @@ class EventDispatcher implements EventPort
      * EventDispatcher constructor.
      *
      * @param EventHandlerContainerInterface $handlers
-     * @param PipeContainerInterface|null $middleware
+     * @param PipeContainer|null $middleware
      */
     public function __construct(
         private readonly EventHandlerContainerInterface $handlers,
-        private readonly ?PipeContainerInterface $middleware = null,
+        private readonly ?PipeContainer $middleware = null,
     ) {
     }
 
@@ -52,7 +52,7 @@ class EventDispatcher implements EventPort
     /**
      * @inheritDoc
      */
-    public function dispatch(IntegrationEventInterface $event): void
+    public function dispatch(IntegrationEvent $event): void
     {
         $handler = $this->handlers->get($event::class);
 

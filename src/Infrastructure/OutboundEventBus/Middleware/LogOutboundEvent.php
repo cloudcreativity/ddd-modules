@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Infrastructure\OutboundEventBus\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Application\Messages\IntegrationEventInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 use CloudCreativity\Modules\Toolkit\Loggable\ObjectContext;
 use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use Psr\Log\LoggerInterface;
@@ -37,7 +37,7 @@ final class LogOutboundEvent implements OutboundEventMiddlewareInterface
     /**
      * @inheritDoc
      */
-    public function __invoke(IntegrationEventInterface $event, Closure $next): void
+    public function __invoke(IntegrationEvent $event, Closure $next): void
     {
         $name = ModuleBasename::tryFrom($event)?->toString() ?? $event::class;
 

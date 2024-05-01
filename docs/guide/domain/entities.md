@@ -19,16 +19,16 @@ To define an entity, implement the `EntityInterface`. For example:
 ```php
 namespace App\Modules\EventManagement\Domain;
 
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Domain\EntityInterface;
 use CloudCreativity\Modules\Domain\EntityTrait;
-use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
 
 class BookableEvent implements EntityInterface
 {
     use EntityTrait;
 
     public function __construct(
-        IdentifierInterface $id,
+        Identifier $id,
         private readonly \DateTimeImmutable $startsAt,
         private readonly \DateTimeImmutable $endsAt,
         private bool $isCancelled = false,
@@ -48,16 +48,16 @@ layer before they are persisted for the first time. In this case, use the `Entit
 `EntityTrait`, for example:
 
 ```php
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Domain\EntityInterface;
 use CloudCreativity\Modules\Domain\EntityWithNullableIdTrait;
-use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
 
 class BookableEvent implements EntityInterface
 {
     use EntityWithNullableIdTrait;
 
     public function __construct(
-        private readonly ?IdentifierInterface $id,
+        private readonly ?Identifier $id,
         private readonly \DateTimeImmutable $startsAt,
         private readonly \DateTimeImmutable $endsAt,
         private bool $isCancelled = false,
@@ -79,16 +79,16 @@ To define an aggregate root, use the `AggregateInterface`:
 namespace App\Modules\EventManagement\Domain;
 
 use App\Modules\EventManagement\Domain\ValueObjects\Customer;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Domain\AggregateInterface;
 use CloudCreativity\Modules\Domain\EntityTrait;
-use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
 
 class Attendee implements AggregateInterface
 {
     use EntityTrait;
 
     public function __construct(
-        private readonly IdentifierInterface $id,
+        private readonly Identifier $id,
         private readonly Customer $customer,
         private readonly ListOfTickets $tickets,
     ) {

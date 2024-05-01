@@ -11,30 +11,30 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Domain;
 
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Toolkit\Contracts;
-use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
 
 trait EntityWithNullableIdTrait
 {
     /**
-     * @var IdentifierInterface|null
+     * @var Identifier|null
      */
-    private ?IdentifierInterface $id = null;
+    private ?Identifier $id = null;
 
     /**
      * @inheritDoc
      */
-    public function getId(): ?IdentifierInterface
+    public function getId(): ?Identifier
     {
         return $this->id;
     }
 
     /**
-     * @return IdentifierInterface
+     * @return Identifier
      */
-    public function getIdOrFail(): IdentifierInterface
+    public function getIdOrFail(): Identifier
     {
-        assert($this->id instanceof IdentifierInterface, 'Entity does not have an identifier.');
+        assert($this->id instanceof Identifier, 'Entity does not have an identifier.');
 
         return $this->id;
     }
@@ -44,14 +44,14 @@ trait EntityWithNullableIdTrait
      */
     public function hasId(): bool
     {
-        return $this->id instanceof IdentifierInterface;
+        return $this->id instanceof Identifier;
     }
 
     /**
-     * @param IdentifierInterface $id
+     * @param Identifier $id
      * @return $this
      */
-    public function setId(IdentifierInterface $id): static
+    public function setId(Identifier $id): static
     {
         Contracts::assert(null === $this->id, 'Cannot set identity as entity already has an identifier.');
 

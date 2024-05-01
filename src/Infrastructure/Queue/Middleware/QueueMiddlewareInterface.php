@@ -12,16 +12,16 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Infrastructure\Queue\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 
 interface QueueMiddlewareInterface
 {
     /**
      * Handle the command message being queued.
      *
-     * @param CommandInterface $command
-     * @param Closure(CommandInterface): void $next
+     * @param Command $command
+     * @param Closure(Command): void $next
      * @return void
      */
-    public function __invoke(CommandInterface $command, Closure $next): void;
+    public function __invoke(Command $command, Closure $next): void;
 }

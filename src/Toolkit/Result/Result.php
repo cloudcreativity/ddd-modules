@@ -12,12 +12,15 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Toolkit\Result;
 
 use BackedEnum;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Error as IError;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\ListOfErrors as IListOfErrors;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result as IResult;
 
 /**
  * @template TValue
- * @implements ResultInterface<TValue>
+ * @implements IResult<TValue>
  */
-final class Result implements ResultInterface
+final class Result implements IResult
 {
     /**
      * @var Meta|null
@@ -39,14 +42,14 @@ final class Result implements ResultInterface
     /**
      * Return a failed result.
      *
-     * @param ListOfErrorsInterface|ErrorInterface|BackedEnum|array<ErrorInterface>|string $errorOrErrors
+     * @param IListOfErrors|IError|BackedEnum|array<IError>|string $errorOrErrors
      * @return Result<null>
      */
     public static function failed(
-        ListOfErrorsInterface|ErrorInterface|BackedEnum|array|string $errorOrErrors,
+        IListOfErrors|IError|BackedEnum|array|string $errorOrErrors,
     ): self {
         $errors = match(true) {
-            $errorOrErrors instanceof ListOfErrorsInterface => $errorOrErrors,
+            $errorOrErrors instanceof IListOfErrors => $errorOrErrors,
             default => ListOfErrors::from($errorOrErrors),
         };
 
@@ -60,12 +63,12 @@ final class Result implements ResultInterface
      *
      * @param bool $success
      * @param TValue $value
-     * @param ListOfErrorsInterface $errors
+     * @param IListOfErrors $errors
      */
     private function __construct(
         private readonly bool $success,
         private readonly mixed $value = null,
-        private readonly ListOfErrorsInterface $errors = new ListOfErrors(),
+        private readonly IListOfErrors $errors = new ListOfErrors(),
     ) {
     }
 
@@ -118,7 +121,7 @@ final class Result implements ResultInterface
     /**
      * @inheritDoc
      */
-    public function errors(): ListOfErrorsInterface
+    public function errors(): IListOfErrors
     {
         return $this->errors;
     }

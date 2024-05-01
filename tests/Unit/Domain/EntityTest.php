@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Domain;
 
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Domain\EntityInterface;
 use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
-use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
 use PHPUnit\Framework\TestCase;
 
 class EntityTest extends TestCase
@@ -36,11 +36,11 @@ class EntityTest extends TestCase
     public function testItIsTheSame(): void
     {
         $a = new TestEntity(
-            $id1 = $this->createMock(IdentifierInterface::class),
+            $id1 = $this->createMock(Identifier::class),
         );
 
         $b = new TestEntity(
-            $id2 = $this->createMock(IdentifierInterface::class),
+            $id2 = $this->createMock(Identifier::class),
         );
 
         $id1
@@ -59,11 +59,11 @@ class EntityTest extends TestCase
     public function testItIsNotTheSame(): void
     {
         $a = new TestEntity(
-            $id1 = $this->createMock(IdentifierInterface::class),
+            $id1 = $this->createMock(Identifier::class),
         );
 
         $b = new TestEntity(
-            $id2 = $this->createMock(IdentifierInterface::class),
+            $id2 = $this->createMock(Identifier::class),
         );
 
         $id1
@@ -82,11 +82,11 @@ class EntityTest extends TestCase
     public function testItIsDifferentClass(): void
     {
         $a = new TestEntity(
-            $id1 = $this->createMock(IdentifierInterface::class),
+            $id1 = $this->createMock(Identifier::class),
         );
 
         $b = $this->createMock(EntityInterface::class);
-        $b->method('getId')->willReturn($this->createMock(IdentifierInterface::class));
+        $b->method('getId')->willReturn($this->createMock(Identifier::class));
 
         $id1
             ->expects($this->never())

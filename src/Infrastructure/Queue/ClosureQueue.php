@@ -12,16 +12,16 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Infrastructure\Queue;
 
 use Closure;
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
-use CloudCreativity\Modules\Application\Ports\Driven\Queue\Queue;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue\Queue;
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainerInterface;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 
 class ClosureQueue implements Queue
 {
     /**
-     * @var array<class-string<CommandInterface>, Closure>
+     * @var array<class-string<Command>, Closure>
      */
     private array $bindings = [];
 
@@ -37,14 +37,14 @@ class ClosureQueue implements Queue
      */
     public function __construct(
         private readonly Closure $fn,
-        private readonly ?PipeContainerInterface $middleware = null,
+        private readonly ?PipeContainer $middleware = null,
     ) {
     }
 
     /**
      * Bind an enqueuer for the specified command.
      *
-     * @param class-string<CommandInterface> $command
+     * @param class-string<Command> $command
      * @param Closure $fn
      * @return void
      */
@@ -67,7 +67,7 @@ class ClosureQueue implements Queue
     /**
      * @inheritDoc
      */
-    public function push(CommandInterface $command): void
+    public function push(Command $command): void
     {
         $enqueuer = $this->bindings[$command::class] ?? $this->fn;
 

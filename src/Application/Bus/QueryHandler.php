@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Application\Bus;
 
-use CloudCreativity\Modules\Application\Messages\DispatchThroughMiddleware;
-use CloudCreativity\Modules\Application\Messages\QueryInterface;
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
+use CloudCreativity\Modules\Contracts\Application\Messages\Query;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 final class QueryHandler implements QueryHandlerInterface
 {
@@ -29,7 +29,7 @@ final class QueryHandler implements QueryHandlerInterface
     /**
      * @inheritDoc
      */
-    public function __invoke(QueryInterface $query): ResultInterface
+    public function __invoke(Query $query): Result
     {
         assert(method_exists($this->handler, 'execute'), sprintf(
             'Cannot dispatch "%s" - handler "%s" does not have an execute method.',

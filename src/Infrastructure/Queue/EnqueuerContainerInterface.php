@@ -11,14 +11,14 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\Queue;
 
-use CloudCreativity\Modules\Application\Messages\CommandInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 
 interface EnqueuerContainerInterface
 {
     /**
      * Get an enqueuer for the provided command.
      *
-     * @param class-string<CommandInterface> $command
+     * @param class-string<Command> $command
      * @return EnqueuerInterface
      */
     public function get(string $command): EnqueuerInterface;

@@ -11,16 +11,16 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Application\Bus\Validation;
 
-use CloudCreativity\Modules\Application\Messages\QueryInterface;
-use CloudCreativity\Modules\Toolkit\Result\ListOfErrorsInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Query;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\ListOfErrors;
 
 interface QueryValidatorInterface extends ValidatorInterface
 {
     /**
      * Validate the provided query.
      *
-     * @param QueryInterface $query
-     * @return ListOfErrorsInterface
+     * @param Query $query
+     * @return ListOfErrors
      */
-    public function validate(QueryInterface $query): ListOfErrorsInterface;
+    public function validate(Query $query): ListOfErrors;
 }

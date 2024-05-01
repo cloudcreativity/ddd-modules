@@ -13,10 +13,10 @@ namespace CloudCreativity\Modules\Tests\Unit\Application\Bus\Middleware;
 
 use CloudCreativity\Modules\Application\Bus\Middleware\ValidateQuery;
 use CloudCreativity\Modules\Application\Bus\Validation\QueryValidatorInterface;
-use CloudCreativity\Modules\Application\Messages\QueryInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\Query;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 use CloudCreativity\Modules\Toolkit\Result\Error;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -58,8 +58,8 @@ class ValidateQueryTest extends TestCase
     public function testItSucceeds(): void
     {
         $rules = [];
-        $query = $this->createMock(QueryInterface::class);
-        $expected = $this->createMock(ResultInterface::class);
+        $query = $this->createMock(Query::class);
+        $expected = $this->createMock(Result::class);
 
         $this->validator
             ->expects($this->once())
@@ -73,7 +73,7 @@ class ValidateQueryTest extends TestCase
         $this->validator
             ->expects($this->once())
             ->method('validate')
-            ->with($this->callback(function (QueryInterface $actual) use ($query, &$rules): bool {
+            ->with($this->callback(function (Query $actual) use ($query, &$rules): bool {
                 $this->assertSame(['foobar', 'bazbat'], $rules);
                 $this->assertSame($query, $actual);
                 return true;
@@ -102,7 +102,7 @@ class ValidateQueryTest extends TestCase
         $this->validator
             ->expects($this->once())
             ->method('validate')
-            ->with($query = $this->createMock(QueryInterface::class))
+            ->with($query = $this->createMock(Query::class))
             ->willReturn($errors = new ListOfErrors(new Error(null, 'Something went wrong.')));
 
         $next = function () {
