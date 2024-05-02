@@ -12,13 +12,14 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\InboundEventBus\Middleware;
 
 use Closure;
+use CloudCreativity\Modules\Contracts\Application\InboundEventBus\InboundEventMiddleware;
 use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 use CloudCreativity\Modules\Toolkit\Loggable\ObjectContext;
 use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-final class LogInboundEvent implements InboundEventMiddlewareInterface
+final class LogInboundEvent implements InboundEventMiddleware
 {
     /**
      * LogInboundEvent constructor.

@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Application\Bus\Middleware;
 
 use CloudCreativity\Modules\Application\Bus\Middleware\ValidateCommand;
-use CloudCreativity\Modules\Application\Bus\Validation\CommandValidatorInterface;
+use CloudCreativity\Modules\Contracts\Application\Bus\Validator;
 use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 use CloudCreativity\Modules\Toolkit\Result\Error;
@@ -23,9 +23,9 @@ use PHPUnit\Framework\TestCase;
 class ValidateCommandTest extends TestCase
 {
     /**
-     * @var CommandValidatorInterface&MockObject
+     * @var Validator&MockObject
      */
-    private CommandValidatorInterface $validator;
+    private Validator $validator;
 
     /**
      * @var ValidateCommand
@@ -39,7 +39,7 @@ class ValidateCommandTest extends TestCase
     {
         parent::setUp();
 
-        $this->validator = $this->createMock(CommandValidatorInterface::class);
+        $this->validator = $this->createMock(Validator::class);
 
         $this->middleware = new class ($this->validator) extends ValidateCommand {
             /**

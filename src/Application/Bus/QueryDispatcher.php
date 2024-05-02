@@ -11,14 +11,15 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Application\Bus;
 
+use CloudCreativity\Modules\Contracts\Application\Bus\QueryHandlerContainer;
 use CloudCreativity\Modules\Contracts\Application\Messages\Query;
-use CloudCreativity\Modules\Contracts\Application\Ports\Driving\Queries\QueryDispatcher as QueryPort;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driving\Queries\QueryDispatcher as IQueryDispatcher;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 
-class QueryDispatcher implements QueryPort
+class QueryDispatcher implements IQueryDispatcher
 {
     /**
      * @var array<string|callable>
@@ -28,11 +29,11 @@ class QueryDispatcher implements QueryPort
     /**
      * QueryDispatcher constructor.
      *
-     * @param QueryHandlerContainerInterface $handlers
+     * @param QueryHandlerContainer $handlers
      * @param PipeContainer|null $middleware
      */
     public function __construct(
-        private readonly QueryHandlerContainerInterface $handlers,
+        private readonly QueryHandlerContainer $handlers,
         private readonly ?PipeContainer $middleware = null,
     ) {
     }

@@ -12,19 +12,20 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\InboundEventBus\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Application\UnitOfWork\UnitOfWorkManagerInterface;
+use CloudCreativity\Modules\Contracts\Application\InboundEventBus\InboundEventMiddleware;
 use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Application\UnitOfWork\UnitOfWorkManager;
 
-final class HandleInUnitOfWork implements InboundEventMiddlewareInterface
+final class HandleInUnitOfWork implements InboundEventMiddleware
 {
     /**
      * HandleInUnitOfWork constructor.
      *
-     * @param UnitOfWorkManagerInterface $unitOfWorkManager
+     * @param UnitOfWorkManager $unitOfWorkManager
      * @param int $attempts
      */
     public function __construct(
-        private readonly UnitOfWorkManagerInterface $unitOfWorkManager,
+        private readonly UnitOfWorkManager $unitOfWorkManager,
         private readonly int $attempts = 1,
     ) {
     }

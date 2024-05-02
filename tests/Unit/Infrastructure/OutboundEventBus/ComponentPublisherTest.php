@@ -12,19 +12,19 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\OutboundEventBus;
 
 use Closure;
+use CloudCreativity\Modules\Contracts\Infrastructure\OutboundEventBus\PublisherHandler;
+use CloudCreativity\Modules\Contracts\Infrastructure\OutboundEventBus\PublisherHandlerContainer;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Infrastructure\OutboundEventBus\ComponentPublisher;
-use CloudCreativity\Modules\Infrastructure\OutboundEventBus\PublisherHandlerContainerInterface;
-use CloudCreativity\Modules\Infrastructure\OutboundEventBus\PublisherHandlerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ComponentPublisherTest extends TestCase
 {
     /**
-     * @var PublisherHandlerContainerInterface&MockObject
+     * @var PublisherHandlerContainer&MockObject
      */
-    private PublisherHandlerContainerInterface $handlers;
+    private PublisherHandlerContainer $handlers;
 
     /**
      * @var MockObject&PipeContainer
@@ -44,7 +44,7 @@ class ComponentPublisherTest extends TestCase
         parent::setUp();
 
         $this->publisher = new ComponentPublisher(
-            handlers: $this->handlers = $this->createMock(PublisherHandlerContainerInterface::class),
+            handlers: $this->handlers = $this->createMock(PublisherHandlerContainer::class),
             middleware: $this->middleware = $this->createMock(PipeContainer::class),
         );
     }
@@ -60,7 +60,7 @@ class ComponentPublisherTest extends TestCase
             ->expects($this->once())
             ->method('get')
             ->with($event::class)
-            ->willReturn($handler = $this->createMock(PublisherHandlerInterface::class));
+            ->willReturn($handler = $this->createMock(PublisherHandler::class));
 
         $handler
             ->expects($this->once())
@@ -95,7 +95,7 @@ class ComponentPublisherTest extends TestCase
             ->with('Middleware2')
             ->willReturn($middleware2);
 
-        $handler = $this->createMock(PublisherHandlerInterface::class);
+        $handler = $this->createMock(PublisherHandler::class);
 
         $handler
             ->expects($this->once())

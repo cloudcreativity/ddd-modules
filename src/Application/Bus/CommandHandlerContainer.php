@@ -12,9 +12,10 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\Bus;
 
 use Closure;
+use CloudCreativity\Modules\Contracts\Application\Bus\CommandHandlerContainer as ICommandHandlerContainer;
 use RuntimeException;
 
-final class CommandHandlerContainer implements CommandHandlerContainerInterface
+final class CommandHandlerContainer implements ICommandHandlerContainer
 {
     /**
      * @var array<string, Closure>
@@ -36,7 +37,7 @@ final class CommandHandlerContainer implements CommandHandlerContainerInterface
     /**
      * @inheritDoc
      */
-    public function get(string $commandClass): CommandHandlerInterface
+    public function get(string $commandClass): CommandHandler
     {
         $factory = $this->bindings[$commandClass] ?? null;
 

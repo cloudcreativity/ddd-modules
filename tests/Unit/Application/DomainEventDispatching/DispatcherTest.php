@@ -13,18 +13,19 @@ namespace CloudCreativity\Modules\Tests\Unit\Application\DomainEventDispatching;
 
 use Closure;
 use CloudCreativity\Modules\Application\DomainEventDispatching\Dispatcher;
-use CloudCreativity\Modules\Application\DomainEventDispatching\ListenerContainerInterface;
-use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
+use CloudCreativity\Modules\Contracts\Application\DomainEventDispatching\ListenerContainer;
 use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
+use CloudCreativity\Modules\Contracts\Domain\Events\DomainEventDispatcher;
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class DispatcherTest extends TestCase
 {
     /**
-     * @var ListenerContainerInterface&MockObject
+     * @var ListenerContainer&MockObject
      */
-    private ListenerContainerInterface&MockObject $listeners;
+    private ListenerContainer&MockObject $listeners;
 
     /**
      * @var MockObject&PipeContainer
@@ -44,7 +45,7 @@ class DispatcherTest extends TestCase
         parent::setUp();
 
         $this->dispatcher = new Dispatcher(
-            listeners: $this->listeners = $this->createMock(ListenerContainerInterface::class),
+            listeners: $this->listeners = $this->createMock(ListenerContainer::class),
             middleware: $this->middleware = $this->createMock(PipeContainer::class),
         );
     }
@@ -109,6 +110,8 @@ class DispatcherTest extends TestCase
 
         $this->dispatcher->dispatch($event1);
         $this->dispatcher->dispatch($event2);
+
+        $this->assertInstanceOf(DomainEventDispatcher::class, $this->dispatcher);
         $this->assertSame($sequence, ['Listener1', 'Listener2', 'Listener3']);
     }
 

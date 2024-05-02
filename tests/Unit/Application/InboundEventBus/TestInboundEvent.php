@@ -20,7 +20,7 @@ class TestInboundEvent implements IntegrationEvent
     /**
      * @return Uuid
      */
-    public function uuid(): Uuid
+    public function getUuid(): Uuid
     {
         return Uuid::random();
     }
@@ -28,7 +28,7 @@ class TestInboundEvent implements IntegrationEvent
     /**
      * @return DateTimeImmutable
      */
-    public function occurredAt(): DateTimeImmutable
+    public function getOccurredAt(): DateTimeImmutable
     {
         return new DateTimeImmutable();
     }

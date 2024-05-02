@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Application\Bus;
 
 use CloudCreativity\Modules\Application\Bus\CommandDispatcher;
-use CloudCreativity\Modules\Application\Bus\CommandHandlerContainerInterface;
-use CloudCreativity\Modules\Application\Bus\CommandHandlerInterface;
+use CloudCreativity\Modules\Contracts\Application\Bus\CommandHandler;
+use CloudCreativity\Modules\Contracts\Application\Bus\CommandHandlerContainer;
 use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue\Queue;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
@@ -24,9 +24,9 @@ use PHPUnit\Framework\TestCase;
 class CommandDispatcherTest extends TestCase
 {
     /**
-     * @var CommandHandlerContainerInterface&MockObject
+     * @var CommandHandlerContainer&MockObject
      */
-    private CommandHandlerContainerInterface&MockObject $handlers;
+    private CommandHandlerContainer&MockObject $handlers;
 
     /**
      * @var PipeContainer&MockObject
@@ -53,7 +53,7 @@ class CommandDispatcherTest extends TestCase
         $this->queue = $this->createMock(Queue::class);
 
         $this->dispatcher = new CommandDispatcher(
-            handlers: $this->handlers = $this->createMock(CommandHandlerContainerInterface::class),
+            handlers: $this->handlers = $this->createMock(CommandHandlerContainer::class),
             middleware: $this->middleware = $this->createMock(PipeContainer::class),
             queue: fn () => $this->queue,
         );
@@ -72,7 +72,7 @@ class CommandDispatcherTest extends TestCase
             ->expects($this->once())
             ->method('get')
             ->with($command::class)
-            ->willReturn($handler = $this->createMock(CommandHandlerInterface::class));
+            ->willReturn($handler = $this->createMock(CommandHandler::class));
 
         $handler
             ->expects($this->once())
@@ -115,7 +115,7 @@ class CommandDispatcherTest extends TestCase
         $this->handlers
             ->method('get')
             ->with($command1::class)
-            ->willReturn($handler = $this->createMock(CommandHandlerInterface::class));
+            ->willReturn($handler = $this->createMock(CommandHandler::class));
 
         $this->middleware
             ->expects($this->once())

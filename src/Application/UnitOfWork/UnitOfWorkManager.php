@@ -14,10 +14,11 @@ namespace CloudCreativity\Modules\Application\UnitOfWork;
 use Closure;
 use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Exceptions\ExceptionReporter;
 use CloudCreativity\Modules\Contracts\Application\Ports\Driven\UnitOfWork\UnitOfWork;
+use CloudCreativity\Modules\Contracts\Application\UnitOfWork\UnitOfWorkManager as IUnitOfWorkManager;
 use RuntimeException;
 use Throwable;
 
-final class UnitOfWorkManager implements UnitOfWorkManagerInterface
+final class UnitOfWorkManager implements IUnitOfWorkManager
 {
     /**
      * @var callable[]

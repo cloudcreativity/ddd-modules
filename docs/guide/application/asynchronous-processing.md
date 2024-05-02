@@ -47,7 +47,7 @@ For example, an endpoint that triggers a recalculation of our sales report:
 namespace App\Http\Controllers\Api\AttendanceReport;
 
 use App\Modules\EventManagement\Application\{
-    Ports\Driving\Commands\CommandBusInterface,
+    Ports\Driving\Commands\CommandBus,
     UsesCases\Commands\RecalculateSalesAtEvent\RecalculateSalesAtEventCommand,
 };
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;

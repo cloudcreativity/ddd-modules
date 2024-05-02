@@ -12,8 +12,9 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Infrastructure\Queue;
 
 use Closure;
+use CloudCreativity\Modules\Contracts\Infrastructure\Queue\EnqueuerContainer as IEnqueuerContainer;
 
-final class EnqueuerContainer implements EnqueuerContainerInterface
+final class EnqueuerContainer implements IEnqueuerContainer
 {
     /**
      * @var array<string, Closure>
@@ -42,7 +43,7 @@ final class EnqueuerContainer implements EnqueuerContainerInterface
     /**
      * @inheritDoc
      */
-    public function get(string $command): EnqueuerInterface
+    public function get(string $command): Enqueuer
     {
         $factory = $this->bindings[$command] ?? $this->default;
 

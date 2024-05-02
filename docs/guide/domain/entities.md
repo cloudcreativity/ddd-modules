@@ -14,7 +14,7 @@ However, it is intentionally light-weight, because each domain should be modelle
 
 ## Entities
 
-To define an entity, implement the `EntityInterface`. For example:
+To define an entity, implement the `Entity` interface. For example:
 
 ```php
 namespace App\Modules\EventManagement\Domain;
@@ -40,7 +40,7 @@ class BookableEvent implements Entity
 }
 ```
 
-The `EntityInterface` defines that the implementing class is identifiable, and provides some helper methods for checking
+The entity interface defines that the implementing class is identifiable, and provides some helper methods for checking
 if two entities are the same - `is()` and `isNot()`.
 
 In some instances an entity may have a nullable identifier. For example, entities that can exist in the domain
@@ -73,7 +73,7 @@ This trait provides a method for setting the identifier - `setId()`.
 
 ## Aggregates
 
-To define an aggregate root, use the `AggregateInterface`:
+To define an aggregate root, use the `Aggregate`:
 
 ```php
 namespace App\Modules\EventManagement\Domain;
@@ -99,7 +99,7 @@ class Attendee implements Aggregate
 }
 ```
 
-The `AggregateInterface` extends the `EntityInterface` - there is no additional functionality. It is used to indicate
+The aggregate interface extends the entity interface - there is no additional functionality. It is used to indicate
 that the entity is the root of an aggregate. In the example, the `Attendee` aggregate root has a `ListOfTickets`,
 which is a value object that holds a list of `Ticket` entities.
 

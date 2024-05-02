@@ -11,11 +11,12 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Application\Bus;
 
+use CloudCreativity\Modules\Contracts\Application\Bus\CommandHandler as ICommandHandler;
 use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
-final class CommandHandler implements CommandHandlerInterface
+final class CommandHandler implements ICommandHandler
 {
     /**
      * CommandHandler constructor.

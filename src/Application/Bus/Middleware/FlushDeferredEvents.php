@@ -12,19 +12,20 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\Bus\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Application\DomainEventDispatching\DeferredDispatcherInterface;
+use CloudCreativity\Modules\Contracts\Application\Bus\CommandMiddleware;
+use CloudCreativity\Modules\Contracts\Application\DomainEventDispatching\DeferredDispatcher;
 use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 use Throwable;
 
-final class FlushDeferredEvents implements CommandMiddlewareInterface
+final class FlushDeferredEvents implements CommandMiddleware
 {
     /**
      * FlushDeferredEvents constructor.
      *
-     * @param DeferredDispatcherInterface $dispatcher
+     * @param DeferredDispatcher $dispatcher
      */
-    public function __construct(private readonly DeferredDispatcherInterface $dispatcher)
+    public function __construct(private readonly DeferredDispatcher $dispatcher)
     {
     }
 

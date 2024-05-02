@@ -13,9 +13,11 @@ namespace CloudCreativity\Modules\Infrastructure\OutboundEventBus;
 
 use Closure;
 use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Infrastructure\OutboundEventBus\{
+    PublisherHandlerContainer as IPublisherHandlerContainer};
 use CloudCreativity\Modules\Infrastructure\InfrastructureException;
 
-final class PublisherHandlerContainer implements PublisherHandlerContainerInterface
+final class PublisherHandlerContainer implements IPublisherHandlerContainer
 {
     /**
      * @var array<string, Closure>
@@ -46,7 +48,7 @@ final class PublisherHandlerContainer implements PublisherHandlerContainerInterf
     /**
      * @inheritDoc
      */
-    public function get(string $eventName): PublisherHandlerInterface
+    public function get(string $eventName): PublisherHandler
     {
         $factory = $this->bindings[$eventName] ?? $this->default;
 

@@ -13,6 +13,7 @@ namespace CloudCreativity\Modules\Infrastructure\OutboundEventBus;
 
 use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 use CloudCreativity\Modules\Contracts\Application\Ports\Driven\OutboundEventBus\EventPublisher;
+use CloudCreativity\Modules\Contracts\Infrastructure\OutboundEventBus\PublisherHandlerContainer;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
@@ -27,11 +28,11 @@ class ComponentPublisher implements EventPublisher
     /**
      * ComponentPublisher constructor.
      *
-     * @param PublisherHandlerContainerInterface $handlers
+     * @param PublisherHandlerContainer $handlers
      * @param PipeContainer|null $middleware
      */
     public function __construct(
-        private readonly PublisherHandlerContainerInterface $handlers,
+        private readonly PublisherHandlerContainer $handlers,
         private readonly ?PipeContainer $middleware = null,
     ) {
     }

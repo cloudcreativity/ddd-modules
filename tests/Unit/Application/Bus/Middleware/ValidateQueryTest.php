@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Application\Bus\Middleware;
 
 use CloudCreativity\Modules\Application\Bus\Middleware\ValidateQuery;
-use CloudCreativity\Modules\Application\Bus\Validation\QueryValidatorInterface;
+use CloudCreativity\Modules\Contracts\Application\Bus\Validator;
 use CloudCreativity\Modules\Contracts\Application\Messages\Query;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 use CloudCreativity\Modules\Toolkit\Result\Error;
@@ -23,9 +23,9 @@ use PHPUnit\Framework\TestCase;
 class ValidateQueryTest extends TestCase
 {
     /**
-     * @var QueryValidatorInterface&MockObject
+     * @var Validator&MockObject
      */
-    private QueryValidatorInterface $validator;
+    private Validator $validator;
 
     /**
      * @var ValidateQuery
@@ -39,7 +39,7 @@ class ValidateQueryTest extends TestCase
     {
         parent::setUp();
 
-        $this->validator = $this->createMock(QueryValidatorInterface::class);
+        $this->validator = $this->createMock(Validator::class);
 
         $this->middleware = new class ($this->validator) extends ValidateQuery {
             /**

@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Application\Bus\Middleware;
 
 use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;
-use CloudCreativity\Modules\Application\UnitOfWork\UnitOfWorkManagerInterface;
 use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Application\UnitOfWork\UnitOfWorkManager;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\TestCase;
 use Throwable;
@@ -34,7 +34,7 @@ class ExecuteInUnitOfWorkTest extends TestCase
         $expected = Result::ok();
 
         $middleware = new ExecuteInUnitOfWork(
-            $transactions = $this->createMock(UnitOfWorkManagerInterface::class),
+            $transactions = $this->createMock(UnitOfWorkManager::class),
             2,
         );
 
@@ -68,7 +68,7 @@ class ExecuteInUnitOfWorkTest extends TestCase
         $expected = Result::failed('Something went wrong.');
 
         $middleware = new ExecuteInUnitOfWork(
-            $transactions = $this->createMock(UnitOfWorkManagerInterface::class),
+            $transactions = $this->createMock(UnitOfWorkManager::class),
             2,
         );
 
@@ -102,7 +102,7 @@ class ExecuteInUnitOfWorkTest extends TestCase
         $expected = new \RuntimeException('Boom! Something went wrong.');
 
         $middleware = new ExecuteInUnitOfWork(
-            $transactions = $this->createMock(UnitOfWorkManagerInterface::class),
+            $transactions = $this->createMock(UnitOfWorkManager::class),
             2,
         );
 

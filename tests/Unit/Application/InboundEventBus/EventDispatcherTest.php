@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Application\InboundEventBus;
 
 use CloudCreativity\Modules\Application\InboundEventBus\EventDispatcher;
-use CloudCreativity\Modules\Application\InboundEventBus\EventHandlerContainerInterface;
-use CloudCreativity\Modules\Application\InboundEventBus\EventHandlerInterface;
+use CloudCreativity\Modules\Contracts\Application\InboundEventBus\EventHandler;
+use CloudCreativity\Modules\Contracts\Application\InboundEventBus\EventHandlerContainer;
 use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -22,9 +22,9 @@ use PHPUnit\Framework\TestCase;
 class EventDispatcherTest extends TestCase
 {
     /**
-     * @var EventHandlerContainerInterface&MockObject
+     * @var EventHandlerContainer&MockObject
      */
-    private EventHandlerContainerInterface&MockObject $handlers;
+    private EventHandlerContainer&MockObject $handlers;
 
     /**
      * @var PipeContainer&MockObject
@@ -44,7 +44,7 @@ class EventDispatcherTest extends TestCase
         parent::setUp();
 
         $this->dispatcher = new EventDispatcher(
-            handlers: $this->handlers = $this->createMock(EventHandlerContainerInterface::class),
+            handlers: $this->handlers = $this->createMock(EventHandlerContainer::class),
             middleware: $this->middleware = $this->createMock(PipeContainer::class),
         );
     }
@@ -60,7 +60,7 @@ class EventDispatcherTest extends TestCase
             ->expects($this->once())
             ->method('get')
             ->with($event::class)
-            ->willReturn($handler = $this->createMock(EventHandlerInterface::class));
+            ->willReturn($handler = $this->createMock(EventHandler::class));
 
         $handler
             ->expects($this->once())
@@ -98,7 +98,7 @@ class EventDispatcherTest extends TestCase
         $this->handlers
             ->method('get')
             ->with($event1::class)
-            ->willReturn($handler = $this->createMock(EventHandlerInterface::class));
+            ->willReturn($handler = $this->createMock(EventHandler::class));
 
         $this->middleware
             ->expects($this->once())

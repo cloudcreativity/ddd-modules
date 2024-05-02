@@ -12,12 +12,13 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\Bus\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Application\Bus\Validation\QueryValidatorInterface;
+use CloudCreativity\Modules\Contracts\Application\Bus\QueryMiddleware;
+use CloudCreativity\Modules\Contracts\Application\Bus\Validator;
 use CloudCreativity\Modules\Contracts\Application\Messages\Query;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result as IResult;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 
-abstract class ValidateQuery implements QueryMiddlewareInterface
+abstract class ValidateQuery implements QueryMiddleware
 {
     /**
      * Get the rules for the validation.
@@ -29,9 +30,9 @@ abstract class ValidateQuery implements QueryMiddlewareInterface
     /**
      * ValidateQuery constructor.
      *
-     * @param QueryValidatorInterface $validator
+     * @param Validator $validator
      */
-    public function __construct(private readonly QueryValidatorInterface $validator)
+    public function __construct(private readonly Validator $validator)
     {
     }
 

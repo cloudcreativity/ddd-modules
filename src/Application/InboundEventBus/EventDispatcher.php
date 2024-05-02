@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Application\InboundEventBus;
 
+use CloudCreativity\Modules\Contracts\Application\InboundEventBus\EventHandlerContainer;
 use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 use CloudCreativity\Modules\Contracts\Application\Ports\Driving\InboundEvents\EventDispatcher as EventPort;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
@@ -27,11 +28,11 @@ class EventDispatcher implements EventPort
     /**
      * EventDispatcher constructor.
      *
-     * @param EventHandlerContainerInterface $handlers
+     * @param EventHandlerContainer $handlers
      * @param PipeContainer|null $middleware
      */
     public function __construct(
-        private readonly EventHandlerContainerInterface $handlers,
+        private readonly EventHandlerContainer $handlers,
         private readonly ?PipeContainer $middleware = null,
     ) {
     }

@@ -19,7 +19,7 @@ bounded contexts. This means we can refer to them in terms of their direction - 
 
 ## Integration Event Messages
 
-Integration event messages are defined by writing a class that implements the `IntegrationEventInterface`. The class
+Integration event messages are defined by writing a class that implements the `IntegrationEvent` interface. The class
 should be named according to event it represents, and should contain properties that represent the data being exchanged.
 
 The integration event interface is light-weight and defines only two methods:
@@ -849,10 +849,10 @@ following signature:
 namespace App\Modules\EventManagement\Application\Adapters\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Application\InboundEventBus\Middleware\InboundEventMiddlewareInterface;
+use CloudCreativity\Modules\Contracts\Application\InboundEventBus\InboundEventMiddleware;
 use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 
-final class MyMiddleware implements InboundEventMiddlewareInterface
+final class MyMiddleware implements InboundEventMiddleware
 {
     /**
      * Execute the middleware.

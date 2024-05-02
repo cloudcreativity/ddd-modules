@@ -13,12 +13,13 @@ namespace CloudCreativity\Modules\Infrastructure\OutboundEventBus\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Infrastructure\OutboundEventBus\OutboundEventMiddleware;
 use CloudCreativity\Modules\Toolkit\Loggable\ObjectContext;
 use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-final class LogOutboundEvent implements OutboundEventMiddlewareInterface
+final class LogOutboundEvent implements OutboundEventMiddleware
 {
     /**
      * LogOutboundEvent constructor.

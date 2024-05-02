@@ -13,18 +13,19 @@ namespace CloudCreativity\Modules\Tests\Unit\Application\DomainEventDispatching;
 
 use Closure;
 use CloudCreativity\Modules\Application\DomainEventDispatching\DeferredDispatcher;
-use CloudCreativity\Modules\Application\DomainEventDispatching\ListenerContainerInterface;
-use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
+use CloudCreativity\Modules\Contracts\Application\DomainEventDispatching\DeferredDispatcher as IDeferredDispatcher;
+use CloudCreativity\Modules\Contracts\Application\DomainEventDispatching\ListenerContainer;
 use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class DeferredDispatcherTest extends TestCase
 {
     /**
-     * @var ListenerContainerInterface&MockObject
+     * @var ListenerContainer&MockObject
      */
-    private ListenerContainerInterface&MockObject $listeners;
+    private ListenerContainer&MockObject $listeners;
 
     /**
      * @var MockObject&PipeContainer&MockObject
@@ -44,7 +45,7 @@ class DeferredDispatcherTest extends TestCase
         parent::setUp();
 
         $this->dispatcher = new DeferredDispatcher(
-            listeners: $this->listeners = $this->createMock(ListenerContainerInterface::class),
+            listeners: $this->listeners = $this->createMock(ListenerContainer::class),
             middleware: $this->middleware = $this->createMock(PipeContainer::class),
         );
     }
@@ -110,6 +111,8 @@ class DeferredDispatcherTest extends TestCase
         $this->dispatcher->listen(TestDomainEvent::class, 'Listener4');
 
         $this->dispatcher->dispatch($event);
+
+        $this->assertInstanceOf(IDeferredDispatcher::class, $this->dispatcher);
         $this->assertSame($sequence, ['Listener1', 'Listener2', 'Listener3']);
     }
 

@@ -12,19 +12,19 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue;
 
 use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Infrastructure\Queue\Enqueuer;
+use CloudCreativity\Modules\Contracts\Infrastructure\Queue\EnqueuerContainer;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Infrastructure\Queue\ComponentQueue;
-use CloudCreativity\Modules\Infrastructure\Queue\EnqueuerContainerInterface;
-use CloudCreativity\Modules\Infrastructure\Queue\EnqueuerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ComponentQueueTest extends TestCase
 {
     /**
-     * @var EnqueuerContainerInterface&MockObject
+     * @var EnqueuerContainer&MockObject
      */
-    private EnqueuerContainerInterface&MockObject $enqueuers;
+    private EnqueuerContainer&MockObject $enqueuers;
 
     /**
      * @var MockObject&PipeContainer
@@ -44,7 +44,7 @@ class ComponentQueueTest extends TestCase
         parent::setUp();
 
         $this->queue = new ComponentQueue(
-            enqueuers: $this->enqueuers = $this->createMock(EnqueuerContainerInterface::class),
+            enqueuers: $this->enqueuers = $this->createMock(EnqueuerContainer::class),
             middleware: $this->middleware = $this->createMock(PipeContainer::class),
         );
     }
@@ -69,7 +69,7 @@ class ComponentQueueTest extends TestCase
             ->expects($this->once())
             ->method('get')
             ->with($command::class)
-            ->willReturn($enqueuer = $this->createMock(EnqueuerInterface::class));
+            ->willReturn($enqueuer = $this->createMock(Enqueuer::class));
 
         $enqueuer
             ->expects($this->once())
@@ -102,7 +102,7 @@ class ComponentQueueTest extends TestCase
             ->expects($this->once())
             ->method('get')
             ->with($command1::class)
-            ->willReturn($enqueuer = $this->createMock(EnqueuerInterface::class));
+            ->willReturn($enqueuer = $this->createMock(Enqueuer::class));
 
         $enqueuer
             ->expects($this->once())

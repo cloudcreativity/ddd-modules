@@ -12,9 +12,10 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\DomainEventDispatching;
 
 use Closure;
+use CloudCreativity\Modules\Contracts\Application\DomainEventDispatching\ListenerContainer as IListenerContainer;
 use RuntimeException;
 
-final class ListenerContainer implements ListenerContainerInterface
+final class ListenerContainer implements IListenerContainer
 {
     /**
      * @var array<string,Closure>

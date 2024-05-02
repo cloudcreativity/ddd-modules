@@ -12,9 +12,10 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\InboundEventBus\Middleware;
 
 use Closure;
+use CloudCreativity\Modules\Contracts\Application\InboundEventBus\InboundEventMiddleware;
 use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 
-final class SetupBeforeEvent implements InboundEventMiddlewareInterface
+final class SetupBeforeEvent implements InboundEventMiddleware
 {
     /**
      * SetupBeforeEvent constructor.

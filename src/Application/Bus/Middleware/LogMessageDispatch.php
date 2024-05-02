@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\Bus\Middleware;
 
 use Closure;
+use CloudCreativity\Modules\Contracts\Application\Bus\BusMiddleware;
 use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 use CloudCreativity\Modules\Contracts\Application\Messages\Query;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
@@ -21,7 +22,7 @@ use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-final class LogMessageDispatch implements BusMiddlewareInterface
+final class LogMessageDispatch implements BusMiddleware
 {
     /**
      * LogMessageDispatch constructor.

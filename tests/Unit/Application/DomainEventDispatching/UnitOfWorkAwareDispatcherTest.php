@@ -12,27 +12,28 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Application\DomainEventDispatching;
 
 use Closure;
-use CloudCreativity\Modules\Application\DomainEventDispatching\ListenerContainerInterface;
 use CloudCreativity\Modules\Application\DomainEventDispatching\UnitOfWorkAwareDispatcher;
-use CloudCreativity\Modules\Application\UnitOfWork\DispatchAfterCommit;
-use CloudCreativity\Modules\Application\UnitOfWork\DispatchBeforeCommit;
-use CloudCreativity\Modules\Application\UnitOfWork\UnitOfWorkManagerInterface;
-use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
+use CloudCreativity\Modules\Contracts\Application\DomainEventDispatching\ListenerContainer;
+use CloudCreativity\Modules\Contracts\Application\UnitOfWork\DispatchAfterCommit;
+use CloudCreativity\Modules\Contracts\Application\UnitOfWork\DispatchBeforeCommit;
+use CloudCreativity\Modules\Contracts\Application\UnitOfWork\UnitOfWorkManager;
 use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
+use CloudCreativity\Modules\Contracts\Domain\Events\DomainEventDispatcher;
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class UnitOfWorkAwareDispatcherTest extends TestCase
 {
     /**
-     * @var ListenerContainerInterface&MockObject
+     * @var ListenerContainer&MockObject
      */
-    private ListenerContainerInterface&MockObject $listeners;
+    private ListenerContainer&MockObject $listeners;
 
     /**
-     * @var UnitOfWorkManagerInterface&MockObject
+     * @var UnitOfWorkManager&MockObject
      */
-    private UnitOfWorkManagerInterface $unitOfWorkManager;
+    private UnitOfWorkManager $unitOfWorkManager;
 
     /**
      * @var MockObject&PipeContainer
@@ -52,8 +53,8 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
         parent::setUp();
 
         $this->dispatcher = new UnitOfWorkAwareDispatcher(
-            unitOfWorkManager: $this->unitOfWorkManager = $this->createMock(UnitOfWorkManagerInterface::class),
-            listeners: $this->listeners = $this->createMock(ListenerContainerInterface::class),
+            unitOfWorkManager: $this->unitOfWorkManager = $this->createMock(UnitOfWorkManager::class),
+            listeners: $this->listeners = $this->createMock(ListenerContainer::class),
             middleware: $this->middleware = $this->createMock(PipeContainer::class),
         );
     }
@@ -148,6 +149,8 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
         $this->dispatcher->listen(TestDomainEvent::class, 'Listener7');
 
         $this->dispatcher->dispatch($event);
+
+        $this->assertInstanceOf(DomainEventDispatcher::class, $this->dispatcher);
         $this->assertSame($sequence, ['Listener1', 'Listener2', 'Listener3']);
     }
 

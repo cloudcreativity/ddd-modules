@@ -12,9 +12,10 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\Bus;
 
 use Closure;
+use CloudCreativity\Modules\Contracts\Application\Bus\QueryHandlerContainer as IQueryHandlerContainer;
 use RuntimeException;
 
-final class QueryHandlerContainer implements QueryHandlerContainerInterface
+final class QueryHandlerContainer implements IQueryHandlerContainer
 {
     /**
      * @var array<string,Closure>
@@ -36,7 +37,7 @@ final class QueryHandlerContainer implements QueryHandlerContainerInterface
     /**
      * @inheritDoc
      */
-    public function get(string $queryClass): QueryHandlerInterface
+    public function get(string $queryClass): QueryHandler
     {
         $factory = $this->bindings[$queryClass] ?? null;
 

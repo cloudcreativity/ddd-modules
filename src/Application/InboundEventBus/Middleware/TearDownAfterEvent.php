@@ -12,9 +12,10 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\InboundEventBus\Middleware;
 
 use Closure;
+use CloudCreativity\Modules\Contracts\Application\InboundEventBus\InboundEventMiddleware;
 use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 
-final class TearDownAfterEvent implements InboundEventMiddlewareInterface
+final class TearDownAfterEvent implements InboundEventMiddleware
 {
     /**
      * TearDownAfterEvent constructor.

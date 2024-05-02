@@ -9,7 +9,7 @@ from the bounded context. They are dispatched to the _query bus_, and executed b
 
 ## Query Messages
 
-Query messages are defined by writing a class that implements the `QueryInterface`. The class should be named
+Query messages are defined by writing a class that implements the `Query` interface. The class should be named
 according to the request it represents, and should contain properties that represent the scope of the data requested.
 I.e. it defines the data contract for the request.
 
@@ -43,7 +43,7 @@ return a specific result. This makes it clear what the use case is, and what it 
 namespace App\Modules\EventManagement\Application\UseCases\Queries\GetAttendeeTickets;
 
 use App\Modules\EventManagement\Shared\ReadModels\V1\TicketModel;
-use CloudCreativity\Modules\Toolkit\Results\ResultInterface;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 interface CancelAttendeeTicketHandlerInterface
 {
@@ -51,9 +51,9 @@ interface CancelAttendeeTicketHandlerInterface
      * Get the attendee tickets for the given attendee.
      *
      * @param GetAttendeeTicketsQuery $query
-     * @return ResultInterface<list<TicketModel>>
+     * @return Result<list<TicketModel>>
      */
-    public function handle(GetAttendeeTicketsQuery $query): ResultInterface;
+    public function handle(GetAttendeeTicketsQuery $query): Result;
 }
 ```
 
@@ -123,7 +123,7 @@ namespace App\Modules\EventManagement\Application\Ports\Driving\QueryBus;
 
 use CloudCreativity\Modules\Contracts\Application\Ports\Driving\Queries\QueryDispatcher;
 
-interface QueryBusInterface extends QueryDispatcher
+interface QueryBus extends QueryDispatcher
 {
 }
 ```
@@ -133,11 +133,11 @@ And then our adapter (the concrete implementation of the port) is as follows:
 ```php
 namespace App\Modules\EventManagement\Application\Adapters\QueryBus;
 
-use App\Modules\EventManagement\Application\Ports\Driving\QueryBus\QueryBusInterface;
+use App\Modules\EventManagement\Application\Ports\Driving\QueryBus\QueryBus;
 use CloudCreativity\Modules\Application\Bus\QueryDispatcher;
 
 final class EventManagementQueryBus extends QueryDispatcher implements
-    EventManagementQueryBusInterface
+    QueryBus
 {
 }
 ```
@@ -164,8 +164,8 @@ use App\Modules\EventManagement\Application\UseCases\Queries\{
     GetAttendeeTickets\GetAttendeeTicketsHandler,
     GetAttendeeTickets\GetAttendeeTicketsHandlerInterface,
 };
-use App\Modules\EventManagement\Application\Ports\Driving\QueryBus\QueryBusInterface;
-use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependenciesInterface;
+use App\Modules\EventManagement\Application\Ports\Driving\QueryBus\QueryBus;
+use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;
 use CloudCreativity\Modules\Application\Bus\QueryHandlerContainer;
 use CloudCreativity\Modules\Application\Bus\Middleware\LogMessageDispatch;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
@@ -173,11 +173,11 @@ use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 final class QueryBusAdapterProvider
 {
     public function __construct(
-        private readonly ExternalDependenciesInterface $dependencies,
+        private readonly ExternalDependencies $dependencies,
     ) {
     }
 
-    public function getQueryBus(): EventManagementQueryBusInterface
+    public function getQueryBus(): QueryBus
     {
         $bus = new EventManagementQueryBus(
             handlers: $handlers = new QueryHandlerContainer(),
@@ -218,7 +218,7 @@ namespace App\Providers;
 
 use App\Modules\EventManagement\Application\{
     Adapters\QueryBus\QueryBusAdapterProvider,
-    Ports\Driving\QueryBus\QueryBusInterface,
+    Ports\Driving\QueryBus\QueryBus,
 };
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\ServiceProvider;
@@ -228,7 +228,7 @@ final class EventManagementServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(
-            QueryBusInterface::class,
+            QueryBus::class,
             static function (Container $app)  {
                 $provider = $app->make(QueryBusAdapterProvider::class);
                 return $provider->getQueryBus();
@@ -247,25 +247,26 @@ a single action controller to handle a HTTP request in a Laravel application, we
 namespace App\Http\Controllers\Api\Attendees;
 
 use App\Modules\EventManagement\Application\{
-    Ports\Driving\QueryBus\QueryBusInterface,
+    Ports\Driving\QueryBus\QueryBus,
     UsesCases\Queries\GetAttendeeTickets\GetAttendeeTicketsQuery,
 };
 use App\Http\Resources\Attendees\TicketsResource;
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 use Illuminate\Validation\Rule;
 use VendorName\EventManagement\Shared\ReadModels\V1\TicketModel;
 
 class TicketsController extends Controller
 {
     public function __invoke(
-        EventManagementQueryBusInterface $bus,
+        QueryBus $bus,
         string $attendeeId,
     ): TicketsResource {
         $query = new GetAttendeeTicketsQuery(
             attendeeId: new IntegerId((int) $attendeeId),
         );
 
-        /** @var ResultInterface<list<TicketModel>> $result */
+        /** @var Result<list<TicketModel>> $result */
         $result = $bus->dispatch($query);
 
         return new TicketsResource($result->value());
@@ -406,7 +407,7 @@ The use of this middleware is identical to that described in the [Commands chapt
 See those instructions for more information, such as configuring the log levels.
 
 Additionally, if you need to customise the context that is logged for a query then implement the
-`ContextProviderInterface` on your query message. See the example in the [Commands chapter.](./commands#logging)
+`ContextProvider` interface on your query message. See the example in the [Commands chapter.](./commands#logging)
 
 ### Writing Middleware
 
@@ -417,11 +418,11 @@ following signature:
 namespace App\Modules\EventManagement\Application\Adapters\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Application\Bus\Middleware\QueryMiddlewareInterface;
+use CloudCreativity\Modules\Contracts\Application\Bus\QueryMiddleware;
 use CloudCreativity\Modules\Contracts\Application\Messages\Query;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
-final class MyMiddleware implements QueryMiddlewareInterface
+final class MyMiddleware implements QueryMiddleware
 {
     /**
      * Execute the middleware.
@@ -448,23 +449,23 @@ final class MyMiddleware implements QueryMiddlewareInterface
 
 :::tip
 If you're writing middleware that is only meant to be used for a specific query, do not implement the
-`QueryMiddlewareInterface`. Instead, use the same signature but change the type-hint for the query to the query
+`QueryMiddleware` interface. Instead, use the same signature but change the type-hint for the query to the query
 class your middleware is designed to be used with.
 :::
 
-If you want to write middleware that can be used with both commands and queries, implement the `BusMiddlewareInterface`
+If you want to write middleware that can be used with both commands and queries, implement the `BusMiddleware` interface
 instead:
 
 ```php
 namespace App\Modules\EventManagement\Application\Adapters\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Application\Bus\Middleware\BusMiddlewareInterface;
+use CloudCreativity\Modules\Contracts\Application\Bus\BusMiddleware;
 use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 use CloudCreativity\Modules\Contracts\Application\Messages\Query;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
-class MyBusMiddleware implements BusMiddlewareInterface
+class MyBusMiddleware implements BusMiddleware
 {
     /**
      * Handle the command or query.

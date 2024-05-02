@@ -345,7 +345,7 @@ listeners can actually be deferred? Indicate this by implementing the `DispatchB
 ```php
 namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Listeners;
 
-use CloudCreativity\Modules\Application\UnitOfWork\DispatchBeforeCommit;
+use CloudCreativity\Modules\Contracts\Application\UnitOfWork\DispatchBeforeCommit;
 
 final readonly class QueueAttendeeCancellationEmail implements
     DispatchBeforeCommit
@@ -371,7 +371,7 @@ interface:
 ```php
 namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Listeners;
 
-use CloudCreativity\Modules\Application\UnitOfWork\DispatchAfterCommit;
+use CloudCreativity\Modules\Contracts\Application\UnitOfWork\DispatchAfterCommit;
 
 final readonly class QueueAttendeeCancellationEmail implements
     DispatchAfterCommit

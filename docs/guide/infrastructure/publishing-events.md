@@ -322,9 +322,9 @@ namespace App\Modules\EventManagement\Application\Adapters\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
-use CloudCreativity\Modules\Infrastructure\OutboundEventBus\Middleware\OutboundEventMiddlewareInterface;
+use CloudCreativity\Modules\Contracts\Infrastructure\OutboundEventBus\OutboundEventMiddleware;
 
-final class MyMiddleware implements OutboundEventMiddlewareInterface
+final class MyMiddleware implements OutboundEventMiddleware
 {
     /**
      * Execute the middleware.

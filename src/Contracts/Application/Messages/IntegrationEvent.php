@@ -19,10 +19,10 @@ interface IntegrationEvent extends Message
     /**
      * @return Uuid
      */
-    public function uuid(): Uuid;
+    public function getUuid(): Uuid;
 
     /**
      * @return DateTimeImmutable
      */
-    public function occurredAt(): DateTimeImmutable;
+    public function getOccurredAt(): DateTimeImmutable;
 }

@@ -11,10 +11,11 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Application\InboundEventBus;
 
+use CloudCreativity\Modules\Contracts\Application\InboundEventBus\EventHandler as IEventHandler;
 use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
 use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 
-final class EventHandler implements EventHandlerInterface
+final class EventHandler implements IEventHandler
 {
     /**
      * EventHandler constructor.

@@ -11,23 +11,24 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Application\DomainEventDispatching;
 
-use CloudCreativity\Modules\Application\UnitOfWork\UnitOfWorkManagerInterface;
-use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
+use CloudCreativity\Modules\Contracts\Application\DomainEventDispatching\ListenerContainer as IListenerContainer;
+use CloudCreativity\Modules\Contracts\Application\UnitOfWork\UnitOfWorkManager;
 use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 use CloudCreativity\Modules\Contracts\Domain\Events\OccursImmediately;
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 
-class UnitOfWorkAwareDispatcher extends Dispatcher implements DispatcherInterface
+class UnitOfWorkAwareDispatcher extends Dispatcher
 {
     /**
      * UnitOfWorkAwareDispatcher constructor.
      *
-     * @param UnitOfWorkManagerInterface $unitOfWorkManager
-     * @param ListenerContainerInterface $listeners
+     * @param UnitOfWorkManager $unitOfWorkManager
+     * @param IListenerContainer $listeners
      * @param PipeContainer|null $middleware
      */
     public function __construct(
-        private readonly UnitOfWorkManagerInterface $unitOfWorkManager,
-        ListenerContainerInterface $listeners = new ListenerContainer(),
+        private readonly UnitOfWorkManager $unitOfWorkManager,
+        IListenerContainer $listeners = new ListenerContainer(),
         ?PipeContainer $middleware = null,
     ) {
         parent::__construct($listeners, $middleware);

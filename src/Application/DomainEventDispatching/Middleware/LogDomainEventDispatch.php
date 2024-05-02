@@ -12,12 +12,13 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\DomainEventDispatching\Middleware;
 
 use Closure;
+use CloudCreativity\Modules\Contracts\Application\DomainEventDispatching\DomainEventMiddleware;
 use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-class LogDomainEventDispatch implements DomainEventMiddlewareInterface
+class LogDomainEventDispatch implements DomainEventMiddleware
 {
     /**
      * LogEventDispatch constructor

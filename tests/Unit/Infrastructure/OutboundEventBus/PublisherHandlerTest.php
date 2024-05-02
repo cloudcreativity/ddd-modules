@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\OutboundEventBus;
 
+use CloudCreativity\Modules\Contracts\Infrastructure\OutboundEventBus\PublisherHandler as IPublisherHandler;
 use CloudCreativity\Modules\Infrastructure\OutboundEventBus\PublisherHandler;
-use CloudCreativity\Modules\Infrastructure\OutboundEventBus\PublisherHandlerInterface;
 use PHPUnit\Framework\TestCase;
 
 class PublisherHandlerTest extends TestCase
@@ -33,6 +33,6 @@ class PublisherHandlerTest extends TestCase
         $handler = new PublisherHandler($innerHandler);
         $handler($event);
 
-        $this->assertInstanceOf(PublisherHandlerInterface::class, $handler);
+        $this->assertInstanceOf(IPublisherHandler::class, $handler);
     }
 }

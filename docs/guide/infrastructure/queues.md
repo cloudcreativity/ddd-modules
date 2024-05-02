@@ -481,9 +481,9 @@ namespace App\Modules\Shared\Infrastructure\Queue\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Contracts\Application\Messages\Command;
-use CloudCreativity\Modules\Infrastructure\Queue\Middleware\QueueMiddlewareInterface;
+use CloudCreativity\Modules\Contracts\Infrastructure\Queue\QueueMiddleware;
 
-final class MyQueueMiddleware implements QueueMiddlewareInterface
+final class MyQueueMiddleware implements QueueMiddleware
 {
     /**
      * Handle the command message being queued.

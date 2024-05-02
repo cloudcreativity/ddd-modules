@@ -12,10 +12,11 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\InboundEventBus;
 
 use Closure;
+use CloudCreativity\Modules\Contracts\Application\InboundEventBus\EventHandlerContainer as IEventHandlerContainer;
 use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 use RuntimeException;
 
-final class EventHandlerContainer implements EventHandlerContainerInterface
+final class EventHandlerContainer implements IEventHandlerContainer
 {
     /**
      * @var array<string, Closure>
@@ -37,7 +38,7 @@ final class EventHandlerContainer implements EventHandlerContainerInterface
     /**
      * @inheritDoc
      */
-    public function get(string $eventName): EventHandlerInterface
+    public function get(string $eventName): EventHandler
     {
         $factory = $this->bindings[$eventName] ?? null;
 

@@ -9,7 +9,7 @@ dispatched to the _command bus_, and executed by _command handlers_.
 
 ## Command Messages
 
-Command messages are defined by writing a class that implements the `CommandInterface`. The class should be named
+Command messages are defined by writing a class that implements the `Command` interface. The class should be named
 according to the action it represents, and should contain properties that represent the data required to perform the
 action. I.e. it defines the data contract for the action. Commands must be immutable.
 
@@ -53,7 +53,7 @@ return a specific result. This makes it clear what the use case is, and what it 
 ```php
 namespace App\Modules\EventManagement\Application\UseCases\Commands\CancelAttendeeTicket;
 
-use CloudCreativity\Modules\Toolkit\Results\ResultInterface;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 interface CancelAttendeeTicketHandlerInterface
 {
@@ -61,9 +61,9 @@ interface CancelAttendeeTicketHandlerInterface
      * Cancel the specified attendee's ticket.
      *
      * @param CancelAttendeeTicketCommand $command
-     * @return ResultInterface<null>
+     * @return Result<null>
      */
-    public function handle(CancelAttendeeTicketCommand $command): ResultInterface;
+    public function handle(CancelAttendeeTicketCommand $command): Result;
 }
 ```
 
@@ -161,11 +161,11 @@ And then our adapter (the concrete implementation of the port) is as follows:
 ```php
 namespace App\Modules\EventManagement\Application\Adapters\CommandBus;
 
-use App\Modules\EventManagement\Application\Ports\Driving\CommandBus\CommandBusInterface;
+use App\Modules\EventManagement\Application\Ports\Driving\CommandBus\CommandBus;
 use CloudCreativity\Modules\Application\Bus\CommandDispatcher;
 
 final class CommandBusAdapter extends CommandDispatcher implements
-    CommandBusInterface
+    CommandBus
 {
 }
 ```
@@ -192,8 +192,8 @@ use App\Modules\EventManagement\Application\UsesCases\Commands\{
     CancelAttendeeTicket\CancelAttendeeTicketHandler,
     CancelAttendeeTicket\CancelAttendeeTicketHandlerInterface,
 };
-use App\Modules\EventManagement\Application\Ports\Driving\CommandBus\CommandBusInterface;
-use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependenciesInterface;
+use App\Modules\EventManagement\Application\Ports\Driving\CommandBus\CommandBus;
+use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;
 use CloudCreativity\Modules\Application\Bus\CommandHandlerContainer;
 use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;
 use CloudCreativity\Modules\Application\Bus\Middleware\LogMessageDispatch;
@@ -202,11 +202,11 @@ use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 final class CommandBusAdapterProvider
 {
     public function __construct(
-        private readonly ExternalDependenciesInterface $dependencies,
+        private readonly ExternalDependencies $dependencies,
     ) {
     }
 
-    public function getCommandBus(): CommandBusInterface
+    public function getCommandBus(): CommandBus
     {
         $bus = new CommandBusAdapter(
             handlers: $handlers = new CommandHandlerContainer(),
@@ -252,7 +252,7 @@ namespace App\Providers;
 
 use App\Modules\EventManagement\Application\{
     Adapters\CommandBus\CommandBusAdapterProvider,
-    Ports\Driving\CommandBus\CommandBusInterface,
+    Ports\Driving\CommandBus\CommandBus,
 };
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\ServiceProvider;
@@ -262,7 +262,7 @@ final class EventManagementServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(
-            CommandBusInterface::class,
+            CommandBus::class,
             static function (Container $app)  {
                 $provider = $app->make(CommandBusAdapterProvider::class);
                 return $provider->getCommandBus();
@@ -282,7 +282,7 @@ a single action controller to handle a HTTP request in a Laravel application, we
 namespace App\Http\Controllers\Api\Attendees;
 
 use App\Modules\EventManagement\Application\{
-    Ports\Driving\CommandBus\CommandBusInterface,
+    Ports\Driving\CommandBus\CommandBus,
     UsesCases\Commands\CancelAttendeeTicket\CancelAttendeeTicketCommand,
 };
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
@@ -596,11 +596,11 @@ following signature:
 namespace App\Modules\EventManagement\Application\Adapters\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Application\Bus\Middleware\CommandMiddlewareInterface;
+use CloudCreativity\Modules\Contracts\Application\Bus\CommandMiddleware;
 use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
-final class MyMiddleware implements CommandMiddlewareInterface
+final class MyMiddleware implements CommandMiddleware
 {
     /**
      * Execute the middleware.
@@ -638,12 +638,12 @@ instead:
 namespace App\Modules\EventManagement\Application\Adapters\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Application\Bus\Middleware\BusMiddlewareInterface;
+use CloudCreativity\Modules\Contracts\Application\Bus\BusMiddleware;
 use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 use CloudCreativity\Modules\Contracts\Application\Messages\Query;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
-class MyBusMiddleware implements BusMiddlewareInterface
+class MyBusMiddleware implements BusMiddleware
 {
     /**
      * Handle the command or query.

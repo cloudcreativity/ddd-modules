@@ -11,10 +11,11 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Application\DomainEventDispatching;
 
+use CloudCreativity\Modules\Contracts\Application\DomainEventDispatching\DeferredDispatcher as IDeferredDispatcher;
 use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 use CloudCreativity\Modules\Contracts\Domain\Events\OccursImmediately;
 
-class DeferredDispatcher extends Dispatcher implements DeferredDispatcherInterface
+class DeferredDispatcher extends Dispatcher implements IDeferredDispatcher
 {
     /**
      * @var array<DomainEvent>

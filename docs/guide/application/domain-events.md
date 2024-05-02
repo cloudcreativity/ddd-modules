@@ -23,9 +23,9 @@ This is what the interface looks like in our domain layer:
 ```php
 namespace App\Modules\EventManagement\Domain\Events;
 
-use CloudCreativity\Modules\Contracts\Domain\Events\Dispatcher;
+use CloudCreativity\Modules\Contracts\Domain\Events\DomainEventDispatcher;
 
-interface EventDispatcherInterface extends Dispatcher
+interface EventDispatcherInterface extends DomainEventDispatcher
 {
 }
 ```
@@ -76,14 +76,14 @@ For example:
 ```php
 namespace App\Modules\EventManagement\Application\Internal\DomainEvents;
 
-use App\Modules\EventManagement\Domain\Events\{
-    EventDispatcherInterface,
-    AttendeeTicketWasCancelled,
-};
 use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependenciesInterface;
+use App\Modules\EventManagement\Domain\Events\{
+   AttendeeTicketWasCancelled,
+   EventDispatcherInterface,
+};
 use CloudCreativity\Modules\Application\DomainEventDispatching\ListenerContainer;
 use CloudCreativity\Modules\Application\DomainEventDispatching\Middleware\LogDomainEventDispatch;
-use CloudCreativity\Modules\Application\UnitOfWork\UnitOfWorkManagerInterface;
+use CloudCreativity\Modules\Contracts\Application\UnitOfWork\UnitOfWorkManager;
 use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 
@@ -105,7 +105,7 @@ final readonly class EventDispatcherProvider
     ) {
     }
     
-    public function getEventDispatcher(UnitOfWorkManagerInterface $unitOfWorkManager): EventDispatcherInterface
+    public function getEventDispatcher(UnitOfWorkManager $unitOfWorkManager): EventDispatcherInterface
     {
         $dispatcher = new EventDispatcher(
             unitOfWorkManager: $unitOfWorkManager,
@@ -662,11 +662,11 @@ following signature:
 namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Application\DomainEventDispatching\Middleware\DomainEventMiddlewareInterface;
-use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
+use CloudCreativity\Modules\Contracts\Application\DomainEventDispatching\DomainEventMiddleware;
 use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
-final class MyMiddleware implements DomainEventMiddlewareInterface
+final class MyMiddleware implements DomainEventMiddleware
 {
     /**
      * Execute the middleware.

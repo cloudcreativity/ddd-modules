@@ -13,20 +13,21 @@ namespace CloudCreativity\Modules\Application\Bus\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Application\Bus\Exceptions\AbortOnFailureException;
-use CloudCreativity\Modules\Application\UnitOfWork\UnitOfWorkManagerInterface;
+use CloudCreativity\Modules\Contracts\Application\Bus\CommandMiddleware;
 use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Application\UnitOfWork\UnitOfWorkManager;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
-final class ExecuteInUnitOfWork implements CommandMiddlewareInterface
+final class ExecuteInUnitOfWork implements CommandMiddleware
 {
     /**
      * ExecuteInUnitOfWork constructor.
      *
-     * @param UnitOfWorkManagerInterface $unitOfWorkManager
+     * @param UnitOfWorkManager $unitOfWorkManager
      * @param int $attempts
      */
     public function __construct(
-        private readonly UnitOfWorkManagerInterface $unitOfWorkManager,
+        private readonly UnitOfWorkManager $unitOfWorkManager,
         private readonly int $attempts = 1,
     ) {
     }

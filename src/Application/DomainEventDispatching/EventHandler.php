@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\DomainEventDispatching;
 
 use Closure;
-use CloudCreativity\Modules\Application\UnitOfWork\DispatchAfterCommit;
-use CloudCreativity\Modules\Application\UnitOfWork\DispatchBeforeCommit;
+use CloudCreativity\Modules\Contracts\Application\UnitOfWork\DispatchAfterCommit;
+use CloudCreativity\Modules\Contracts\Application\UnitOfWork\DispatchBeforeCommit;
 use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 
 final class EventHandler

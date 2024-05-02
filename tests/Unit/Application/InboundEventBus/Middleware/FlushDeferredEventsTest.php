@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Application\InboundEventBus\Middleware;
 
-use CloudCreativity\Modules\Application\DomainEventDispatching\DeferredDispatcherInterface;
 use CloudCreativity\Modules\Application\InboundEventBus\Middleware\FlushDeferredEvents;
+use CloudCreativity\Modules\Contracts\Application\DomainEventDispatching\DeferredDispatcher;
 use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -20,9 +20,9 @@ use PHPUnit\Framework\TestCase;
 class FlushDeferredEventsTest extends TestCase
 {
     /**
-     * @var MockObject&DeferredDispatcherInterface
+     * @var MockObject&DeferredDispatcher
      */
-    private DeferredDispatcherInterface&MockObject $dispatcher;
+    private DeferredDispatcher&MockObject $dispatcher;
 
     /**
      * @var FlushDeferredEvents
@@ -42,7 +42,7 @@ class FlushDeferredEventsTest extends TestCase
         parent::setUp();
 
         $this->middleware = new FlushDeferredEvents(
-            $this->dispatcher = $this->createMock(DeferredDispatcherInterface::class),
+            $this->dispatcher = $this->createMock(DeferredDispatcher::class),
         );
     }
 

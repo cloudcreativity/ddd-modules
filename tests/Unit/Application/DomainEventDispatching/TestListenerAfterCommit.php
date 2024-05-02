@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Application\DomainEventDispatching;
 
-use CloudCreativity\Modules\Application\UnitOfWork\DispatchAfterCommit;
+use CloudCreativity\Modules\Contracts\Application\UnitOfWork\DispatchAfterCommit;
 use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 
 class TestListenerAfterCommit implements DispatchAfterCommit

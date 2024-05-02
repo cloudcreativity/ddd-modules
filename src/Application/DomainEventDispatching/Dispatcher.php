@@ -12,14 +12,16 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\DomainEventDispatching;
 
 use Closure;
-use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
+use CloudCreativity\Modules\Contracts\Application\DomainEventDispatching\ListenerContainer as IListenerContainer;
 use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
+use CloudCreativity\Modules\Contracts\Domain\Events\DomainEventDispatcher;
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 use Generator;
 use InvalidArgumentException;
 
-class Dispatcher implements DispatcherInterface
+class Dispatcher implements DomainEventDispatcher
 {
     /**
      * @var array<string, array<string|callable>>
@@ -34,11 +36,11 @@ class Dispatcher implements DispatcherInterface
     /**
      * Dispatcher constructor.
      *
-     * @param ListenerContainerInterface $listeners
+     * @param IListenerContainer $listeners
      * @param PipeContainer|null $middleware
      */
     public function __construct(
-        private readonly ListenerContainerInterface $listeners = new ListenerContainer(),
+        private readonly IListenerContainer $listeners = new ListenerContainer(),
         private readonly ?PipeContainer $middleware = null,
     ) {
     }
@@ -57,7 +59,9 @@ class Dispatcher implements DispatcherInterface
     }
 
     /**
-     * @inheritDoc
+     * @param string $event
+     * @param string|Closure|list<string|Closure> $listener
+     * @return void
      */
     public function listen(string $event, string|Closure|array $listener): void
     {

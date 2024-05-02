@@ -39,7 +39,7 @@ class TestOutboundEvent implements IntegrationEvent
     /**
      * @inheritDoc
      */
-    public function uuid(): Uuid
+    public function getUuid(): Uuid
     {
         return $this->uuid;
     }
@@ -47,7 +47,7 @@ class TestOutboundEvent implements IntegrationEvent
     /**
      * @inheritDoc
      */
-    public function occurredAt(): DateTimeImmutable
+    public function getOccurredAt(): DateTimeImmutable
     {
         return $this->occurredAt;
     }

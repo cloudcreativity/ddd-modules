@@ -65,8 +65,8 @@ final readonly class AttendeeTicketWasCancelled implements
 }
 ```
 
-The `DomainEventInterface` is intentionally light-weight. Its main intention is to signal that the implementing class
-is a domain event. The only method it defines is `occurredAt()`, which returns the date and time the event occurred.
+The `DomainEvent` interface is intentionally light-weight. Its main intention is to signal that the implementing class
+is a domain event. The only method it defines is `getOccurredAt()`, which returns the date and time the event occurred.
 
 :::warning
 You should avoid attaching the entity or aggregate that dispatched the event to the domain event itself.
@@ -94,7 +94,7 @@ interface in your domain layer:
 ```php
 namespace App\Modules\EventManagement\Domain\Events;
 
-use CloudCreativity\Modules\Contracts\Domain\Events\Dispatcher as BaseDispatcher;
+use CloudCreativity\Modules\Contracts\Domain\Events\DomainEventDispatcher as BaseDispatcher;
 
 interface DispatcherInterface extends BaseDispatcher
 {
