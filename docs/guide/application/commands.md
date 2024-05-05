@@ -47,42 +47,21 @@ A command handler is a class that is responsible for performing the action descr
 the application layer of the bounded context. The command handler is responsible for validating the command, performing
 the action, and updating the state of the bounded context.
 
-Start by expressing the use case as an interface. This defines that given a specific command as input, the handler will
-return a specific result. This makes it clear what the use case is, and what it returns.
+For example:
 
 ```php
 namespace App\Modules\EventManagement\Application\UseCases\Commands\CancelAttendeeTicket;
 
-use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
-
-interface CancelAttendeeTicketHandlerInterface
-{
-    /**
-     * Cancel the specified attendee's ticket.
-     *
-     * @param CancelAttendeeTicketCommand $command
-     * @return Result<null>
-     */
-    public function handle(CancelAttendeeTicketCommand $command): Result;
-}
-```
-
-Then you can write the concrete implementation:
-
-```php
-namespace App\Modules\EventManagement\Application\UseCases\Commands\CancelAttendeeTicket;
-
-use App\Modules\EventManagement\Application\Ports\Driven\Persistence\AttendeeRepositoryInterface;
+use App\Modules\EventManagement\Application\Ports\Driven\Persistence\AttendeeRepository;
 use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;
 use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
 use CloudCreativity\Modules\Toolkit\Results\Result;
 
 final readonly class CancelAttendeeTicketHandler implements
-    CancelAttendeeTicketHandlerInterface,
     DispatchThroughMiddleware
 {
     public function __construct(
-        private AttendeeRepositoryInterface $attendees,
+        private AttendeeRepository $attendees,
     ) {
     }
 
@@ -190,7 +169,6 @@ namespace App\Modules\EventManagement\Application\Adapters\CommandBus;
 use App\Modules\EventManagement\Application\UsesCases\Commands\{
     CancelAttendeeTicket\CancelAttendeeTicketCommand,
     CancelAttendeeTicket\CancelAttendeeTicketHandler,
-    CancelAttendeeTicket\CancelAttendeeTicketHandlerInterface,
 };
 use App\Modules\EventManagement\Application\Ports\Driving\CommandBus\CommandBus;
 use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;
@@ -216,7 +194,7 @@ final class CommandBusAdapterProvider
         /** Bind commands to handler factories */
         $handlers->bind(
             CancelAttendeeTicketCommand::class,
-            fn(): CancelAttendeeTicketHandlerInterface => new CancelAttendeeTicketHandler(
+            fn() => new CancelAttendeeTicketHandler(
                 $this->dependencies->getAttendeeRepository(),
             ),
         );
@@ -293,7 +271,7 @@ class CancellationController extends Controller
 {
     public function __invoke(
         Request $request,
-        CommandBusInterface $bus,
+        CommandBus $bus,
         string $attendeeId,
     ) {
         $validated = $request->validate([
@@ -344,7 +322,7 @@ updated to return a `202 Accepted` response to indicate the command has been que
 namespace App\Http\Controllers\Api\Attendees;
 
 use App\Modules\EventManagement\Application\{
-    Ports\Driving\CommandBus\CommandBusInterface,
+    Ports\Driving\CommandBus\CommandBus,
     UsesCases\Commands\CancelAttendeeTicket\CancelAttendeeTicketCommand,
 };
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
@@ -355,7 +333,7 @@ class CancellationController extends Controller
 {
     public function __invoke(
         Request $request,
-        CommandBusInterface $bus,
+        CommandBus $bus,
         string $attendeeId,
     ) {
         $validated = $request->validate([
@@ -562,18 +540,20 @@ context. This is useful for debugging, as it allows you to see the data that was
 
 However, there can be scenarios where you want to control what context is logged. A good example is a command message
 that has sensitive customer data on it that you do not want to end up in your logs. To control the log context,
-implement the `ContextProviderInterface` on your command message:
+implement the `ContextProvider` interface on your command message:
 
 ```php
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextProvider;
 
 final readonly class CancelAttendeeTicketCommand implements
-  CommandInterface,
+  Command,
   ContextProvider
 {
     public function __construct(
-        public IdentifierInterface $attendeeId,
-        public IdentifierInterface $ticketId,
+        public Identifier $attendeeId,
+        public Identifier $ticketId,
         public CancellationReasonEnum $reason,
     ) {
     }
@@ -627,11 +607,11 @@ final class MyMiddleware implements CommandMiddleware
 
 :::tip
 If you're writing middleware that is only meant to be used for a specific command, do not implement the
-`CommandMiddlewareInterface`. Instead, use the same signature but change the type-hint for the command to the command
+`CommandMiddleware` interface. Instead, use the same signature but change the type-hint for the command to the command
 class your middleware is designed to be used with.
 :::
 
-If you want to write middleware that can be used with both commands and queries, implement the `BusMiddlewareInterface`
+If you want to write middleware that can be used with both commands and queries, implement the `BusMiddleware` interface
 instead:
 
 ```php

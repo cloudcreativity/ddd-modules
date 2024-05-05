@@ -36,47 +36,28 @@ A query handler is a class that is responsible for performing the request descri
 the application layer of the bounded context. The query handler is responsible for validating the query, performing
 the data collection, and returning the result.
 
-Start by expressing the use case as an interface. This defines that given a specific query as input, the handler will
-return a specific result. This makes it clear what the use case is, and what it returns.
+Your query handler defines the use case - by type-hinting the query input and the result output. For example:
 
 ```php
 namespace App\Modules\EventManagement\Application\UseCases\Queries\GetAttendeeTickets;
 
-use App\Modules\EventManagement\Shared\ReadModels\V1\TicketModel;
-use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
-
-interface CancelAttendeeTicketHandlerInterface
-{
-    /**
-     * Get the attendee tickets for the given attendee.
-     *
-     * @param GetAttendeeTicketsQuery $query
-     * @return Result<list<TicketModel>>
-     */
-    public function handle(GetAttendeeTicketsQuery $query): Result;
-}
-```
-
-:::tip
-Notice we've used a ["read model"](#read-models) here. That's intentional - and is explained later in this chapter.
-:::
-
-Then you can write the concrete implementation:
-
-```php
-namespace App\Modules\EventManagement\Application\UseCases\Queries\GetAttendeeTickets;
-
-use App\Modules\EventManagement\Application\Ports\Driven\Persistence\ReadModels\V1\TicketModelRepositoryInterface;
+use App\Modules\EventManagement\Application\Ports\Driven\Persistence\ReadModels\V1\TicketModelRepository;
 use CloudCreativity\Modules\Toolkit\Results\Result;
+use VendorName\EventManagement\Shared\ReadModels\V1\TicketModel;
 
-final readonly class GetAttendeeTicketsHandler implements
-    GetAttendeeTicketsHandlerInterface
+final readonly class GetAttendeeTicketsHandler
 {
     public function __construct(
-        private TicketModelRepositoryInterface $repository,
+        private TicketModelRepository $repository,
     ) {
     }
 
+    /**
+     * Execute the query.
+     * 
+     * @param GetAttendeeTicketsQuery $query
+     * @return Result<list<TicketModel>>
+     */
     public function handle(GetAttendeeTicketsQuery $query): Result
     {
         $models = $this->repository->findByAttendeeId($query->attendeeId);
@@ -89,6 +70,10 @@ final readonly class GetAttendeeTicketsHandler implements
     }
 }
 ```
+
+:::info
+Notice we've used a ["read model"](#read-models) here. That's intentional - and is explained later in this chapter.
+:::
 
 As a reminder, queries must **never** alter the _state of the system_ - including never triggering any side effects
 that alter the state. A query is a request to _read_ the state, and a command should be used to _change_ the state.
@@ -162,7 +147,6 @@ namespace App\Modules\EventManagement\Application\Adapters\QueryBus;
 use App\Modules\EventManagement\Application\UseCases\Queries\{
     GetAttendeeTickets\GetAttendeeTicketsQuery,
     GetAttendeeTickets\GetAttendeeTicketsHandler,
-    GetAttendeeTickets\GetAttendeeTicketsHandlerInterface,
 };
 use App\Modules\EventManagement\Application\Ports\Driving\QueryBus\QueryBus;
 use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;
@@ -187,7 +171,7 @@ final class QueryBusAdapterProvider
         /** Bind queries to handler factories */
         $handlers->bind(
             GetAttendeeTicketsQuery::class,
-            fn(): GetAttendeeTicketsHandlerInterface => new GetAttendeeTicketsHandler(
+            fn() => new GetAttendeeTicketsHandler(
                 $this->dependencies->getTicketModelRepository(),
             ),
         );

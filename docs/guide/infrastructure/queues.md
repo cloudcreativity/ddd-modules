@@ -97,6 +97,7 @@ Then you can create the adapter by providing it with the default closure for que
 namespace App\Modules\EventManagement\Infrastructure\Queue;
 
 use App\Modules\EventManagement\Application\Ports\Driven\Queue\Queue;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 use CloudCreativity\Modules\Infrastructure\Queue\Middleware\LogPushedToQueue;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 
@@ -110,7 +111,7 @@ final class QueueAdapterProvider
     public function getQueue(): Queue
     {
         $adapter = new QueueAdapter(
-            fn: function (CommandInterface $command): void {
+            fn: function (Command $command): void {
                 DispatchCommandJob::dispatch($command);    
             },
             middleware: $middleware = new PipeContainer(),
@@ -136,7 +137,7 @@ This default closure will be used for all commands, unless you register closures
 
 ```php
 $queue = new QueueAdapter(
-    fn: function (CommandInterface $command): void {
+    fn: function (Command $command): void {
         DispatchCommandJob::dispatch($command);    
     },
 );
@@ -298,7 +299,7 @@ For example, a default Laravel job for queuing and dispatching commands would be
 ```php
 namespace App\Modules\EventManagement\Infrastructure\Queue;
 
-use App\Modules\EventManagement\Application\Ports\Driving\Commands\CommandBusInterface;
+use App\Modules\EventManagement\Application\Ports\Driving\Commands\CommandBus;
 use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 use CloudCreativity\Modules\Toolkit\Result\FailedResultException;
 use Illuminate\Bus\Queueable;
@@ -317,7 +318,7 @@ class DispatchCommandJob implements ShouldQueue
     ) {
     }
     
-    public function handle(CommandBusInterface $bus): void
+    public function handle(CommandBus $bus): void
     {
         $result = $bus->dispatch($this->command);
         
@@ -339,7 +340,7 @@ An example of a queue job for a specific command might be:
 ```php
 namespace App\Modules\EventManagement\Infrastructure\Queue;
 
-use App\Modules\EventManagement\Application\Ports\Driving\Commands\CommandBusInterface;
+use App\Modules\EventManagement\Application\Ports\Driving\Commands\CommandBus;
 use App\Modules\EventManagement\Application\UseCases\Commands\{
     RecalculateSalesAtEvent\ErrorCodeEnum,
     RecalculateSalesAtEvent\RecalculateSalesAtEventCommand,
@@ -362,7 +363,7 @@ class QueueRecalculateSalesAtEventJob implements ShouldQueue
     ) {
     }
     
-    public function handle(CommandBusInterface $bus): void
+    public function handle(CommandBus $bus): void
     {
         $result = $bus->dispatch($this->command);
         $errors = $result->errors();
@@ -405,7 +406,7 @@ example, to create the queue that is injected into our command bus:
 ```php
 // default command queuing
 $queue = new QueueAdapter(
-    fn: function (CommandInterface $command): void {
+    fn: function (Command $command): void {
         DispatchCommandJob::dispatch($command);    
     },
 );
@@ -433,7 +434,7 @@ use CloudCreativity\Modules\Infrastructure\Queue\Middleware\LogPushedToQueue;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 
 $queue = new ClosureQueue(
-    fn: function (CommandInterface $command): void {
+    fn: function (Command $command): void {
         DispatchCommandJob::dispatch($command);
     },
     middleware: $middleware = new PipeContainer(),
@@ -451,7 +452,7 @@ Use our `LogPushedToQueue` middleware to log a command being pushed into the que
 use CloudCreativity\Modules\Infrastructure\Queue\Middleware\LogPushedToQueue;
 
 $queue = new ClosureQueue(
-    fn: function (CommandInterface $command): void {
+    fn: function (Command $command): void {
         DispatchCommandJob::dispatch($command);
     },
     middleware: $middleware = new PipeContainer(),
@@ -508,6 +509,6 @@ final class MyQueueMiddleware implements QueueMiddleware
 
 :::tip
 If you're writing middleware that is only meant to be used for a specific command message or queue job, do not implement
-the `QueueMiddlewareInterface`. Instead, use the same signature but change the type-hint for to the specific command
+the `QueueMiddleware` interface. Instead, use the same signature but change the type-hint for to the specific command
 message your middleware is designed for.
 :::

@@ -18,7 +18,7 @@ namespace App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus;
 
 use CloudCreativity\Modules\Contracts\Application\Ports\Driven\OutboundEventBus\EventPublisher;
 
-interface OutboundEventBusInterface extends EventPublisher
+interface OutboundEventBus extends EventPublisher
 {
 }
 ```
@@ -46,11 +46,11 @@ Define an adapter by extending this class:
 ```php
 namespace App\Modules\EventManagement\Infrastructure\OutboundEventBus;
 
-use App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus\OutboundEventBusInterface;
+use App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus\OutboundEventBus;
 use CloudCreativity\Modules\Infrastructure\OutboundEventBus\ClosurePublisher;
 
 final class OutboundEventBusAdapter extends ClosurePublisher
-    implements OutboundEventBusInterface
+    implements OutboundEventBus
 {
 }
 ```
@@ -61,9 +61,9 @@ specific closures to specific events, and add middleware to the publisher. Here'
 ```php
 namespace App\Modules\EventManagement\Infrastructure\OutboundEventBus;
 
-use App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus\OutboundEventBusInterface;
-use App\Modules\EventManagement\Infrastructure\GooglePubSub\EventSerializerInterface;
-use App\Modules\EventManagement\Infrastructure\GooglePubSub\SecureTopicFactoryInterface;
+use App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus\OutboundEventBus;
+use App\Modules\EventManagement\Infrastructure\GooglePubSub\EventSerializer;
+use App\Modules\EventManagement\Infrastructure\GooglePubSub\SecureTopicFactory;
 use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 use CloudCreativity\Modules\Infrastructure\OutboundEventBus\Middleware\LogOutboundEvent;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
@@ -73,13 +73,13 @@ use VendorName\EventManagement\Shared\IntegrationEvents\V1\AttendeeTicketWasCanc
 final readonly class OutboundEventBusAdapterProvider
 {
     public function __construct(
-        private SecureTopicFactoryInterface $topicFactory,
-        private EventSerializerInterface $serializer,
+        private SecureTopicFactory $topicFactory,
+        private EventSerializer $serializer,
         private LoggerInterface $logger,
     ) {
     }
 
-    public function getEventBus(): OutboundEventBusInterface
+    public function getEventBus(): OutboundEventBus
     {
         $publisher = new OutboundEventBusAdapter(
             // default publisher
@@ -129,11 +129,11 @@ Define an adapter by extending this class:
 ```php
 namespace App\Modules\EventManagement\Infrastructure\OutboundEventBus;
 
-use App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus\OutboundEventBusInterface;
+use App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus\OutboundEventBus;
 use CloudCreativity\Modules\Infrastructure\OutboundEventBus\ComponentPublisher;
 
 final class OutboundEventBusAdapter extends ComponentPublisher
-    implements OutboundEventBusInterface
+    implements OutboundEventBus
 {
 }
 ```
@@ -149,12 +149,12 @@ namespace App\Modules\EventManagement\Infrastructure\OutboundEventBus\Publishers
 final class DefaultPublisher
 {
     public function __construct(
-        private SecureTopicFactoryInterface $topicFactory,
-        private EventSerializerInterface $serializer,
+        private SecureTopicFactory $topicFactory,
+        private EventSerializer $serializer,
     ) {
     }
 
-    public function publish(IntegrationEventInterface $event): void
+    public function publish(IntegrationEvent $event): void
     {
         $this->topicFactory->defaultTopic()->send([
             'data' => $this->serializer->serialize($event),
@@ -173,8 +173,8 @@ use VendorName\EventManagement\Shared\IntegrationEvents\V1\AttendeeTicketWasCanc
 final class AttendeeTicketWasCancelledPublisher
 {
     public function __construct(
-        private SecureTopicFactoryInterface $topicFactory,
-        private EventSerializerInterface $serializer,
+        private SecureTopicFactory $topicFactory,
+        private EventSerializer $serializer,
     ) {
     }
 
@@ -196,10 +196,10 @@ an event. You can then bind specific handlers to specific events, and add middle
 ```php
 namespace App\Modules\EventManagement\Infrastructure\OutboundEventBus;
 
-use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependenciesInterface;
-use App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus\OutboundEventBusInterface;
-use App\Modules\EventManagement\Infrastructure\GooglePubSub\EventSerializerInterface;
-use App\Modules\EventManagement\Infrastructure\GooglePubSub\SecureTopicFactoryInterface;
+use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;
+use App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus\OutboundEventBus;
+use App\Modules\EventManagement\Infrastructure\GooglePubSub\EventSerializer;
+use App\Modules\EventManagement\Infrastructure\GooglePubSub\SecureTopicFactory;
 use CloudCreativity\Modules\Infrastructure\OutboundEventBus\Middleware\LogOutboundEvent;
 use CloudCreativity\Modules\Infrastructure\OutboundEventBus\PublisherHandlerContainer;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
@@ -209,13 +209,13 @@ use VendorName\EventManagement\Shared\IntegrationEvents\V1\AttendeeTicketWasCanc
 final readonly class OutboundEventBusAdapterProvider
 {
     public function __construct(
-        private SecureTopicFactoryInterface $topicFactory,
-        private EventSerializerInterface $serializer,
-        private LoggerInterface $logger,
+        private SecureTopicFactory $topicFactory,
+        private EventSerializer $serializer,
+        private Logger $logger,
     ) {
     }
 
-    public function getEventBus(): OutboundEventBusInterface
+    public function getEventBus(): OutboundEventBus
     {
         $publisher = new OutboundEventBusAdapter(
             handlers: $handlers = new PublisherHandlerContainer(
@@ -309,7 +309,7 @@ The use of this middleware is identical to that described in the [Commands chapt
 See those instructions for more information, such as configuring the log levels.
 
 Additionally, if you need to customise the context that is logged for an integration event then implement the
-`ContextProviderInterface` on your integration event message. See the example in the
+`ContextProvider` interface on your integration event message. See the example in the
 [Commands chapter.](../application/commands#logging)
 
 ### Writing Middleware
@@ -349,6 +349,6 @@ final class MyMiddleware implements OutboundEventMiddleware
 
 :::tip
 If you're writing middleware that is only meant to be used for a specific integration event, do not use the
-`OutboundEventMiddlewareInterface`. Instead, use the same signature but change the event type-hint to the event class
+`OutboundEventMiddleware` interface. Instead, use the same signature but change the event type-hint to the event class
 your middleware is designed to be used with.
 :::

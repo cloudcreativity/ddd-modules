@@ -96,19 +96,21 @@ This can be expressed via an interface. To illustrate the point, a JSON serializ
 ```php
 namespace VendorName\Ordering\Shared\IntegrationEvents\V1\Serializers;
 
-interface JsonSerializerInterface
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
+
+interface JsonSerializer
 {
     /**
-     * @param IntegrationEventInterface $event
+     * @param IntegrationEvent $event
      * @return array<string, mixed>
      */
-    public function serialize(IntegrationEventInterface $event): array;
+    public function serialize(IntegrationEvent $event): array;
 
     /**
      * @param array<string, mixed>
-     * @return IntegrationEventInterface
+     * @return IntegrationEvent
      */
-    public function deserialize(array $input): IntegrationEventInterface;
+    public function deserialize(array $input): IntegrationEvent;
 }
 ```
 
@@ -150,7 +152,7 @@ namespace App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus;
 
 use CloudCreativity\Modules\Contracts\Application\Ports\Driven\OutboundEventBus\EventPublisher;
 
-interface OutboundEventBusInterface extends EventPublisher
+interface OutboundEventBus extends EventPublisher
 {
 }
 ```
@@ -169,7 +171,7 @@ For example:
 ```php
 namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Listeners;
 
-use App\Modules\EventManagement\Application\Ports\Driven\OutboundEvents\OutboundEventBusInterface;
+use App\Modules\EventManagement\Application\Ports\Driven\OutboundEvents\OutboundEventBus;
 use App\Modules\EventManagement\Domain\Events\AttendeeTicketWasCancelled;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\UuidFactory;
 use VendorName\EventManagement\Shared\IntegrationEvents\V1 as IntegrationEvents;
@@ -178,7 +180,7 @@ final readonly class PublishAttendeeTicketWasCancelled
 {
     public function __construct(
         private UuidFactory $uuidFactory,
-        private OutboundEventBusInterface $eventBus,
+        private OutboundEventBus $eventBus,
     ) {
     }
 
@@ -245,26 +247,7 @@ See the [Transactional Outbox](../infrastructure/outbox) chapter for an explanat
 Inbound events are consumed by event handlers. They represent a _use case_ in the application layer, defining how the
 bounded context reacts to inbound events.
 
-Start by expressing the use case as an interface. This defines that the bounded context receives a specific event:
-
-```php
-namespace App\Modules\EventMangement\Application\UseCases\InboundEvents;
-
-use VendorName\Ordering\Shared\IntegrationEvents\V1\OrderWasFulfilled;
-
-interface OrderWasFulfilledHandlerInterface
-{
-    /**
-     * Handle an inbound "order was fulfilled" event.
-     * 
-     * @param OrderWasFulfilled $event
-     * @return void
-     */
-    public function handle(OrderWasFulfilled $event): void;
-}
-```
-
-Then you can write the concrete implementation of the use case - i.e. how your use case reacts to the event. There are
+Your event handler is the implementation of the use case - i.e. how your use case reacts to the event. There are
 several different strategies you can use.
 
 ### Strategies
@@ -295,15 +278,16 @@ An inbound event handler that dispatches a command that is a use case in your ap
 ```php
 namespace App\Modules\EventManagement\Application\UseCases\InboundEvents;
 
-use App\Modules\EventManagement\Application\Ports\Driving\CommandBus\CommandBusInterface;
-use App\Modules\EventManagement\Application\UseCases\Commands\RecalculateSalesAtEvent\RecalculateSalesAtEventCommand;
+use App\Modules\EventManagement\Application\Ports\Driving\CommandBus\CommandBus;
+use App\Modules\EventManagement\Application\UseCases\Commands\{
+    RecalculateSalesAtEvent\RecalculateSalesAtEventCommand,
+};
 use VendorName\Ordering\Shared\IntegrationEvents\V1\OrderWasFulfilled;
 
-final readonly class OrderWasFulfilledHandler implements
-    OrderWasFulfilledHandlerInterface
+final readonly class OrderWasFulfilledHandler
 {
     public function __construct(
-        private CommandBusInterface $bus,
+        private CommandBus $bus,
     ) {
     }
 
@@ -333,15 +317,16 @@ approach is identical to the previous strategy.
 ```php
 namespace App\Modules\EventManagement\Application\UseCases\InboundEvents;
 
-use App\Modules\EventManagement\Application\Internal\Commands\InternalCommandBusInterface;
-use App\Modules\EventManagement\Application\Internal\Commands\RecalculateSalesAtEvent\RecalculateSalesAtEventCommand;
+use App\Modules\EventManagement\Application\Internal\Commands\{
+    RecalculateSalesAtEvent\RecalculateSalesAtEventCommand,
+};
+use App\Modules\EventManagement\Application\Ports\Driving\CommandBus\InternalCommandBus;
 use VendorName\Ordering\Shared\IntegrationEvents\V1\OrderWasFulfilled;
 
-final readonly class OrderWasFulfilledHandler implements
-    OrderWasFulfilledHandlerInterface
+final readonly class OrderWasFulfilledHandler
 {
     public function __construct(
-        private InternalCommandBusInterface $bus,
+        private InternalCommandBus $bus,
     ) {
     }
 
@@ -367,7 +352,7 @@ side effects are triggered.
 ```php
 namespace App\Modules\EventManagement\Application\UseCases\InboundEvents;
 
-use App\Modules\EventManagement\Domain\Events\DispatcherInterface;
+use App\Modules\EventManagement\Domain\Events\DomainEventDispatcher;
 use App\Modules\EventManagement\Domain\Events\SalesAtEventDidChange;
 use CloudCreativity\Modules\Application\InboundEventBus\Middleware\HandleInUnitOfWork;
 use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
@@ -377,7 +362,7 @@ final readonly class OrderWasFulfilledHandler implements
     DispatchThroughMiddleware
 {
     public function __construct(
-        private DispatcherInterface $domainEvents,
+        private DomainEventDispatcher $domainEvents,
     ) {
     }
 
@@ -453,8 +438,9 @@ For example:
 namespace App\Modules\EventManagement\Application\Adapters\InboundEventBus;
 
 use App\Modules\EventManagement\Application\Adapters\CommandBus\CommandBusAdapterProvider;
-use App\Modules\EventManagement\Application\Ports\Driving\InboundEventBus\InboundEventBusInterface;
-use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependenciesInterface;
+use App\Modules\EventManagement\Application\UsesCases\InboundEvents\OrderWasFulfilledHandler;
+use App\Modules\EventManagement\Application\Ports\Driving\InboundEventBus\InboundEventBus;
+use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;
 use CloudCreativity\Modules\Application\InboundEventBus\EventHandlerContainer;
 use CloudCreativity\Modules\Application\InboundEventBus\Middleware\HandleInUnitOfWork;
 use CloudCreativity\Modules\Application\InboundEventBus\Middleware\LogInboundEvent;
@@ -465,11 +451,11 @@ final class InboundEventBusAdapterProvider
 {
     public function __construct(
         private readonly CommandBusAdapterProvider $commandBusProvider,
-        private readonly ExternalDependenciesInterface $dependencies,
+        private readonly ExternalDependencies $dependencies,
     ) {
     }
 
-    public function getEventBus(): InboundEventBusInterface
+    public function getEventBus(): InboundEventBus
     {
         $bus = new InboundEventBusAdapter(
             handlers: $handlers = new EventHandlerContainer(),
@@ -479,7 +465,7 @@ final class InboundEventBusAdapterProvider
         /** Bind integration events to handler factories */
         $handlers->bind(
             OrderWasFulfilled::class,
-            fn(): OrderWasFulfilledHandlerInterface => new OrderWasFulfilledHandler(
+            fn() => new OrderWasFulfilledHandler(
                 $this->commandBusProvider->getCommandBus(),
             ),
         );
@@ -516,7 +502,7 @@ namespace App\Providers;
 
 use App\Modules\EventManagement\Application\{
     Adapters\InboundEventBus\InboundEventBusAdapterProvider,
-    Ports\Driving\InboundEvents\InboundEventBusInterface,
+    Ports\Driving\InboundEvents\InboundEventBus,
 };
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\ServiceProvider;
@@ -526,7 +512,7 @@ final class EventManagementServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(
-            InboundEventBusInterface::class,
+            InboundEventBus::class,
             static function (Container $app)  {
                 $provider = $app->make(InboundEventBusAdapterProvider::class);
                 return $provider->getEventBus();
@@ -550,22 +536,23 @@ Here is an example controller from a Laravel application to demonstrate the patt
 ```php
 namespace App\Http\Controllers\Api\PubSub;
 
-use App\Modules\EventManagement\Application\Ports\Driving\InboundEvents\InboundEventBusInterface;
-use VendorName\Ordering\Shared\IntegrationEvents\V1\Serializers\JsonSerializerInterface;
+use App\Modules\EventManagement\Application\Ports\Driving\InboundEvents\InboundEventBus;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
+use VendorName\Ordering\Shared\IntegrationEvents\V1\Serializers\JsonSerializer;
 
 class InboundEventController extends Controller
 {
     public function __invoke(
         Request $request,
-        InboundEventBusInterface $eventBus,
-        JsonSerializerInterface $serializer,
+        InboundEventBus $eventBus,
+        JsonSerializer $serializer,
     ) {
         $validated = $request->validate([
             // ... validation rules
         ]);
 
         // see the section on serialization patterns
-        /** @var IntegrationEventInterface $event */
+        /** @var IntegrationEvent $event */
         $event = $serializer->deserialize($validated['data']);
 
         $eventBus->dispatch($event);
@@ -644,21 +631,22 @@ This means we can now update the previous controller example to use the inbox in
 namespace App\Http\Controllers\Api\PubSub;
 
 use App\Modules\EventManagement\Application\Ports\Driving\InboundEvents\Inbox;
-use VendorName\Ordering\Shared\IntegrationEvents\V1\Serializers\JsonSerializerInterface;
+use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
+use VendorName\Ordering\Shared\IntegrationEvents\V1\Serializers\JsonSerializer;
 
 class InboundEventController extends Controller
 {
     public function __invoke(
         Request $request,
         Inbox $inbox,
-        JsonSerializerInterface $serializer,
+        JsonSerializer $serializer,
     ) {
         $validated = $request->validate([
             // ... validation rules
         ]);
 
         // see the section on serialization patterns
-        /** @var IntegrationEventInterface $event */
+        /** @var IntegrationEvent $event */
         $event = $serializer->deserialize($validated['data']);
 
         $inbox->push($event);
@@ -837,7 +825,7 @@ The use of this middleware is identical to that described in the [Commands chapt
 See those instructions for more information, such as configuring the log levels.
 
 Additionally, if you need to customise the context that is logged for an integration event then implement the
-`ContextProviderInterface` on your integration event message. See the example in the
+`ContextProvider` interface on your integration event message. See the example in the
 [Commands chapter.](./commands#logging)
 
 ### Writing Middleware
@@ -877,6 +865,6 @@ final class MyMiddleware implements InboundEventMiddleware
 
 :::tip
 If you're writing middleware that is only meant to be used for a specific integration event, do not use the
-`InboundEventMiddlewareInterface`. Instead, use the same signature but change the event type-hint to the event class
+`InboundEventMiddleware` interface. Instead, use the same signature but change the event type-hint to the event class
 your middleware is designed to be used with.
 :::

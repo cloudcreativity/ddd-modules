@@ -57,7 +57,7 @@ class ReportRecalculationController extends Controller
 {
     public function __invoke(
         Request $request,
-        CommandBusInterface $bus,
+        CommandBus $bus,
         string $attendeeId,
     ) {
         $validated = $request->validate([
@@ -118,15 +118,15 @@ We could push this internal work to a queue via a domain event listener:
 ```php
 namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Listeners;
 
+use App\Modules\EventManagement\Application\Ports\Driving\CommandBus\InternalCommandBus;
 use App\Modules\EventManagement\Application\Internal\Commands\{
-    InternalCommandBusInterface,
     RecalculateSalesAtEvent\RecalculateSalesAtEventCommand,
 };
 use App\Modules\EventManagement\Domain\Events\AttendeeTicketWasCancelled;
 
 final readonly class QueueTicketSalesReportRecalculation
 {
-    public function __construct(private InternalCommandBusInterface $bus)
+    public function __construct(private InternalCommandBus $bus)
     {
     }
 
@@ -177,7 +177,7 @@ command is queued by an infrastructure adapter, it has left the application laye
 queue for processing, it needs to re-enter the application layer via a driving port.
 
 However, by defining this as a separate port to our public command bus, we can ensure that internal commands are only
-dispatched by the internal queue adapter.
+dispatched by the internal command bus adapter.
 
 Define the port as follows:
 
@@ -196,11 +196,11 @@ And then our adapter (the concrete implementation of the port) is as follows:
 ```php
 namespace App\Modules\EventManagement\Application\Adapters\CommandBus;
 
-use App\Modules\EventManagement\Application\Ports\Driving\CommandBus\InternalCommandBusInterface;
+use App\Modules\EventManagement\Application\Ports\Driving\CommandBus\InternalCommandBus;
 use CloudCreativity\Modules\Application\Bus\CommandDispatcher;
 
 final class InternalCommandBusAdapter extends CommandDispatcher implements
-    InternalCommandBusInterface
+    InternalCommandBus
 {
 }
 ```

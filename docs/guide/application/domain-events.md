@@ -23,9 +23,9 @@ This is what the interface looks like in our domain layer:
 ```php
 namespace App\Modules\EventManagement\Domain\Events;
 
-use CloudCreativity\Modules\Contracts\Domain\Events\DomainEventDispatcher;
+use CloudCreativity\Modules\Contracts\Domain\Events\DomainEventDispatcher as BaseDispatcher;
 
-interface EventDispatcherInterface extends DomainEventDispatcher
+interface DomainEventDispatcher extends BaseDispatcher
 {
 }
 ```
@@ -51,11 +51,11 @@ To use this dispatcher, create a concrete implementation of your domain layer's 
 ```php
 namespace App\Modules\EventManagement\Application\Internal\DomainEvents;
 
-use App\Modules\EventManagement\Domain\Events\DispatcherInterface
+use App\Modules\EventManagement\Domain\Events\DomainEventDispatcher;
 use CloudCreativity\Modules\Application\DomainEventDispatching\UnitOfWorkAwareDispatcher;
 
-final class EventDispatcher extends UnitOfWorkAwareDispatcher implements 
-    EventDispatcherInterface
+final class DomainEventDispatcherAdapter extends UnitOfWorkAwareDispatcher implements 
+    DomainEventDispatcher
 {
 }
 ```
@@ -76,10 +76,10 @@ For example:
 ```php
 namespace App\Modules\EventManagement\Application\Internal\DomainEvents;
 
-use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependenciesInterface;
+use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;
 use App\Modules\EventManagement\Domain\Events\{
    AttendeeTicketWasCancelled,
-   EventDispatcherInterface,
+   DomainEventDispatcher,
 };
 use CloudCreativity\Modules\Application\DomainEventDispatching\ListenerContainer;
 use CloudCreativity\Modules\Application\DomainEventDispatching\Middleware\LogDomainEventDispatch;
@@ -87,7 +87,7 @@ use CloudCreativity\Modules\Contracts\Application\UnitOfWork\UnitOfWorkManager;
 use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 
-final readonly class EventDispatcherProvider 
+final readonly class DomainEventDispatcherProvider 
 {
     /**
      * @var array<class-string<DomainEvent>, list<class-string>>  
@@ -101,13 +101,13 @@ final readonly class EventDispatcherProvider
     ];
 
     public function __construct(
-        private ExternalDependenciesInterface $dependencies,
+        private ExternalDependencies $dependencies,
     ) {
     }
     
-    public function getEventDispatcher(UnitOfWorkManager $unitOfWorkManager): EventDispatcherInterface
+    public function getEventDispatcher(UnitOfWorkManager $unitOfWorkManager): DomainEventDispatcher
     {
-        $dispatcher = new EventDispatcher(
+        $dispatcher = new DomainEventDispatcherAdapter(
             unitOfWorkManager: $unitOfWorkManager,
             listeners: $listeners = new ListenerContainer(),
             middleware: $middleware = new PipeContainer(),
@@ -171,15 +171,10 @@ above:
 ```php
 namespace App\Modules\EventManagement\Application\Adapters\CommandBus;
 
-use App\Modules\EventManagement\Application\UsesCases\Commands\{
-    CancelAttendeeTicket\CancelAttendeeTicketCommand,
-    CancelAttendeeTicket\CancelAttendeeTicketHandler,
-    CancelAttendeeTicket\CancelAttendeeTicketHandlerInterface,
-};
-use App\Modules\EventManagement\Application\Ports\Driving\CommandBus\CommandBusInterface;
-use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependenciesInterface;
-use App\Modules\EventManagement\Application\Internal\DomainEvents\EventDispatcher;
-use App\Modules\EventManagement\Application\Internal\DomainEvents\EventDispatcherProvider;
+use App\Modules\EventManagement\Application\Ports\Driving\CommandBus\CommandBus;
+use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;
+use App\Modules\EventManagement\Application\Internal\DomainEvents\DomainEventDispatcher;
+use App\Modules\EventManagement\Application\Internal\DomainEvents\DomainEventDispatcherProvider;
 use App\Modules\EventManagement\Domain\Services as DomainServices;
 use CloudCreativity\Modules\Application\Bus\CommandHandlerContainer;
 use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;
@@ -195,17 +190,17 @@ final class CommandBusAdapterProvider
     private ?UnitOfWorkManager $unitOfWorkManager = null;
     
     /**
-     * @var EventDispatcher|null 
+     * @var DomainEventDispatcher|null 
      */
-    private ?EventDispatcher $eventDispatcher = null;
+    private ?DomainEventDispatcher $eventDispatcher = null;
 
     public function __construct(
-        private readonly ExternalDependenciesInterface $dependencies,
-        private readonly EventDispatcherProvider $eventDispatcherProvider,
+        private readonly ExternalDependencies $dependencies,
+        private readonly DomainEventDispatcherProvider $eventDispatcherProvider,
     ) {
     }
 
-    public function getCommandBus(): CommandBusInterface
+    public function getCommandBus(): CommandBus
     {
         $bus = new CommandBusAdapter(
             handlers: $handlers = new CommandHandlerContainer(),
@@ -296,16 +291,29 @@ As a reminder, using this dispatcher is not the preferred approach. Wherever pos
 We provide this dispatcher for cases where your implementation cannot use a unit of work. This dispatcher attempts to
 achieve some of the benefits of the unit of work pattern without a full implementation.
 
-Create a concrete implementation of your domain layer's dispatcher interface:
+As well as implementing your domain layer's dispatcher interface, you also need to implement a deferred dispatcher
+interface. Combine these two as an interface in your application layer:
 
 ```php
 namespace App\Modules\EventManagement\Application\Internal\DomainEvents;
 
-use App\Modules\EventManagement\Domain\Events\DispatcherInterface
+use App\Modules\EventManagement\Domain\Events\DomainEventDispatcher;
+use CloudCreativity\Modules\Contracts\Application\DomainEventDispatching\DeferredDispatcher;
+
+interface DeferredDomainEventDispatcher extends DomainEventDispatcher, DeferredDispatcher
+{
+}
+```
+
+Then create a concrete implementation of your domain layer's dispatcher interface:
+
+```php
+namespace App\Modules\EventManagement\Application\Internal\DomainEvents;
+
 use CloudCreativity\Modules\Application\DomainEventDispatching\DeferredDispatcher;
 
-final class EventDispatcher extends DeferredDispatcher implements 
-    EventDispatcherInterface
+final class DomainEventDispatcherAdapter extends DeferredDispatcher implements 
+    DeferredDomainEventDispatcher
 {
 }
 ```
@@ -318,16 +326,16 @@ The following example shows how to create this dispatcher:
 namespace App\Modules\EventManagement\Application\Internal\DomainEvents;
 
 use App\Modules\EventManagement\Domain\Events\{
-    EventDispatcherInterface,
+    DomainEventDispatcher,
     AttendeeTicketWasCancelled,
 };
-use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependenciesInterface;
+use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;
 use CloudCreativity\Modules\Application\DomainEventDispatching\ListenerContainer;
 use CloudCreativity\Modules\Application\DomainEventDispatching\Middleware\LogDomainEventDispatch;
 use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 
-final readonly class EventDispatcherProvider 
+final readonly class DomainEventDispatcherProvider 
 {
     /**
      * @var array<class-string<DomainEvent>, list<class-string>>  
@@ -341,13 +349,13 @@ final readonly class EventDispatcherProvider
     ];
 
     public function __construct(
-        private ExternalDependenciesInterface $dependencies,
+        private ExternalDependencies $dependencies,
     ) {
     }
     
-    public function getEventDispatcher(): EventDispatcherInterface
+    public function getEventDispatcher(): DeferredDomainEventDispatcher
     {
-        $dispatcher = new EventDispatcher(
+        $dispatcher = new DomainEventDispatcherAdapter(
             listeners: $listeners = new ListenerContainer(),
             middleware: $middleware = new PipeContainer(),
         );
@@ -401,15 +409,10 @@ Here's an example:
 ```php
 namespace App\Modules\EventManagement\Application\Adapters\CommandBus;
 
-use App\Modules\EventManagement\Application\UsesCases\Commands\{
-    CancelAttendeeTicket\CancelAttendeeTicketCommand,
-    CancelAttendeeTicket\CancelAttendeeTicketHandler,
-    CancelAttendeeTicket\CancelAttendeeTicketHandlerInterface,
-};
-use App\Modules\EventManagement\Application\Ports\Driving\CommandBus\CommandBusInterface;
-use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependenciesInterface;
-use App\Modules\EventManagement\Application\Internal\DomainEvents\EventDispatcher;
-use App\Modules\EventManagement\Application\Internal\DomainEvents\EventDispatcherProvider;
+use App\Modules\EventManagement\Application\Ports\Driving\CommandBus\CommandBus;
+use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;
+use App\Modules\EventManagement\Application\Internal\DomainEvents\DomainEventDispatcher;
+use App\Modules\EventManagement\Application\Internal\DomainEvents\DomainEventDispatcherProvider;
 use App\Modules\EventManagement\Domain\Services as DomainServices;
 use CloudCreativity\Modules\Application\Bus\CommandHandlerContainer;
 use CloudCreativity\Modules\Application\Bus\Middleware\FlushDeferredEvents;
@@ -419,17 +422,17 @@ use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 final class CommandBusAdapterProvider
 {
     /**
-     * @var EventDispatcher|null 
+     * @var DomainEventDispatcher|null 
      */
-    private ?EventDispatcher $eventDispatcher = null;
+    private ?DomainEventDispatcher $eventDispatcher = null;
 
     public function __construct(
-        private readonly ExternalDependenciesInterface $dependencies,
-        private readonly EventDispatcherProvider $eventDispatcherProvider,
+        private readonly ExternalDependencies $dependencies,
+        private readonly DomainEventDispatcherProvider $eventDispatcherProvider,
     ) {
     }
 
-    public function getCommandBus(): CommandBusInterface
+    public function getCommandBus(): CommandBus
     {
         $bus = new CommandBusAdapter(
             handlers: $handlers = new CommandHandlerContainer(),
@@ -541,13 +544,13 @@ one such example:
 ```php
 namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Listeners;
 
-use App\Modules\EventManagement\Application\Ports\Driven\Persistence\TicketSalesReportRepositoryInterface;
+use App\Modules\EventManagement\Application\Ports\Driven\Persistence\TicketSalesReportRepository;
 use App\Modules\EventManagement\Domain\Events\AttendeeTicketWasCancelled;
 
 final readonly class UpdateTicketSalesReport
 {
     public function __construct(
-        private TicketSalesReportRepositoryInterface $repository,
+        private TicketSalesReportRepository $repository,
     ) {
     }
 
@@ -572,7 +575,7 @@ Class-based listeners are bound into a listener container that is given to the e
 examples above, but as a reminder:
 
 ```php
-$dispatcher = new EventDispatcher(
+$dispatcher = new DomainEventDispatcherAdapter(
     listeners: $listeners = new ListenerContainer(),
 );
 
@@ -599,7 +602,7 @@ require a class. However, we recommend using class-based listeners as they are e
 Closure listeners are attached to events via the dispatcher, so are not bound into a listener container.
 
 ```php
-$dispatcher = new EventDispatcher();
+$dispatcher = new DomainEventDispatcher();
 
 $dispatcher->listen(
     AttendeeTicketWasCancelled::class,
@@ -630,7 +633,7 @@ For example:
 ```php
 use CloudCreativity\Modules\Application\DomainEventDispatching\Middleware\LogDomainEventDispatch;
 
-$dispatcher = new EventDispatcher(
+$dispatcher = new DomainEventDispatcher(
     listeners: $listeners = new ListenerContainer(),
     middleware: $middleware = new PipeContainer(),
 );
@@ -689,5 +692,5 @@ final class MyMiddleware implements DomainEventMiddleware
 }
 ```
 
-It's worth noting that here we are wrapping the event being emitted by the domain layer, which is the point at which it
+It is worth noting that here we are wrapping the event being emitted by the domain layer, which is the point at which it
 may be deferred by the dispatcher.

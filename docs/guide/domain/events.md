@@ -96,7 +96,7 @@ namespace App\Modules\EventManagement\Domain\Events;
 
 use CloudCreativity\Modules\Contracts\Domain\Events\DomainEventDispatcher as BaseDispatcher;
 
-interface DispatcherInterface extends BaseDispatcher
+interface DomainEventDispatcher extends BaseDispatcher
 {
 }
 ```
@@ -121,25 +121,25 @@ for domain events is as follows:
 ```php
 namespace App\Modules\EventManagement\Domain;
 
-use App\Modules\EventManagement\Domain\Events\DispatcherInterface;
+use App\Modules\EventManagement\Domain\Events\DomainEventDispatcher;
 use Closure;
 
 final class Services
 {
     /**
-     * @var Closure(): DispatcherInterface|null
+     * @var Closure(): DomainEventDispatcher|null
      */
     private static ?Closure $events = null;
 
     /**
-     * @param Closure(): DispatcherInterface $events
+     * @param Closure(): DomainEventDispatcher $events
      */
     public static function setEvents(Closure $events): void
     {
         self::$events = $events;
     }
 
-    public static function getEvents(): DispatcherInterface
+    public static function getEvents(): DomainEventDispatcher
     {
         assert(
             self::$events !== null,
@@ -224,12 +224,12 @@ Our listener for this scenario might look like this:
 namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Listeners;
 
 use App\Modules\EventManagement\Domain\Events\AttendeeTicketWasCancelled;
-use App\Modules\EventManagement\Application\Ports\Driven\Persistence\TicketSalesReportRepositoryInterface;
+use App\Modules\EventManagement\Application\Ports\Driven\Persistence\TicketSalesReportRepository;
 
 final readonly class UpdateTicketSalesReport
 {
     public function __construct(
-        private TicketSalesReportRepositoryInterface $repository,
+        private TicketSalesReportRepository $repository,
     ) {
     }
 
@@ -269,13 +269,13 @@ example:
 ```php
 namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Listeners;
 
-use App\Modules\EventManagement\Application\Ports\Driving\CommandBus\InternalCommandBusInterface;
+use App\Modules\EventManagement\Application\Ports\Driving\CommandBus\InternalCommandBus;
 use App\Modules\EventManagement\Application\Internal\Commands\RecalculateSalesAtEvent\RecalculateSalesAtEventCommand;
 use App\Modules\EventManagement\Domain\Events\AttendeeTicketWasCancelled;
 
 final readonly class QueueTicketSalesReportRecalculation
 {
-    public function __construct(private InternalCommandBusInterface $bus)
+    public function __construct(private InternalCommandBus $bus)
     {
     }
 
@@ -313,15 +313,16 @@ Our listener to do this might look like this:
 ```php
 namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Listeners;
 
-use App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus\EventPublisher;
+use App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus\OutboundEventBus;
 use App\Modules\EventManagement\Domain\Events\AttendeeTicketWasCancelled;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\UuidFactory;
 use VendorName\EventManagement\Shared\IntegrationEvents\V1 as IntegrationEvents;
 
 final readonly class PublishAttendeeTicketWasCancelled
 {
     public function __construct(
-        private UuidFactoryInterface $uuidFactory,
-        private EventPublisher $publisher,
+        private UuidFactory $uuidFactory,
+        private OutboundEventBus $publisher,
     ) {
     }
 
@@ -360,12 +361,12 @@ In your aggregate test case, setup and tear down the services:
 ```php
 class AttendeeTest extends TestCase
 {
-    private DispatcherInterface&MockObject $events;
+    private DomainEventDispatcher&MockObject $events;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->events = $this->createMock(DispatcherInterface::class);
+        $this->events = $this->createMock(DomainEventDispatcher::class);
         Services::setEvents(fn() => $this->events);
     }
 

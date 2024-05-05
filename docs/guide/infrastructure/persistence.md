@@ -75,12 +75,12 @@ The first port would need to be used by our "cancel ticket" command to retrieve 
 state back:
 
 ```php
-namespace App\Modules\EventManagement\Application\Posts\Driven\Persistence\AttendeeRepositoryInterface;
+namespace App\Modules\EventManagement\Application\Posts\Driven\Persistence\AttendeeRepository;
 
 use App\Modules\EventManagement\Domain\Attendee;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 
-interface AttendeeRepositoryInterface
+interface AttendeeRepository
 {
     public function findOrFail(Identifier $attendeeId): Attendee;
     public function update(Attendee $attendee): void;
@@ -90,12 +90,12 @@ interface AttendeeRepositoryInterface
 The second port would be used by our "get all tickets" query:
 
 ```php
-namespace App\Modules\EventManagement\Application\Posts\Driven\Persistence\ReadModels\V1\TicketModelRepositoryInterface;
+namespace App\Modules\EventManagement\Application\Posts\Driven\Persistence\ReadModels\V1\TicketModelRepository;
 
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use VendorName\EventManagement\Shared\ReadModels\V1\TicketModel;
 
-interface TicketModelRepositoryInterface
+interface TicketModelRepository
 {
     /**
      * @param Identifier $eventId
@@ -121,12 +121,12 @@ To return to our example of an attendee aggregate root that contains ticket enti
 store and retrieve the ticket entities. This means we only need one port:
 
 ```php
-namespace App\Modules\EventManagement\Application\Posts\Driven\Persistence\AttendeeRepositoryInterface;
+namespace App\Modules\EventManagement\Application\Posts\Driven\Persistence\AttendeeRepository;
 
 use App\Modules\EventManagement\Domain\Attendee;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 
-interface AttendeeRepositoryInterface
+interface AttendeeRepository
 {
     public function findOrFail(Identifier $attendeeId): Attendee;
     public function update(Attendee $attendee): void;
@@ -147,11 +147,11 @@ both tables.
 For example:
 
 ```php
-final class MySQLAttendeeRepository implements AttendeeRepositoryInterface
+final class MySQLAttendeeRepository implements AttendeeRepository
 {
     public function __construct(private PDO $pdo) {}
 
-    public function findOrFail(IdentifierInterface $attendeeId): Attendee
+    public function findOrFail(Identifier $attendeeId): Attendee
     {
         // fetch the attendee from the attendees table
         // fetch the tickets from the tickets table
@@ -212,13 +212,14 @@ use App\Modules\EventManagement\Domain\Ticket as TicketEntity;
 use App\Modules\EventManagement\Domain\ListOfTickets;
 use App\Models\Attendee as AttendeeModel;
 use App\Models\Attendee as TicketModel;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
 
-final class EloquentAttendeeRepository implements AttendeeRepositoryInterface
+final class EloquentAttendeeRepository implements AttendeeRepository
 {
     private array $cache = [];
 
-    public function findOrFail(IdentifierInterface $attendeeId): AttendeeAggregate
+    public function findOrFail(Identifier $attendeeId): AttendeeAggregate
     {
         $attendeeId = IntegerId::from($attendeeId);
         $model = AttendeeModel::with('tickets')->findOrFail($attendeeId->value);

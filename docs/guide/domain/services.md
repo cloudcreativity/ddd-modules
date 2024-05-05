@@ -27,18 +27,24 @@ look something like this:
 ```php
 namespace App\Modules\BankAccounts\Application\UseCases\Commands\TransferFunds;
 
-use App\Modules\BankAccounts\Application\Ports\Driven\Persistence\BankAccountRepositoryInterface;
-use App\Modules\BankAccounts\Domain\Services\TransferFundsServiceInterface;
+use App\Modules\BankAccounts\Application\Ports\Driven\Persistence\BankAccountRepository;
+use App\Modules\BankAccounts\Domain\Services\TransferFundsService;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 
-final readonly class TransferFundsHandler implements TransferFundsHandlerInterface
+final readonly class TransferFundsHandler
 {
     public function __construct(
-        private TransferFundsServiceInterface $transferFundsService,
-        private BankAccountRepositoryInterface $bankAccountRepository,
+        private TransferFundsService $transferFundsService,
+        private BankAccountRepository $bankAccountRepository,
     ) {
     }
 
+    /**
+     * Execute the command.
+     * 
+     * @param TransferFundsCommand $command
+     * @return Result<null>
+     */
     public function execute(TransferFundsCommand $command): Result
     {
         $sourceAccount = $this->bankAccountRepository->findOrFail(
@@ -75,23 +81,23 @@ to use a domain service to execute business logic to determine the result of a q
 
 Using the same bank account application example as above, let's say we wanted to implement a query that returns whether
 a customer can transfer funds between two accounts. It would make sense for this to be executed via the same
-`TransferFundsServiceInterface` that we used in the command handler.
+transfer funds service that we used in the command handler.
 
 In this case, we can again use constructor dependency injection, with our query handler looking something like this:
 
 ```php
 namespace App\Modules\BankAccounts\Application\UseCases\Queries\CanTransferFunds;
 
-use App\Modules\BankAccounts\Application\Ports\Driven\Persistence\BankAccountRepositoryInterface;
-use App\Modules\BankAccounts\Domain\Services\TransferFundsServiceInterface;
+use App\Modules\BankAccounts\Application\Ports\Driven\Persistence\BankAccountRepository;
+use App\Modules\BankAccounts\Domain\Services\TransferFundsService;
 use VendorName\BankAccounts\Shared\ReadModels\V1\CannotTransferFundsModel;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 
-final readonly class CanTransferFundsHandler implements CanTransferFundsHandlerInterface
+final readonly class CanTransferFundsHandler
 {
     public function __construct(
-        private TransferFundsServiceInterface $transferFundsService,
-        private BankAccountRepositoryInterface $bankAccountRepository,
+        private TransferFundsService $transferFundsService,
+        private BankAccountRepository $bankAccountRepository,
     ) {
     }
 
@@ -161,14 +167,14 @@ Ok, that's a bit wordy! This example illustrates what we mean:
 final class Services
 {
     /**
-     * @var Closure(): TransferFundsServiceInterface|null
+     * @var Closure(): TransferFundsService|null
      */
     private static ?Closure $transferFundsService = null;
 
     /**
      * Set the transfer funds service factory.
      *
-     * @param Closure(): TransferFundsServiceInterface $factory
+     * @param Closure(): TransferFundsService $factory
      * @return void
      */
     public static function setTransferFunds(Closure $factory): void
@@ -176,7 +182,7 @@ final class Services
         self::$transferFundsService = $factory;
     }
 
-    public static function getTransferFunds(): TransferFundsServiceInterface
+    public static function getTransferFunds(): TransferFundsService
     {
         assert(
             self::$transferFundsService !== null,

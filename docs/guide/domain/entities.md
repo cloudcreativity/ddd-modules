@@ -44,10 +44,12 @@ The entity interface defines that the implementing class is identifiable, and pr
 if two entities are the same - `is()` and `isNot()`.
 
 In some instances an entity may have a nullable identifier. For example, entities that can exist in the domain
-layer before they are persisted for the first time. In this case, use the `EntityWithNullableIdTrait` instead of the
-`EntityTrait`, for example:
+layer before they are persisted for the first time. In this case, use the `IsEntityWithNullableId` trait instead of
+`IsEntity`, for example:
 
 ```php
+namespace App\Modules\EventManagement\Domain;
+
 use CloudCreativity\Modules\Contracts\Domain\Entity;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Domain\IsEntityWithNullableId;
@@ -73,7 +75,7 @@ This trait provides a method for setting the identifier - `setId()`.
 
 ## Aggregates
 
-To define an aggregate root, use the `Aggregate`:
+To define an aggregate root, use the `Aggregate` interface. For example:
 
 ```php
 namespace App\Modules\EventManagement\Domain;
@@ -105,19 +107,28 @@ which is a value object that holds a list of `Ticket` entities.
 
 ## Identifiers
 
-In both the entity and the aggregate root, the identifier is type-hinted as `IdentifierInterface`. This is intentional,
-as it prevents a concern of the infrastructure persistence layer from leaking into your domain.
+In both the entity and the aggregate root, the identifier is type-hinted as the `Identifier` interface. This is
+intentional, as it prevents a concern of the infrastructure layer's persistence implementation from leaking into your
+domain.
 
-For example, it can be tempting to type-hint the identifier as `int` if your persistence layer uses an auto-incrementing
-integer as the primary key. However, this is a leaky abstraction, as it means that the domain layer is now coupled to
-the persistence layer - as it knows how identifiers are issued and persisted. This coupling is the wrong way around:
-the domain layer should not be coupled to any other layer.
+For example, it can be tempting to type-hint the identifier as `int` if your persistence implementation uses an
+auto-incrementing integer as the primary key. However, this is a leaky abstraction. It means that the domain layer is
+now coupled to the persistence implementation as it knows how identifiers are issued and persisted. This coupling is the
+wrong way around: the domain layer should not be coupled to any other layer.
 
-To prevent this coupling, this package provides an `IdentifierInterface` that can be used in the domain layer. It then
+To prevent this coupling, this package provides an `Identifier` interface that can be used in the domain layer. It then
 provides tools for working with identifiers in other layers, where you need to work with _expected identifier types_,
-e.g. an integer where we know the persistence layer uses an auto-incrementing integer as the primary key.
+e.g. an integer where we know the persistence implementation uses an auto-incrementing integer as the primary key.
 
 See the [Identifiers chapter](../toolkit/identifiers) for more details.
+
+:::info
+This is our recommended approach for handling identifiers in the domain layer. However, you may have a good reason to
+take a different approach.
+
+For example, if your implementation used UUIDs _everywhere_, you may prefer to just type-hint the `Uuid` class instead.
+This particularly makes sense with UUIDs, which are globally unique.
+:::
 
 ## Invariants
 
@@ -133,14 +144,18 @@ For example, our `Attendee` aggregate root should always have at least one ticke
 enforce in the constructor:
 
 ```php
-use CloudCreativity\Modules\Toolkit\Contracts;
+namespace App\Modules\EventManagement\Domain;
 
-class Attendee implements AggregateInterface
+use CloudCreativity\Modules\Contracts\Domain\Aggregate;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
+use CloudCreativity\Modules\Domain\IsEntity;
+
+class Attendee implements Aggregate
 {
-    use EntityTrait;
+    use IsEntity;
 
     public function __construct(
-        private readonly IdentifierInterface $id,
+        private readonly Identifier $id,
         private readonly Customer $customer,
         private readonly ListOfTickets $tickets,
     ) {
@@ -180,7 +195,7 @@ For example, if an `Attendee` can cancel a ticket, you might provide a `cancelTi
 
 ```php
 public function cancelTicket(
-    IdentifierInterface $ticketId,
+    Identifier $ticketId,
     CancellationReasonEnum $reason,
 ): void
 {

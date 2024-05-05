@@ -22,14 +22,13 @@ Our command handler might look like this:
 ```php
 namespace App\Modules\EventManagement\Application\UseCases\Commands\CancelAttendeeTicket;
 
-use App\Modules\EventManagement\Application\Ports\Driven\Persistence\AttendeeRepositoryInterface;
+use App\Modules\EventManagement\Application\Ports\Driven\Persistence\AttendeeRepository;
 use CloudCreativity\Modules\Toolkit\Results\Result;
 
-final readonly class CancelAttendeeTicketHandler implements
-    CancelAttendeeTicketHandlerInterface
+final readonly class CancelAttendeeTicketHandler
 {
     public function __construct(
-        private AttendeeRepositoryInterface $attendees,
+        private AttendeeRepository $attendees,
     ) {
     }
 
@@ -126,17 +125,16 @@ Our previous example can be updated to add a unit of work that wraps the command
 ```php
 namespace App\Modules\EventManagement\Application\UseCases\Commands\CancelAttendeeTicket;
 
-use App\Modules\EventManagement\Application\Ports\Driven\Persistence\AttendeeRepositoryInterface;
+use App\Modules\EventManagement\Application\Ports\Driven\Persistence\AttendeeRepository;
 use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;
 use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
 use CloudCreativity\Modules\Toolkit\Results\Result;
 
 final readonly class CancelAttendeeTicketHandler implements
-    CancelAttendeeTicketHandlerInterface,
     DispatchThroughMiddleware
 {
     public function __construct(
-        private AttendeeRepositoryInterface $attendees,
+        private AttendeeRepository $attendees,
     ) {
     }
 
@@ -407,17 +405,16 @@ Use the `ExecuteInUnitOfWork` middleware to wrap command handlers in a unit of w
 ```php
 namespace App\Modules\EventManagement\Application\UseCases\Commands\CancelAttendeeTicket;
 
-use App\Modules\EventManagement\Application\Ports\Driven\Persistence\AttendeeRepositoryInterface;
+use App\Modules\EventManagement\Application\Ports\Driven\Persistence\AttendeeRepository;
 use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;
 use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
 use CloudCreativity\Modules\Toolkit\Results\Result;
 
 final readonly class CancelAttendeeTicketHandler implements
-    CancelAttendeeTicketHandlerInterface,
     DispatchThroughMiddleware
 {
     public function __construct(
-        private AttendeeRepositoryInterface $attendees,
+        private AttendeeRepository $attendees,
     ) {
     }
 
@@ -462,7 +459,7 @@ This can be achieved via the `HandleInUnitOfWork` middleware on the inbound even
 ```php
 namespace App\Modules\EventManagement\Application\UseCases\InboundEvents;
 
-use App\Modules\EventManagement\Domain\Events\DispatcherInterface;
+use App\Modules\EventManagement\Domain\Events\DomainEventDispatcher;
 use App\Modules\EventManagement\Domain\Events\SalesAtEventDidChange;
 use CloudCreativity\Modules\Application\InboundEventBus\Middleware\HandleInUnitOfWork;
 use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
@@ -472,7 +469,7 @@ final readonly class OrderWasFulfilledHandler implements
     DispatchThroughMiddleware
 {
     public function __construct(
-        private DispatcherInterface $domainEvents,
+        private DomainEventDispatcher $domainEvents,
     ) {
     }
 
