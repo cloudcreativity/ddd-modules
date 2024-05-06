@@ -1,6 +1,6 @@
 # Publishing Integration Events
 
-Integration events are covered in detail in the [chapter in the application layer.](../application/events)
+Integration events are covered in detail in the [chapter in the application layer.](../application/integration-events)
 
 That chapter describes how outbound integration events are published via a driven port defined by the application layer.
 As this is a driven port, the adapter implementation is in the infrastructure layer. This chapter describes how to

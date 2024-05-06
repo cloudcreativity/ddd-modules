@@ -265,7 +265,7 @@ $middleware->bind(
 
 :::tip
 Middleware is documented in the relevant chapters for [commands](../application/commands#middleware)
-and [inbound integration events.](../application/events#inbound-middleware)
+and [inbound integration events.](../application/integration-events#inbound-middleware)
 :::
 
 ### Deferring Work
@@ -444,7 +444,7 @@ final readonly class CancelAttendeeTicketHandler implements
 
 ### Integration Event Handlers
 
-As explained in the [integration events chapter](../application/events#strategies), there are several strategies that
+As explained in the [integration events chapter](../application/integration-events#strategies), there are several strategies that
 can be used to handle inbound events.
 
 If you dispatch a command as a result of the inbound event, you do not need to worry about the unit of work
