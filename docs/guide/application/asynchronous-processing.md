@@ -215,8 +215,8 @@ queue adapter in the infrastructure layer that implements this port. Queue adapt
 the [queues chapter in the infrastructure section.](../infrastructure/queues) The queue adapter is then injected into
 the command bus.
 
-Our approach is to define a port specifically for internal commands - rather than reusing a queue port for public
-commands. I.e.:
+Our approach is to define a port specifically for queuing internal commands - rather than reusing a queue port for
+public commands. I.e.:
 
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driven\Queue;
