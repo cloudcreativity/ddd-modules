@@ -202,9 +202,12 @@ final readonly class PublishAttendeeTicketWasCancelled
 
 ### Transactional Outbox
 
-If you are using [Units of Work](./units-of-work), the above example can be improved by using a [Transactional Outbox](../infrastructure/outbox) pattern.
+If you are using [Units of Work](./units-of-work), the above example can be improved by using
+a [Transactional Outbox](../infrastructure/outbox) pattern.
 
-Instead of immediately publishing the integration event to the outbound port, the event is stored in an outbox for later publishing. This ensures the publishing of the event is atomic, as it will only be stored in the outbox if the unit of work is committed.
+Instead of immediately publishing the integration event to the outbound port, the event is stored in an outbox for later
+publishing. This ensures the publishing of the event is atomic, as it will only be stored in the outbox if the unit of
+work is committed.
 
 In this scenario, the above listener would be changed to use the outbox instead:
 
@@ -568,6 +571,55 @@ will therefore only be a single bounded context that consumes the inbound event.
 In a modular monolith or a microservice with multiple bounded contexts, you will need to route the inbound event to the
 correct bounded context. Or notify all bounded contexts of the inbound event and leave it up to each to decide if they
 need to react to it.
+
+### Swallowing Events
+
+There may be a scenario where you decide to push all received inbound integration events to a bounded context's inbound
+event bus, regardless of whether or not that bounded context actually needs to consume the event. This ensures that the
+outside world does not have knowledge of what integration events the bounded context consumes.
+
+A good example of where this is a sensible approach is the scenario of a microservice that has several bounded contexts.
+When an integration event is received by the presentation and delivery layer, instead of the controller routing the
+event to bounded contexts that consume it, it pushes the event to all bounded contexts. This gives them the
+_opportunity_ to consume the event.
+
+In this scenario, we need to configure the inbound event bus to _swallow_ events that it does not have a handler for.
+This is because the event bus will throw an exception if it does not have a handler for an event.
+
+To do this, we configure a default handler on the handler container that is given to the event bus. Use
+the `SwallowInboundEvent` handler for this purpose:
+
+```php
+use CloudCreativity\Modules\Application\InboundEventBus\EventHandlerContainer;
+use CloudCreativity\Modules\Application\InboundEventBus\SwallowInboundEvent;
+
+$bus = new InboundEventBusAdapter(
+    handlers: $handlers = new EventHandlerContainer(
+        default: fn() => new SwallowInboundEvent(),
+    ),
+);
+```
+
+Notice we provide the event handler container with a factory that creates a default handler. In this case,
+the `SwallowInboundEvent` handler will do nothing with the event. You can also provide a logger and log level to
+the `SwallowInboundEvent` handler, so that it logs that the event was swallowed:
+
+```php
+use CloudCreativity\Modules\Application\InboundEventBus\EventHandlerContainer;
+use CloudCreativity\Modules\Application\InboundEventBus\SwallowInboundEvent;
+use Psr\Log\LogLevel;
+
+$bus = new InboundEventBusAdapter(
+    handlers: $handlers = new EventHandlerContainer(
+        default: fn() => new SwallowInboundEvent(
+            logger: $this->dependencies->getLogger(),
+            level: LogLevel::INFO, // optional, defaults to debug
+        ),
+    ),
+);
+```
+
+Alternatively, you can write your own default handler if desired.
 
 ### Inbox
 

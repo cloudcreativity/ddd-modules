@@ -37,6 +37,22 @@ class EventHandlerContainerTest extends TestCase
     /**
      * @return void
      */
+    public function testItHasDefaultHandler(): void
+    {
+        $a = new TestEventHandler();
+        $b = $this->createMock(TestEventHandler::class);
+
+        $container = new EventHandlerContainer(default: fn () => $b);
+        $container->bind(TestInboundEvent::class, fn () => $a);
+
+        $this->assertEquals(new EventHandler($a), $container->get(TestInboundEvent::class));
+        $this->assertEquals(new EventHandler($b), $container->get(TestOutboundEvent::class));
+    }
+
+
+    /**
+     * @return void
+     */
     public function testItDoesNotHaveHandler(): void
     {
         $container = new EventHandlerContainer();

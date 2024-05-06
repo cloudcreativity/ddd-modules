@@ -14,6 +14,9 @@ All notable changes to this project will be documented in this file. This projec
   result object. In Laravel applications, this means the exception context will automatically be logged.
 - The `ResultInterface` has a new `abort()` method. This throws a `FailedResultException` if the result is not
   successful.
+- The inbound integration event handler container now accepts an optional factory for a default handler. This can be
+  used to swallow inbound events that the bounded context does not need to consume. We have also added
+  a `SwallowInboundEvent` handler that can be used in this scenario.
 
 ### Changed
 
