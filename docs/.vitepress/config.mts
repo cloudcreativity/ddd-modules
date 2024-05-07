@@ -22,6 +22,7 @@ export default defineConfig({
                     items: [
                         {text: 'What is DDD Modules?', link: '/guide/'},
                         {text: 'Installation', link: '/guide/installation'},
+                        {text: 'Upgrading', link: '/guide/upgrade'},
                     ],
                 },
                 {

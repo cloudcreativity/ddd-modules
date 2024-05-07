@@ -5,14 +5,16 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased (Next Major Version)
 
+**Refer to the [Upgrade Guide.](./docs/guide/upgrade.md)**
+
 ### Added
 
 - **BREAKING** The command bus interface now has a `queue()` method. Our command dispatcher implementation has been
   updated to accept a queue factory closure as its third constructor argument. This is an optional argument, so this
   change only breaks your implementation if you have manually implemented the command dispatch interface.
-- The `FailedResultException` now implements the `ContextProviderInterface` to get log context from the exception's
+- The `FailedResultException` now implements `ContextProvider` to get log context from the exception's
   result object. In Laravel applications, this means the exception context will automatically be logged.
-- The `ResultInterface` has a new `abort()` method. This throws a `FailedResultException` if the result is not
+- The `Result` interface has a new `abort()` method. This throws a `FailedResultException` if the result is not
   successful.
 - The inbound integration event handler container now accepts an optional factory for a default handler. This can be
   used to swallow inbound events that the bounded context does not need to consume. We have also added
@@ -20,30 +22,43 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Changed
 
+- **BREAKING** Package now uses a _hexagonal architecture_ approach, which helps clarify the relationship between the
+  application and infrastructure layers. This means a number of interfaces have been moved to
+  the `Contracts\Application\Ports` namespace, with them differentiated between driving and driven ports.
+- **BREAKING** As a number of interfaces had to be moved to a `Ports` namespace, we've tidied them all up by removing
+  the `Interface` suffix and moving them to a `Contracts` namespace.
+- **BREAKING** We've also removed the `Trait` suffix from traits. To avoid collisions with interfaces, we've use `Is` a
+  prefix where it makes sense. For example, `EntityTrait` has become `IsEntity`.
+- **BREAKING** The `DomainEventDispatching` namespace has been moved from `Infrastructure` to `Application`. This was
+  needed for the new hexagonal architecture approach, but also makes it a lot clearer that domain events are the way the
+  domain layer communicates with the application layer.
+- **BREAKING** The event bus implementation has been split into an inbound event bus (in the application layer) and an
+  outbound event bus (in the infrastructure layer). With the new hexagonal architecture, this changes was required
+  because inbound events are received via a driving port, while outbound events are published via a driven port.
 - **BREAKING** Refactored the queue implementation so that commands are queued. The queue implementation was previously
-  not documented. There is now complete documentation in the [Asynchronous Processing](docs/guide/infrastructure/queues)
-  chapter. Refer to that documentation to upgrade your implementation.
+  not documented. There is now complete documentation in
+  the [Asynchronous Processing chapter](docs/guide/application/asynchronous-processing.md) Refer to that documentation
+  to upgrade your implementation.
 - **BREAKING** For clarity, the following classes have had their `pipeline` constructor argument renamed
   to `middleware`. You will need to update the construction of these classes if you are using named arguments:
-    - `Bus/CommandDispatcher`
-    - `Bus/QueryDispatcher`
-    - `EventBus\Inbound\Notifier`
-    - `EventBus\Outbound\Publisher`
-    - `Infrastructure\DomainEventDispatching\Dispatcher`
-    - `Infrastructure\DomainEventDispatching\DeferredDispatcher`
-    - `Infrastructure\DomainEventDispatching\UnitOfWorkAwareDispatcher`
-- **BREAKING** The single constructor argument for the `Bus\Validation\CommandValidator`
-  and `Bus\Validation\QueryValidator` has been renamed `rules` for clarity. Although breaking, this will only affect
-  your implementation if you are using named arguments when constructing either of these validators.
-- **BREAKING** Renamed the bus `MessageMiddlewareInterface` to `BusMiddlewareInterface`. Also changed the type-hint for
-  the message from `MessageInterface` to `CommandInterface|QueryInterface`. This makes this interface clearer about its
-  purpose, as it is intended only for use with commands and queries - i.e. not integration event messages.
+    - `Application\Bus\CommandDispatcher`
+    - `Application\Bus\QueryDispatcher`
+    - `Application\InboundEventBus\EventDispatcher`
+    - `Application\DomainEventDispatching\Dispatcher`
+    - `Application\DomainEventDispatching\DeferredDispatcher`
+    - `Application\DomainEventDispatching\UnitOfWorkAwareDispatcher`
+- **BREAKING** The command and query validators have been merged into a single class - `Application\Bus\Validator`. This
+  is because there was no functional difference between the two, so this tidies up the implementation.
+- **BREAKING** Renamed the bus `MessageMiddleware` interface to `BusMiddleware` interface. Also changed the type-hint
+  for the message from `Message` to `Command|Query`. This makes this interface clearer about its purpose, as it is
+  intended only for use with commands and queries - i.e. not integration event messages.
 - **BREAKING** the `ResultContext` and `ObjectContext` helper classes have been moved to the `Toolkit\Loggable`
   namespace.
-- **BREAKING** The event bus's `IntegrationEventMiddlewareInterface` has been renamed to `EventBusMiddlewareInterface`.
-- **BREAKING** The `ResultInterface::value()` method now throws a `FailedResultException` if the result is not
-  successful. Previously it threw a `ContractException`.
-- **BREAKING** The `Infrastructure\Persistence` namespace has been renamed `Infrastructure\UnitOfWork`.
+- **BREAKING** The `Result::value()` method now throws a `FailedResultException` if the result is not successful.
+  Previously it threw a `ContractException`.
+- **BREAKING** The unit of work implementation has been moved to the `Application\UnitOfWork` namespace. Previously it
+  was in `Infrastructure\Persistence`. This reflects the fact that the unit of work manager is an application concern.
+  The unit of work interface is now a driven port.
 
 ### Removed
 
@@ -53,9 +68,9 @@ All notable changes to this project will be documented in this file. This projec
     - `Toolkit\Pipeline\PipelineBuilderFactoryInterface`
     - `Toolkit\Pipeline\PipelineBuilderFactory`
 - **BREAKING** Removed the following previously deprecated event bus middleware:
-    - `EventBus\Middleware\LogOutboundIntegrationEvent` - use `LogOutboundEvent` instead.
-    - `EventBus\Middleware\LogInboundIntegrationEvent` - use `LogInboundEvent` instead.
-- **BREAKING** Remove the `Infrastructure::assert()` helper. This was not documented so is unlikely to be breaking.
+    - `LogOutboundIntegrationEvent` - use `Infrastructure\OutboundEventBus\Middleware\LogOutboundEvent` instead.
+    - `LogInboundIntegrationEvent` - use `Application\InboundEventBus\Middleware\LogInboundEvent` instead.
+- **BREAKING** Removed the `Infrastructure::assert()` helper. This was not documented so is unlikely to be breaking.
 
 ## [1.2.0] - 2024-04-05
 
