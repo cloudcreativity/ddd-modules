@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Pipeline;
 
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use RuntimeException;
 use Throwable;
 
@@ -19,11 +20,11 @@ final class LazyPipe
     /**
      * LazyPipe constructor.
      *
-     * @param PipeContainerInterface $container
+     * @param PipeContainer $container
      * @param string $pipeName
      */
     public function __construct(
-        private readonly PipeContainerInterface $container,
+        private readonly PipeContainer $container,
         private readonly string $pipeName,
     ) {
     }

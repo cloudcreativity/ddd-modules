@@ -62,10 +62,10 @@ This is not what we want - the `Age` value object should never be instantiated i
 There are some situations where it is ok to use the `assert()` function. Here's an example:
 
 ```php
-class Ticket implements EntityInterface
+class Ticket implements Entity
 {
     public function __construct(
-        private readonly IdentifierInterface $id,
+        private readonly Identifier $id,
         private ?TicketStatusEnum $status = null
         // ...other properties
     ) {

@@ -12,18 +12,18 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Toolkit\Result;
 
 use ArrayAccess;
-use CloudCreativity\Modules\Toolkit\Iterables\KeyedSetInterface;
-use CloudCreativity\Modules\Toolkit\Iterables\KeyedSetTrait;
+use CloudCreativity\Modules\Contracts\Toolkit\Iterables\KeyedSet;
+use CloudCreativity\Modules\Toolkit\Iterables\IsKeyedSet;
 use LogicException;
 
 /**
  * @implements ArrayAccess<string, mixed>
- * @implements KeyedSetInterface<mixed>
+ * @implements KeyedSet<mixed>
  */
-final class Meta implements ArrayAccess, KeyedSetInterface
+final class Meta implements ArrayAccess, KeyedSet
 {
-    /** @use KeyedSetTrait<mixed> */
-    use KeyedSetTrait;
+    /** @use IsKeyedSet<mixed> */
+    use IsKeyedSet;
 
     /**
      * Cast a value to meta.

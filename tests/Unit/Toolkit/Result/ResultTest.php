@@ -11,14 +11,14 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Result;
 
-use CloudCreativity\Modules\Tests\Unit\Infrastructure\Log\TestEnum;
-use CloudCreativity\Modules\Toolkit\ContractException;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\ListOfErrors as IListOfErrors;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result as IResult;
+use CloudCreativity\Modules\Tests\Unit\Toolkit\Loggable\TestEnum;
 use CloudCreativity\Modules\Toolkit\Result\Error;
+use CloudCreativity\Modules\Toolkit\Result\FailedResultException;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
-use CloudCreativity\Modules\Toolkit\Result\ListOfErrorsInterface;
 use CloudCreativity\Modules\Toolkit\Result\Meta;
 use CloudCreativity\Modules\Toolkit\Result\Result;
-use CloudCreativity\Modules\Toolkit\Result\ResultInterface;
 use PHPUnit\Framework\TestCase;
 
 class ResultTest extends TestCase
@@ -29,8 +29,9 @@ class ResultTest extends TestCase
     public function testOk(): void
     {
         $result = Result::ok();
+        $result->abort();
 
-        $this->assertInstanceOf(ResultInterface::class, $result);
+        $this->assertInstanceOf(IResult::class, $result);
         $this->assertNull($result->value());
         $this->assertNull($result->safe());
         $this->assertTrue($result->didSucceed());
@@ -47,7 +48,6 @@ class ResultTest extends TestCase
     {
         $result = Result::ok($value = 99);
 
-        $this->assertInstanceOf(ResultInterface::class, $result);
         $this->assertSame($value, $result->value());
         $this->assertSame($value, $result->safe());
         $this->assertTrue($result->didSucceed());
@@ -76,6 +76,21 @@ class ResultTest extends TestCase
     }
 
     /**
+     * @param Result<mixed> $result
+     * @return void
+     * @depends testFailed
+     */
+    public function testAbort(Result $result): void
+    {
+        try {
+            $result->abort();
+            $this->fail('No exception thrown.');
+        } catch (FailedResultException $ex) {
+            $this->assertSame($result, $ex->getResult());
+        }
+    }
+
+    /**
      * @return void
      */
     public function testErrorWithMultipleErrors(): void
@@ -99,10 +114,12 @@ class ResultTest extends TestCase
      */
     public function testItThrowsWhenGettingValueOnFailedResult(Result $result): void
     {
-        $this->expectException(ContractException::class);
-        $this->expectExceptionMessage('Result did not succeed.');
-
-        $result->value();
+        try {
+            $result->value();
+            $this->fail('No exception thrown.');
+        } catch (FailedResultException $ex) {
+            $this->assertSame($result, $ex->getResult());
+        }
     }
 
     /**
@@ -110,7 +127,7 @@ class ResultTest extends TestCase
      */
     public function testFailedWithListOfErrorsInterface(): void
     {
-        $errors = $this->createMock(ListOfErrorsInterface::class);
+        $errors = $this->createMock(IListOfErrors::class);
         $errors->method('isNotEmpty')->willReturn(true);
         $result = Result::failed($errors);
 

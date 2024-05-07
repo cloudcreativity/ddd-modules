@@ -11,13 +11,13 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Identifiers;
 
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\UuidFactory;
 use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
-use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
 use CloudCreativity\Modules\Toolkit\Identifiers\StringId;
 use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
-use CloudCreativity\Modules\Toolkit\Identifiers\UuidFactoryInterface;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid as RamseyUuid;
 
@@ -76,7 +76,7 @@ class UuidTest extends TestCase
     }
 
     /**
-     * @return array<int, array<IdentifierInterface>>
+     * @return array<int, array<Identifier>>
      */
     public static function notUuidProvider(): array
     {
@@ -88,11 +88,11 @@ class UuidTest extends TestCase
     }
 
     /**
-     * @param IdentifierInterface $other
+     * @param Identifier $other
      * @return void
      * @dataProvider notUuidProvider
      */
-    public function testIsWithOtherIdentifiers(IdentifierInterface $other): void
+    public function testIsWithOtherIdentifiers(Identifier $other): void
     {
         $id = new Uuid(RamseyUuid::fromString('6dcbad65-ed92-4e60-973b-9ba58a022816'));
 
@@ -110,11 +110,11 @@ class UuidTest extends TestCase
     }
 
     /**
-     * @param IdentifierInterface $other
+     * @param Identifier $other
      * @return void
      * @dataProvider notUuidProvider
      */
-    public function testFromWithOtherIdentifiers(IdentifierInterface $other): void
+    public function testFromWithOtherIdentifiers(Identifier $other): void
     {
         $this->expectException(ContractException::class);
         $this->expectExceptionMessage('Unexpected identifier type, received: ' . get_debug_type($other));
@@ -126,7 +126,7 @@ class UuidTest extends TestCase
      */
     public function testFromWithString(): void
     {
-        Uuid::setFactory($factory = $this->createMock(UuidFactoryInterface::class));
+        Uuid::setFactory($factory = $this->createMock(UuidFactory::class));
 
         $factory
             ->expects($this->once())
@@ -142,7 +142,7 @@ class UuidTest extends TestCase
      */
     public function testFromWithBaseUuid(): void
     {
-        Uuid::setFactory($factory = $this->createMock(UuidFactoryInterface::class));
+        Uuid::setFactory($factory = $this->createMock(UuidFactory::class));
 
         $factory
             ->expects($this->once())

@@ -14,8 +14,8 @@ into smaller, more manageable parts. This makes each individual part easier to u
 ### Example
 
 In a large e-commerce application, the term _Order_ might mean different things in different contexts. In the context
-of the warehouse, an order might be a set of items that need to be picked and shipped. In the context of the customer,
-an order might be a set of items that they have purchased.
+of the warehouse, an order might be a set of items that need to be picked, packed and shipped. In the context of the
+customer, an order might be a set of items that they have purchased.
 
 In a monolith, these two concepts would be mixed together, leading to confusion and complexity. Your _Order_ entity
 would end up being potentially thousands of lines long, with no clear clarity of whether it is being consumed in the
@@ -33,7 +33,7 @@ _modular monolith_. This [Modularisation process is covered in a later chapter.]
 module encompasses a singular bounded context.**
 
 In a modular monolith, this allows you to decompose your domain into multiple fully encapsulated modules that each
-represent a bounded context.
+represent a single bounded context.
 
 In a microservices architecture, a microservice might encompass a single bounded context - therefore it would use this
 package to implement a single module. However, it gives you the option of having a microservice that encompasses

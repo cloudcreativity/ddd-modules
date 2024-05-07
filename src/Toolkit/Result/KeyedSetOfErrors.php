@@ -11,16 +11,18 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Result;
 
-use CloudCreativity\Modules\Toolkit\Iterables\KeyedSetInterface;
-use CloudCreativity\Modules\Toolkit\Iterables\KeyedSetTrait;
+use CloudCreativity\Modules\Contracts\Toolkit\Iterables\KeyedSet;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Error as IError;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\ListOfErrors as IListOfErrors;
+use CloudCreativity\Modules\Toolkit\Iterables\IsKeyedSet;
 
 /**
- * @implements KeyedSetInterface<ListOfErrors>
+ * @implements KeyedSet<IListOfErrors>
  */
-final class KeyedSetOfErrors implements KeyedSetInterface
+final class KeyedSetOfErrors implements KeyedSet
 {
-    /** @use KeyedSetTrait<ListOfErrors> */
-    use KeyedSetTrait;
+    /** @use IsKeyedSet<IListOfErrors> */
+    use IsKeyedSet;
 
     /**
      * @var string
@@ -28,24 +30,24 @@ final class KeyedSetOfErrors implements KeyedSetInterface
     public const DEFAULT_KEY = '_base';
 
     /**
-     * @param KeyedSetOfErrors|ListOfErrorsInterface|ErrorInterface $value
+     * @param KeyedSetOfErrors|IListOfErrors|IError $value
      * @return self
      */
-    public static function from(self|ListOfErrorsInterface|ErrorInterface $value): self
+    public static function from(self|IListOfErrors|IError $value): self
     {
         return match(true) {
             $value instanceof self => $value,
-            $value instanceof ListOfErrorsInterface => new self(...$value),
-            $value instanceof ErrorInterface => new self($value),
+            $value instanceof IListOfErrors => new self(...$value),
+            $value instanceof IError => new self($value),
         };
     }
 
     /**
      * KeyedSetOfErrors constructor.
      *
-     * @param ErrorInterface ...$errors
+     * @param IError ...$errors
      */
-    public function __construct(ErrorInterface ...$errors)
+    public function __construct(IError ...$errors)
     {
         foreach ($errors as $error) {
             $key = $this->keyFor($error);
@@ -58,10 +60,10 @@ final class KeyedSetOfErrors implements KeyedSetInterface
     /**
      * Return a new instance with the provided error added to the set of errors.
      *
-     * @param ErrorInterface $error
+     * @param IError $error
      * @return KeyedSetOfErrors
      */
-    public function put(ErrorInterface $error): self
+    public function put(IError $error): self
     {
         $key = $this->keyFor($error);
         $errors = $this->get($key);
@@ -75,15 +77,15 @@ final class KeyedSetOfErrors implements KeyedSetInterface
     }
 
     /**
-     * @param ListOfErrorsInterface|self $other
+     * @param IListOfErrors|self $other
      * @return self
      */
-    public function merge(ListOfErrorsInterface|self $other): self
+    public function merge(IListOfErrors|self $other): self
     {
         $copy = clone $this;
 
         foreach (self::from($other) as $key => $errors) {
-            assert(is_string($key) && $errors instanceof ListOfErrorsInterface);
+            assert(is_string($key) && $errors instanceof IListOfErrors);
             $copy->stack[$key] = $copy->get($key)->merge($errors);
         }
 
@@ -104,21 +106,21 @@ final class KeyedSetOfErrors implements KeyedSetInterface
      * Get errors by key.
      *
      * @param string $key
-     * @return ListOfErrors
+     * @return IListOfErrors
      */
-    public function get(string $key): ListOfErrors
+    public function get(string $key): IListOfErrors
     {
         return $this->stack[$key] ?? new ListOfErrors();
     }
 
     /**
-     * @return ListOfErrors
+     * @return IListOfErrors
      */
-    public function toList(): ListOfErrors
+    public function toList(): IListOfErrors
     {
         return array_reduce(
             $this->stack,
-            static fn (ListOfErrors $carry, ListOfErrors $errors): ListOfErrors => $carry->merge($errors),
+            static fn (IListOfErrors $carry, IListOfErrors $errors): IListOfErrors => $carry->merge($errors),
             new ListOfErrors(),
         );
     }
@@ -138,16 +140,16 @@ final class KeyedSetOfErrors implements KeyedSetInterface
     {
         return array_reduce(
             $this->stack,
-            static fn (int $carry, ListOfErrors $errors) => $carry + $errors->count(),
+            static fn (int $carry, IListOfErrors $errors) => $carry + $errors->count(),
             0,
         );
     }
 
     /**
-     * @param ErrorInterface $error
+     * @param IError $error
      * @return string
      */
-    private function keyFor(ErrorInterface $error): string
+    private function keyFor(IError $error): string
     {
         return $error->key() ?? self::DEFAULT_KEY;
     }

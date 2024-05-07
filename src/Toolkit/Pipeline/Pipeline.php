@@ -11,21 +11,24 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Pipeline;
 
-final class Pipeline implements PipelineInterface
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\Pipeline as IPipeline;
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\Processor;
+
+final class Pipeline implements IPipeline
 {
     /**
-     * @var ProcessorInterface
+     * @var Processor
      */
-    private readonly ProcessorInterface $processor;
+    private readonly Processor $processor;
 
     /**
      * Pipeline constructor.
      *
-     * @param ProcessorInterface|null $processor
+     * @param Processor|null $processor
      * @param callable[] $stages
      */
     public function __construct(
-        ?ProcessorInterface $processor,
+        ?Processor $processor,
         private array $stages,
     ) {
         $this->processor = $processor ?? new SimpleProcessor();
@@ -42,7 +45,7 @@ final class Pipeline implements PipelineInterface
     /**
      * @inheritDoc
      */
-    public function pipe(callable $stage): PipelineInterface
+    public function pipe(callable $stage): Pipeline
     {
         $pipeline = clone $this;
         $pipeline->stages[] = $stage;

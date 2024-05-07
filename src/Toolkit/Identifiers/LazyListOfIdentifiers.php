@@ -12,22 +12,23 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
 use Closure;
-use CloudCreativity\Modules\Toolkit\Iterables\LazyListInterface;
-use CloudCreativity\Modules\Toolkit\Iterables\LazyListTrait;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
+use CloudCreativity\Modules\Contracts\Toolkit\Iterables\LazyList;
+use CloudCreativity\Modules\Toolkit\Iterables\IsLazyList;
 use Generator;
 
 /**
- * @implements LazyListInterface<IdentifierInterface>
+ * @implements LazyList<Identifier>
  */
-final class LazyListOfIdentifiers implements LazyListInterface
+final class LazyListOfIdentifiers implements LazyList
 {
-    /** @use LazyListTrait<IdentifierInterface> */
-    use LazyListTrait;
+    /** @use IsLazyList<Identifier> */
+    use IsLazyList;
 
     /**
      * LazyListOfIdentifiers constructor.
      *
-     * @param Closure(): Generator<IdentifierInterface>|null $source
+     * @param Closure(): Generator<Identifier>|null $source
      */
     public function __construct(Closure $source = null)
     {

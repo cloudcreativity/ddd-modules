@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Iterables;
 
-use CloudCreativity\Modules\Toolkit\Iterables\LazyListInterface;
-use CloudCreativity\Modules\Toolkit\Iterables\LazyListTrait;
+use CloudCreativity\Modules\Contracts\Toolkit\Iterables\LazyList;
+use CloudCreativity\Modules\Toolkit\Iterables\IsLazyList;
 use PHPUnit\Framework\TestCase;
 
 class LazyListTraitTest extends TestCase
@@ -25,11 +25,11 @@ class LazyListTraitTest extends TestCase
         $expected = ['one', 'two', 'three'];
 
         /**
-         * @implements LazyListInterface<string>
+         * @implements LazyList<string>
          */
-        $list = new class (...$expected) implements LazyListInterface {
-            /** @use LazyListTrait<string> */
-            use LazyListTrait;
+        $list = new class (...$expected) implements LazyList {
+            /** @use IsLazyList<string> */
+            use IsLazyList;
 
             public function __construct(string ...$values)
             {
@@ -50,11 +50,11 @@ class LazyListTraitTest extends TestCase
         $expected = ['one' => 'foo', 'two' => 'bar', 'three' => 'baz'];
 
         /**
-         * @implements LazyListInterface<string>
+         * @implements LazyList<string>
          */
-        $list = new class ($expected) implements LazyListInterface {
-            /** @use LazyListTrait<string> */
-            use LazyListTrait;
+        $list = new class ($expected) implements LazyList {
+            /** @use IsLazyList<string> */
+            use IsLazyList;
 
             /**
              * @param array<string, string> $values

@@ -4,7 +4,7 @@ The business logic in your domain layer will be defined in terms of the followin
 
 - **Entity** - an object that has an identity and has state that can change in-line with business logic.
 - **Aggregate Roots** - an entity that is the root of an aggregate. An aggregate is a group of entities that are treated
-  as a single unit for the purpose of state changes in-line with business logic.
+  as a single unit for the purpose of state changes in line with business logic.
 - **Value Object** - an object that has no identity and is immutable. It is used to describe a characteristic (or
   characteristics) of an entity, and to define data types specific to the domain that are not represented by primitives.
   (The [next chapter](./value-objects) covers these in detail.)
@@ -14,21 +14,21 @@ However, it is intentionally light-weight, because each domain should be modelle
 
 ## Entities
 
-To define an entity, implement the `EntityInterface`. For example:
+To define an entity, implement the `Entity` interface. For example:
 
 ```php
-namespace App\Modules\EventManagement\BoundedContext\Domain;
+namespace App\Modules\EventManagement\Domain;
 
-use CloudCreativity\Modules\Domain\EntityInterface;
-use CloudCreativity\Modules\Domain\EntityTrait;
-use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
+use CloudCreativity\Modules\Contracts\Domain\Entity;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
+use CloudCreativity\Modules\Domain\IsEntity;
 
-class BookableEvent implements EntityInterface
+class BookableEvent implements Entity
 {
-    use EntityTrait;
+    use IsEntity;
 
     public function __construct(
-        IdentifierInterface $id,
+        Identifier $id,
         private readonly \DateTimeImmutable $startsAt,
         private readonly \DateTimeImmutable $endsAt,
         private bool $isCancelled = false,
@@ -40,24 +40,26 @@ class BookableEvent implements EntityInterface
 }
 ```
 
-The `EntityInterface` defines that the implementing class is identifiable, and provides some helper methods for checking
+The entity interface defines that the implementing class is identifiable, and provides some helper methods for checking
 if two entities are the same - `is()` and `isNot()`.
 
 In some instances an entity may have a nullable identifier. For example, entities that can exist in the domain
-layer before they are persisted for the first time. In this case, use the `EntityWithNullableIdTrait` instead of the
-`EntityTrait`, for example:
+layer before they are persisted for the first time. In this case, use the `IsEntityWithNullableId` trait instead of
+`IsEntity`, for example:
 
 ```php
-use CloudCreativity\Modules\Domain\EntityInterface;
-use CloudCreativity\Modules\Domain\EntityWithNullableIdTrait;
-use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
+namespace App\Modules\EventManagement\Domain;
 
-class BookableEvent implements EntityInterface
+use CloudCreativity\Modules\Contracts\Domain\Entity;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
+use CloudCreativity\Modules\Domain\IsEntityWithNullableId;
+
+class BookableEvent implements Entity
 {
-    use EntityWithNullableIdTrait;
+    use IsEntityWithNullableId;
 
     public function __construct(
-        private readonly ?IdentifierInterface $id,
+        private readonly ?Identifier $id,
         private readonly \DateTimeImmutable $startsAt,
         private readonly \DateTimeImmutable $endsAt,
         private bool $isCancelled = false,
@@ -73,23 +75,22 @@ This trait provides a method for setting the identifier - `setId()`.
 
 ## Aggregates
 
-To define an aggregate root, use the `AggregateInterface`:
+To define an aggregate root, use the `Aggregate` interface. For example:
 
 ```php
-namespace App\Modules\EventManagement\BoundedContext\Domain;
+namespace App\Modules\EventManagement\Domain;
 
-use App\Modules\EventManagement\BoundedContext\Domain\ListOfTickets;
-use App\Modules\EventManagement\BoundedContext\Domain\ValueObjects\Customer;
-use CloudCreativity\Modules\Domain\AggregateInterface;
-use CloudCreativity\Modules\Domain\EntityTrait;
-use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
+use App\Modules\EventManagement\Domain\ValueObjects\Customer;
+use CloudCreativity\Modules\Contracts\Domain\Aggregate;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
+use CloudCreativity\Modules\Domain\IsEntity;
 
-class Attendee implements AggregateInterface
+class Attendee implements Aggregate
 {
-    use EntityTrait;
+    use IsEntity;
 
     public function __construct(
-        private readonly IdentifierInterface $id,
+        private readonly Identifier $id,
         private readonly Customer $customer,
         private readonly ListOfTickets $tickets,
     ) {
@@ -100,25 +101,34 @@ class Attendee implements AggregateInterface
 }
 ```
 
-The `AggregateInterface` extends the `EntityInterface` - there is no additional functionality. It is used to indicate
+The aggregate interface extends the entity interface - there is no additional functionality. It is used to indicate
 that the entity is the root of an aggregate. In the example, the `Attendee` aggregate root has a `ListOfTickets`,
 which is a value object that holds a list of `Ticket` entities.
 
 ## Identifiers
 
-In both the entity and the aggregate root, the identifier is type-hinted as `IdentifierInterface`. This is intentional,
-as it prevents a concern of the infrastructure persistence layer from leaking into your domain.
+In both the entity and the aggregate root, the identifier is type-hinted as the `Identifier` interface. This is
+intentional, as it prevents a concern of the infrastructure layer's persistence implementation from leaking into your
+domain.
 
-For example, it can be tempting to type-hint the identifier as `int` if your persistence layer uses an auto-incrementing
-integer as the primary key. However, this is a leaky abstraction, as it means that the domain layer is now coupled to
-the persistence layer - as it knows how identifiers are issued and persisted. This coupling is the wrong way around:
-the domain layer should not be coupled to any other layer.
+For example, it can be tempting to type-hint the identifier as `int` if your persistence implementation uses an
+auto-incrementing integer as the primary key. However, this is a leaky abstraction. It means that the domain layer is
+now coupled to the persistence implementation as it knows how identifiers are issued and persisted. This coupling is the
+wrong way around: the domain layer should not be coupled to any other layer.
 
-To prevent this coupling, this package provides an `IdentifierInterface` that can be used in the domain layer. It then
+To prevent this coupling, this package provides an `Identifier` interface that can be used in the domain layer. It then
 provides tools for working with identifiers in other layers, where you need to work with _expected identifier types_,
-e.g. an integer where we know the persistence layer uses an auto-incrementing integer as the primary key.
+e.g. an integer where we know the persistence implementation uses an auto-incrementing integer as the primary key.
 
 See the [Identifiers chapter](../toolkit/identifiers) for more details.
+
+:::info
+This is our recommended approach for handling identifiers in the domain layer. However, you may have a good reason to
+take a different approach.
+
+For example, if your implementation used UUIDs _everywhere_, you may prefer to just type-hint the `Uuid` class instead.
+This particularly makes sense with UUIDs, which are globally unique.
+:::
 
 ## Invariants
 
@@ -134,14 +144,18 @@ For example, our `Attendee` aggregate root should always have at least one ticke
 enforce in the constructor:
 
 ```php
-use CloudCreativity\Modules\Toolkit\Contracts;
+namespace App\Modules\EventManagement\Domain;
 
-class Attendee implements AggregateInterface
+use CloudCreativity\Modules\Contracts\Domain\Aggregate;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
+use CloudCreativity\Modules\Domain\IsEntity;
+
+class Attendee implements Aggregate
 {
-    use EntityTrait;
+    use IsEntity;
 
     public function __construct(
-        private readonly IdentifierInterface $id,
+        private readonly Identifier $id,
         private readonly Customer $customer,
         private readonly ListOfTickets $tickets,
     ) {
@@ -181,7 +195,7 @@ For example, if an `Attendee` can cancel a ticket, you might provide a `cancelTi
 
 ```php
 public function cancelTicket(
-    IdentifierInterface $ticketId,
+    Identifier $ticketId,
     CancellationReasonEnum $reason,
 ): void
 {
@@ -213,13 +227,15 @@ The reason is that when you implement serialization logic on an aggregate or ent
 _why_ the object is being serialized, and _how_ it should be serialized.
 
 For example, if you had both a v1 and v2 version of your API, which is the entity being serialized for? If you have
-a separate "backend-for-frontend", is the entity being serialized for that?
+a separate "backend-for-frontend", is the entity being serialized for that? Or is it being serialized for storage by
+your infrastructure's persistence layer?
 
-The answer is that only the _presentation_ layer knows - as JSON is a data delivery mechanism. As we know, the domain
-layer is the inner-most layer, that should have no knowledge of the outer layers - including the presentation layer.
+The answer is that only the _presentation_ or _infrastructure_ layer knows - as JSON can be either a data delivery
+mechanism or a storage format. As we know, the domain layer is the inner-most layer, that should have no knowledge of
+other layers.
 
 Therefore, an aggregate or entity can never be serialized by the domain layer. We must leave that to the concern of
-the presentation layer.
+the presentation or infrastructure layer.
 
 :::info
 Another reason why an aggregate or entity can never implement serialization logic is that they are your domain's

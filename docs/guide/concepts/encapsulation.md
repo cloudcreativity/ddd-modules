@@ -55,51 +55,54 @@ Additionally, integration events from other bounded contexts are _subscribed_ to
 layer defines how the bounded context reacts to these events.
 
 :::tip
-Integration events are bi-directional. They are both _published_ by the bounded context, and _subscribed_ to by the
-bounded context. In the documentation, we refer to them in terms of their direction - specifically:
+Integration events are bi-directional. They are both _published_ by the bounded context, and _consumed_ by the
+bounded context. This means we can refer to them in terms of their direction - specifically:
 
 - **Outbound** integration events, are those _published_ by the bounded context.
-- **Inbound** integration events, are those the bounded context _subscribes to_.
-:::
+- **Inbound** integration events, are those the bounded context _consumes_.
+  :::
 
 ## Application Interface
 
-The application layer of a bounded context is the entry point to the business logic. It defines the _commands_ and
-_queries_ that can be dispatched to the bounded context, and the _integration events_ that the bounded context
-publishes and subscribes to.
+The application layer of a bounded context defines its uses cases. These are the _commands_ and _queries_ that can be
+dispatched to the bounded context, and the _integration events_ that the bounded context consumes.
 
-As such, your application layer's interface can be expressed by the command bus, query bus and event bus that it
-encapsulates. For example, an "event management" bounded context can be expressed as:
+We follow a hexagonal architecture, where the application layer defines the _driving ports_ that it exposes to the
+outside world.
+
+This means your bounded context's interface could be expressed as follows:
 
 ```php
-namespace App\Modules\EventManagement\Application;
+namespace App\Modules\EventManagement\Application\Ports\Driving;
 
-use App\Modules\EventManagement\Application\{
-    Commands\EventManagementCommandBusInterface,
-    IntegrationEvents\EventManagementEventBusInterface,
-    Queries\EventManagementQueryBusInterface,
+use App\Modules\EventManagement\Application\Ports\Driving\{
+    CommandBus\CommandBus,
+    InboundEventBus\EventBus,
+    QueryBus\QueryBus,
 };
 
-interface EventManagementApplicationInterface
+interface Application
 {
-    public function getCommandBus(): EventManagementCommandBusInterface;
+    public function getCommandBus(): CommandBus;
 
-    public function getQueryBus(): EventManagementQueryBusInterface;
+    public function getQueryBus(): QueryBus;
 
-    public function getEventBus(): EventManagementEventBusInterface;
+    public function getEventBus(): EventBus;
 }
 ```
 
-This is the _only_ interface that is exposed to the _outside world_ - i.e. the presentation and delivery layer. It
-ensures the bounded context is fully encapsulated, because it only defines the interfaces required to dispatch
-domain-centric messages. Everything else - domain entities containing business logic, infrastructure to respond and
-process messages, etc - is encapsulated within the bounded context behind this application interface.
+This is for illustrative purposes - you may not want to define an application interface like this as each driving port
+can be consumed separately.
+
+However, it illustrates how the bounded context is fully encapsulated and described by the three messages types it can
+handle. Everything else - e.g. domain entities containing business logic, coordination with the infrastructure layer,
+etc - is hidden as an internal implementation detail of your bounded context.
 
 :::tip
-In the above interface, it is important to note that there is a specific interface for the event management's command,
-query and event buses. This is intentional. Although there are _generic_ command, query and event bus interfaces, the
-purpose of the event management application is to expose the _specific_ buses for the event management bounded context.
-Therefore, there are _specific_ event management bus interfaces.
+In the above example interface, it is important to note that there is a specific interface for the event management's
+command, query and event buses. This is intentional. Although there are _generic_ command, query and event bus
+interfaces, the purpose of the event management application is to expose the _specific_ buses for the event management
+bounded context. Therefore, there are _specific_ event management bus interfaces.
 :::
 
 ## Coupling
@@ -108,7 +111,7 @@ Although bounded contexts are encapsulated, there are times when context-to-cont
 example, our "event management" bounded context may need to amend its attendee totals when a customer completes an
 order. However, completing orders is a concern of the "ordering" bounded context.
 
-Bounded contexts should have clearly defined _boundaries_ that define how they communicate with other contexts. This is
+Bounded contexts should have clear _boundaries_ that define how they communicate with other contexts. This is
 achieved either by _loose_ or _direct_ coupling - with _loose_ coupling being the preferred approach.
 
 ### Loose Coupling

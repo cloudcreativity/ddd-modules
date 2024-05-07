@@ -23,34 +23,49 @@ class ModuleBasenameTest extends TestCase
     {
         return [
             [
-                'CloudCreativity\Application\Modules\WaitList\BoundedContext\Application\Commands\ScheduleDelayedProcess\ScheduleDelayedProcessCommand',
+                'App\Modules\WaitList\BoundedContext\Application\Commands\ScheduleDelayedProcess\ScheduleDelayedProcessCommand',
                 'WaitList',
                 'ScheduleDelayedProcessCommand',
             ],
             [
-                'CloudCreativity\Application\Modules\WaitList\BoundedContext\Application\Queries\GetScheduledProcessList\GetScheduledProcessListQuery',
+                'App\Modules\WaitList\Application\Commands\ScheduleDelayedProcess\ScheduleDelayedProcessCommand',
+                'WaitList',
+                'ScheduleDelayedProcessCommand',
+            ],
+            [
+                'App\Modules\WaitList\BoundedContext\Application\Queries\GetScheduledProcessList\GetScheduledProcessListQuery',
                 'WaitList',
                 'GetScheduledProcessListQuery',
             ],
             [
-                'CloudCreativity\Application\Modules\Podcasts\BoundedContext\Application\IntegrationEvents\Outbound\PodcastPublished',
+                'App\Modules\WaitList\Application\Queries\GetScheduledProcessList\GetScheduledProcessListQuery',
+                'WaitList',
+                'GetScheduledProcessListQuery',
+            ],
+            [
+                'Vendor\Modules\Podcasts\Shared\IntegrationEvents\PodcastPublished',
                 'Podcasts',
                 'PodcastPublished',
             ],
             [
-                'CloudCreativity\Application\Modules\Checkout\Shared\IntegrationEvents\Inbound\OrderCompleted',
-                'Checkout',
-                'OrderCompleted',
+                'Vendor\Modules\Podcasts\Shared\IntegrationEvents\PodcastPublished',
+                'Podcasts',
+                'PodcastPublished',
             ],
             [
-                'CloudCreativity\Application\Modules\WaitList\BoundedContext\Domain\Events\TicketsWereReleased',
+                'App\Modules\WaitList\BoundedContext\Domain\Events\TicketsWereReleased',
                 'WaitList',
                 'TicketsWereReleased',
             ],
             [
-                'CloudCreativity\Application\Modules\WaitList\BoundedContext\Infrastructure\Queue\ProcessWaitListDto',
+                'App\Modules\WaitList\BoundedContext\Infrastructure\Queue\ProcessWaitList\ProcessWaitListJob',
                 'WaitList',
-                'ProcessWaitListDto',
+                'ProcessWaitListJob',
+            ],
+            [
+                'App\Modules\WaitList\Infrastructure\Queue\ProcessWaitList\ProcessWaitListJob',
+                'WaitList',
+                'ProcessWaitListJob',
             ],
             [
                 'Foo\Bar\Modules\Ordering\BoundedContext\Baz\Bat\FooBarCommand',
@@ -58,14 +73,19 @@ class ModuleBasenameTest extends TestCase
                 'FooBarCommand',
             ],
             [
-                'CloudCreativity\Application\Modules\BatchMailer\BoundedContext\Application\Commands\SendEmail\SendEmailCommand',
+                'App\Modules\BatchMailer\BoundedContext\Application\Commands\SendEmail\SendEmailCommand',
                 'BatchMailer',
                 'SendEmailCommand',
             ],
             [
-                'CloudCreativity\Application\Modules\BatchMailer\BoundedContext\Infrastructure\Queue\SendEmailDto',
+                'App\Modules\BatchMailer\Application\Commands\SendEmail\SendEmailCommand',
                 'BatchMailer',
-                'SendEmailDto',
+                'SendEmailCommand',
+            ],
+            [
+                'App\Modules\BatchMailer\Infrastructure\Queue\SendEmail\SendEmailJob',
+                'BatchMailer',
+                'SendEmailJob',
             ],
         ];
     }

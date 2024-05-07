@@ -11,8 +11,9 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Identifiers;
 
-use CloudCreativity\Modules\Toolkit\Identifiers\Identifier;
+use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
 use CloudCreativity\Modules\Toolkit\Identifiers\PossiblyNumericId;
+use CloudCreativity\Modules\Toolkit\Identifiers\StringId;
 use PHPUnit\Framework\TestCase;
 
 class PossiblyNumericIdTest extends TestCase
@@ -41,7 +42,11 @@ class PossiblyNumericIdTest extends TestCase
     public function test(string|int $value, string|int $expected): void
     {
         $actual = new PossiblyNumericId($value);
-        $expectedId = Identifier::make($expected);
+        $expectedId = match (true) {
+            is_string($expected) => new StringId($expected),
+            is_int($expected) => new IntegerId($expected),
+            default => $this->fail('Unexpected value.'),
+        };
 
         $this->assertSame($expected, $actual->value);
         $this->assertSame($expected, PossiblyNumericId::from($value)->value);

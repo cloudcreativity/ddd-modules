@@ -11,29 +11,31 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\UuidFactory as IUuidFactory;
 use JsonSerializable;
-use Ramsey\Uuid\UuidInterface;
+use Ramsey\Uuid\UuidInterface as BaseUuid;
 
-final class Uuid implements IdentifierInterface, JsonSerializable
+final class Uuid implements Identifier, JsonSerializable
 {
     /**
-     * @var UuidFactoryInterface|null
+     * @var IUuidFactory|null
      */
-    private static ?UuidFactoryInterface $factory = null;
+    private static ?IUuidFactory $factory = null;
 
     /**
-     * @param UuidFactoryInterface|null $factory
+     * @param IUuidFactory|null $factory
      * @return void
      */
-    public static function setFactory(?UuidFactoryInterface $factory): void
+    public static function setFactory(?IUuidFactory $factory): void
     {
         self::$factory = $factory;
     }
 
     /**
-     * @return UuidFactoryInterface
+     * @return IUuidFactory
      */
-    public static function getFactory(): UuidFactoryInterface
+    public static function getFactory(): IUuidFactory
     {
         if (self::$factory) {
             return self::$factory;
@@ -43,15 +45,15 @@ final class Uuid implements IdentifierInterface, JsonSerializable
     }
 
     /**
-     * @param IdentifierInterface|UuidInterface|string $value
+     * @param Identifier|BaseUuid|string $value
      * @return self
      */
-    public static function from(IdentifierInterface|UuidInterface|string $value): self
+    public static function from(Identifier|BaseUuid|string $value): self
     {
         $factory = self::getFactory();
 
         return match(true) {
-            $value instanceof IdentifierInterface, $value instanceof UuidInterface => $factory->from($value),
+            $value instanceof Identifier, $value instanceof BaseUuid => $factory->from($value),
             is_string($value) => $factory->fromString($value),
         };
     }
@@ -69,9 +71,9 @@ final class Uuid implements IdentifierInterface, JsonSerializable
     /**
      * Uuid constructor.
      *
-     * @param UuidInterface $value
+     * @param BaseUuid $value
      */
-    public function __construct(public readonly UuidInterface $value)
+    public function __construct(public readonly BaseUuid $value)
     {
     }
 
@@ -95,7 +97,7 @@ final class Uuid implements IdentifierInterface, JsonSerializable
     /**
      * @inheritDoc
      */
-    public function is(?IdentifierInterface $other): bool
+    public function is(?Identifier $other): bool
     {
         if ($other instanceof self) {
             return $this->equals($other);

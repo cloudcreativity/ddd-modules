@@ -11,20 +11,20 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Domain;
 
-use CloudCreativity\Modules\Domain\EntityInterface;
-use CloudCreativity\Modules\Domain\EntityTrait;
-use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
+use CloudCreativity\Modules\Contracts\Domain\Entity;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
+use CloudCreativity\Modules\Domain\IsEntity;
 
-class TestEntity implements EntityInterface
+class TestEntity implements Entity
 {
-    use EntityTrait;
+    use IsEntity;
 
     /**
      * TestEntity constructor
      *
-     * @param IdentifierInterface $id
+     * @param Identifier $id
      */
-    public function __construct(IdentifierInterface $id)
+    public function __construct(Identifier $id)
     {
         $this->id = $id;
     }

@@ -36,6 +36,15 @@ if ($result->didFail()) {
 }
 ```
 
+Alternatively, call the `abort()` method to throw a [failed result exception](#exception) if the result is a failure.
+The previous example can be rewritten as follows:
+
+```php
+$result = $bus->dispatch($command);
+$result->abort();
+// here result is definitely a success.
+```
+
 ### Success Values
 
 To return a successful result with a value, pass the value to the `ok()` method:
@@ -78,7 +87,7 @@ return $result->safe();
 ### Failures
 
 When creating a failed result, you must provide something about the error. This can either be a message, an error code
-(expressed as an enum), or an [error object or list of errors](#errors).
+(expressed as a backed enum), or an [error object or list of errors](#errors).
 
 If you provide a string message, the failed result will be created with a single error object with its message set.
 For example:
@@ -249,3 +258,6 @@ if ($result->didFail()) {
 
 The exception message will be set to the first error message in the result, if there is one. Any code that catches
 this exception can access the result object using the `getResult()` method.
+
+When you call the `abort()` or `value()` methods on a result, the result object will throw a `FailedResultException` if
+it is not a successful result.

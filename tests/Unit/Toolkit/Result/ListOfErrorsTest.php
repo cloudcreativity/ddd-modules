@@ -11,12 +11,12 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Result;
 
-use CloudCreativity\Modules\Tests\Unit\Infrastructure\Log\TestEnum;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Error as IError;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\ListOfErrors as IListOfErrors;
+use CloudCreativity\Modules\Tests\Unit\Toolkit\Loggable\TestEnum;
 use CloudCreativity\Modules\Toolkit\Result\Error;
-use CloudCreativity\Modules\Toolkit\Result\ErrorInterface;
 use CloudCreativity\Modules\Toolkit\Result\KeyedSetOfErrors;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
-use CloudCreativity\Modules\Toolkit\Result\ListOfErrorsInterface;
 use PHPUnit\Framework\TestCase;
 
 class ListOfErrorsTest extends TestCase
@@ -31,7 +31,7 @@ class ListOfErrorsTest extends TestCase
             $b = new Error(null, 'Message B'),
         );
 
-        $this->assertInstanceOf(ListOfErrorsInterface::class, $errors);
+        $this->assertInstanceOf(IListOfErrors::class, $errors);
         $this->assertSame([$a, $b], iterator_to_array($errors));
         $this->assertSame([$a, $b], $errors->all());
         $this->assertEquals(new KeyedSetOfErrors($a, $b), $errors->toKeyedSet());
@@ -109,9 +109,9 @@ class ListOfErrorsTest extends TestCase
         );
 
         $this->assertSame($a, $errors->first());
-        $this->assertSame($c, $errors->first(fn (ErrorInterface $error) => 'Message C' === $error->message()));
+        $this->assertSame($c, $errors->first(fn (IError $error) => 'Message C' === $error->message()));
         $this->assertSame($e, $errors->first(TestEnum::Bar));
-        $this->assertNull($errors->first(fn (ErrorInterface $error) => 'Message E' === $error->message()));
+        $this->assertNull($errors->first(fn (IError $error) => 'Message E' === $error->message()));
         $this->assertNull($errors->first(TestEnum::Foo));
     }
 
@@ -127,9 +127,9 @@ class ListOfErrorsTest extends TestCase
             new Error(message: 'Message D', code: TestEnum::Foo),
         );
 
-        $this->assertTrue($errors->contains(fn (ErrorInterface $error) => 'Message C' === $error->message()));
+        $this->assertTrue($errors->contains(fn (IError $error) => 'Message C' === $error->message()));
         $this->assertTrue($errors->contains(TestEnum::Foo));
-        $this->assertFalse($errors->contains(fn (ErrorInterface $error) => 'Message E' === $error->message()));
+        $this->assertFalse($errors->contains(fn (IError $error) => 'Message E' === $error->message()));
         $this->assertFalse($errors->contains(TestEnum::Bar));
     }
 

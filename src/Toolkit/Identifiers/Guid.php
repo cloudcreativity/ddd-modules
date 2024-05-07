@@ -11,17 +11,18 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Contracts;
 use Ramsey\Uuid\UuidInterface;
 
-final class Guid implements IdentifierInterface
+final class Guid implements Identifier
 {
     /**
-     * @param IdentifierInterface $value
+     * @param Identifier $value
      * @return self
      */
-    public static function from(IdentifierInterface $value): self
+    public static function from(Identifier $value): self
     {
         if ($value instanceof self) {
             return $value;
@@ -115,7 +116,7 @@ final class Guid implements IdentifierInterface
     /**
      * @inheritDoc
      */
-    public function is(?IdentifierInterface $other): bool
+    public function is(?Identifier $other): bool
     {
         if ($this === $other) {
             return true;

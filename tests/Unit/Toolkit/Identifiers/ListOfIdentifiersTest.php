@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Identifiers;
 
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
-use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
 use CloudCreativity\Modules\Toolkit\Identifiers\ListOfIdentifiers;
 use CloudCreativity\Modules\Toolkit\Identifiers\StringId;
@@ -49,7 +49,7 @@ class ListOfIdentifiersTest extends TestCase
     {
         $ids = new ListOfIdentifiers(
             Guid::fromInteger('SomeType', 1),
-            $this->createMock(IdentifierInterface::class),
+            $this->createMock(Identifier::class),
             Guid::fromString('SomeOtherType', '3'),
         );
 
@@ -86,7 +86,7 @@ class ListOfIdentifiersTest extends TestCase
     {
         $ids = new ListOfIdentifiers(
             IntegerId::from(1),
-            $this->createMock(IdentifierInterface::class),
+            $this->createMock(Identifier::class),
             IntegerId::from(3),
         );
 
@@ -123,7 +123,7 @@ class ListOfIdentifiersTest extends TestCase
     {
         $ids = new ListOfIdentifiers(
             StringId::from('1'),
-            $this->createMock(IdentifierInterface::class),
+            $this->createMock(Identifier::class),
             StringId::from('3'),
         );
 
@@ -160,7 +160,7 @@ class ListOfIdentifiersTest extends TestCase
     {
         $ids = new ListOfIdentifiers(
             Uuid::from(RamseyUuid::uuid4()),
-            $this->createMock(IdentifierInterface::class),
+            $this->createMock(Identifier::class),
             Uuid::from(RamseyUuid::uuid4()),
         );
 

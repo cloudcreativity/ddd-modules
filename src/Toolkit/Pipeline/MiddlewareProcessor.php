@@ -12,8 +12,9 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Toolkit\Pipeline;
 
 use Closure;
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\Processor;
 
-final class MiddlewareProcessor implements ProcessorInterface
+final class MiddlewareProcessor implements Processor
 {
     /**
      * @var Closure
@@ -21,14 +22,27 @@ final class MiddlewareProcessor implements ProcessorInterface
     private readonly Closure $destination;
 
     /**
-     * Return a new middleware processor with a callable wrapped in a closure.
+     * Return a new middleware processor that calls the destination and returns the result.
      *
      * @param callable $destination
      * @return MiddlewareProcessor
      */
     public static function wrap(callable $destination): self
     {
-        return new self(static fn ($passable) => $destination($passable));
+        return new self(static fn (mixed $passable) => $destination($passable));
+    }
+
+    /**
+     * Return a new middleware processor that calls the destination without returning a result.
+     *
+     * @param callable $destination
+     * @return MiddlewareProcessor
+     */
+    public static function call(callable $destination): self
+    {
+        return new self(static function (mixed $passable) use ($destination): void {
+            $destination($passable);
+        });
     }
 
     /**

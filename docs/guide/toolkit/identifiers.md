@@ -1,7 +1,7 @@
 # Identifiers
 
 As described in the [Entities and Aggregates](../domain/entities) chapter, our domain layer must
-type-hint identifiers using an `IdentifierInterface`. This prevents coupling between the domain layer and the
+type-hint identifiers using an `Identifier` interface. This prevents coupling between the domain layer and the
 persistence layer.
 
 :::tip
@@ -46,7 +46,7 @@ $id = new IntegerId(123);
 For example, in a repository you might use this as follows:
 
 ```php
-class UserRepository implements UserRepositoryInterface
+class MySqlUserRepository implements UserRepository
 {
     // ...
 
@@ -64,7 +64,7 @@ class UserRepository implements UserRepositoryInterface
 Use the `IntegerId::from()` method where you receive an identifier and need to ensure it is an integer id:
 
 ```php
-class UserRepository implements UserRepositoryInterface
+class MySqlUserRepository implements UserRepository
 {
     // ...
 
@@ -108,7 +108,7 @@ Use the `Uuid` identifier instead of the string identifier if you are using UUID
 For example, in a repository you might use this as follows:
 
 ```php
-class UserRepository implements UserRepositoryInterface
+class MySqlUserRepository implements UserRepository
 {
     // ...
 
@@ -126,7 +126,7 @@ class UserRepository implements UserRepositoryInterface
 Use the `StringId::from()` method where you receive an identifier and need to ensure it is a string id:
 
 ```php
-class UserRepository implements UserRepositoryInterface
+class MySqlUserRepository implements UserRepository
 {
     // ...
 
@@ -164,18 +164,18 @@ use Ramsey\Uuid\Uuid as BaseUuid;
 $id = new Uuid(BaseUuid::uuid4());
 ```
 
-We also provide a `UuidFactoryInterface` which is a wrapper around the one from the `ramsey/uuid` package. It has the
+We also provide a `UuidFactory` which is a wrapper around the one from the `ramsey/uuid` package. It has the
 same methods, but returns an instance of the `Uuid` class from this package instead.
 
 For example, in a repository you might use this as follows:
 
 ```php
 use App\Modules\UserManagement\Domain\User;
-use CloudCreativity\Modules\Toolkit\Identifiers\UuidFactoryInterface;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\UuidFactory;
 
-class UserRepository implements UserRepositoryInterface
+class MySqlUserRepository implements UserRepository
 {
-    private readonly UuidFactoryInterface $uuidFactory;
+    private readonly UuidFactory $uuidFactory;
 
     // ...
 
@@ -199,10 +199,10 @@ The default concrete implementation of this factory can be accessed using the st
 :::
 
 Use the `Uuid::from()` method where you receive an identifier and need to ensure it is a UUID. Or alternatively,
-use the `UuidFactoryInterface::from()` method.
+use the `UuidFactory::from()` method.
 
 ```php
-class UserRepository implements UserRepositoryInterface
+class MySqlUserRepository implements UserRepository
 {
     // ...
 
@@ -257,7 +257,7 @@ $guid->type === $model::class; // true
 Use the `Guid::from()` method where you receive an identifier and need to ensure it is a GUID:
 
 ```php
-class UserRepository implements UserRepositoryInterface
+class MySqlUserRepository implements UserRepository
 {
     // ...
 

@@ -22,6 +22,7 @@ export default defineConfig({
                     items: [
                         {text: 'What is DDD Modules?', link: '/guide/'},
                         {text: 'Installation', link: '/guide/installation'},
+                        {text: 'Upgrading', link: '/guide/upgrade'},
                     ],
                 },
                 {
@@ -32,7 +33,7 @@ export default defineConfig({
                         {text: 'Bounded Contexts', link: '/guide/concepts/bounded-contexts'},
                         {text: 'Layers', link: '/guide/concepts/layers'},
                         {text: 'Encapsulation', link: '/guide/concepts/encapsulation'},
-                        {text: 'Modularisation', link: '/guide/concepts/modularisation'},
+                        {text: 'Modularisation & Structure', link: '/guide/concepts/modularisation'},
                     ],
                 },
                 {
@@ -41,18 +42,8 @@ export default defineConfig({
                     items: [
                         {text: 'Entities & Aggregates', link: '/guide/domain/entities'},
                         {text: 'Value Objects', link: '/guide/domain/value-objects'},
-                        {text: 'Domain Events', link: '/guide/domain/events'},
+                        {text: 'Events', link: '/guide/domain/events'},
                         {text: 'Services', link: '/guide/domain/services'},
-                    ],
-                },
-                {
-                    text: 'Infrastructure Layer',
-                    collapsed: true,
-                    items: [
-                        {text: 'Asynchronous Processing', link: '/guide/infrastructure/queues'},
-                        {text: 'Outbox & Inbox', link: '/guide/infrastructure/outbox-inbox'},
-                        {text: 'Persistence', link: '/guide/infrastructure/persistence'},
-                        {text: 'Units of Work', link: '/guide/infrastructure/units-of-work'},
                     ],
                 },
                 {
@@ -62,6 +53,21 @@ export default defineConfig({
                         {text: 'Commands', link: '/guide/application/commands'},
                         {text: 'Queries', link: '/guide/application/queries'},
                         {text: 'Integration Events', link: '/guide/application/events'},
+                        {text: 'Domain Events', link: '/guide/application/domain-events'},
+                        {text: 'Units of Work', link: '/guide/application/units-of-work'},
+                        {text: 'Asynchronous Processing', link: '/guide/application/asynchronous-processing'},
+                    ],
+                },
+                {
+                    text: 'Infrastructure Layer',
+                    collapsed: false,
+                    items: [
+                        {text: 'Dependency Injection', link: '/guide/infrastructure/dependency-injection'},
+                        {text: 'Exception Reporting', link: '/guide/infrastructure/exception-reporting'},
+                        {text: 'Persistence', link: '/guide/infrastructure/persistence'},
+                        {text: 'Publishing Events', link: '/guide/infrastructure/publishing-events'},
+                        {text: 'Transactional Outbox', link: '/guide/infrastructure/outbox'},
+                        {text: 'Queues', link: '/guide/infrastructure/queues'},
                     ],
                 },
                 {

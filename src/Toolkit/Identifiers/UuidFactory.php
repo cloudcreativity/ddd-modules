@@ -11,28 +11,30 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\UuidFactory as IUuidFactory;
 use CloudCreativity\Modules\Toolkit\ContractException;
 use DateTimeInterface;
 use Ramsey\Uuid\Type\Hexadecimal;
 use Ramsey\Uuid\Type\Integer as IntegerObject;
 use Ramsey\Uuid\Uuid as BaseUuid;
-use Ramsey\Uuid\UuidFactoryInterface as BaseUuidFactoryInterface;
+use Ramsey\Uuid\UuidFactoryInterface as BaseUuidFactory;
 use Ramsey\Uuid\UuidInterface;
 use RuntimeException;
 
-final class UuidFactory implements UuidFactoryInterface
+final class UuidFactory implements IUuidFactory
 {
     /**
-     * @var BaseUuidFactoryInterface
+     * @var BaseUuidFactory
      */
-    private readonly BaseUuidFactoryInterface $baseFactory;
+    private readonly BaseUuidFactory $baseFactory;
 
     /**
      * UuidFactory constructor.
      *
-     * @param BaseUuidFactoryInterface|null $factory
+     * @param BaseUuidFactory|null $factory
      */
-    public function __construct(BaseUuidFactoryInterface $factory = null)
+    public function __construct(BaseUuidFactory $factory = null)
     {
         $this->baseFactory = $factory ?? BaseUuid::getFactory();
     }
@@ -40,7 +42,7 @@ final class UuidFactory implements UuidFactoryInterface
     /**
      * @inheritDoc
      */
-    public function from(IdentifierInterface|UuidInterface $uuid): Uuid
+    public function from(Identifier|UuidInterface $uuid): Uuid
     {
         return match(true) {
             $uuid instanceof Uuid => $uuid,

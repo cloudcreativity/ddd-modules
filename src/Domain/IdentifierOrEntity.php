@@ -11,26 +11,27 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Domain;
 
+use CloudCreativity\Modules\Contracts\Domain\Entity;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Toolkit\ContractException;
-use CloudCreativity\Modules\Toolkit\Identifiers\IdentifierInterface;
 
 final class IdentifierOrEntity
 {
     /**
-     * @var IdentifierInterface|null
+     * @var Identifier|null
      */
-    public readonly ?IdentifierInterface $id;
+    public readonly ?Identifier $id;
 
     /**
-     * @var EntityInterface|null
+     * @var Entity|null
      */
-    public readonly ?EntityInterface $entity;
+    public readonly ?Entity $entity;
 
     /**
-     * @param IdentifierInterface|EntityInterface $idOrEntity
+     * @param Identifier|Entity $idOrEntity
      * @return self
      */
-    public static function make(IdentifierInterface|EntityInterface $idOrEntity): self
+    public static function make(Identifier|Entity $idOrEntity): self
     {
         return new self($idOrEntity);
     }
@@ -38,18 +39,18 @@ final class IdentifierOrEntity
     /**
      * IdentifierOrEntity constructor.
      *
-     * @param IdentifierInterface|EntityInterface $idOrEntity
+     * @param Identifier|Entity $idOrEntity
      */
-    public function __construct(IdentifierInterface|EntityInterface $idOrEntity)
+    public function __construct(Identifier|Entity $idOrEntity)
     {
-        $this->id = ($idOrEntity instanceof IdentifierInterface) ? $idOrEntity : null;
-        $this->entity = ($idOrEntity instanceof EntityInterface) ? $idOrEntity : null;
+        $this->id = ($idOrEntity instanceof Identifier) ? $idOrEntity : null;
+        $this->entity = ($idOrEntity instanceof Entity) ? $idOrEntity : null;
     }
 
     /**
-     * @return IdentifierInterface|null
+     * @return Identifier|null
      */
-    public function id(): ?IdentifierInterface
+    public function id(): ?Identifier
     {
         if ($this->entity) {
             return $this->entity->getId();
@@ -59,9 +60,9 @@ final class IdentifierOrEntity
     }
 
     /**
-     * @return IdentifierInterface
+     * @return Identifier
      */
-    public function idOrFail(): IdentifierInterface
+    public function idOrFail(): Identifier
     {
         if ($id = $this->id()) {
             return $id;
