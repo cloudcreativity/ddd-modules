@@ -52,7 +52,7 @@ export default defineConfig({
                     items: [
                         {text: 'Commands', link: '/guide/application/commands'},
                         {text: 'Queries', link: '/guide/application/queries'},
-                        {text: 'Integration Events', link: '/guide/application/events'},
+                        {text: 'Integration Events', link: '/guide/application/integration-events'},
                         {text: 'Domain Events', link: '/guide/application/domain-events'},
                         {text: 'Units of Work', link: '/guide/application/units-of-work'},
                         {text: 'Asynchronous Processing', link: '/guide/application/asynchronous-processing'},

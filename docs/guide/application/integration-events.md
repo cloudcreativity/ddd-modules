@@ -24,12 +24,12 @@ should be named according to event it represents, and should contain properties 
 
 The integration event interface is light-weight and defines only two methods:
 
-- `uuid()` - the unique identifier for the integration event, which should be the same across your entire system. I.e.
-  the UUID that is issued when publishing the event is the same when it is received into all subscribing contexts. This
-  allows for deduplication and idempotent processing, as well as tracking (including debugging) the propagation of the
-  event through the system.
-- `occurredAt()` - the date and time that the event occurred. This is useful to ensure that events are processed in the
-  correct order - as well as for tracking and debugging.
+- `getUuid()` - the unique identifier for the integration event, which should be the same across your entire system.
+  I.e. the UUID that is issued when publishing the event is the same when it is received into all subscribing contexts.
+  This allows for deduplication and idempotent processing, as well as tracking (including debugging) the propagation of
+  the event through the system.
+- `getOccurredAt()` - the date and time that the event occurred. This is useful to ensure that events are processed in
+  the correct order - as well as for tracking and debugging.
 
 For example:
 
@@ -41,7 +41,8 @@ use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
 use VendorName\EventManagement\Shared\Enums\CancellationReasonEnum;
 
-final readonly class AttendeeTicketWasCancelled implements IntegrationEvent
+final readonly class AttendeeTicketWasCancelled implements 
+    IntegrationEvent
 {
     public function __construct(
         public Uuid $uuid,
@@ -53,12 +54,12 @@ final readonly class AttendeeTicketWasCancelled implements IntegrationEvent
     ) {
     }
 
-    public function uuid(): Uuid
+    public function getUuid(): Uuid
     {
         return $this->uuid;
     }
 
-    public function occurredAt(): \DateTimeImmutable
+    public function getOccurredAt(): \DateTimeImmutable
     {
         return $this->occurredAt;
     }
