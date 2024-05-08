@@ -97,7 +97,8 @@ the `Application\Bus\Middleware` namespace.
 
 ### Event Bus
 
-Integration event messages must now implement the `Contracts\Application\Messages\IntegrationEvent` interface.
+Integration event messages must now implement the `Contracts\Application\Messages\IntegrationEvent` interface. The two
+methods this interface defines are now `getUuid()` and `getOccurredAt()`.
 
 The previous event bus implementation has been split in two. This is due to the new hexagonal architecture. Receiving
 inbound events is now a _driving port_, whereas publishing outbound events occurs via a _driven port_.
@@ -125,8 +126,10 @@ The identifier interface is now  `Contracts\Toolkit\Identifiers\Identifier`.
 
 ### Domain Events
 
-Domain events must now implement the `Contracts\Domain\Events\DomainEvent` interface. The domain event dispatcher
-interface is now `Contracts\Events\DomainEventDispatcher`.
+Domain events must now implement the `Contracts\Domain\Events\DomainEvent` interface. The method this interface defines
+is now `getOccurredAt()`.
+
+The domain event dispatcher interface is now `Contracts\Events\DomainEventDispatcher`.
 
 The concrete implementations of domain event dispatchers are now in the `Application\DomainEventDispatching` namespace.
 The application layer is the correct namespace for these dispatchers, as the domain event dispatcher interface uses the

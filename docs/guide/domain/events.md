@@ -58,7 +58,7 @@ final readonly class AttendeeTicketWasCancelled implements
     ) {
     }
 
-    public function occurredAt(): DateTimeImmutable
+    public function getOccurredAt(): DateTimeImmutable
     {
         return $this->occurredAt;
     }
