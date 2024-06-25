@@ -45,6 +45,7 @@ class UuidTest extends TestCase
         $this->assertSame($base->toString(), $id->key());
         $this->assertSame($base->toString(), $id->toString());
         $this->assertSame((string) $base, (string) $id);
+        $this->assertSame($base->getBytes(), $id->getBytes());
         $this->assertJsonStringEqualsJsonString(
             json_encode(['id' => $base], \JSON_THROW_ON_ERROR),
             json_encode(compact('id'), \JSON_THROW_ON_ERROR),
@@ -151,5 +152,16 @@ class UuidTest extends TestCase
             ->willReturn($expected = new Uuid($base));
 
         $this->assertSame($expected, Uuid::from($base));
+    }
+
+    /**
+     * @return void
+     */
+    public function testNil(): void
+    {
+        $base = RamseyUuid::fromString(RamseyUuid::NIL);
+        $actual = Uuid::nil();
+
+        $this->assertTrue($actual->value->equals($base));
     }
 }

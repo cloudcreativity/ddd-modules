@@ -14,7 +14,8 @@ namespace CloudCreativity\Modules\Toolkit\Identifiers;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\UuidFactory as IUuidFactory;
 use JsonSerializable;
-use Ramsey\Uuid\UuidInterface as BaseUuid;
+use Ramsey\Uuid\Uuid as BaseUuid;
+use Ramsey\Uuid\UuidInterface as IBaseUuid;
 
 final class Uuid implements Identifier, JsonSerializable
 {
@@ -45,15 +46,15 @@ final class Uuid implements Identifier, JsonSerializable
     }
 
     /**
-     * @param Identifier|BaseUuid|string $value
+     * @param Identifier|IBaseUuid|string $value
      * @return self
      */
-    public static function from(Identifier|BaseUuid|string $value): self
+    public static function from(Identifier|IBaseUuid|string $value): self
     {
         $factory = self::getFactory();
 
         return match(true) {
-            $value instanceof Identifier, $value instanceof BaseUuid => $factory->from($value),
+            $value instanceof Identifier, $value instanceof IBaseUuid => $factory->from($value),
             is_string($value) => $factory->fromString($value),
         };
     }
@@ -69,11 +70,21 @@ final class Uuid implements Identifier, JsonSerializable
     }
 
     /**
+     * Create a nil UUID.
+     *
+     * @return self
+     */
+    public static function nil(): self
+    {
+        return self::from(BaseUuid::NIL);
+    }
+
+    /**
      * Uuid constructor.
      *
-     * @param BaseUuid $value
+     * @param IBaseUuid $value
      */
-    public function __construct(public readonly BaseUuid $value)
+    public function __construct(public readonly IBaseUuid $value)
     {
     }
 
@@ -92,6 +103,14 @@ final class Uuid implements Identifier, JsonSerializable
     public function toString(): string
     {
         return $this->value->toString();
+    }
+
+    /**
+     * @return string
+     */
+    public function getBytes(): string
+    {
+        return $this->value->getBytes();
     }
 
     /**

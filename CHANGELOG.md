@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+### Added
+
+- The `Uuid` identifier class now has a `getBytes()` method
+- Can now get a nil UUID from the `Uuid::nil()` static method.
+
 ### [2.0.0-rc.1] - 2024-05-07
 
 **Refer to the [Upgrade Guide.](./docs/guide/upgrade.md)**
