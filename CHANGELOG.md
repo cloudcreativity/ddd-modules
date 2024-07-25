@@ -10,6 +10,15 @@ All notable changes to this project will be documented in this file. This projec
 - The `Uuid` identifier class now has a `getBytes()` method
 - Can now get a nil UUID from the `Uuid::nil()` static method.
 
+### Changed
+
+- Made resolution of inner handlers lazy in the following buses: command bus, query bus, and inbound event bus.
+  Previously the handler was immediately resolved, so that the handler middleware could be calculated. Now the buses
+  first pipe through the bus middleware, then resolve the inner handler, then pipe through the handler middleware. This
+  allows inner handler constructor injected dependencies to be lazily resolved after the bus middleware has executed.
+  This is important when using the setup and teardown middleware for bootstrapping services that may be injected into
+  the inner handler.
+
 ### [2.0.0-rc.1] - 2024-05-07
 
 **Refer to the [Upgrade Guide.](./docs/guide/upgrade.md)**

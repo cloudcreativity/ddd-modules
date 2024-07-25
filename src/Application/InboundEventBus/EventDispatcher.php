@@ -55,10 +55,25 @@ class EventDispatcher implements EventPort
      */
     public function dispatch(IntegrationEvent $event): void
     {
+        $pipeline = PipelineBuilder::make($this->middleware)
+            ->through($this->pipes)
+            ->build(new MiddlewareProcessor(function (IntegrationEvent $passed): void {
+                $this->execute($passed);
+            }));
+
+        $pipeline->process($event);
+    }
+
+    /**
+     * @param IntegrationEvent $event
+     * @return void
+     */
+    private function execute(IntegrationEvent $event): void
+    {
         $handler = $this->handlers->get($event::class);
 
         $pipeline = PipelineBuilder::make($this->middleware)
-            ->through([...$this->pipes, ...$handler->middleware()])
+            ->through($handler->middleware())
             ->build(MiddlewareProcessor::call($handler));
 
         $pipeline->process($event);

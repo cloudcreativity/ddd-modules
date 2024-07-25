@@ -67,11 +67,11 @@ class CommandDispatcher implements ICommandDispatcher
      */
     public function dispatch(Command $command): Result
     {
-        $handler = $this->handlers->get($command::class);
-
         $pipeline = PipelineBuilder::make($this->middleware)
-            ->through([...$this->pipes, ...array_values($handler->middleware())])
-            ->build(MiddlewareProcessor::wrap($handler));
+            ->through($this->pipes)
+            ->build(new MiddlewareProcessor(
+                fn (Command $passed): Result => $this->execute($passed),
+            ));
 
         $result = $pipeline->process($command);
 
@@ -96,5 +96,24 @@ class CommandDispatcher implements ICommandDispatcher
         }
 
         $this->queue->push($command);
+    }
+
+    /**
+     * @param Command $command
+     * @return Result<mixed>
+     */
+    private function execute(Command $command): Result
+    {
+        $handler = $this->handlers->get($command::class);
+
+        $pipeline = PipelineBuilder::make($this->middleware)
+            ->through($handler->middleware())
+            ->build(MiddlewareProcessor::wrap($handler));
+
+        $result = $pipeline->process($command);
+
+        assert($result instanceof Result, 'Expecting pipeline to return a result object.');
+
+        return $result;
     }
 }

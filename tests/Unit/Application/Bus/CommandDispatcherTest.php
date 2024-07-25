@@ -17,7 +17,7 @@ use CloudCreativity\Modules\Contracts\Application\Bus\CommandHandlerContainer;
 use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue\Queue;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
-use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
+use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -44,6 +44,11 @@ class CommandDispatcherTest extends TestCase
     private CommandDispatcher $dispatcher;
 
     /**
+     * @var array<string>
+     */
+    private array $sequence = [];
+
+    /**
      * @return void
      */
     protected function setUp(): void
@@ -57,6 +62,15 @@ class CommandDispatcherTest extends TestCase
             middleware: $this->middleware = $this->createMock(PipeContainer::class),
             queue: fn () => $this->queue,
         );
+    }
+
+    /**
+     * @return void
+     */
+    protected function tearDown(): void
+    {
+        unset($this->handlers, $this->middleware, $this->queue, $this->dispatcher, $this->sequence);
+        parent::tearDown();
     }
 
     /**
@@ -78,7 +92,7 @@ class CommandDispatcherTest extends TestCase
             ->expects($this->once())
             ->method('__invoke')
             ->with($this->identicalTo($command))
-            ->willReturn($expected = $this->createMock(Result::class));
+            ->willReturn($expected = Result::ok());
 
         $actual = $this->dispatcher->dispatch($command);
 
@@ -96,32 +110,48 @@ class CommandDispatcherTest extends TestCase
         $command2 = new TestCommand();
         $command3 = new TestCommand();
         $command4 = new TestCommand();
+        $handler = $this->createMock(CommandHandler::class);
 
         $middleware1 = function (TestCommand $command, \Closure $next) use ($command1, $command2) {
             $this->assertSame($command1, $command);
-            return $next($command2);
+            $this->sequence[] = 'before1';
+            $result = $next($command2);
+            $this->sequence[] = 'after1';
+            return $result;
         };
 
         $middleware2 = function (TestCommand $command, \Closure $next) use ($command2, $command3) {
             $this->assertSame($command2, $command);
-            return $next($command3);
+            $this->sequence[] = 'before2';
+            $result = $next($command3);
+            $this->sequence[] = 'after2';
+            return $result;
         };
 
         $middleware3 = function (TestCommand $command, \Closure $next) use ($command3, $command4) {
             $this->assertSame($command3, $command);
-            return $next($command4);
+            $this->sequence[] = 'before3';
+            $result = $next($command4);
+            $this->sequence[] = 'after3';
+            return $result;
         };
 
         $this->handlers
             ->method('get')
             ->with($command1::class)
-            ->willReturn($handler = $this->createMock(CommandHandler::class));
+            ->willReturnCallback(function () use ($handler) {
+                $this->assertSame(['before1'], $this->sequence);
+                return $handler;
+            });
 
         $this->middleware
-            ->expects($this->once())
+            ->expects($this->exactly(2))
             ->method('get')
-            ->with('MySecondMiddleware')
-            ->willReturn($middleware2);
+            ->willReturnCallback(fn (string $name) => match ($name) {
+                'MyFirstMiddleware' => $middleware1,
+                'MySecondMiddleware' => $middleware2,
+                default => $this->fail('Unexpected middleware: ' . $name),
+            });
 
         $handler
             ->expects($this->once())
@@ -132,12 +162,20 @@ class CommandDispatcherTest extends TestCase
             ->expects($this->once())
             ->method('__invoke')
             ->with($this->identicalTo($command4))
-            ->willReturn($expected = $this->createMock(Result::class));
+            ->willReturn($expected = Result::ok());
 
-        $this->dispatcher->through([$middleware1]);
+        $this->dispatcher->through(['MyFirstMiddleware']);
         $actual = $this->dispatcher->dispatch($command1);
 
         $this->assertSame($expected, $actual);
+        $this->assertSame([
+            'before1',
+            'before2',
+            'before3',
+            'after3',
+            'after2',
+            'after1',
+        ], $this->sequence);
     }
 
     /**
