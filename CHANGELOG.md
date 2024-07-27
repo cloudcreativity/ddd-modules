@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [2.0.0-rc.2] - 2024-07-27
+
 ### Added
 
 - The `Uuid` identifier class now has a `getBytes()` method
@@ -24,7 +26,7 @@ All notable changes to this project will be documented in this file. This projec
     - Outbound integration event bus
     - Queue bus
 
-### [2.0.0-rc.1] - 2024-05-07
+## [2.0.0-rc.1] - 2024-05-07
 
 **Refer to the [Upgrade Guide.](./docs/guide/upgrade.md)**
 

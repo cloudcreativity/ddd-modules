@@ -1,6 +1,4 @@
 <?php
-
-declare(strict_types=1);
 /*
  * Copyright 2024 Cloud Creativity Limited
  *
@@ -8,6 +6,8 @@ declare(strict_types=1);
  * license that can be found in the LICENSE file or at
  * https://opensource.org/licenses/MIT.
  */
+
+declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Contracts\Toolkit\Identifiers;
 

@@ -22,7 +22,7 @@ One use of a value object is to wrap a scalar value, to enforce business logic. 
 object could be used to ensure that a string is always a valid email address.
 
 ```php
-namespace App\Modules\EventManagement\BoundedContext\Domain\ValueObjects;
+namespace App\Modules\EventManagement\Domain\ValueObjects;
 
 use CloudCreativity\Modules\Toolkit\Contracts;
 
@@ -47,7 +47,7 @@ If the business logic is that a customer is defined by the combination of their 
 then the `Customer` value object would be defined as follows:
 
 ```php
-namespace App\Modules\EventManagement\BoundedContext\Domain\ValueObjects;
+namespace App\Modules\EventManagement\Domain\ValueObjects;
 
 final readonly class Customer
 {
@@ -102,7 +102,7 @@ business logic specific to the collection.
 For example:
 
 ```php
-namespace App\Modules\EventManagement\BoundedContext\Domain;
+namespace App\Modules\EventManagement\Domain;
 
 use CloudCreativity\Modules\Contracts\Toolkit\Iterables\ListIterator;
 use CloudCreativity\Modules\Toolkit\Iterables\IsList;
@@ -350,7 +350,7 @@ backing scalar value (either a string or integer).
 So our `EmailAddress` class could look like this:
 
 ```php
-namespace App\Modules\EventManagement\BoundedContext\Domain\ValueObjects;
+namespace App\Modules\EventManagement\Domain\ValueObjects;
 
 use CloudCreativity\Modules\Toolkit\Contracts;
 
