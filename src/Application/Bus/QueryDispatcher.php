@@ -56,10 +56,29 @@ class QueryDispatcher implements IQueryDispatcher
      */
     public function dispatch(Query $query): Result
     {
+        $pipeline = PipelineBuilder::make($this->middleware)
+            ->through($this->pipes)
+            ->build(new MiddlewareProcessor(
+                fn (Query $passed): Result => $this->execute($passed),
+            ));
+
+        $result = $pipeline->process($query);
+
+        assert($result instanceof Result, 'Expecting pipeline to return a result object.');
+
+        return $result;
+    }
+
+    /**
+     * @param Query $query
+     * @return Result<mixed>
+     */
+    private function execute(Query $query): Result
+    {
         $handler = $this->handlers->get($query::class);
 
         $pipeline = PipelineBuilder::make($this->middleware)
-            ->through([...$this->pipes, ...array_values($handler->middleware())])
+            ->through($handler->middleware())
             ->build(MiddlewareProcessor::wrap($handler));
 
         $result = $pipeline->process($query);

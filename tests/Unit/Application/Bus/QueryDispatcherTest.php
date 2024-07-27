@@ -16,7 +16,7 @@ use CloudCreativity\Modules\Contracts\Application\Bus\QueryHandler;
 use CloudCreativity\Modules\Contracts\Application\Bus\QueryHandlerContainer;
 use CloudCreativity\Modules\Contracts\Application\Messages\Query;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
-use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
+use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -38,6 +38,11 @@ class QueryDispatcherTest extends TestCase
     private QueryDispatcher $dispatcher;
 
     /**
+     * @var array<string>
+     */
+    private array $sequence = [];
+
+    /**
      * @return void
      */
     protected function setUp(): void
@@ -48,6 +53,15 @@ class QueryDispatcherTest extends TestCase
             handlers: $this->handlers = $this->createMock(QueryHandlerContainer::class),
             middleware: $this->middleware = $this->createMock(PipeContainer::class),
         );
+    }
+
+    /**
+     * @return void
+     */
+    protected function tearDown(): void
+    {
+        unset($this->handlers, $this->middleware, $this->dispatcher, $this->sequence);
+        parent::tearDown();
     }
 
     /**
@@ -67,7 +81,7 @@ class QueryDispatcherTest extends TestCase
             ->expects($this->once())
             ->method('__invoke')
             ->with($this->identicalTo($query))
-            ->willReturn($expected = $this->createMock(Result::class));
+            ->willReturn($expected = Result::ok());
 
         $actual = $this->dispatcher->dispatch($query);
 
@@ -83,33 +97,49 @@ class QueryDispatcherTest extends TestCase
         $query2 = new TestQuery();
         $query3 = new TestQuery();
         $query4 = new TestQuery();
+        $handler = $this->createMock(QueryHandler::class);
 
         $middleware1 = function (TestQuery $q, \Closure $next) use ($query1, $query2) {
             $this->assertSame($query1, $q);
-            return $next($query2);
+            $this->sequence[] = 'before1';
+            $result = $next($query2);
+            $this->sequence[] = 'after1';
+            return $result;
         };
 
         $middleware2 = function (TestQuery $q, \Closure $next) use ($query2, $query3) {
             $this->assertSame($query2, $q);
-            return $next($query3);
+            $this->sequence[] = 'before2';
+            $result = $next($query3);
+            $this->sequence[] = 'after2';
+            return $result;
         };
 
         $middleware3 = function (TestQuery $q, \Closure $next) use ($query3, $query4) {
             $this->assertSame($query3, $q);
-            return $next($query4);
+            $this->sequence[] = 'before3';
+            $result = $next($query4);
+            $this->sequence[] = 'after3';
+            return $result;
         };
 
         $this->handlers
             ->expects($this->once())
             ->method('get')
             ->with(TestQuery::class)
-            ->willReturn($handler = $this->createMock(QueryHandler::class));
+            ->willReturnCallback(function () use ($handler) {
+                $this->assertSame(['before1'], $this->sequence);
+                return $handler;
+            });
 
         $this->middleware
-            ->expects($this->once())
+            ->expects($this->exactly(2))
             ->method('get')
-            ->with('MySecondMiddleware')
-            ->willReturn($middleware2);
+            ->willReturnCallback(fn (string $name) => match ($name) {
+                'MyFirstMiddleware' => $middleware1,
+                'MySecondMiddleware' => $middleware2,
+                default => $this->fail('Unexpected middleware: ' . $name),
+            });
 
         $handler
             ->expects($this->once())
@@ -120,11 +150,19 @@ class QueryDispatcherTest extends TestCase
             ->expects($this->once())
             ->method('__invoke')
             ->with($this->identicalTo($query4))
-            ->willReturn($expected = $this->createMock(Result::class));
+            ->willReturn($expected = Result::ok());
 
-        $this->dispatcher->through([$middleware1]);
+        $this->dispatcher->through(['MyFirstMiddleware']);
         $actual = $this->dispatcher->dispatch($query1);
 
         $this->assertSame($expected, $actual);
+        $this->assertSame([
+            'before1',
+            'before2',
+            'before3',
+            'after3',
+            'after2',
+            'after1',
+        ], $this->sequence);
     }
 }

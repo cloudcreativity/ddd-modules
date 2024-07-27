@@ -37,6 +37,11 @@ class ComponentQueueTest extends TestCase
     private ComponentQueue $queue;
 
     /**
+     * @var array<string>
+     */
+    private array $sequence = [];
+
+    /**
      * @return void
      */
     protected function setUp(): void
@@ -54,8 +59,8 @@ class ComponentQueueTest extends TestCase
      */
     protected function tearDown(): void
     {
+        unset($this->queue, $this->enqueuers, $this->middleware, $this->sequence);
         parent::tearDown();
-        unset($this->queue, $this->enqueuers, $this->middleware);
     }
 
     /**
@@ -87,22 +92,30 @@ class ComponentQueueTest extends TestCase
         $command1 = $this->createMock(Command::class);
         $command2 = $this->createMock(Command::class);
         $command3 = $this->createMock(Command::class);
+        $enqueuer = $this->createMock(Enqueuer::class);
 
-        $middleware1 = function ($actual, \Closure $next) use ($command1, $command2) {
+        $middleware1 = function ($actual, \Closure $next) use ($command1, $command2): void {
             $this->assertSame($command1, $actual);
-            return $next($command2);
+            $this->sequence[] = 'before1';
+            $next($command2);
+            $this->sequence[] = 'after1';
         };
 
-        $middleware2 = function ($actual, \Closure $next) use ($command2, $command3) {
+        $middleware2 = function ($actual, \Closure $next) use ($command2, $command3): void {
             $this->assertSame($command2, $actual);
-            return $next($command3);
+            $this->sequence[] = 'before2';
+            $next($command3);
+            $this->sequence[] = 'after2';
         };
 
         $this->enqueuers
             ->expects($this->once())
             ->method('get')
-            ->with($command1::class)
-            ->willReturn($enqueuer = $this->createMock(Enqueuer::class));
+            ->with($command3::class)
+            ->willReturnCallback(function () use ($enqueuer) {
+                $this->assertSame(['before1', 'before2'], $this->sequence);
+                return $enqueuer;
+            });
 
         $enqueuer
             ->expects($this->once())
@@ -117,5 +130,7 @@ class ComponentQueueTest extends TestCase
 
         $this->queue->through([$middleware1, 'MySecondMiddleware']);
         $this->queue->push($command1);
+
+        $this->assertSame(['before1', 'before2', 'after2', 'after1'], $this->sequence);
     }
 }

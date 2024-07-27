@@ -37,6 +37,11 @@ class EventDispatcherTest extends TestCase
     private EventDispatcher $dispatcher;
 
     /**
+     * @var array<string>
+     */
+    private array $sequence = [];
+
+    /**
      * @return void
      */
     protected function setUp(): void
@@ -47,6 +52,15 @@ class EventDispatcherTest extends TestCase
             handlers: $this->handlers = $this->createMock(EventHandlerContainer::class),
             middleware: $this->middleware = $this->createMock(PipeContainer::class),
         );
+    }
+
+    /**
+     * @return void
+     */
+    protected function tearDown(): void
+    {
+        unset($this->handlers, $this->middleware, $this->dispatcher, $this->sequence);
+        parent::tearDown();
     }
 
     /**
@@ -79,32 +93,45 @@ class EventDispatcherTest extends TestCase
         $event2 = new TestInboundEvent();
         $event3 = new TestInboundEvent();
         $event4 = new TestInboundEvent();
+        $handler = $this->createMock(EventHandler::class);
 
-        $middleware1 = function (TestInboundEvent $event, \Closure $next) use ($event1, $event2) {
+        $middleware1 = function (TestInboundEvent $event, \Closure $next) use ($event1, $event2): void {
             $this->assertSame($event1, $event);
-            return $next($event2);
+            $this->sequence[] = 'before1';
+            $next($event2);
+            $this->sequence[] = 'after1';
         };
 
-        $middleware2 = function (TestInboundEvent $event, \Closure $next) use ($event2, $event3) {
+        $middleware2 = function (TestInboundEvent $event, \Closure $next) use ($event2, $event3): void {
             $this->assertSame($event2, $event);
-            return $next($event3);
+            $this->sequence[] = 'before2';
+            $next($event3);
+            $this->sequence[] = 'after2';
         };
 
-        $middleware3 = function (TestInboundEvent $event, \Closure $next) use ($event3, $event4) {
+        $middleware3 = function (TestInboundEvent $event, \Closure $next) use ($event3, $event4): void {
             $this->assertSame($event3, $event);
-            return $next($event4);
+            $this->sequence[] = 'before3';
+            $next($event4);
+            $this->sequence[] = 'after3';
         };
 
         $this->handlers
             ->method('get')
             ->with($event1::class)
-            ->willReturn($handler = $this->createMock(EventHandler::class));
+            ->willReturnCallback(function () use ($handler) {
+                $this->assertSame(['before1'], $this->sequence);
+                return $handler;
+            });
 
         $this->middleware
-            ->expects($this->once())
+            ->expects($this->exactly(2))
             ->method('get')
-            ->with('MySecondMiddleware')
-            ->willReturn($middleware2);
+            ->willReturnCallback(fn (string $name) => match ($name) {
+                'MyFirstMiddleware' => $middleware1,
+                'MySecondMiddleware' => $middleware2,
+                default => $this->fail('Unexpected middleware: ' . $name),
+            });
 
         $handler
             ->expects($this->once())
@@ -116,7 +143,16 @@ class EventDispatcherTest extends TestCase
             ->method('__invoke')
             ->with($this->identicalTo($event4));
 
-        $this->dispatcher->through([$middleware1]);
+        $this->dispatcher->through(['MyFirstMiddleware']);
         $this->dispatcher->dispatch($event1);
+
+        $this->assertSame([
+            'before1',
+            'before2',
+            'before3',
+            'after3',
+            'after2',
+            'after1',
+        ], $this->sequence);
     }
 }

@@ -37,6 +37,11 @@ class ComponentPublisherTest extends TestCase
     private ComponentPublisher $publisher;
 
     /**
+     * @var array<string>
+     */
+    private array $sequence = [];
+
+    /**
      * @return void
      */
     protected function setUp(): void
@@ -47,6 +52,15 @@ class ComponentPublisherTest extends TestCase
             handlers: $this->handlers = $this->createMock(PublisherHandlerContainer::class),
             middleware: $this->middleware = $this->createMock(PipeContainer::class),
         );
+    }
+
+    /**
+     * @return void
+     */
+    protected function tearDown(): void
+    {
+        unset($this->publisher, $this->handlers, $this->middleware);
+        parent::tearDown();
     }
 
     /**
@@ -79,14 +93,18 @@ class ComponentPublisherTest extends TestCase
         $event2 = new TestOutboundEvent();
         $event3 = new TestOutboundEvent();
 
-        $middleware1 = function ($actual, Closure $next) use ($event1, $event2) {
+        $middleware1 = function ($actual, Closure $next) use ($event1, $event2): void {
             $this->assertSame($event1, $actual);
-            return $next($event2);
+            $this->sequence[] = 'before1';
+            $next($event2);
+            $this->sequence[] = 'after1';
         };
 
-        $middleware2 = function ($actual, Closure $next) use ($event2, $event3) {
+        $middleware2 = function ($actual, Closure $next) use ($event2, $event3): void {
             $this->assertSame($event2, $actual);
-            return $next($event3);
+            $this->sequence[] = 'before2';
+            $next($event3);
+            $this->sequence[] = 'after2';
         };
 
         $this->middleware
@@ -106,9 +124,14 @@ class ComponentPublisherTest extends TestCase
             ->expects($this->once())
             ->method('get')
             ->with($event1::class)
-            ->willReturn($handler);
+            ->willReturnCallback(function () use ($handler) {
+                $this->assertSame(['before1', 'before2'], $this->sequence);
+                return $handler;
+            });
 
         $this->publisher->through([$middleware1, 'Middleware2']);
         $this->publisher->publish($event1);
+
+        $this->assertSame(['before1', 'before2', 'after2', 'after1'], $this->sequence);
     }
 }
