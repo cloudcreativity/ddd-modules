@@ -55,11 +55,12 @@ class ComponentPublisher implements EventPublisher
      */
     public function publish(IntegrationEvent $event): void
     {
-        $handler = $this->handlers->get($event::class);
-
         $pipeline = PipelineBuilder::make($this->middleware)
             ->through($this->pipes)
-            ->build(MiddlewareProcessor::call($handler));
+            ->build(new MiddlewareProcessor(function (IntegrationEvent $passed): void {
+                $handler = $this->handlers->get($passed::class);
+                $handler($passed);
+            }));
 
         $pipeline->process($event);
     }

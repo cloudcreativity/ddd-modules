@@ -53,11 +53,12 @@ class ComponentQueue implements Queue
      */
     public function push(Command $command): void
     {
-        $enqueuer = $this->enqueuers->get($command::class);
-
         $pipeline = PipelineBuilder::make($this->middleware)
             ->through($this->pipes)
-            ->build(MiddlewareProcessor::call($enqueuer));
+            ->build(new MiddlewareProcessor(function (Command $passed): void {
+                $enqueuer = $this->enqueuers->get($passed::class);
+                $enqueuer($passed);
+            }));
 
         $pipeline->process($command);
     }
