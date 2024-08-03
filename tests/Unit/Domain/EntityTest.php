@@ -26,6 +26,7 @@ class EntityTest extends TestCase
         $entity = new TestEntity($guid = Guid::fromInteger('SomeType', 1));
 
         $this->assertSame($guid, $entity->getId());
+        $this->assertSame($guid, $entity->getIdOrFail());
         $this->assertFalse($entity->is(null));
         $this->assertTrue($entity->isNot(null));
     }

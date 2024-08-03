@@ -26,12 +26,16 @@ class EntityWithNullableGuidTest extends TestCase
         );
 
         $this->assertSame($guid, $entity->getId());
+        $this->assertSame($guid, $entity->getIdOrFail());
         $this->assertFalse($entity->is(null));
         $this->assertTrue($entity->isNot(null));
         $this->assertTrue($entity->hasId());
     }
 
-    public function testWithNullId(): void
+    /**
+     * @return TestEntityWithNullableId
+     */
+    public function testWithNullId(): TestEntityWithNullableId
     {
         $entity = new TestEntityWithNullableId();
 
@@ -39,6 +43,21 @@ class EntityWithNullableGuidTest extends TestCase
         $this->assertFalse($entity->is(null));
         $this->assertTrue($entity->isNot(null));
         $this->assertFalse($entity->hasId());
+
+        return $entity;
+    }
+
+    /**
+     * @param TestEntityWithNullableId $entity
+     * @return void
+     * @depends testWithNullId
+     */
+    public function testGetIdOrFailWithoutId(TestEntityWithNullableId $entity): void
+    {
+        $this->expectException(\AssertionError::class);
+        $this->expectExceptionMessage('Entity does not have an identifier.');
+
+        $entity->getIdOrFail();
     }
 
     public function testSetId(): void

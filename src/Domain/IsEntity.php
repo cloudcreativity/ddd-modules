@@ -32,6 +32,14 @@ trait IsEntity
     /**
      * @inheritDoc
      */
+    public function getIdOrFail(): Identifier
+    {
+        return $this->id;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function is(?Entity $other): bool
     {
         if ($other instanceof $this) {

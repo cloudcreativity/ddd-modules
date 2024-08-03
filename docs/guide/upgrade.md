@@ -116,8 +116,8 @@ updated [Integration Events Chapter.](./application/integration-events)
 
 ### Aggregates & Entities
 
-Aggregates must now implement the `Contracts\Domain\Aggregate` interface. Likewise, for entities the interface is
-now `Contracts\Domain\Entity`. The traits have been renamed as follows:
+Aggregates must now implement either the `Contracts\Domain\AggregateRoot` or `Contracts\Domain\Aggregate` interfaces.
+Likewise, for entities the interface is now `Contracts\Domain\Entity`. The traits have been renamed as follows:
 
 - `Domain\EntityTrait` is now `Domain\IsEntity`
 - `Domain\EntityWithNullableIdTrait` is now `Domain\IsEntityWithNullableId`.

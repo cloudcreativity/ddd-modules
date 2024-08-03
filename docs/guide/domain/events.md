@@ -167,10 +167,10 @@ use App\Modules\EventManagement\Domain\{
    Enums\CancellationReasonEnum,
    Events\AttendeeTicketWasCancelled,
 };
-use CloudCreativity\Modules\Contracts\Domain\Aggregate;
+use CloudCreativity\Modules\Contracts\Domain\AggregateRoot;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 
-class Attendee implements Aggregate
+class Attendee implements AggregateRoot
 {
     // ...other methods
 
