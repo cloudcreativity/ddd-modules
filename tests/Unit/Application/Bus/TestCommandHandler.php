@@ -12,15 +12,17 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Application\Bus;
 
 use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
-use CloudCreativity\Modules\Contracts\Toolkit\Result\Result as IResult;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 
-class TestCommandHandler implements TestCommandHandlerInterface, DispatchThroughMiddleware
+class TestCommandHandler implements DispatchThroughMiddleware
 {
     /**
-     * @inheritDoc
+     * Execute the command.
+     *
+     * @param TestCommand $command
+     * @return Result<null>
      */
-    public function execute(TestCommand $command): IResult
+    public function execute(TestCommand $command): Result
     {
         return Result::ok();
     }
