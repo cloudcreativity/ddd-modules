@@ -71,6 +71,7 @@ class ResultTest extends TestCase
         $this->assertSame($errors, $result->errors());
         $this->assertTrue($result->meta()->isEmpty());
         $this->assertSame('Something went wrong.', $result->error());
+        $this->assertEquals($result, Result::fail($errors));
 
         return $result;
     }
@@ -134,6 +135,7 @@ class ResultTest extends TestCase
         $this->assertFalse($result->didSucceed());
         $this->assertTrue($result->didFail());
         $this->assertSame($errors, $result->errors());
+        $this->assertEquals($result, Result::fail($errors));
     }
 
     /**
@@ -145,6 +147,7 @@ class ResultTest extends TestCase
         $result = Result::failed($error);
 
         $this->assertEquals(new ListOfErrors($error), $result->errors());
+        $this->assertEquals($result, Result::fail($error));
     }
 
     /**
@@ -156,6 +159,7 @@ class ResultTest extends TestCase
         $result = Result::failed($error->message());
 
         $this->assertEquals(new ListOfErrors($error), $result->errors());
+        $this->assertEquals($result, Result::fail($error->message()));
     }
 
     /**
@@ -167,6 +171,7 @@ class ResultTest extends TestCase
         $result = Result::failed([$error]);
 
         $this->assertEquals(new ListOfErrors($error), $result->errors());
+        $this->assertEquals($result, Result::fail([$error]));
     }
 
     /**
@@ -178,6 +183,7 @@ class ResultTest extends TestCase
         $result = Result::failed($code);
 
         $this->assertEquals(new ListOfErrors($error), $result->errors());
+        $this->assertEquals($result, Result::fail($code));
     }
 
     /**
@@ -187,6 +193,15 @@ class ResultTest extends TestCase
     {
         $this->expectException(\AssertionError::class);
         Result::failed(new ListOfErrors());
+    }
+
+    /**
+     * @return void
+     */
+    public function testFailWithoutErrors(): void
+    {
+        $this->expectException(\AssertionError::class);
+        Result::fail(new ListOfErrors());
     }
 
     /**
@@ -217,11 +232,12 @@ class ResultTest extends TestCase
     public function testWithMetaMergesValues(): void
     {
         $result1 = Result::ok()
-            ->withMeta($values = ['foo' => 'bar', 'baz' => 'bat']);
+            ->withMeta($values = ['foo' => 'bar', 'baz' => 'bat', 'foobar' => null]);
 
         $result2 = $result1->withMeta([
             'baz' => 'blah',
             'foobar' => 'bazbat',
+            'bazbat' => 'blah!',
         ]);
 
         $this->assertSame($values, $result1->meta()->all());
@@ -229,6 +245,7 @@ class ResultTest extends TestCase
             'foo' => 'bar',
             'baz' => 'blah',
             'foobar' => 'bazbat',
+            'bazbat' => 'blah!',
         ], $result2->meta()->all());
     }
 }

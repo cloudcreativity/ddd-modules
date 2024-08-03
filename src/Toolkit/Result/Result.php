@@ -23,9 +23,9 @@ use CloudCreativity\Modules\Contracts\Toolkit\Result\Result as IResult;
 final class Result implements IResult
 {
     /**
-     * @var Meta|null
+     * @var Meta
      */
-    private ?Meta $meta = null;
+    private Meta $meta;
 
     /**
      * Return a success result.
@@ -45,9 +45,8 @@ final class Result implements IResult
      * @param IListOfErrors|IError|BackedEnum|array<IError>|string $errorOrErrors
      * @return Result<null>
      */
-    public static function failed(
-        IListOfErrors|IError|BackedEnum|array|string $errorOrErrors,
-    ): self {
+    public static function failed(IListOfErrors|IError|BackedEnum|array|string $errorOrErrors): self
+    {
         $errors = match(true) {
             $errorOrErrors instanceof IListOfErrors => $errorOrErrors,
             default => ListOfErrors::from($errorOrErrors),
@@ -56,6 +55,19 @@ final class Result implements IResult
         assert($errors->isNotEmpty(), 'Expecting at least one error message for a failed result.');
 
         return new self(success: false, errors: $errors);
+    }
+
+    /**
+     * Return a failed result.
+     *
+     * This is an alias for the `failed` method.
+     *
+     * @param IListOfErrors|IError|BackedEnum|array<IError>|string $errorOrErrors
+     * @return Result<null>
+     */
+    public static function fail(IListOfErrors|IError|BackedEnum|array|string $errorOrErrors): self
+    {
+        return self::failed($errorOrErrors);
     }
 
     /**
@@ -70,6 +82,7 @@ final class Result implements IResult
         private readonly mixed $value = null,
         private readonly IListOfErrors $errors = new ListOfErrors(),
     ) {
+        $this->meta = new Meta();
     }
 
     /**
@@ -145,11 +158,7 @@ final class Result implements IResult
      */
     public function meta(): Meta
     {
-        if ($this->meta) {
-            return $this->meta;
-        }
-
-        return $this->meta = new Meta();
+        return $this->meta;
     }
 
     /**
@@ -158,10 +167,8 @@ final class Result implements IResult
      */
     public function withMeta(Meta|array $meta): self
     {
-        $existing = $this->meta ?? new Meta();
-
         $copy = clone $this;
-        $copy->meta = $existing->merge($meta);
+        $copy->meta = $this->meta->merge($meta);
 
         return $copy;
     }

@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+### Added
+
+- The result class now has a `Result::fail()` static method to create a failed result. This is an alias of the
+  existing `Result::failed()` method.
+
 ## [2.0.0-rc.2] - 2024-07-27
 
 ### Added
