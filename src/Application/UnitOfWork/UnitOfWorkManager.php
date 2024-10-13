@@ -152,7 +152,7 @@ final class UnitOfWorkManager implements IUnitOfWorkManager
      */
     private function executeBeforeCommit(): void
     {
-        while($callback = array_shift($this->beforeCommit)) {
+        while ($callback = array_shift($this->beforeCommit)) {
             $callback();
         }
     }
@@ -162,7 +162,7 @@ final class UnitOfWorkManager implements IUnitOfWorkManager
      */
     private function executeAfterCommit(): void
     {
-        while($callback = array_shift($this->afterCommit)) {
+        while ($callback = array_shift($this->afterCommit)) {
             $callback();
         }
     }
