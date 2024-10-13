@@ -33,7 +33,7 @@ trait IsLazyList
             return;
         }
 
-        foreach(($this->source)() as $value) {
+        foreach (($this->source)() as $value) {
             yield $value;
         }
     }

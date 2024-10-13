@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [2.0.0-rc.3] - 2024-10-13
+
+### Added
+
+- The result class now has a `Result::fail()` static method to create a failed result. This is an alias of the
+  existing `Result::failed()` method.
+- **BREAKING** The `Entity` interface (and therefore the `Aggregate` interface too) now has a `getIdOrFail()` method on
+  it. Although technically breaking, if you are using the `IsEntity` or `IsEntityWithNullableId` traits then this method
+  is already implemented.
+- New `AggregateRoot` interface so that an aggregate root can be distinguished from a regular aggregate or entity.
+
 ## [2.0.0-rc.2] - 2024-07-27
 
 ### Added

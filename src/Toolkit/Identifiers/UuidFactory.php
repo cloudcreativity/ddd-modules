@@ -34,7 +34,7 @@ final class UuidFactory implements IUuidFactory
      *
      * @param BaseUuidFactory|null $factory
      */
-    public function __construct(BaseUuidFactory $factory = null)
+    public function __construct(?BaseUuidFactory $factory = null)
     {
         $this->baseFactory = $factory ?? BaseUuid::getFactory();
     }

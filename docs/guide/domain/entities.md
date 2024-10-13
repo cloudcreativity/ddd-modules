@@ -1,10 +1,12 @@
-# Entities & Aggregates
+# Aggregates & Entities
 
 The business logic in your domain layer will be defined in terms of the following concepts:
 
 - **Entity** - an object that has an identity and has state that can change in-line with business logic.
-- **Aggregate Roots** - an entity that is the root of an aggregate. An aggregate is a group of entities that are treated
-  as a single unit for the purpose of state changes in line with business logic.
+- **Aggregate** - a group of entities that are treated as a single unit for the purpose of state changes in line with
+  business logic.
+- **Aggregate Root** - an entity that is the root of an aggregate. This is the entity that controls the access and
+  behavior of the other objects in the aggregate.
 - **Value Object** - an object that has no identity and is immutable. It is used to describe a characteristic (or
   characteristics) of an entity, and to define data types specific to the domain that are not represented by primitives.
   (The [next chapter](./value-objects) covers these in detail.)
@@ -75,17 +77,17 @@ This trait provides a method for setting the identifier - `setId()`.
 
 ## Aggregates
 
-To define an aggregate root, use the `Aggregate` interface. For example:
+To define an aggregate root, use the `AggregateRoot` interface. For example:
 
 ```php
 namespace App\Modules\EventManagement\Domain;
 
 use App\Modules\EventManagement\Domain\ValueObjects\Customer;
-use CloudCreativity\Modules\Contracts\Domain\Aggregate;
+use CloudCreativity\Modules\Contracts\Domain\AggregateRoot;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Domain\IsEntity;
 
-class Attendee implements Aggregate
+class Attendee implements AggregateRoot
 {
     use IsEntity;
 
@@ -101,9 +103,13 @@ class Attendee implements Aggregate
 }
 ```
 
-The aggregate interface extends the entity interface - there is no additional functionality. It is used to indicate
-that the entity is the root of an aggregate. In the example, the `Attendee` aggregate root has a `ListOfTickets`,
-which is a value object that holds a list of `Ticket` entities.
+If you want to designate an entity as an aggregate, but one that is not the root of an aggregate, use the `Aggregate`
+interface instead.
+
+The `AggregateRoot` and `Aggregate` interfaces extend the entity interface - there is no additional functionality. They
+are used to indicate that the entity is an aggregate containing other entities, or the root aggregate that controls
+behaviour. In the example, the `Attendee` aggregate root has a `ListOfTickets`, which is a value object that holds a
+list of `Ticket` entities.
 
 ## Identifiers
 
@@ -146,11 +152,11 @@ enforce in the constructor:
 ```php
 namespace App\Modules\EventManagement\Domain;
 
-use CloudCreativity\Modules\Contracts\Domain\Aggregate;
+use CloudCreativity\Modules\Contracts\Domain\AggregateRoot;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Domain\IsEntity;
 
-class Attendee implements Aggregate
+class Attendee implements AggregateRoot
 {
     use IsEntity;
 

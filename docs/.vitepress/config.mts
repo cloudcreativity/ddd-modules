@@ -40,7 +40,7 @@ export default defineConfig({
                     text: 'Domain Layer',
                     collapsed: false,
                     items: [
-                        {text: 'Entities & Aggregates', link: '/guide/domain/entities'},
+                        {text: 'Aggregates & Entities', link: '/guide/domain/entities'},
                         {text: 'Value Objects', link: '/guide/domain/value-objects'},
                         {text: 'Events', link: '/guide/domain/events'},
                         {text: 'Services', link: '/guide/domain/services'},

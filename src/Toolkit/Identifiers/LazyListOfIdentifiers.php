@@ -30,7 +30,7 @@ final class LazyListOfIdentifiers implements LazyList
      *
      * @param Closure(): Generator<Identifier>|null $source
      */
-    public function __construct(Closure $source = null)
+    public function __construct(?Closure $source = null)
     {
         $this->source = $source;
     }

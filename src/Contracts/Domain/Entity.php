@@ -23,6 +23,13 @@ interface Entity
     public function getId(): ?Identifier;
 
     /**
+     * Get the entity's identifier, or fail if one is not set.
+     *
+     * @return Identifier
+     */
+    public function getIdOrFail(): Identifier;
+
+    /**
      * Is this entity the same as the provided entity?
      *
      * @param Entity|null $other

@@ -23,6 +23,7 @@ return Result::ok();
 
 // failure
 return Result::failed('Something went wrong.');
+return Result::fail('Something went wrong.'); // alias for "failed"
 ```
 
 Calling code can check whether the result object represents a success or failure using the `didSucceed()` or

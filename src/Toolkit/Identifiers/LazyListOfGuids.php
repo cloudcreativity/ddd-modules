@@ -30,7 +30,7 @@ final class LazyListOfGuids implements LazyList
      *
      * @param Closure(): Generator<Guid>|null $source
      */
-    public function __construct(Closure $source = null)
+    public function __construct(?Closure $source = null)
     {
         $this->source = $source;
     }

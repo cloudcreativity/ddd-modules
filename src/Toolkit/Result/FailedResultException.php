@@ -27,7 +27,7 @@ class FailedResultException extends RuntimeException implements ContextProvider
     public function __construct(
         private readonly Result $result,
         int $code = 0,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         assert($result->didFail(), 'Expecting a failed result.');
         parent::__construct($result->error() ?? '', $code, $previous);

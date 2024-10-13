@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Application\Bus;
 
 use CloudCreativity\Modules\Application\Bus\CommandHandler;
-use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
+use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\TestCase;
 
 class CommandHandlerTest extends TestCase
@@ -29,7 +29,7 @@ class CommandHandlerTest extends TestCase
             ->expects($this->once())
             ->method('execute')
             ->with($this->identicalTo($command))
-            ->willReturn($expected = $this->createMock(Result::class));
+            ->willReturn($expected = Result::ok());
 
         $innerHandler
             ->expects($this->once())
