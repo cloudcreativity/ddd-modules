@@ -16,6 +16,10 @@ All notable changes to this project will be documented in this file. This projec
   is already implemented.
 - New `AggregateRoot` interface so that an aggregate root can be distinguished from a regular aggregate or entity.
 
+### Changed
+
+- Remove deprecation message in PHP 8.4.
+
 ## [2.0.0-rc.2] - 2024-07-27
 
 ### Added
