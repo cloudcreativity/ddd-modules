@@ -29,7 +29,7 @@ final class LazyListOfStringIds implements LazyList
      *
      * @param Closure(): Generator<StringId>|null $source
      */
-    public function __construct(Closure $source = null)
+    public function __construct(?Closure $source = null)
     {
         $this->source = $source;
     }

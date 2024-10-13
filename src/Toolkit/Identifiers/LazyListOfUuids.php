@@ -30,7 +30,7 @@ final class LazyListOfUuids implements LazyList
      *
      * @param Closure(): Generator<Uuid>|null $source
      */
-    public function __construct(Closure $source = null)
+    public function __construct(?Closure $source = null)
     {
         $this->source = $source;
     }

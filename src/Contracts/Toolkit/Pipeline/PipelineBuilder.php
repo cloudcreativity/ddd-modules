@@ -35,5 +35,5 @@ interface PipelineBuilder
      * @param Processor|null $processor
      * @return Pipeline
      */
-    public function build(Processor $processor = null): Pipeline;
+    public function build(?Processor $processor = null): Pipeline;
 }

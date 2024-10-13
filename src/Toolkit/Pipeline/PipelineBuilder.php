@@ -68,7 +68,7 @@ final class PipelineBuilder implements IPipelineBuilder
     /**
      * @inheritDoc
      */
-    public function build(Processor $processor = null): Pipeline
+    public function build(?Processor $processor = null): Pipeline
     {
         return new Pipeline($processor, $this->stages);
     }
