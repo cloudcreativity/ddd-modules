@@ -30,7 +30,7 @@ final class Error implements IError
      * @param BackedEnum|null $code
      */
     public function __construct(
-        string|null $key = null,
+        ?string $key = null,
         private readonly string $message = '',
         private readonly ?BackedEnum $code = null,
     ) {

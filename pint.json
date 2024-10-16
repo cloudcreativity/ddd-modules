@@ -4,6 +4,7 @@
         "declare_strict_types": true,
         "trailing_comma_in_multiline": {
             "elements": ["arguments", "arrays", "match", "parameters"]
-        }
+        },
+        "nullable_type_declaration": true
     }
 }
