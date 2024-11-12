@@ -47,7 +47,7 @@ class ComponentPublisher implements EventPublisher
     {
         assert(array_is_list($pipes), 'Expecting an array list of middleware.');
 
-        $this->pipes = array_values($pipes);
+        $this->pipes = $pipes;
     }
 
     /**

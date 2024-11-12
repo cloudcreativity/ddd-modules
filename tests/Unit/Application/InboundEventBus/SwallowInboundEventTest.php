@@ -26,6 +26,7 @@ class SwallowInboundEventTest extends TestCase
     {
         $handler = new SwallowInboundEvent();
         $handler->handle(new TestInboundEvent());
+        /** @phpstan-ignore-next-line */
         $this->assertTrue(true);
     }
 

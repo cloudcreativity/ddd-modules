@@ -21,7 +21,7 @@ trait IsNonEmptyList
     /**
      * @var non-empty-list<T>
      */
-    private array $stack = [];
+    private array $stack;
 
     /**
      * @return Generator<T>

@@ -13,11 +13,11 @@ namespace CloudCreativity\Modules\Tests\Unit\Application\Bus;
 
 use CloudCreativity\Modules\Application\Bus\Validator;
 use CloudCreativity\Modules\Contracts\Application\Messages\Command;
-use CloudCreativity\Modules\Contracts\Application\Messages\Message;
 use CloudCreativity\Modules\Contracts\Application\Messages\Query;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Toolkit\Result\Error;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ValidatorTest extends TestCase
@@ -34,13 +34,13 @@ class ValidatorTest extends TestCase
     }
 
     /**
-     * @param class-string<Message> $message
+     * @param class-string<Command|Query> $message
      * @return void
      * @dataProvider messageProvider
      */
     public function test(string $message): void
     {
-        /** @var Command|Query $query */
+        /** @var (Command&MockObject)|(Query&MockObject) $query */
         $query = $this->createMock($message);
         $error1 = new Error(null, 'Message 1');
         $error2 = new Error(null, 'Message 2');

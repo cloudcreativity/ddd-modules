@@ -42,7 +42,7 @@ final class ListOfErrors implements IListOfErrors
      */
     public function __construct(IError ...$errors)
     {
-        $this->stack = $errors;
+        $this->stack = array_values($errors);
     }
 
     /**

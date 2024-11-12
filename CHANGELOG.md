@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+### Changed
+
+- Upgraded to PHPStan v2.
+
 ## [2.0.0-rc.3] - 2024-10-13
 
 ### Added

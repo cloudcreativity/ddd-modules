@@ -19,7 +19,7 @@ use Generator;
 trait IsList
 {
     /**
-     * @var array<T>
+     * @var list<T>
      */
     private array $stack = [];
 

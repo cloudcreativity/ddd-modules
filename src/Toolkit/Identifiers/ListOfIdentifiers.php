@@ -30,7 +30,7 @@ final class ListOfIdentifiers implements ListIterator
      */
     public function __construct(Identifier ...$identifiers)
     {
-        $this->stack = $identifiers;
+        $this->stack = array_values($identifiers);
     }
 
     /**
