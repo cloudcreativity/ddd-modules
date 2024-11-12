@@ -66,6 +66,8 @@ final class MiddlewareProcessor implements Processor
             $this->destination,
         );
 
+        assert(is_callable($pipeline));
+
         return $pipeline($payload);
     }
 

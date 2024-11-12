@@ -38,7 +38,11 @@ final class CommandHandler implements ICommandHandler
             $this->handler::class,
         ));
 
-        return $this->handler->execute($command);
+        $result = $this->handler->execute($command);
+
+        assert($result instanceof Result, 'Expecting command handler to return a result.');
+
+        return $result;
     }
 
     /**

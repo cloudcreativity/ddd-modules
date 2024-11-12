@@ -38,7 +38,11 @@ final class QueryHandler implements IQueryHandler
             $this->handler::class,
         ));
 
-        return $this->handler->execute($query);
+        $result = $this->handler->execute($query);
+
+        assert($result instanceof Result, 'Expecting query handler to return a result.');
+
+        return $result;
     }
 
     /**
