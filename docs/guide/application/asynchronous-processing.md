@@ -47,7 +47,7 @@ For example, an endpoint that triggers a recalculation of our sales report:
 namespace App\Http\Controllers\Api\AttendanceReport;
 
 use App\Modules\EventManagement\Application\{
-    Ports\Driving\Commands\CommandBus,
+    Ports\Driving\CommandBus,
     UsesCases\Commands\RecalculateSalesAtEvent\RecalculateSalesAtEventCommand,
 };
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
@@ -221,7 +221,7 @@ public commands. I.e.:
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driven\Queue;
 
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue\Queue as Port;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue as Port;
 
 // queues public commands
 interface Queue extends Port

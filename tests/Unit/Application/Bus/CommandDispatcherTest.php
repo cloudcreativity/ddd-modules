@@ -16,7 +16,7 @@ use CloudCreativity\Modules\Application\Bus\CommandDispatcher;
 use CloudCreativity\Modules\Contracts\Application\Bus\CommandHandler;
 use CloudCreativity\Modules\Contracts\Application\Bus\CommandHandlerContainer;
 use CloudCreativity\Modules\Contracts\Application\Messages\Command;
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue\Queue;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\MockObject\MockObject;

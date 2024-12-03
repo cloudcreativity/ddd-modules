@@ -10,11 +10,11 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Contracts\Application\Ports\Driven\OutboundEventBus;
+namespace CloudCreativity\Modules\Contracts\Application\Ports\Driven;
 
 use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 
-interface EventPublisher
+interface OutboundEventPublisher
 {
     /**
      * Publish an outbound integration event.

@@ -47,7 +47,7 @@ This external dependencies port in effect provides other driven ports. For examp
 namespace App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection;
 
 use App\Modules\EventManagement\Application\Ports\Driven\Persistence\AttendeeRepository;
-use App\Modules\EventManagement\Application\Ports\Driven\Queue\Queue;
+use App\Modules\EventManagement\Application\Ports\Driven\Queue;
 use Psr\Log\LoggerInterface;
 
 interface ExternalDependencies
@@ -131,7 +131,7 @@ on a `RepositoryProvider` interface, that can be accessed via the external depen
 namespace App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection;
 
 use App\Modules\EventManagement\Application\Ports\Driven\Persistence\RepositoryProvider;
-use App\Modules\EventManagement\Application\Ports\Driven\Queue\Queue;
+use App\Modules\EventManagement\Application\Ports\Driven\Queue;
 use Psr\Log\LoggerInterface;
 
 interface ExternalDependencies

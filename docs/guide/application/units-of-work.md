@@ -189,7 +189,7 @@ implementation for Laravel could look like this:
 namespace App\Modules\Shared\Infrastructure;
 
 use Closure;
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\UnitOfWork\UnitOfWork;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driven\UnitOfWork;
 use Illuminate\Database\ConnectionInterface;
 
 final readonly class IlluminateUnitOfWork implements UnitOfWork

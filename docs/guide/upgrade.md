@@ -73,7 +73,7 @@ For example, `EntityTrait` is now `IsEntity`.
 
 Command messages must now implement the `Contracts\Application\Messages\Command` interface.
 
-The command dispatcher interface is now `Contracts\Application\Ports\Driving\Commands\CommandDispatcher`.
+The command dispatcher interface is now `Contracts\Application\Ports\Driving\CommandDispatcher`.
 
 The concrete implementation has been moved from `Bus` to `Application\Bus`. The constructor argument for the middleware
 pipe container has been renamed `middleware` for clarity. This will only affect your implementation if you are using
@@ -87,7 +87,7 @@ the `Application\Bus\Middleware` namespace.
 
 Query messages must now implement the `Contracts\Application\Messages\Query` interface.
 
-The query dispatcher interface is now `Contracts\Application\Ports\Driving\Queries\QueryDispatcher`.
+The query dispatcher interface is now `Contracts\Application\Ports\Driving\QueryDispatcher`.
 
 The concrete implementation has been moved from `Bus` to `Application\Bus`. The constructor argument for the middleware
 pipe container has been renamed `middleware` for clarity. This will only affect your implementation if you are using
@@ -106,7 +106,7 @@ The previous event bus implementation has been split in two. This is due to the 
 inbound events is now a _driving port_, whereas publishing outbound events occurs via a _driven port_.
 
 The new inbound implementation (previously referred to as a _notifier_) is now in the `Application\InboundEventBus`
-namespace. The driving port is `Contracts\Application\Ports\Driving\InboundEvents\EventDispatcher`.
+namespace. The driving port is `Contracts\Application\Ports\Driving\EventDispatcher`.
 
 The new outbound implementation (referred to as a _publisher_) is now in the `Infrastructure\OutboundEventBus`
 namespace. The driven port is `Contracts\Application\Ports\Driven\OutboundEvents\EventPublisher`.

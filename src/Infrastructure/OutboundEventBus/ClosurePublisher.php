@@ -14,12 +14,12 @@ namespace CloudCreativity\Modules\Infrastructure\OutboundEventBus;
 
 use Closure;
 use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\OutboundEventBus\EventPublisher;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driven\OutboundEventPublisher;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 
-class ClosurePublisher implements EventPublisher
+class ClosurePublisher implements OutboundEventPublisher
 {
     /**
      * @var array<class-string<IntegrationEvent>, Closure>

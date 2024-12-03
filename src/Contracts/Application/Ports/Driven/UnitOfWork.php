@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Contracts\Application\Ports\Driven\UnitOfWork;
+namespace CloudCreativity\Modules\Contracts\Application\Ports\Driven;
 
 use Closure;
 

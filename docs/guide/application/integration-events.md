@@ -151,9 +151,9 @@ Your application layer should define the driven port:
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus;
 
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\OutboundEventBus\EventPublisher;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driven\OutboundEventPublisher;
 
-interface OutboundEventBus extends EventPublisher
+interface OutboundEventBus extends OutboundEventPublisher
 {
 }
 ```
@@ -403,9 +403,9 @@ We do this by defining an interface in our application's driving ports:
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driving;
 
-use CloudCreativity\Modules\Contracts\Application\Ports\Driving\InboundEvents\EventDispatcher;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driving\InboundEventDispatcher;
 
-interface InboundEventBus extends EventDispatcher
+interface InboundEventBus extends InboundEventDispatcher
 {
 }
 ```
@@ -416,9 +416,9 @@ And then our implementation is as follows:
 namespace App\Modules\EventManagement\Application\Bus;
 
 use App\Modules\EventManagement\Application\Ports\Driving\InboundEventBus as Port;
-use CloudCreativity\Modules\Application\InboundEventBus\EventDispatcher;
+use CloudCreativity\Modules\Application\InboundEventBus\InboundEventDispatcher;
 
-final class InboundEventBus extends EventDispatcher implements Port
+final class InboundEventBus extends InboundEventDispatcher implements Port
 {
 }
 ```

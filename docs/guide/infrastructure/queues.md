@@ -17,7 +17,7 @@ We do this by defining an interface in our application's driven ports:
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driven\Queue;
 
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue\Queue as Port;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue as Port;
 
 interface Queue extends Port
 {
@@ -55,7 +55,7 @@ In this scenario, define another driven port in your application layer:
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driven\Queue;
 
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue\Queue as Port;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue as Port;
 
 interface InternalQueue extends Port
 {
@@ -299,7 +299,7 @@ For example, a default Laravel job for queuing and dispatching commands would be
 ```php
 namespace App\Modules\EventManagement\Infrastructure\Queue;
 
-use App\Modules\EventManagement\Application\Ports\Driving\Commands\CommandBus;
+use App\Modules\EventManagement\Application\Ports\Driving\CommandBus;
 use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 use CloudCreativity\Modules\Toolkit\Result\FailedResultException;
 use Illuminate\Bus\Queueable;
@@ -340,7 +340,7 @@ An example of a queue job for a specific command might be:
 ```php
 namespace App\Modules\EventManagement\Infrastructure\Queue;
 
-use App\Modules\EventManagement\Application\Ports\Driving\Commands\CommandBus;
+use App\Modules\EventManagement\Application\Ports\Driving\CommandBus;
 use App\Modules\EventManagement\Application\UseCases\Commands\{
     RecalculateSalesAtEvent\ErrorCodeEnum,
     RecalculateSalesAtEvent\RecalculateSalesAtEventCommand,

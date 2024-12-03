@@ -7,6 +7,11 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Changed
 
+- **BREAKING** Removed the sub-namespaces for ports provided by this package, i.e.:
+    - `Contracts\Application\Ports\Driven` all interfaces are no longer in sub-namespaces; and
+    - `Contracts\Application\Ports\Driven` also has the same change.
+- **BREAKING** Renamed the `InboundEventBus\EventDispatcher` port to `InboundEventDispatcher`.
+- **BREAKING** Renamed the `OutboundEventBus\EventPublisher` port to `OutboundEventPublisher`.
 - Upgraded to PHPStan v2.
 
 ## [2.0.0-rc.3] - 2024-10-13

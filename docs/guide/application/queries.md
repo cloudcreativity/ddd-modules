@@ -106,7 +106,7 @@ We do this by defining an interface in our application's driving ports:
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driving;
 
-use CloudCreativity\Modules\Contracts\Application\Ports\Driving\Queries\QueryDispatcher;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driving\QueryDispatcher;
 
 interface QueryBus extends QueryDispatcher
 {

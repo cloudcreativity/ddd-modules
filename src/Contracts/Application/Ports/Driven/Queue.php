@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue;
+namespace CloudCreativity\Modules\Contracts\Application\Ports\Driven;
 
 use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 
