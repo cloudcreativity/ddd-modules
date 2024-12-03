@@ -28,7 +28,7 @@ This port is injected into a command bus via a closure factory that ensures the 
 lazy. For example:
 
 ```php
-$bus = new CommandBusAdapter(
+$bus = new CommandBus(
     handlers: $handlers = new CommandHandlerContainer(),
     middleware: $middleware = new PipeContainer(),
     queue: fn() => $this->dependencies->getQueue(),
@@ -65,7 +65,7 @@ interface InternalQueue extends Port
 And then ensure the adapter of this internal port is injected into your internal command bus:
 
 ```php
-$bus = new InternalCommandBusAdapter(
+$bus = new InternalCommandBus(
     handlers: $handlers = new CommandHandlerContainer(),
     middleware: $middleware = new PipeContainer(),
     queue: fn() => $this->dependencies->getInternalQueue(),

@@ -12,8 +12,8 @@ and any consuming bounded contexts.
 Integration events are bidirectional. They are both _published_ by a bounded context, and _consumed_ by other
 bounded contexts. This means we can refer to them in terms of their direction - specifically:
 
-- **Inbound** integration events, are those a bounded context _consumes_ via a driving port and an adapter
-  implementation within the application layer.
+- **Inbound** integration events, are those a bounded context _consumes_ via a driving port that is implemented by a
+  service in the application layer.
 - **Outbound** integration events, are those _published_ by a bounded context. Publishing occurs via a driven port, with
   the infrastructure layer implementing the adapter.
 
@@ -401,7 +401,7 @@ needs to expose its _specific_ inbound event bus.
 We do this by defining an interface in our application's driving ports:
 
 ```php
-namespace App\Modules\EventManagement\Application\Ports\Driving\InboundEventBus;
+namespace App\Modules\EventManagement\Application\Ports\Driving;
 
 use CloudCreativity\Modules\Contracts\Application\Ports\Driving\InboundEvents\EventDispatcher;
 
@@ -410,24 +410,23 @@ interface InboundEventBus extends EventDispatcher
 }
 ```
 
-And then our adapter (the concrete implementation of the port) is as follows:
+And then our implementation is as follows:
 
 ```php
-namespace App\Modules\EventManagement\Application\Adapters\InboundEventBus;
+namespace App\Modules\EventManagement\Application\Bus;
 
-use App\Modules\EventManagement\Application\Ports\Driving\InboundEventBus\InboundEventBus;
+use App\Modules\EventManagement\Application\Ports\Driving\InboundEventBus as Port;
 use CloudCreativity\Modules\Application\InboundEventBus\EventDispatcher;
 
-final class InboundEventBusAdapter extends EventDispatcher implements
-    InboundEventBus
+final class InboundEventBus extends EventDispatcher implements Port
 {
 }
 ```
 
 ### Creating a Bus
 
-The event dispatcher class that your adapter extended (in the above example) allows you to build an inbound event bus
-specific to your domain. You do this by:
+The event dispatcher class that your implementation extends (in the above example) allows you to build an inbound event
+bus specific to your domain. You do this by:
 
 1. Binding event handler factories into the event dispatcher; and
 2. Binding factories for any middleware used by your bounded context; and
@@ -439,11 +438,11 @@ or middleware are actually being used.
 For example:
 
 ```php
-namespace App\Modules\EventManagement\Application\Adapters\InboundEventBus;
+namespace App\Modules\EventManagement\Application\Bus;
 
-use App\Modules\EventManagement\Application\Adapters\CommandBus\CommandBusAdapterProvider;
+use App\Modules\EventManagement\Application\Bus\CommandBusProvider;
 use App\Modules\EventManagement\Application\UsesCases\InboundEvents\OrderWasFulfilledHandler;
-use App\Modules\EventManagement\Application\Ports\Driving\InboundEventBus\InboundEventBus;
+use App\Modules\EventManagement\Application\Ports\Driving\InboundEventBus as InboundEventBusPort;
 use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;
 use CloudCreativity\Modules\Application\InboundEventBus\EventHandlerContainer;
 use CloudCreativity\Modules\Application\InboundEventBus\Middleware\HandleInUnitOfWork;
@@ -451,17 +450,17 @@ use CloudCreativity\Modules\Application\InboundEventBus\Middleware\LogInboundEve
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 use VendorName\Ordering\Shared\IntegrationEvents\V1\OrderWasFulfilled;
 
-final class InboundEventBusAdapterProvider
+final class InboundEventBusProvider
 {
     public function __construct(
-        private readonly CommandBusAdapterProvider $commandBusProvider,
+        private readonly CommandBusProvider $commandBusProvider,
         private readonly ExternalDependencies $dependencies,
     ) {
     }
 
-    public function getEventBus(): InboundEventBus
+    public function getEventBus(): InboundEventBusPort
     {
-        $bus = new InboundEventBusAdapter(
+        $bus = new InboundEventBus(
             handlers: $handlers = new EventHandlerContainer(),
             middleware: $middleware = new PipeContainer(),
         );
@@ -498,15 +497,15 @@ final class InboundEventBusAdapterProvider
 ```
 
 Inbound events are received by the presentation and delivery layer of your application. For example, a controller that
-receives a push message from Google Cloud Pub/Sub. We therefore need to bind the driving port and its adapter into a
+receives a push message from Google Cloud Pub/Sub. Typically this means we need to bind the driving port into a
 service container. For example, in Laravel:
 
 ```php
 namespace App\Providers;
 
 use App\Modules\EventManagement\Application\{
-    Adapters\InboundEventBus\InboundEventBusAdapterProvider,
-    Ports\Driving\InboundEvents\InboundEventBus,
+    Bus\InboundEventBusProvider,
+    Ports\Driving\InboundEventBus,
 };
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\ServiceProvider;
@@ -518,7 +517,7 @@ final class EventManagementServiceProvider extends ServiceProvider
         $this->app->bind(
             InboundEventBus::class,
             static function (Container $app)  {
-                $provider = $app->make(InboundEventBusAdapterProvider::class);
+                $provider = $app->make(InboundEventBusProvider::class);
                 return $provider->getEventBus();
             },
         );
@@ -532,7 +531,7 @@ Integration events published by other bounded contexts will arrive in your prese
 a controller for an endpoint that Google Cloud Pub/Sub pushes events to.
 
 The implementation pattern here is to deserialize the incoming event data, converting it to the defined integration
-event message. Then this is pushed into your bounded context via its event bus interface - i.e. the entry point for
+event message. Then this is pushed into your bounded context via its inbound event bus port - i.e. the entry point for
 the bounded context.
 
 Here is an example controller from a Laravel application to demonstrate the pattern:
@@ -540,7 +539,7 @@ Here is an example controller from a Laravel application to demonstrate the patt
 ```php
 namespace App\Http\Controllers\Api\PubSub;
 
-use App\Modules\EventManagement\Application\Ports\Driving\InboundEvents\InboundEventBus;
+use App\Modules\EventManagement\Application\Ports\Driving\InboundEventBus;
 use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 use VendorName\Ordering\Shared\IntegrationEvents\V1\Serializers\JsonSerializer;
 
@@ -594,7 +593,7 @@ the `SwallowInboundEvent` handler for this purpose:
 use CloudCreativity\Modules\Application\InboundEventBus\EventHandlerContainer;
 use CloudCreativity\Modules\Application\InboundEventBus\SwallowInboundEvent;
 
-$bus = new InboundEventBusAdapter(
+$bus = new InboundEventBus(
     handlers: $handlers = new EventHandlerContainer(
         default: fn() => new SwallowInboundEvent(),
     ),
@@ -610,7 +609,7 @@ use CloudCreativity\Modules\Application\InboundEventBus\EventHandlerContainer;
 use CloudCreativity\Modules\Application\InboundEventBus\SwallowInboundEvent;
 use Psr\Log\LogLevel;
 
-$bus = new InboundEventBusAdapter(
+$bus = new InboundEventBus(
     handlers: $handlers = new EventHandlerContainer(
         default: fn() => new SwallowInboundEvent(
             logger: $this->dependencies->getLogger(),
@@ -647,7 +646,7 @@ Firstly, our application layer will need an inbox driving port. This will allow 
 example:
 
 ```php
-namespace App\Modules\EventManagement\Application\Ports\Driving\InboundEvents;
+namespace App\Modules\EventManagement\Application\Ports\Driving;
 
 use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 
@@ -657,7 +656,7 @@ interface Inbox
 }
 ```
 
-The adapter implementation would then check if the event has been received before, and if not, persist the event in the
+The implementation would then check if the event has been received before, and if not, persist the event in the
 inbox. For both these actions - checking whether it exists, and storing - the adapter will need a driven port. That
 might look like this:
 
@@ -887,7 +886,7 @@ You can write your own middleware to suit your specific needs. Middleware is a s
 following signature:
 
 ```php
-namespace App\Modules\EventManagement\Application\Adapters\Middleware;
+namespace App\Modules\EventManagement\Application\Bus\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Contracts\Application\InboundEventBus\InboundEventMiddleware;

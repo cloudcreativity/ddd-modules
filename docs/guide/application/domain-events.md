@@ -169,9 +169,9 @@ Although this sounds like a lot of work, we provide the tools to make this easy.
 above:
 
 ```php
-namespace App\Modules\EventManagement\Application\Adapters\CommandBus;
+namespace App\Modules\EventManagement\Application\Bus;
 
-use App\Modules\EventManagement\Application\Ports\Driving\CommandBus\CommandBus;
+use App\Modules\EventManagement\Application\Ports\Driving\CommandBus;
 use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;
 use App\Modules\EventManagement\Application\Internal\DomainEvents\DomainEventDispatcher;
 use App\Modules\EventManagement\Application\Internal\DomainEvents\DomainEventDispatcherProvider;
@@ -182,7 +182,7 @@ use CloudCreativity\Modules\Application\Bus\Middleware\SetupBeforeDispatch;
 use CloudCreativity\Modules\Application\UnitOfWork\UnitOfWorkManager;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 
-final class CommandBusAdapterProvider
+final class CommandBusProvider
 {
     /**
      * @var UnitOfWorkManager|null 
@@ -202,7 +202,7 @@ final class CommandBusAdapterProvider
 
     public function getCommandBus(): CommandBus
     {
-        $bus = new CommandBusAdapter(
+        $bus = new CommandBus(
             handlers: $handlers = new CommandHandlerContainer(),
             middleware: $middleware = new PipeContainer(),
         );
@@ -407,9 +407,9 @@ into the middleware that flushes deferred events.
 Here's an example:
 
 ```php
-namespace App\Modules\EventManagement\Application\Adapters\CommandBus;
+namespace App\Modules\EventManagement\Application\Bus;
 
-use App\Modules\EventManagement\Application\Ports\Driving\CommandBus\CommandBus;
+use App\Modules\EventManagement\Application\Ports\Driving\CommandBus as CommandBusPort;
 use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;
 use App\Modules\EventManagement\Application\Internal\DomainEvents\DomainEventDispatcher;
 use App\Modules\EventManagement\Application\Internal\DomainEvents\DomainEventDispatcherProvider;
@@ -419,7 +419,7 @@ use CloudCreativity\Modules\Application\Bus\Middleware\FlushDeferredEvents;
 use CloudCreativity\Modules\Application\Bus\Middleware\SetupBeforeDispatch;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 
-final class CommandBusAdapterProvider
+final class CommandBusProvider
 {
     /**
      * @var DomainEventDispatcher|null 
@@ -432,9 +432,9 @@ final class CommandBusAdapterProvider
     ) {
     }
 
-    public function getCommandBus(): CommandBus
+    public function getCommandBus(): CommandBusPort
     {
-        $bus = new CommandBusAdapter(
+        $bus = new CommandBus(
             handlers: $handlers = new CommandHandlerContainer(),
             middleware: $middleware = new PipeContainer(),
         );

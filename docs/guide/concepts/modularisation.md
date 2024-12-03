@@ -145,7 +145,7 @@ The application namespace can be structured as follows:
             - Queue
             - Persistence
             - ...
-    - Adapters
+    - Bus
         - CommandBus
         - QueryBus
         - InboundEventBus
@@ -165,7 +165,7 @@ The namespaces shown here are as follows:
 - **Ports** - the driving and driven ports of the application layer expressed as interfaces. The driving ports are
   the interfaces that the application layer uses to interact with the outside world. The driven ports are the interfaces
   that the application layer expects to be implemented by the infrastructure layer.
-- **Adapters** - contains the implementations of the driving ports. The concrete implementations are the command bus,
+- **Bus** - contains the implementations of the driving ports. The concrete implementations are the command bus,
   query bus, and inbound event bus. Each bus ensures a message is dispatched to the correct handler.
 - **Use Cases** - the implementation of the business logic of the application layer. Use cases are expressed as the
   command and query messages that can enter the application, and the handlers that implement what happens when a

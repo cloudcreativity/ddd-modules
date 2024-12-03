@@ -93,7 +93,7 @@ Given the above example, the correct order from the application perspective is:
 
 1. Unit of work begins by starting a transaction.
 2. The aggregate root state change occurs and the domain event is emitted by the aggregate.
-3. The domain event dispatching is deferred until later in the unit of work. This means side-effects via event listeners
+3. The domain event dispatching is deferred until later in the unit of work. This means side effects via event listeners
    will be triggered later.
 4. The aggregate root is persisted via the repository port. Internally within the adapter this may result in multiple
    database writes, that are within the transaction.
