@@ -1,11 +1,10 @@
 # Upgrade Guide
 
-## 1.x to 2.0.0-rc
+## 1.x to 2.x
 
-Use the following to upgrade to the latest 2.0 release candidate:
+Upgrade using Composer:
 
 ```bash
-composer config minimum-stability rc
 composer require cloudcreativity/ddd-modules:^2.0
 ```
 
