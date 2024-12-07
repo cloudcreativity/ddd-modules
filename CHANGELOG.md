@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [2.0.0] - 2024-12-07
+
 ### Changed
 
 - **BREAKING** Removed the sub-namespaces for ports provided by this package, i.e.:
@@ -325,3 +327,5 @@ All notable changes to this project will be documented in this file. This projec
 ## [0.1.0] - 2023-11-18
 
 Initial release.
+
+[2.0.0]: https://github.com/cloudcreativity/docs.dancecloud.com/compare/v2.0.0-rc.3...v2.0.0
