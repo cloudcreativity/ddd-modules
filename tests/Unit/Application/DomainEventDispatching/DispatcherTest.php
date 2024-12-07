@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2024 Cloud Creativity Limited
  *
@@ -64,7 +65,7 @@ class DispatcherTest extends TestCase
         $listener3 = $this->createMock(TestListener::class);
         $listener4 = $this->createMock(TestListener::class);
 
-        $listener2Closure = static fn ($event) => $listener2->handle($event);
+        $listener2Closure = static fn (DomainEvent $event) => $listener2->handle($event);
 
         $this->listeners
             ->expects($this->exactly(2))
@@ -136,11 +137,13 @@ class DispatcherTest extends TestCase
 
         $a = function ($actual, Closure $next) use ($event1, $event2): DomainEvent {
             $this->assertSame($event1, $actual);
+            /** @phpstan-ignore-next-line */
             return $next($event2);
         };
 
         $b = function ($actual, Closure $next) use ($event2, $event3): DomainEvent {
             $this->assertSame($event2, $actual);
+            /** @phpstan-ignore-next-line */
             return $next($event3);
         };
 

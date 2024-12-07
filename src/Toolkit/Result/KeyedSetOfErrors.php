@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2024 Cloud Creativity Limited
  *
@@ -85,7 +86,6 @@ final class KeyedSetOfErrors implements KeyedSet
         $copy = clone $this;
 
         foreach (self::from($other) as $key => $errors) {
-            assert(is_string($key) && $errors instanceof IListOfErrors);
             $copy->stack[$key] = $copy->get($key)->merge($errors);
         }
 

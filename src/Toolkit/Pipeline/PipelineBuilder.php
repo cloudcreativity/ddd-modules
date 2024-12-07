@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2024 Cloud Creativity Limited
  *
@@ -83,7 +84,7 @@ final class PipelineBuilder implements IPipelineBuilder
             return $stage;
         }
 
-        if (is_string($stage) && $this->container) {
+        if ($this->container) {
             return new LazyPipe($this->container, $stage);
         }
 

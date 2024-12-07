@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2024 Cloud Creativity Limited
  *
@@ -65,6 +66,8 @@ final class MiddlewareProcessor implements Processor
             $this->carry(),
             $this->destination,
         );
+
+        assert(is_callable($pipeline));
 
         return $pipeline($payload);
     }

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2024 Cloud Creativity Limited
  *
@@ -67,7 +68,7 @@ class Dispatcher implements DomainEventDispatcher
     {
         $bindings = $this->bindings[$event] ?? [];
 
-        foreach ((array) $listener as $name) {
+        foreach (is_array($listener) ? $listener : [$listener] as $name) {
             if ($this->canAttach($name)) {
                 $bindings[] = $name;
                 continue;

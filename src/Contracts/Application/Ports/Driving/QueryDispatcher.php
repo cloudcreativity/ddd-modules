@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2024 Cloud Creativity Limited
  *
@@ -9,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Contracts\Application\Ports\Driving\Queries;
+namespace CloudCreativity\Modules\Contracts\Application\Ports\Driving;
 
 use CloudCreativity\Modules\Contracts\Application\Messages\Query;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2024 Cloud Creativity Limited
  *
@@ -42,11 +43,7 @@ class PossiblyNumericIdTest extends TestCase
     public function test(string|int $value, string|int $expected): void
     {
         $actual = new PossiblyNumericId($value);
-        $expectedId = match (true) {
-            is_string($expected) => new StringId($expected),
-            is_int($expected) => new IntegerId($expected),
-            default => $this->fail('Unexpected value.'),
-        };
+        $expectedId = is_string($expected) ? new StringId($expected) : new IntegerId($expected);
 
         $this->assertSame($expected, $actual->value);
         $this->assertSame($expected, PossiblyNumericId::from($value)->value);

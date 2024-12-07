@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2024 Cloud Creativity Limited
  *
@@ -13,7 +14,7 @@ namespace CloudCreativity\Modules\Infrastructure\Queue;
 
 use Closure;
 use CloudCreativity\Modules\Contracts\Application\Messages\Command;
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue\Queue;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;

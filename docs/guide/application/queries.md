@@ -104,33 +104,32 @@ Although there is a _generic_ query bus interface, our bounded context needs to 
 We do this by defining an interface in our application's driving ports:
 
 ```php
-namespace App\Modules\EventManagement\Application\Ports\Driving\QueryBus;
+namespace App\Modules\EventManagement\Application\Ports\Driving;
 
-use CloudCreativity\Modules\Contracts\Application\Ports\Driving\Queries\QueryDispatcher;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driving\QueryDispatcher;
 
 interface QueryBus extends QueryDispatcher
 {
 }
 ```
 
-And then our adapter (the concrete implementation of the port) is as follows:
+And then our implementation is as follows:
 
 ```php
-namespace App\Modules\EventManagement\Application\Adapters\QueryBus;
+namespace App\Modules\EventManagement\Application\Bus;
 
-use App\Modules\EventManagement\Application\Ports\Driving\QueryBus\QueryBus;
+use App\Modules\EventManagement\Application\Ports\Driving\QueryBus as Port;
 use CloudCreativity\Modules\Application\Bus\QueryDispatcher;
 
-final class EventManagementQueryBus extends QueryDispatcher implements
-    QueryBus
+final class QueryBus extends QueryDispatcher implements Port
 {
 }
 ```
 
 ### Creating a Query Bus
 
-The query dispatcher class that your adapter extended (in the above example) allows you to build a query bus specific to
-your domain. You do this by:
+The query dispatcher class that your implementation extends (in the above example) allows you to build a query bus 
+specific to your domain. You do this by:
 
 1. Binding query handler factories into the query dispatcher; and
 2. Binding factories for any middleware used by your bounded context; and
@@ -142,28 +141,28 @@ handler or middleware are actually being used.
 For example:
 
 ```php
-namespace App\Modules\EventManagement\Application\Adapters\QueryBus;
+namespace App\Modules\EventManagement\Application\Bus;
 
 use App\Modules\EventManagement\Application\UseCases\Queries\{
     GetAttendeeTickets\GetAttendeeTicketsQuery,
     GetAttendeeTickets\GetAttendeeTicketsHandler,
 };
-use App\Modules\EventManagement\Application\Ports\Driving\QueryBus\QueryBus;
+use App\Modules\EventManagement\Application\Ports\Driving\QueryBus as QueryBusPort;
 use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;
 use CloudCreativity\Modules\Application\Bus\QueryHandlerContainer;
 use CloudCreativity\Modules\Application\Bus\Middleware\LogMessageDispatch;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 
-final class QueryBusAdapterProvider
+final class QueryBusProvider
 {
     public function __construct(
         private readonly ExternalDependencies $dependencies,
     ) {
     }
 
-    public function getQueryBus(): QueryBus
+    public function getQueryBus(): QueryBusPort
     {
-        $bus = new EventManagementQueryBus(
+        $bus = new QueryBus(
             handlers: $handlers = new QueryHandlerContainer(),
             middleware: $middleware = new PipeContainer(),
         );
@@ -194,15 +193,14 @@ final class QueryBusAdapterProvider
 }
 ```
 
-As the presentation and delivery layer is the user of the driving ports, we can now bind the port and its adapter into a
-service container. For example, in Laravel:
+Adapters in the presentation and delivery layer will use the driving ports. Typically this means we need to bind the port into a service container. For example, in Laravel:
 
 ```php
 namespace App\Providers;
 
 use App\Modules\EventManagement\Application\{
-    Adapters\QueryBus\QueryBusAdapterProvider,
-    Ports\Driving\QueryBus\QueryBus,
+    Bus\QueryBusProvider,
+    Ports\Driving\QueryBus,
 };
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\ServiceProvider;
@@ -214,7 +212,7 @@ final class EventManagementServiceProvider extends ServiceProvider
         $this->app->bind(
             QueryBus::class,
             static function (Container $app)  {
-                $provider = $app->make(QueryBusAdapterProvider::class);
+                $provider = $app->make(QueryBusProvider::class);
                 return $provider->getQueryBus();
             },
         );
@@ -399,7 +397,7 @@ You can write your own middleware to suit your specific needs. Middleware is a s
 following signature:
 
 ```php
-namespace App\Modules\EventManagement\Application\Adapters\Middleware;
+namespace App\Modules\EventManagement\Application\Bus\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Contracts\Application\Bus\QueryMiddleware;
@@ -441,7 +439,7 @@ If you want to write middleware that can be used with both commands and queries,
 instead:
 
 ```php
-namespace App\Modules\EventManagement\Application\Adapters\Middleware;
+namespace App\Modules\EventManagement\Application\Bus\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Contracts\Application\Bus\BusMiddleware;

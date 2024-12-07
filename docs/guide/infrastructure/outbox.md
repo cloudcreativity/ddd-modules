@@ -126,7 +126,7 @@ port `Queue` - as suggested by the [Queues chapter](./queues) - call it `Outbox`
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driven\Queue;
 
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue\Queue;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue;
 
 interface Outbox extends Queue
 {

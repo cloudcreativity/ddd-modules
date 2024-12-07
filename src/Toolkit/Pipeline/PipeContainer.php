@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2024 Cloud Creativity Limited
  *
@@ -41,8 +42,10 @@ final class PipeContainer implements IPipeContainer
     {
         $factory = $this->pipes[$pipeName] ?? null;
 
-        if ($factory) {
-            return $factory();
+        if (is_callable($factory)) {
+            $pipe = $factory();
+            assert(is_callable($pipe), 'Expecting pipe from factory to be callable.');
+            return $pipe;
         }
 
         throw new RuntimeException('Unrecognised pipe name: ' . $pipeName);

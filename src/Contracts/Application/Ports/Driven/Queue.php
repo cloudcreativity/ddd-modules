@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2024 Cloud Creativity Limited
  *
@@ -9,17 +10,17 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Contracts\Application\Ports\Driven\Exceptions;
+namespace CloudCreativity\Modules\Contracts\Application\Ports\Driven;
 
-use Throwable;
+use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 
-interface ExceptionReporter
+interface Queue
 {
     /**
-     * Report the exception.
+     * Push a command on to the queue.
      *
-     * @param Throwable $ex
+     * @param Command $command
      * @return void
      */
-    public function report(Throwable $ex): void;
+    public function push(Command $command): void;
 }

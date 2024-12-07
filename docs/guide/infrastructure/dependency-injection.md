@@ -47,7 +47,7 @@ This external dependencies port in effect provides other driven ports. For examp
 namespace App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection;
 
 use App\Modules\EventManagement\Application\Ports\Driven\Persistence\AttendeeRepository;
-use App\Modules\EventManagement\Application\Ports\Driven\Queue\Queue;
+use App\Modules\EventManagement\Application\Ports\Driven\Queue;
 use Psr\Log\LoggerInterface;
 
 interface ExternalDependencies
@@ -66,29 +66,29 @@ These external dependencies can then be type-hinted wherever the application lay
 creating a command bus:
 
 ```php
-namespace App\Modules\EventManagement\Application\Adapters\CommandBus;
+namespace App\Modules\EventManagement\Application\Bus;
 
 use App\Modules\EventManagement\Application\UsesCases\Commands\{
     CancelAttendeeTicket\CancelAttendeeTicketCommand,
     CancelAttendeeTicket\CancelAttendeeTicketHandler,
 };
-use App\Modules\EventManagement\Application\Ports\Driving\CommandBus\CommandBus;
+use App\Modules\EventManagement\Application\Ports\Driving\CommandBus as CommandBusPort;
 use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;
 use CloudCreativity\Modules\Application\Bus\CommandHandlerContainer;
 use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;
 use CloudCreativity\Modules\Application\Bus\Middleware\LogMessageDispatch;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 
-final class CommandBusAdapterProvider
+final class CommandBusProvider
 {
     public function __construct(
         private readonly ExternalDependencies $dependencies,
     ) {
     }
 
-    public function getCommandBus(): CommandBus
+    public function getCommandBus(): CommandBusPort
     {
-        $bus = new CommandBusAdapter(
+        $bus = new CommandBus(
             handlers: $handlers = new CommandHandlerContainer(),
             middleware: $middleware = new PipeContainer(),
         );
@@ -131,7 +131,7 @@ on a `RepositoryProvider` interface, that can be accessed via the external depen
 namespace App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection;
 
 use App\Modules\EventManagement\Application\Ports\Driven\Persistence\RepositoryProvider;
-use App\Modules\EventManagement\Application\Ports\Driven\Queue\Queue;
+use App\Modules\EventManagement\Application\Ports\Driven\Queue;
 use Psr\Log\LoggerInterface;
 
 interface ExternalDependencies

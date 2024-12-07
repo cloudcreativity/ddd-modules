@@ -27,7 +27,7 @@ While the `1.x` version was good, the main problem it had was the relationship b
 infrastructure layers. The layering of domain, infrastructure then application did not quite work - it always felt like
 the right relationship was domain, application and then infrastructure as an external concern.
 
-We have solved this problem by switching to _hexagonal architecture_.
+We have solved this problem by switching to _Hexagonal Architecture_.
 
 The domain layer remains the core of your bounded context's implementation. This is wrapped by the application layer,
 i.e. the infrastructure layer is no longer between the domain and the application layers.
@@ -36,17 +36,19 @@ Instead, the application layer has a clearly defined boundary. This boundary is 
 define the use cases of the module - and _adapters_ - the implementations of these interfaces. There are two types of
 ports:
 
-- **Driving Ports** (aka _primary_ or _input_ ports) - interfaces that define the use cases of the bounded context. The
-  adapters that implement these interfaces are in the application layer and are used by the outside world to interact
-  with the module.
+- **Driving Ports** (aka _primary_ or _input_ ports) - interfaces that define the use cases of the bounded context.
+  These are implemented by application services, and are used by adapters in the outside world to initiate interactions
+  with the application. For example, an adapter could be a HTTP controller that takes input from a request and passes it
+  to the application via a driving port.
 - **Driven Ports** (aka _secondary_ or _output_ ports) - interfaces that define the dependencies of the application
-  layer. The adapters that implement these interfaces are in the infrastructure layer.
+  layer. The adapters that implement these interfaces are in the infrastructure layer. For example, a persistence port
+  that has an adapter to read and write data to a database.
 
 The _driving ports_ in this package continue to use the CQRS pattern. So they are your command bus and query bus, plus
 inbound integration events via an inbound event bus.
 
 The _driven ports_ define the boundary between the application and infrastructure layer. This uses a _dependency
-inversion_ principle. The application layer defines the port as an interface, which is then implemented by the adapter
+inversion_ principle. The application layer defines the port as an interface, which is then implemented by an adapter
 in the infrastructure layer.
 
 #### Interface Changes
@@ -71,7 +73,7 @@ For example, `EntityTrait` is now `IsEntity`.
 
 Command messages must now implement the `Contracts\Application\Messages\Command` interface.
 
-The command dispatcher interface is now `Contracts\Application\Ports\Driving\Commands\CommandDispatcher`.
+The command dispatcher interface is now `Contracts\Application\Ports\Driving\CommandDispatcher`.
 
 The concrete implementation has been moved from `Bus` to `Application\Bus`. The constructor argument for the middleware
 pipe container has been renamed `middleware` for clarity. This will only affect your implementation if you are using
@@ -85,7 +87,7 @@ the `Application\Bus\Middleware` namespace.
 
 Query messages must now implement the `Contracts\Application\Messages\Query` interface.
 
-The query dispatcher interface is now `Contracts\Application\Ports\Driving\Queries\QueryDispatcher`.
+The query dispatcher interface is now `Contracts\Application\Ports\Driving\QueryDispatcher`.
 
 The concrete implementation has been moved from `Bus` to `Application\Bus`. The constructor argument for the middleware
 pipe container has been renamed `middleware` for clarity. This will only affect your implementation if you are using
@@ -104,7 +106,7 @@ The previous event bus implementation has been split in two. This is due to the 
 inbound events is now a _driving port_, whereas publishing outbound events occurs via a _driven port_.
 
 The new inbound implementation (previously referred to as a _notifier_) is now in the `Application\InboundEventBus`
-namespace. The driving port is `Contracts\Application\Ports\Driving\InboundEvents\EventDispatcher`.
+namespace. The driving port is `Contracts\Application\Ports\Driving\EventDispatcher`.
 
 The new outbound implementation (referred to as a _publisher_) is now in the `Infrastructure\OutboundEventBus`
 namespace. The driven port is `Contracts\Application\Ports\Driven\OutboundEvents\EventPublisher`.

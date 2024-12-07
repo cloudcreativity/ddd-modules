@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [2.0.0] - 2024-12-07
+
+### Changed
+
+- **BREAKING** Removed the sub-namespaces for ports provided by this package, i.e.:
+    - `Contracts\Application\Ports\Driven` all interfaces are no longer in sub-namespaces; and
+    - `Contracts\Application\Ports\Driven` also has the same change.
+- **BREAKING** Renamed the `InboundEventBus\EventDispatcher` port to `InboundEventDispatcher`.
+- **BREAKING** Renamed the `OutboundEventBus\EventPublisher` port to `OutboundEventPublisher`.
+- Upgraded to PHPStan v2.
+
 ## [2.0.0-rc.3] - 2024-10-13
 
 ### Added
@@ -15,6 +26,10 @@ All notable changes to this project will be documented in this file. This projec
   it. Although technically breaking, if you are using the `IsEntity` or `IsEntityWithNullableId` traits then this method
   is already implemented.
 - New `AggregateRoot` interface so that an aggregate root can be distinguished from a regular aggregate or entity.
+
+### Changed
+
+- Remove deprecation message in PHP 8.4.
 
 ## [2.0.0-rc.2] - 2024-07-27
 
@@ -312,3 +327,5 @@ All notable changes to this project will be documented in this file. This projec
 ## [0.1.0] - 2023-11-18
 
 Initial release.
+
+[2.0.0]: https://github.com/cloudcreativity/docs.dancecloud.com/compare/v2.0.0-rc.3...v2.0.0

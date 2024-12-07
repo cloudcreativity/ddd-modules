@@ -35,15 +35,22 @@ this must never be exposed outside of the infrastructure layer.
 The application layer contains the use cases of the bounded context. These are the business processes that can be
 executed by passing information _into_ the application, and the information that can be read _out_ of the application.
 
-This package embraces hexagonal architecture to define the boundary of the application layer. This boundary is expressed
+This package embraces Hexagonal Architecture to define the boundary of the application layer. This boundary is expressed
 by _ports_ - interfaces that define the use cases of the module - and _adapters_ - the implementations of these
 interfaces. There are two types of ports:
 
-- **Driving Ports** (aka _primary_ or _input_ ports) - interfaces that define the use cases of the bounded context. The
-  adapters that implement these interfaces are in the application layer and are used by the outside world to interact
-  with the module.
+- **Driving Ports** (aka _primary_ or _input_ ports) - interfaces that define the use cases of the bounded context.
+  These are implemented by application services, and are used by adapters in the outside world to initiate interactions
+  with the application. For example, an adapter could be a HTTP controller that takes input from a request and passes it
+  to the application via a driving port.
 - **Driven Ports** (aka _secondary_ or _output_ ports) - interfaces that define the dependencies of the application
-  layer. The adapters that implement these interfaces are in the infrastructure layer.
+  layer. The adapters that implement these interfaces are in the infrastructure layer. For example, a persistence port
+  that has an adapter to read and write data to a database.
+
+:::tip
+For a more detailed explanation of Hexagonal Architecture - along with some excellent diagrams - we
+recommend [this article.](https://medium.com/ssense-tech/hexagonal-architecture-there-are-always-two-sides-to-every-story-bc0780ed7d9c)
+:::
 
 When defining the driving ports in the application layer, we follow the Command Query Responsibility Segregation (CQRS)
 pattern. This pattern separates read (query) and write (command) operations, which makes it completely clear what is

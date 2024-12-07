@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2024 Cloud Creativity Limited
  *
@@ -21,7 +22,7 @@ trait IsNonEmptyList
     /**
      * @var non-empty-list<T>
      */
-    private array $stack = [];
+    private array $stack;
 
     /**
      * @return Generator<T>

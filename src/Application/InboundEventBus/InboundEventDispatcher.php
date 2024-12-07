@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2024 Cloud Creativity Limited
  *
@@ -13,12 +14,12 @@ namespace CloudCreativity\Modules\Application\InboundEventBus;
 
 use CloudCreativity\Modules\Contracts\Application\InboundEventBus\EventHandlerContainer;
 use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
-use CloudCreativity\Modules\Contracts\Application\Ports\Driving\InboundEvents\EventDispatcher as EventPort;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driving\InboundEventDispatcher as IInboundEventDispatcher;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 
-class EventDispatcher implements EventPort
+class InboundEventDispatcher implements IInboundEventDispatcher
 {
     /**
      * @var array<string|callable>

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2024 Cloud Creativity Limited
  *
@@ -145,7 +146,9 @@ final class UuidFactory implements IUuidFactory
     public function uuid7(?DateTimeInterface $dateTime = null): Uuid
     {
         if (method_exists($this->baseFactory, 'uuid7')) {
-            return new Uuid($this->baseFactory->uuid7($dateTime));
+            $base = $this->baseFactory->uuid7($dateTime);
+            assert($base instanceof UuidInterface);
+            return new Uuid($base);
         }
 
         throw new RuntimeException('UUID version 7 is not supported by the underlying factory.');
@@ -157,7 +160,9 @@ final class UuidFactory implements IUuidFactory
     public function uuid8(string $bytes): Uuid
     {
         if (method_exists($this->baseFactory, 'uuid8')) {
-            return new Uuid($this->baseFactory->uuid8($bytes));
+            $base = $this->baseFactory->uuid8($bytes);
+            assert($base instanceof UuidInterface);
+            return new Uuid($base);
         }
 
         throw new RuntimeException('UUID version 8 is not supported by the underlying factory.');

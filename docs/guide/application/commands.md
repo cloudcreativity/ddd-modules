@@ -126,32 +126,31 @@ Although there is a _generic_ command bus interface, our bounded context needs t
 We do this by defining an interface in our application's driving ports.
 
 ```php
-namespace App\Modules\EventManagement\Application\Ports\Driving\CommandBus;
+namespace App\Modules\EventManagement\Application\Ports\Driving;
 
-use CloudCreativity\Modules\Application\Ports\Driving\CommandBus\CommandDispatcher;
+use CloudCreativity\Modules\Application\Ports\Driving\CommandDispatcher;
 
 interface CommandBus extends CommandDispatcher
 {
 }
 ```
 
-And then our adapter (the concrete implementation of the port) is as follows:
+And then our implementation is as follows:
 
 ```php
-namespace App\Modules\EventManagement\Application\Adapters\CommandBus;
+namespace App\Modules\EventManagement\Application\Bus;
 
-use App\Modules\EventManagement\Application\Ports\Driving\CommandBus\CommandBus;
+use App\Modules\EventManagement\Application\Ports\Driving\CommandBus as Port;
 use CloudCreativity\Modules\Application\Bus\CommandDispatcher;
 
-final class CommandBusAdapter extends CommandDispatcher implements
-    CommandBus
+final class CommandBus extends CommandDispatcher implements Port
 {
 }
 ```
 
 ### Creating a Command Bus
 
-The command dispatcher class that your adapter extended (in the above example) allows you to build a command bus
+The command dispatcher class that your implementation extends (in the above example) allows you to build a command bus
 specific to your domain. You do this by:
 
 1. Binding command handler factories into the command dispatcher; and
@@ -164,29 +163,29 @@ handler or middleware are actually being used.
 For example:
 
 ```php
-namespace App\Modules\EventManagement\Application\Adapters\CommandBus;
+namespace App\Modules\EventManagement\Application\Bus;
 
 use App\Modules\EventManagement\Application\UsesCases\Commands\{
     CancelAttendeeTicket\CancelAttendeeTicketCommand,
     CancelAttendeeTicket\CancelAttendeeTicketHandler,
 };
-use App\Modules\EventManagement\Application\Ports\Driving\CommandBus\CommandBus;
+use App\Modules\EventManagement\Application\Ports\Driving\CommandBus as CommandBusPort;
 use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;
 use CloudCreativity\Modules\Application\Bus\CommandHandlerContainer;
 use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;
 use CloudCreativity\Modules\Application\Bus\Middleware\LogMessageDispatch;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 
-final class CommandBusAdapterProvider
+final class CommandBusProvider
 {
     public function __construct(
         private readonly ExternalDependencies $dependencies,
     ) {
     }
 
-    public function getCommandBus(): CommandBus
+    public function getCommandBus(): CommandBusPort
     {
-        $bus = new CommandBusAdapter(
+        $bus = new CommandBus(
             handlers: $handlers = new CommandHandlerContainer(),
             middleware: $middleware = new PipeContainer(),
         );
@@ -222,15 +221,15 @@ final class CommandBusAdapterProvider
 }
 ```
 
-As the presentation and delivery layer is the user of the driving ports, we can now bind the port and its adapter into a
-service container. For example, in Laravel:
+Adapters in the presentation and delivery layer will use the driving ports. Typically this means we need to bind the
+port into a service container. For example, in Laravel:
 
 ```php
 namespace App\Providers;
 
 use App\Modules\EventManagement\Application\{
-    Adapters\CommandBus\CommandBusAdapterProvider,
-    Ports\Driving\CommandBus\CommandBus,
+    Bus\CommandBusProvider,
+    Ports\Driving\CommandBus,
 };
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\ServiceProvider;
@@ -242,13 +241,12 @@ final class EventManagementServiceProvider extends ServiceProvider
         $this->app->bind(
             CommandBus::class,
             static function (Container $app)  {
-                $provider = $app->make(CommandBusAdapterProvider::class);
+                $provider = $app->make(CommandBusProvider::class);
                 return $provider->getCommandBus();
             },
         );
     }
 }
-
 ```
 
 ### Dispatching Commands
@@ -260,8 +258,8 @@ a single action controller to handle a HTTP request in a Laravel application, we
 namespace App\Http\Controllers\Api\Attendees;
 
 use App\Modules\EventManagement\Application\{
-    Ports\Driving\CommandBus\CommandBus,
-    UsesCases\Commands\CancelAttendeeTicket\CancelAttendeeTicketCommand,
+    Ports\Driving\CommandBus,
+    UseCases\Commands\CancelAttendeeTicket\CancelAttendeeTicketCommand,
 };
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
 use Illuminate\Validation\Rule;
@@ -322,8 +320,8 @@ updated to return a `202 Accepted` response to indicate the command has been que
 namespace App\Http\Controllers\Api\Attendees;
 
 use App\Modules\EventManagement\Application\{
-    Ports\Driving\CommandBus\CommandBus,
-    UsesCases\Commands\CancelAttendeeTicket\CancelAttendeeTicketCommand,
+    Ports\Driving\CommandBus,
+    UseCases\Commands\CancelAttendeeTicket\CancelAttendeeTicketCommand,
 };
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
 use Illuminate\Validation\Rule;
@@ -573,7 +571,7 @@ You can write your own middleware to suit your specific needs. Middleware is a s
 following signature:
 
 ```php
-namespace App\Modules\EventManagement\Application\Adapters\Middleware;
+namespace App\Modules\EventManagement\Application\Bus\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Contracts\Application\Bus\CommandMiddleware;
@@ -615,7 +613,7 @@ If you want to write middleware that can be used with both commands and queries,
 instead:
 
 ```php
-namespace App\Modules\EventManagement\Application\Adapters\Middleware;
+namespace App\Modules\EventManagement\Application\Bus\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Contracts\Application\Bus\BusMiddleware;

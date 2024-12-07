@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2024 Cloud Creativity Limited
  *
@@ -23,6 +24,7 @@ class ContractsTest extends TestCase
     public function testItDoesNotThrowWhenPreconditionIsTrue(): void
     {
         Contracts::assert(true, 'Not expected error.');
+        /** @phpstan-ignore-next-line */
         $this->assertTrue(true);
     }
 

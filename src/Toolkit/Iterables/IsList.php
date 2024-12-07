@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2024 Cloud Creativity Limited
  *
@@ -19,7 +20,7 @@ use Generator;
 trait IsList
 {
     /**
-     * @var array<T>
+     * @var list<T>
      */
     private array $stack = [];
 

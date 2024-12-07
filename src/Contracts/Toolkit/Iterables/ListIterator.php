@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2024 Cloud Creativity Limited
  *
@@ -16,7 +17,7 @@ use IteratorAggregate;
 
 /**
  * @template TValue
- * @extends IteratorAggregate<TValue>
+ * @extends IteratorAggregate<int, TValue>
  */
 interface ListIterator extends IteratorAggregate, Countable
 {

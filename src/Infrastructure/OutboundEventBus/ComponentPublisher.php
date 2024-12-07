@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2024 Cloud Creativity Limited
  *
@@ -12,13 +13,13 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Infrastructure\OutboundEventBus;
 
 use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\OutboundEventBus\EventPublisher;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driven\OutboundEventPublisher;
 use CloudCreativity\Modules\Contracts\Infrastructure\OutboundEventBus\PublisherHandlerContainer;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 
-class ComponentPublisher implements EventPublisher
+class ComponentPublisher implements OutboundEventPublisher
 {
     /**
      * @var array<string|callable>
@@ -47,7 +48,7 @@ class ComponentPublisher implements EventPublisher
     {
         assert(array_is_list($pipes), 'Expecting an array list of middleware.');
 
-        $this->pipes = array_values($pipes);
+        $this->pipes = $pipes;
     }
 
     /**

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2024 Cloud Creativity Limited
  *
@@ -15,7 +16,7 @@ use CloudCreativity\Modules\Contracts\Toolkit\Iterables\LazyList;
 use CloudCreativity\Modules\Toolkit\Iterables\IsLazyList;
 use PHPUnit\Framework\TestCase;
 
-class LazyListTraitTest extends TestCase
+class IsLazyListTest extends TestCase
 {
     /**
      * @return void

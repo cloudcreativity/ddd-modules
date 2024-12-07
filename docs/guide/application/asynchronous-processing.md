@@ -47,7 +47,7 @@ For example, an endpoint that triggers a recalculation of our sales report:
 namespace App\Http\Controllers\Api\AttendanceReport;
 
 use App\Modules\EventManagement\Application\{
-    Ports\Driving\Commands\CommandBus,
+    Ports\Driving\CommandBus,
     UsesCases\Commands\RecalculateSalesAtEvent\RecalculateSalesAtEventCommand,
 };
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
@@ -95,7 +95,7 @@ processing. Some examples of where your application layer might need to push int
 Or anything else that fits with the specific use case of your bounded context!
 
 Our approach is to define this work as _internal_ command messages. These are queued and dispatched by a specific
-_internal_ command bus - separating them from the command bus that is an adapter of the driving port in the application
+_internal_ command bus - separating them from the command bus that implements the driving port in the application
 layer.
 
 This means internal commands are not exposed as use cases of our module - making them an internal implementation detail
@@ -177,12 +177,12 @@ command is queued by an infrastructure adapter, it has left the application laye
 queue for processing, it needs to re-enter the application layer via a driving port.
 
 However, by defining this as a separate port to our public command bus, we can ensure that internal commands are only
-dispatched by the internal command bus adapter.
+dispatched by the internal command bus.
 
-Define the port as follows:
+Define the internal command bus as follows:
 
 ```php
-namespace App\Modules\EventManagement\Application\Ports\Driving\CommandBus;
+namespace App\Modules\EventManagement\Application\Ports\Driving;
 
 use CloudCreativity\Modules\Application\Ports\Driving\CommandBus\CommandDispatcher;
 
@@ -191,15 +191,15 @@ interface InternalCommandBus extends CommandDispatcher
 }
 ```
 
-And then our adapter (the concrete implementation of the port) is as follows:
+And then our port implementation is as follows:
 
 ```php
-namespace App\Modules\EventManagement\Application\Adapters\CommandBus;
+namespace App\Modules\EventManagement\Application\Bus;
 
-use App\Modules\EventManagement\Application\Ports\Driving\CommandBus\InternalCommandBus;
+use App\Modules\EventManagement\Application\Ports\Driving\InternalCommandBus;
 use CloudCreativity\Modules\Application\Bus\CommandDispatcher;
 
-final class InternalCommandBusAdapter extends CommandDispatcher implements
+final class InternalCommandBusService extends CommandDispatcher implements
     InternalCommandBus
 {
 }
@@ -221,7 +221,7 @@ public commands. I.e.:
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driven\Queue;
 
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue\Queue as Port;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue as Port;
 
 // queues public commands
 interface Queue extends Port

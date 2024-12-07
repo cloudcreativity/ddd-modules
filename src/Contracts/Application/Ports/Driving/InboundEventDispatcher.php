@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2024 Cloud Creativity Limited
  *
@@ -9,17 +10,17 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Contracts\Application\Ports\Driven\OutboundEventBus;
+namespace CloudCreativity\Modules\Contracts\Application\Ports\Driving;
 
 use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 
-interface EventPublisher
+interface InboundEventDispatcher
 {
     /**
-     * Publish an outbound integration event.
+     * Dispatch an inbound integration event.
      *
      * @param IntegrationEvent $event
      * @return void
      */
-    public function publish(IntegrationEvent $event): void;
+    public function dispatch(IntegrationEvent $event): void;
 }

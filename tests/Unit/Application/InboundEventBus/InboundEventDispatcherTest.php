@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2024 Cloud Creativity Limited
  *
@@ -11,7 +12,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Application\InboundEventBus;
 
-use CloudCreativity\Modules\Application\InboundEventBus\EventDispatcher;
+use CloudCreativity\Modules\Application\InboundEventBus\InboundEventDispatcher;
 use CloudCreativity\Modules\Contracts\Application\InboundEventBus\EventHandler;
 use CloudCreativity\Modules\Contracts\Application\InboundEventBus\EventHandlerContainer;
 use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
@@ -19,7 +20,7 @@ use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class EventDispatcherTest extends TestCase
+class InboundEventDispatcherTest extends TestCase
 {
     /**
      * @var EventHandlerContainer&MockObject
@@ -32,9 +33,9 @@ class EventDispatcherTest extends TestCase
     private PipeContainer&MockObject $middleware;
 
     /**
-     * @var EventDispatcher
+     * @var InboundEventDispatcher
      */
-    private EventDispatcher $dispatcher;
+    private InboundEventDispatcher $dispatcher;
 
     /**
      * @var array<string>
@@ -48,7 +49,7 @@ class EventDispatcherTest extends TestCase
     {
         parent::setUp();
 
-        $this->dispatcher = new EventDispatcher(
+        $this->dispatcher = new InboundEventDispatcher(
             handlers: $this->handlers = $this->createMock(EventHandlerContainer::class),
             middleware: $this->middleware = $this->createMock(PipeContainer::class),
         );

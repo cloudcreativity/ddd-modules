@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2024 Cloud Creativity Limited
  *
@@ -26,6 +27,7 @@ class SwallowInboundEventTest extends TestCase
     {
         $handler = new SwallowInboundEvent();
         $handler->handle(new TestInboundEvent());
+        /** @phpstan-ignore-next-line */
         $this->assertTrue(true);
     }
 

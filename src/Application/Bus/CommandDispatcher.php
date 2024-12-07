@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2024 Cloud Creativity Limited
  *
@@ -14,8 +15,8 @@ namespace CloudCreativity\Modules\Application\Bus;
 use Closure;
 use CloudCreativity\Modules\Contracts\Application\Bus\CommandHandlerContainer;
 use CloudCreativity\Modules\Contracts\Application\Messages\Command;
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue\Queue;
-use CloudCreativity\Modules\Contracts\Application\Ports\Driving\Commands\CommandDispatcher as ICommandDispatcher;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue;
+use CloudCreativity\Modules\Contracts\Application\Ports\Driving\CommandDispatcher as ICommandDispatcher;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
