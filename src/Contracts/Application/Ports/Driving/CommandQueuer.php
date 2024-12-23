@@ -13,15 +13,14 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Contracts\Application\Ports\Driving;
 
 use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
-use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
-interface CommandDispatcher
+interface CommandQueuer
 {
     /**
-     * Dispatch the given command.
+     * Queue a command for asynchronous dispatching.
      *
      * @param Command $command
-     * @return Result<mixed>
+     * @return void
      */
-    public function dispatch(Command $command): Result;
+    public function queue(Command $command): void;
 }

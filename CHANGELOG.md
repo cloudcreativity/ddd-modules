@@ -5,12 +5,22 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+### Added
+
+- Commands can now be queued by the presentation and delivery layer via the `CommandQueuer` port. Refer to the command
+  documentation for details.
+
 ### Changed
 
 - **BREAKING** Moved the `Message`, `Command`, `Query`, and `IntegrationEvent` interfaces to the `Toolkit\Messages`
   namespace. This is to make it clearer that these are part of the toolkit, not the application or infrastructure
   layers. It matches the `Result` and `Error` interfaces that are already in the `Toolkit\Result` namespace. I.e.
   now the toolkit contains both the input and output interfaces.
+
+### Removed
+
+- **BREAKING** The `CommandDispatcher` driving port no longer has a `queue()` method. Use the new `CommandQueuer` port
+  instead.
 
 ## [2.0.0] - 2024-12-07
 

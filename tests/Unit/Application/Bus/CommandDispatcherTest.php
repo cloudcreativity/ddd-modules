@@ -15,7 +15,6 @@ namespace CloudCreativity\Modules\Tests\Unit\Application\Bus;
 use CloudCreativity\Modules\Application\Bus\CommandDispatcher;
 use CloudCreativity\Modules\Contracts\Application\Bus\CommandHandler;
 use CloudCreativity\Modules\Contracts\Application\Bus\CommandHandlerContainer;
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue;
 use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Toolkit\Result\Result;
@@ -35,11 +34,6 @@ class CommandDispatcherTest extends TestCase
     private PipeContainer&MockObject $middleware;
 
     /**
-     * @var MockObject&Queue
-     */
-    private Queue&MockObject $queue;
-
-    /**
      * @var CommandDispatcher
      */
     private CommandDispatcher $dispatcher;
@@ -56,12 +50,9 @@ class CommandDispatcherTest extends TestCase
     {
         parent::setUp();
 
-        $this->queue = $this->createMock(Queue::class);
-
         $this->dispatcher = new CommandDispatcher(
             handlers: $this->handlers = $this->createMock(CommandHandlerContainer::class),
             middleware: $this->middleware = $this->createMock(PipeContainer::class),
-            queue: fn () => $this->queue,
         );
     }
 
@@ -70,7 +61,7 @@ class CommandDispatcherTest extends TestCase
      */
     protected function tearDown(): void
     {
-        unset($this->handlers, $this->middleware, $this->queue, $this->dispatcher, $this->sequence);
+        unset($this->handlers, $this->middleware, $this->dispatcher, $this->sequence);
         parent::tearDown();
     }
 
@@ -79,8 +70,6 @@ class CommandDispatcherTest extends TestCase
      */
     public function test(): void
     {
-        $this->willNotQueue();
-
         $command = $this->createMock(Command::class);
 
         $this->handlers
@@ -105,8 +94,6 @@ class CommandDispatcherTest extends TestCase
      */
     public function testWithMiddleware(): void
     {
-        $this->willNotQueue();
-
         $command1 = new TestCommand();
         $command2 = new TestCommand();
         $command3 = new TestCommand();
@@ -177,61 +164,5 @@ class CommandDispatcherTest extends TestCase
             'after2',
             'after1',
         ], $this->sequence);
-    }
-
-    /**
-     * @return void
-     */
-    public function testItThrowsWhenItCannotQueueCommands(): void
-    {
-        $dispatcher = new CommandDispatcher(
-            $this->handlers,
-        );
-
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage(
-            'Commands cannot be queued because the command dispatcher has not been given a queue factory.',
-        );
-
-        $dispatcher->queue(new TestCommand());
-    }
-
-    /**
-     * @return void
-     */
-    public function testItQueuesCommand(): void
-    {
-        $this->willNotDispatch();
-
-        $this->queue
-            ->expects($this->once())
-            ->method('push')
-            ->with($this->identicalTo($command = new TestCommand()));
-
-        $this->dispatcher->queue($command);
-    }
-
-    /**
-     * @return void
-     */
-    private function willNotQueue(): void
-    {
-        $this->queue
-            ->expects($this->never())
-            ->method($this->anything());
-    }
-
-    /**
-     * @return void
-     */
-    private function willNotDispatch(): void
-    {
-        $this->handlers
-            ->expects($this->never())
-            ->method($this->anything());
-
-        $this->middleware
-            ->expects($this->never())
-            ->method($this->anything());
     }
 }
