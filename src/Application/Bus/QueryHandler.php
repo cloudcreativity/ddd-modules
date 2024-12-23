@@ -14,7 +14,7 @@ namespace CloudCreativity\Modules\Application\Bus;
 
 use CloudCreativity\Modules\Contracts\Application\Bus\QueryHandler as IQueryHandler;
 use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
-use CloudCreativity\Modules\Contracts\Application\Messages\Query;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Query;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 final class QueryHandler implements IQueryHandler

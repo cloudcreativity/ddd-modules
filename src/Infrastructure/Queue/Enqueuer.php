@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\Queue;
 
-use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 use CloudCreativity\Modules\Contracts\Infrastructure\Queue\Enqueuer as IEnqueuer;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
 
 final class Enqueuer implements IEnqueuer
 {

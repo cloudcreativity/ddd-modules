@@ -12,9 +12,9 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue;
 
-use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 use CloudCreativity\Modules\Contracts\Infrastructure\Queue\Enqueuer;
 use CloudCreativity\Modules\Contracts\Infrastructure\Queue\EnqueuerContainer;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Infrastructure\Queue\ComponentQueue;
 use PHPUnit\Framework\MockObject\MockObject;

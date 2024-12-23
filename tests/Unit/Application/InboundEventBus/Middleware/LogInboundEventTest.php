@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Application\InboundEventBus\Middleware;
 
 use CloudCreativity\Modules\Application\InboundEventBus\Middleware\LogInboundEvent;
-use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
 use CloudCreativity\Modules\Tests\Unit\Infrastructure\OutboundEventBus\TestOutboundEvent;
 use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use LogicException;

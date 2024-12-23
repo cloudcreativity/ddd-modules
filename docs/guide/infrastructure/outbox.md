@@ -62,7 +62,7 @@ Our recommended approach is to first place these events into an outbox. This mea
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driven\OutboundEvents;
 
-use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
 
 interface Outbox
 {

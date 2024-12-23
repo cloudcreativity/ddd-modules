@@ -14,8 +14,8 @@ namespace CloudCreativity\Modules\Application\Bus\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Contracts\Application\Bus\BusMiddleware;
-use CloudCreativity\Modules\Contracts\Application\Messages\Command;
-use CloudCreativity\Modules\Contracts\Application\Messages\Query;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Query;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 use CloudCreativity\Modules\Toolkit\Loggable\ObjectContext;
 use CloudCreativity\Modules\Toolkit\Loggable\ResultContext;

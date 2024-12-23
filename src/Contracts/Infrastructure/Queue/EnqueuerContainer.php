@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Contracts\Infrastructure\Queue;
 
-use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
 
 interface EnqueuerContainer
 {

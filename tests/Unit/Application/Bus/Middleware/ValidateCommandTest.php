@@ -14,7 +14,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Application\Bus\Middleware;
 
 use CloudCreativity\Modules\Application\Bus\Middleware\ValidateCommand;
 use CloudCreativity\Modules\Contracts\Application\Bus\Validator;
-use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 use CloudCreativity\Modules\Toolkit\Result\Error;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;

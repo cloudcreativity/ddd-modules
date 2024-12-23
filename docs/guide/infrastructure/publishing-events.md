@@ -64,7 +64,7 @@ namespace App\Modules\EventManagement\Infrastructure\OutboundEventBus;
 use App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus\OutboundEventBus;
 use App\Modules\EventManagement\Infrastructure\GooglePubSub\EventSerializer;
 use App\Modules\EventManagement\Infrastructure\GooglePubSub\SecureTopicFactory;
-use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
 use CloudCreativity\Modules\Infrastructure\OutboundEventBus\Middleware\LogOutboundEvent;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 use Psr\Log\LoggerInterface;
@@ -262,7 +262,7 @@ implement the following interface that was extended by the driven port:
 ```php
 namespace CloudCreativity\Modules\Application\Ports\Driven\OutboundEventBus;
 
-use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
 
 interface EventPublisher
 {
@@ -321,8 +321,8 @@ following signature:
 namespace App\Modules\EventManagement\Application\Adapters\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 use CloudCreativity\Modules\Contracts\Infrastructure\OutboundEventBus\OutboundEventMiddleware;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
 
 final class MyMiddleware implements OutboundEventMiddleware
 {

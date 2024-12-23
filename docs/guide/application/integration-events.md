@@ -36,8 +36,8 @@ For example:
 ```php
 namespace VendorName\EventManagement\Shared\IntegrationEvents\V1;
 
-use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
 use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
 use VendorName\EventManagement\Shared\Enums\CancellationReasonEnum;
 
@@ -97,7 +97,7 @@ This can be expressed via an interface. To illustrate the point, a JSON serializ
 ```php
 namespace VendorName\Ordering\Shared\IntegrationEvents\V1\Serializers;
 
-use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
 
 interface JsonSerializer
 {
@@ -540,7 +540,7 @@ Here is an example controller from a Laravel application to demonstrate the patt
 namespace App\Http\Controllers\Api\PubSub;
 
 use App\Modules\EventManagement\Application\Ports\Driving\InboundEventBus;
-use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
 use VendorName\Ordering\Shared\IntegrationEvents\V1\Serializers\JsonSerializer;
 
 class InboundEventController extends Controller
@@ -648,7 +648,7 @@ example:
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driving;
 
-use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
 
 interface Inbox
 {
@@ -663,7 +663,7 @@ might look like this:
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driven\Inbox;
 
-use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
 
 interface InboxRepository
 {
@@ -683,7 +683,7 @@ This means we can now update the previous controller example to use the inbox in
 namespace App\Http\Controllers\Api\PubSub;
 
 use App\Modules\EventManagement\Application\Ports\Driving\InboundEvents\Inbox;
-use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
 use VendorName\Ordering\Shared\IntegrationEvents\V1\Serializers\JsonSerializer;
 
 class InboundEventController extends Controller
@@ -890,7 +890,7 @@ namespace App\Modules\EventManagement\Application\Bus\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Contracts\Application\InboundEventBus\InboundEventMiddleware;
-use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
 
 final class MyMiddleware implements InboundEventMiddleware
 {

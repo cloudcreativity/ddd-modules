@@ -14,7 +14,7 @@ namespace CloudCreativity\Modules\Application\InboundEventBus\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Contracts\Application\InboundEventBus\InboundEventMiddleware;
-use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
 
 final class SetupBeforeEvent implements InboundEventMiddleware
 {

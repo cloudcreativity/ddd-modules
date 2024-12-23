@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+### Changed
+
+- **BREAKING** Moved the `Message`, `Command`, `Query`, and `IntegrationEvent` interfaces to the `Toolkit\Messages`
+  namespace. This is to make it clearer that these are part of the toolkit, not the application or infrastructure
+  layers. It matches the `Result` and `Error` interfaces that are already in the `Toolkit\Result` namespace. I.e.
+  now the toolkit contains both the input and output interfaces.
+
 ## [2.0.0] - 2024-12-07
 
 ### Changed

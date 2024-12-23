@@ -15,7 +15,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Application\InboundEventBus;
 use CloudCreativity\Modules\Application\InboundEventBus\InboundEventDispatcher;
 use CloudCreativity\Modules\Contracts\Application\InboundEventBus\EventHandler;
 use CloudCreativity\Modules\Contracts\Application\InboundEventBus\EventHandlerContainer;
-use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;

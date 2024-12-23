@@ -14,7 +14,7 @@ namespace CloudCreativity\Modules\Application\InboundEventBus;
 
 use CloudCreativity\Modules\Contracts\Application\InboundEventBus\EventHandler as IEventHandler;
 use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
-use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
 
 final class EventHandler implements IEventHandler
 {

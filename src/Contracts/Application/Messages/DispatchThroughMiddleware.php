@@ -15,7 +15,7 @@ namespace CloudCreativity\Modules\Contracts\Application\Messages;
 interface DispatchThroughMiddleware
 {
     /**
-     * Get the middleware to dispatch the message through.
+     * Get the middleware to dispatch a message through.
      *
      * @return list<callable|string>
      */

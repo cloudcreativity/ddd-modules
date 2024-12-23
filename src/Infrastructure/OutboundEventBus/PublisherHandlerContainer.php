@@ -13,9 +13,9 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Infrastructure\OutboundEventBus;
 
 use Closure;
-use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
 use CloudCreativity\Modules\Contracts\Infrastructure\OutboundEventBus\{
     PublisherHandlerContainer as IPublisherHandlerContainer};
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
 use CloudCreativity\Modules\Infrastructure\InfrastructureException;
 
 final class PublisherHandlerContainer implements IPublisherHandlerContainer

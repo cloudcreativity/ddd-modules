@@ -15,7 +15,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Application\Bus;
 use CloudCreativity\Modules\Application\Bus\QueryDispatcher;
 use CloudCreativity\Modules\Contracts\Application\Bus\QueryHandler;
 use CloudCreativity\Modules\Contracts\Application\Bus\QueryHandlerContainer;
-use CloudCreativity\Modules\Contracts\Application\Messages\Query;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Query;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\MockObject\MockObject;

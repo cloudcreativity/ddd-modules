@@ -14,7 +14,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Application\InboundEventBus\Middlew
 
 use CloudCreativity\Modules\Application\InboundEventBus\Middleware\FlushDeferredEvents;
 use CloudCreativity\Modules\Contracts\Application\DomainEventDispatching\DeferredDispatcher;
-use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

@@ -97,7 +97,7 @@ Then you can create the adapter by providing it with the default closure for que
 namespace App\Modules\EventManagement\Infrastructure\Queue;
 
 use App\Modules\EventManagement\Application\Ports\Driven\Queue\Queue;
-use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
 use CloudCreativity\Modules\Infrastructure\Queue\Middleware\LogPushedToQueue;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 
@@ -237,7 +237,7 @@ example:
 ```php
 namespace App\Modules\EventManagement\Infrastructure\Queue;
 
-use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
 
 final class DefaultEnqueuer
 {
@@ -264,7 +264,7 @@ implements the port interface that is extended in your application layer:
 ```php
 namespace CloudCreativity\Modules\Application\Ports\Driven\Queue;
 
-use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
 
 interface Queue
 {
@@ -300,7 +300,7 @@ For example, a default Laravel job for queuing and dispatching commands would be
 namespace App\Modules\EventManagement\Infrastructure\Queue;
 
 use App\Modules\EventManagement\Application\Ports\Driving\CommandBus;
-use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
 use CloudCreativity\Modules\Toolkit\Result\FailedResultException;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -481,8 +481,8 @@ following signature:
 namespace App\Modules\Shared\Infrastructure\Queue\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 use CloudCreativity\Modules\Contracts\Infrastructure\Queue\QueueMiddleware;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
 
 final class MyQueueMiddleware implements QueueMiddleware
 {

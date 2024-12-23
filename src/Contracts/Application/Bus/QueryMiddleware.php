@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Contracts\Application\Bus;
 
 use Closure;
-use CloudCreativity\Modules\Contracts\Application\Messages\Query;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Query;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 interface QueryMiddleware

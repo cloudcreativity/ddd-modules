@@ -18,8 +18,8 @@ For example:
 ```php
 namespace App\Modules\EventManagement\Application\UseCases\Commands\CancelAttendeeTicket;
 
-use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
 use VendorName\EventManagement\Shared\Enums\CancellationReasonEnum;
 
 final readonly class CancelAttendeeTicketCommand implements Command
@@ -353,8 +353,7 @@ class CancellationController extends Controller
 ```
 
 To allow commands to be queued, you **must** provide a queue factory to the command bus when creating it. This topic is
-covered in the [Asynchronous Processing](../infrastructure/queues#external-queuing) chapter, with specific examples
-in the _External Queuing_ section.
+covered in the [Queues chapter](../infrastructure/queues.md#queue-port).
 
 ## Middleware
 
@@ -541,9 +540,9 @@ that has sensitive customer data on it that you do not want to end up in your lo
 implement the `ContextProvider` interface on your command message:
 
 ```php
-use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextProvider;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
 
 final readonly class CancelAttendeeTicketCommand implements
   Command,
@@ -575,7 +574,7 @@ namespace App\Modules\EventManagement\Application\Bus\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Contracts\Application\Bus\CommandMiddleware;
-use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 final class MyMiddleware implements CommandMiddleware
@@ -617,8 +616,8 @@ namespace App\Modules\EventManagement\Application\Bus\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Contracts\Application\Bus\BusMiddleware;
-use CloudCreativity\Modules\Contracts\Application\Messages\Command;
-use CloudCreativity\Modules\Contracts\Application\Messages\Query;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Query;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 class MyBusMiddleware implements BusMiddleware
