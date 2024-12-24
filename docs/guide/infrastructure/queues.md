@@ -1,8 +1,10 @@
 # Queues
 
-As described in the [Asynchronous Processing chapter](../application/asynchronous-processing), our command bus allows
-you to queue commands for asynchronous dispatch. To do this, you need to provide a queue adapter to the command bus.
-This adapter handles pushing the command onto a queue, and dispatching the command when it is pulled from the queue.
+As described in the [Asynchronous Processing chapter](../application/asynchronous-processing), your application layer
+can allow commands to be queued via a command queuer driving port. Additionally, it may also choose to implement some
+internal processes as internal commands that are executed asynchronously. 
+
+To do either (or both!), you need to define a queue driven port. The adapter implementation then handles pushing commands onto a queue, and dispatching the command when it is pulled from the queue.
 
 We provide several queue adapters that you can use. These are designed to be simple to use and allow you to plug into
 any PHP queue implementation that you choose to use. This chapter describes these queue implementations.
@@ -24,19 +26,9 @@ interface Queue extends Port
 }
 ```
 
-This port is injected into a command bus via a closure factory that ensures the instantiation of the queue adapter is
-lazy. For example:
+If you have a command queuer driving port, you will need to inject your queue adapter into the command queuer. See the [command queuer documentation](../application/commands.md#command-queuer) for examples. 
 
-```php
-$bus = new CommandBus(
-    handlers: $handlers = new CommandHandlerContainer(),
-    middleware: $middleware = new PipeContainer(),
-    queue: fn() => $this->dependencies->getQueue(),
-);
-```
-
-This allows the application layer to push commands onto the queue. When pulling commands from the queue, your queue
-adapter will need to dispatch the command to the command bus.
+This allows the presentation and delivery layer to asynchronously dispatch commands. When pulling commands from the queue, your queue adapter will need to dispatch the command to the command bus.
 
 We provide two concrete classes that allow you to push work onto a queue via your preferred PHP implementation. If
 neither of these work for you, you can instead write a queue that implements the above interface.
@@ -45,12 +37,11 @@ neither of these work for you, you can instead write a queue that implements the
 
 The [asynchronous processing chapter](../application/asynchronous-processing) introduces the concept of _internal_
 commands. These are commands that are not exposed as use cases of your bounded context. Instead they are used to split
-long running or complex work up into smaller write operations (commands) that are sequenced via a workflow.
+long-running or complex work up into smaller write operations (commands) that are sequenced via a workflow.
 
-If you have an internal command bus, you will need to provide a separate queue port for these commands. This is because
-the internal command bus will have its own queue, that dispatches internal command messages to the internal command bus.
+If you have an internal command bus, you can provide a separate queue port for these commands. This segregates internal commands to a separate queue, which is advantageous to separate the concerns of commands that are use cases of your bounded context (driving ports) or internal to the application layer.
 
-In this scenario, define another driven port in your application layer:
+In this scenario, define another driven port:
 
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driven\Queue;
@@ -62,15 +53,7 @@ interface InternalQueue extends Port
 }
 ```
 
-And then ensure the adapter of this internal port is injected into your internal command bus:
-
-```php
-$bus = new InternalCommandBus(
-    handlers: $handlers = new CommandHandlerContainer(),
-    middleware: $middleware = new PipeContainer(),
-    queue: fn() => $this->dependencies->getInternalQueue(),
-);
-```
+Then wherever your application layer needs to queue an internal command, it can do this via the internal queue port.
 
 ## Closure Queuing
 

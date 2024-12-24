@@ -31,9 +31,12 @@ of the bounded context. They are exposed by your application layer as a driving 
 by the presentation and delivery layer.
 
 It is reasonable for there to be scenarios where the presentation and delivery layer intends to change the state of the
-bounded context via a command, but does not need to wait for the result of that change. Our command bus implementation
-allows this to be signalled by exposing a `queue()` method on the command bus. This allows the outside world to
-signal a desire to alter the state of the domain asynchronously.
+bounded context via a command, but does not need to wait for the result of that change. We provide a _command queuer_
+implementation that allows commands to be dispatched in a non-blocking way, allowing the outside world to alter the
+state of the domain asynchronously.
+
+See the [Commands chapter](./commands.md#command-queuer) for details on how to define a command queuer port and
+implementation.
 
 ### Example
 
@@ -47,7 +50,7 @@ For example, an endpoint that triggers a recalculation of our sales report:
 namespace App\Http\Controllers\Api\AttendanceReport;
 
 use App\Modules\EventManagement\Application\{
-    Ports\Driving\CommandBus,
+    Ports\Driving\CommandQueuer,
     UsesCases\Commands\RecalculateSalesAtEvent\RecalculateSalesAtEventCommand,
 };
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
@@ -57,7 +60,7 @@ class ReportRecalculationController extends Controller
 {
     public function __invoke(
         Request $request,
-        CommandBus $bus,
+        CommandQueuer $bus,
         string $attendeeId,
     ) {
         $validated = $request->validate([
@@ -75,11 +78,6 @@ class ReportRecalculationController extends Controller
 }
 ```
 
-For this to work, you must have a driven port that can queue commands, along with a queue adapter in the infrastructure
-layer that implements this port. This is covered by
-the [queues chapter in the infrastructure section.](../infrastructure/queues) The queue adapter is then injected into
-the command bus. The queue chapter contains an example.
-
 ## Internal Queuing
 
 There are many scenarios where it can be advantageous for your bounded context to queue internal work for asynchronous
@@ -94,17 +92,18 @@ processing. Some examples of where your application layer might need to push int
 
 Or anything else that fits with the specific use case of your bounded context!
 
-Our approach is to define this work as _internal_ command messages. These are queued and dispatched by a specific
-_internal_ command bus - separating them from the command bus that implements the driving port in the application
-layer.
+Our approach is to define this work as _internal_ command messages. These are queued by a specific _internal_ queue, and
+dispatched by a specific _internal_ command bus. This segregates them from the command bus that implements the command
+bus driving port.
 
-This means internal commands are not exposed as use cases of our module - making them an internal implementation detail
-of the application layer.
+This segregation is important, because it means that internal commands cannot be dispatched by the outside world. And it
+means internal commands are not exposed as use cases of our module - making them an internal implementation detail of
+the application layer.
 
 :::tip
-If you have a command that can be dispatched both by the outside world and internally, you should define this as a
-public command. The internal dispatching would use the public command bus rather than the internal command bus to queue
-the command.
+If you have a command that can be queued by both the outside world and internally, you should define this as a use case
+of your bounded context, i.e. a public command. When queuing internally within the application layer, the command can be
+pushed directly onto the queue via the queue driven port. I.e. you do not need to go via the public command queuer.
 :::
 
 ### Example
@@ -118,26 +117,31 @@ We could push this internal work to a queue via a domain event listener:
 ```php
 namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Listeners;
 
-use App\Modules\EventManagement\Application\Ports\Driving\CommandBus\InternalCommandBus;
-use App\Modules\EventManagement\Application\Internal\Commands\{
-    RecalculateSalesAtEvent\RecalculateSalesAtEventCommand,
+use App\Modules\EventManagement\Application\Ports\Driven\Queue\{
+    InternalQueue,
+    Commands\RecalculateSalesAtEventCommand,
 };
 use App\Modules\EventManagement\Domain\Events\AttendeeTicketWasCancelled;
 
 final readonly class QueueTicketSalesReportRecalculation
 {
-    public function __construct(private InternalCommandBus $bus)
+    public function __construct(private InternalQueue $queue)
     {
     }
 
-    public function handle(AttendeeTicketWasCancelled $bus): void
+    public function handle(AttendeeTicketWasCancelled $event): void
     {
-        $this->bus->queue(new RecalculateSalesAtEventCommand(
+        $this->queue->queue(new RecalculateSalesAtEventCommand(
             $event->eventId,
         ));
     }
 }
 ```
+
+:::tip
+Notice that as this is an internal command, the command class is defined in the queue driven port namespace. This is to
+ensure that the command is not exposed to the outside world.
+:::
 
 ### Workflow Orchestration
 
@@ -169,20 +173,17 @@ commands that could cancel or retry the workflow.
 
 ### Internal Command Bus
 
-If you are implementing internal commands, you will need an internal command bus that is separate from your public
-command bus.
+If you are implementing internal commands, you will need an internal command bus that is separate from your _driving_
+port command bus.
 
-Technically, our internal command bus is a driving port of the application layer. This is because when the internal
-command is queued by an infrastructure adapter, it has left the application layer. When that adapter pulls it from the
-queue for processing, it needs to re-enter the application layer via a driving port.
-
-However, by defining this as a separate port to our public command bus, we can ensure that internal commands are only
-dispatched by the internal command bus.
+We deal with this by defining the internal command bus as a _driven_ port. This is technically correct, as commands
+cannot be queued unless we have infrastructure to support queuing messages. Therefore, the internal command bus works
+nicely as a driven port.
 
 Define the internal command bus as follows:
 
 ```php
-namespace App\Modules\EventManagement\Application\Ports\Driving;
+namespace App\Modules\EventManagement\Application\Ports\Driven\Queue;
 
 use CloudCreativity\Modules\Application\Ports\Driving\CommandBus\CommandDispatcher;
 
@@ -191,15 +192,15 @@ interface InternalCommandBus extends CommandDispatcher
 }
 ```
 
-And then our port implementation is as follows:
+And then our port adapter is as follows:
 
 ```php
 namespace App\Modules\EventManagement\Application\Bus;
 
-use App\Modules\EventManagement\Application\Ports\Driving\InternalCommandBus;
+use App\Modules\EventManagement\Application\Ports\Driven\Queue\InternalCommandBus;
 use CloudCreativity\Modules\Application\Bus\CommandDispatcher;
 
-final class InternalCommandBusService extends CommandDispatcher implements
+final class InternalCommandBusAdapter extends CommandDispatcher implements
     InternalCommandBus
 {
 }
@@ -210,12 +211,11 @@ See the [commands chapter](./commands) for details on how to create the adapter.
 and middleware into the command bus.
 :::
 
-To allow this bus to queue commands, it requires a driven port that can queue commands. This means there must also be a
+You will also need a queue driven port that allows you to queue these internal commands. This means there must also be a
 queue adapter in the infrastructure layer that implements this port. Queue adapters are covered by
-the [queues chapter in the infrastructure section.](../infrastructure/queues) The queue adapter is then injected into
-the command bus.
+the [queues chapter in the infrastructure section.](../infrastructure/queues)
 
-Our approach is to define a port specifically for queuing internal commands - rather than reusing a queue port for
+One approach is to define a port specifically for queuing internal commands - rather than reusing the queue port for
 public commands. I.e.:
 
 ```php
@@ -223,12 +223,12 @@ namespace App\Modules\EventManagement\Application\Ports\Driven\Queue;
 
 use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue as Port;
 
-// queues public commands
+// injected into the command queuer for queuing public commands
 interface Queue extends Port
 {
 }
 
-// queues internal commands
+// used by the application layer to queue internal commands
 interface InternalQueue extends Port
 {
 }
@@ -236,3 +236,7 @@ interface InternalQueue extends Port
 
 This separation is useful because it allows each queue adapter to know exactly which command bus - the public or
 internal bus - to dispatch the command to when it is pulled from the queue.
+
+If you prefer, it is acceptable to define a single queue driven port. This simplifies the implementation by having a
+single queue that deals with both. However, you might find it gets complicated knowing whether to dispatch queued
+commands to either the public or internal command bus.
