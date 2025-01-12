@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [3.0.0-rc.1] - 2025-01-12
+
 ### Added
 
 - Commands can now be queued by the presentation and delivery layer via the `CommandQueuer` port. Refer to the command
