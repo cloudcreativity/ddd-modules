@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2024 Cloud Creativity Limited
+ * Copyright 2025 Cloud Creativity Limited
  *
  * Use of this source code is governed by an MIT-style
  * license that can be found in the LICENSE file or at
@@ -15,7 +15,7 @@ namespace CloudCreativity\Modules\Application\Bus\Middleware;
 use Closure;
 use CloudCreativity\Modules\Contracts\Application\Bus\CommandMiddleware;
 use CloudCreativity\Modules\Contracts\Application\Bus\Validator;
-use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result as IResult;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 

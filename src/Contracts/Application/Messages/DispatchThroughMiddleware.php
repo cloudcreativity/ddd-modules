@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2024 Cloud Creativity Limited
+ * Copyright 2025 Cloud Creativity Limited
  *
  * Use of this source code is governed by an MIT-style
  * license that can be found in the LICENSE file or at
@@ -15,7 +15,7 @@ namespace CloudCreativity\Modules\Contracts\Application\Messages;
 interface DispatchThroughMiddleware
 {
     /**
-     * Get the middleware to dispatch the message through.
+     * Get the middleware to dispatch a message through.
      *
      * @return list<callable|string>
      */

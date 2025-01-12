@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2024 Cloud Creativity Limited
+ * Copyright 2025 Cloud Creativity Limited
  *
  * Use of this source code is governed by an MIT-style
  * license that can be found in the LICENSE file or at
@@ -15,7 +15,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Application\InboundEventBus;
 use CloudCreativity\Modules\Application\InboundEventBus\InboundEventDispatcher;
 use CloudCreativity\Modules\Contracts\Application\InboundEventBus\EventHandler;
 use CloudCreativity\Modules\Contracts\Application\InboundEventBus\EventHandlerContainer;
-use CloudCreativity\Modules\Contracts\Application\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;

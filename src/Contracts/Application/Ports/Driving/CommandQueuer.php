@@ -10,10 +10,17 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Tests\Unit\Application\Bus;
+namespace CloudCreativity\Modules\Contracts\Application\Ports\Driving;
 
 use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
 
-class TestCommand implements Command
+interface CommandQueuer
 {
+    /**
+     * Queue a command for asynchronous dispatching.
+     *
+     * @param Command $command
+     * @return void
+     */
+    public function queue(Command $command): void;
 }

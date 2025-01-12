@@ -18,8 +18,8 @@ For example:
 ```php
 namespace App\Modules\EventManagement\Application\UseCases\Commands\CancelAttendeeTicket;
 
-use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
 use VendorName\EventManagement\Shared\Enums\CancellationReasonEnum;
 
 final readonly class CancelAttendeeTicketCommand implements Command
@@ -122,6 +122,8 @@ a query to retrieve the state of the newly created entity, if desired.
 
 To allow the _outside world_ to execute commands, our bounded context must expose a _command bus_ as a driving port.
 Although there is a _generic_ command bus interface, our bounded context needs to expose its _specific_ command bus.
+
+### Command Bus Port
 
 We do this by defining an interface in our application's driving ports.
 
@@ -304,23 +306,105 @@ Everything else - how your bounded context processes and responds to the action 
 implementation detail_ of your domain.
 :::
 
+## Command Queuer
+
+The command bus dispatches the bounded context's logic immediately via a command handler. Or in other words - commands
+are dispatched synchronously. But what happens if the presentation and delivery layer does not need to wait for the
+result of the command being dispatched, and instead wants the command to be handled in a non-blocking way?
+
+In this scenario, the presentation and delivery layer would need to queue the command for asynchronous processing.
+It would do this via a _command queuer_, which is provided by your bounded context as a driving port.
+
+:::tip
+For more information on asynchronous processing patterns, see
+the [Asynchronous Processing chapter.](./asynchronous-processing.md)
+:::
+
+### Command Queuer Port
+
+To allow the _outside world_ to queue commands, our bounded context must expose a _command queuer_ as a driving port.
+Although there is a _generic_ command queuer interface, our bounded context needs to expose its _specific_ command
+queuer.
+
+We do this by defining an interface in our application's driving ports.
+
+```php
+namespace App\Modules\EventManagement\Application\Ports\Driving;
+
+use CloudCreativity\Modules\Application\Ports\Driving\CommandQueuer as ICommandQueuer;
+
+interface CommandQueuer extends ICommandQueuer
+{
+}
+```
+
+And then our implementation is as follows:
+
+```php
+namespace App\Modules\EventManagement\Application\Bus;
+
+use App\Modules\EventManagement\Application\Ports\Driving\CommandQueuer as Port;
+use App\Modules\EventManagement\Application\Ports\Driven\Queue;
+use CloudCreativity\Modules\Application\Bus\CommandQueuer as Queuer;
+
+final class CommandQueuer extends Queuer implements Port
+{
+    public function __construct(Queue $queue)
+    {
+        parent::__construct($queue);
+    }
+}
+```
+
+Notice that the command queuer dependency injects the specific queue instance for this bounded context - which is a
+driven port. This is because it expects to queue commands not on _any_ queue, but on the _specific_ queue for this
+bounded context. I.e. it follows the encapsulation principle.
+
+See the [Queue chapter](../infrastructure/queues.md) for more information on how to implement a queue.
+
+### Creating a Command Queuer
+
+Creating a command queuer is simple, as it is just a thin wrapper around the queue - i.e. it immediately hands off to a
+driven port. This is because queuing a command is an infrastructure concern.
+
+```php
+namespace App\Modules\EventManagement\Application\Bus;
+
+use App\Modules\EventManagement\Application\Ports\Driving\CommandQueuer as CommandQueuerPort;
+use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;
+
+final class CommandBusProvider
+{
+    public function __construct(
+        private readonly ExternalDependencies $dependencies,
+    ) {
+    }
+
+    public function getCommandQueuer(): CommandQueuerPort
+    {
+        return new CommandQueuer(
+            queue: $this->dependencies->getQueue(),
+        );
+    }
+}
+```
+
+:::tip
+The queue supports middleware to add cross-cutting concerns, such as logging. This means there is no need to add any
+middleware to the command queuer.
+:::
+
 ### Queuing Commands
 
-The `dispatch()` method executes the bounded context's logic immediately via a command handler. Or in other words -
-commands are dispatched synchronously. But what happens if the presentation and delivery layer does not need to wait
-for the result of the command being dispatched, and instead wants the command to be handled in a non-blocking way?
-
-In this scenario, the presentation and delivery layer can choose to queue the command for asynchronous processing. To
-indicate that a command should be queued, the `queue()` method is used instead of the `dispatch()` method.
-
-This can be used to execute a command in a non-blocking way. For example, our controller implementation could be
-updated to return a `202 Accepted` response to indicate the command has been queued:
+The command queuer can be used to execute a command in a non-blocking way. For example, our controller implementation
+from earlier in this chapter could be updated to return a `202 Accepted` response to indicate the command has been
+queued:
 
 ```php
 namespace App\Http\Controllers\Api\Attendees;
 
 use App\Modules\EventManagement\Application\{
-    Ports\Driving\CommandBus,
+    Ports\Driving\CommandQueuer,
     UseCases\Commands\CancelAttendeeTicket\CancelAttendeeTicketCommand,
 };
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
@@ -331,7 +415,7 @@ class CancellationController extends Controller
 {
     public function __invoke(
         Request $request,
-        CommandBus $bus,
+        CommandQueuer $bus,
         string $attendeeId,
     ) {
         $validated = $request->validate([
@@ -351,10 +435,6 @@ class CancellationController extends Controller
     }
 }
 ```
-
-To allow commands to be queued, you **must** provide a queue factory to the command bus when creating it. This topic is
-covered in the [Asynchronous Processing](../infrastructure/queues#external-queuing) chapter, with specific examples
-in the _External Queuing_ section.
 
 ## Middleware
 
@@ -541,9 +621,9 @@ that has sensitive customer data on it that you do not want to end up in your lo
 implement the `ContextProvider` interface on your command message:
 
 ```php
-use CloudCreativity\Modules\Contracts\Application\Messages\Command;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextProvider;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
 
 final readonly class CancelAttendeeTicketCommand implements
   Command,
@@ -575,7 +655,7 @@ namespace App\Modules\EventManagement\Application\Bus\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Contracts\Application\Bus\CommandMiddleware;
-use CloudCreativity\Modules\Contracts\Application\Messages\Command;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 final class MyMiddleware implements CommandMiddleware
@@ -617,8 +697,8 @@ namespace App\Modules\EventManagement\Application\Bus\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Contracts\Application\Bus\BusMiddleware;
-use CloudCreativity\Modules\Contracts\Application\Messages\Command;
-use CloudCreativity\Modules\Contracts\Application\Messages\Query;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Query;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 class MyBusMiddleware implements BusMiddleware

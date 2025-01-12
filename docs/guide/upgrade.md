@@ -1,5 +1,34 @@
 # Upgrade Guide
 
+## 2.x to 3.x-rc.x
+
+Upgrade using Composer:
+
+```bash
+composer config minimum-stability rc
+composer require cloudcreativity/ddd-modules:^3.0
+```
+
+### Messages
+
+The message interfaces have been moved to the toolkit namespace. This is to make it clearer that these are part of the
+toolkit, not the application or infrastructure layers. It matches the `Result` and `Error` interfaces that are already
+in the `Toolkit\Result` namespace. I.e. now the toolkit contains both the input and output interfaces.
+
+This is a quick upgrade if you do a search and replace for the following:
+
+- `Contracts\Application\Messages` => `Contracts\Toolkit\Messages`
+
+### Command Queuing
+
+Previously the command bus had a `queue()` method on it. This has been removed and replaced with a new `CommandQueuer`
+interface. This is documented in the [Commands chapter.](./application/commands.md#command-queuer)
+
+The upgrade is relatively easy. You'll need to expose a new `CommandQueuer` driving port. Then wherever in your
+presentation and delivery layer that you need to queue a command, import that port instead of the `CommandBus` port.
+
+The documentation provides guidance on how to set up a command queuer port.
+
 ## 1.x to 2.x
 
 Upgrade using Composer:
