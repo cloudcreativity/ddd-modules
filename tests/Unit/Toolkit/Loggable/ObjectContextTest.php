@@ -14,6 +14,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Loggable;
 
 use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextProvider;
 use CloudCreativity\Modules\Toolkit\Loggable\ObjectContext;
+use CloudCreativity\Modules\Toolkit\Loggable\Sensitive;
 use PHPUnit\Framework\TestCase;
 
 class ObjectContextTest extends TestCase
@@ -26,12 +27,41 @@ class ObjectContextTest extends TestCase
         $source = new class () {
             public string $foo = 'bar';
             public string $baz = 'bat';
+            public ?string $blah = null;
             protected string $foobar = 'foobar';
         };
 
         $expected = [
             'foo' => 'bar',
             'baz' => 'bat',
+            'blah' => null,
+        ];
+
+        $this->assertSame($expected, ObjectContext::from($source)->context());
+    }
+
+    /**
+     * @return void
+     */
+    public function testItExcludesSensitiveProperties(): void
+    {
+        $source = new class ('Hello', 'World') {
+            public string $foo = 'bar';
+            #[Sensitive]
+            public string $baz = 'bat';
+            public string $foobar = 'foobar';
+
+            public function __construct(
+                #[Sensitive] public string $blah1,
+                public string $blah2,
+            ) {
+            }
+        };
+
+        $expected = [
+            'foo' => 'bar',
+            'foobar' => 'foobar',
+            'blah2' => 'World',
         ];
 
         $this->assertSame($expected, ObjectContext::from($source)->context());

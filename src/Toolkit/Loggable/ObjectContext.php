@@ -13,6 +13,9 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Toolkit\Loggable;
 
 use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextProvider;
+use Generator;
+use ReflectionClass;
+use ReflectionProperty;
 
 final class ObjectContext implements ContextProvider
 {
@@ -43,6 +46,27 @@ final class ObjectContext implements ContextProvider
             return $this->source->context();
         }
 
-        return get_object_vars($this->source);
+        $values = [];
+
+        foreach ($this->keys() as $key) {
+            $values[$key] = $this->source->{$key};
+        }
+
+        return $values;
+    }
+
+    /**
+     * @return Generator<string>
+     */
+    private function keys(): Generator
+    {
+        $reflect = new ReflectionClass($this->source);
+
+        foreach ($reflect->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
+            $attributes = $property->getAttributes(Sensitive::class);
+            if (count($attributes) === 0) {
+                yield $property->getName();
+            }
+        }
     }
 }

@@ -15,6 +15,9 @@ All notable changes to this project will be documented in this file. This projec
     - `Testing\FakeOutboundEventPublisher`
     - `Testing\FakeQueue`
     - `Testing\FakeUnitOfWork`
+- Properties on message classes can now be marked as sensitive so that they are not logged. This is an alternative to
+  having to implement the `ContextProvider` interface. Mark a property as sensitive using the
+  `CloudCreativity\Modules\Toolkit\Loggable\Sensitive` attribute.
 
 ## [3.0.0-rc.1] - 2025-01-12
 
