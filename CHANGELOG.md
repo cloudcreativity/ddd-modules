@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [3.0.0-rc.2] - 2025-01-18
+
 ### Added
 
 - New test classes for driven ports and the domain event dispatcher. These are intended to make setting up unit and
