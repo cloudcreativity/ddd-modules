@@ -444,7 +444,8 @@ final readonly class CancelAttendeeTicketHandler implements
 
 ### Integration Event Handlers
 
-As explained in the [integration events chapter](../application/integration-events#strategies), there are several strategies that
+As explained in the [integration events chapter](../application/integration-events#strategies), there are several
+strategies that
 can be used to handle inbound events.
 
 If you dispatch a command as a result of the inbound event, you do not need to worry about the unit of work
@@ -488,4 +489,29 @@ final readonly class OrderWasFulfilledHandler implements
         ];
     }
 }
+```
+
+## Testing
+
+We provide a fake unit of work that can be used in your tests. This is the
+`CloudCreativity\Modules\Testing\FakeUnitOfWork` class.
+
+This is a fully working implementation that will fake starting and committing transactions. It will also re-attempt the
+transaction if it fails and the number of attempts is greater than one.
+
+If you need to check the sequence of what happened in the unit of work, this can be done via the `$sequence` property on
+the fake unit of work. For example, if you wanted to check that the unit of work was attempted twice and succeeded on
+the second attempt:
+
+```php
+use CloudCreativity\Modules\Testing\FakeUnitOfWork;
+
+$unitOfWork = new FakeUnitOfWork();
+
+// execute work that uses the unit of work
+
+$this->assertSame(
+    ['attempt:1', 'rollback:1', 'attempt:2', 'commit:2'], 
+    $unitOfWork->sequence,
+);
 ```

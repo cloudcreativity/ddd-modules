@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+### Added
+
+- New test classes for driven ports and the domain event dispatcher. These are intended to make setting up unit and
+  integration tests easier. They can also be used as fakes while you build your real implementation. The classes are in
+  the `Testing` namespace and are:
+    - `Testing\FakeDomainEventDispatcher`
+    - `Testing\FakeExceptionReporter`
+    - `Testing\FakeOutboundEventPublisher`
+    - `Testing\FakeQueue`
+    - `Testing\FakeUnitOfWork`
+
 ## [3.0.0-rc.1] - 2025-01-12
 
 ### Added

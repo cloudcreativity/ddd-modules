@@ -495,3 +495,28 @@ If you're writing middleware that is only meant to be used for a specific comman
 the `QueueMiddleware` interface. Instead, use the same signature but change the type-hint for to the specific command
 message your middleware is designed for.
 :::
+
+## Testing
+
+We provide a fake queue that you can use in tests. This is the `CloudCreativity\Modules\Testing\FakeQueue` class.
+
+You can access any queued commands via the `$commands` property:
+
+```php
+use App\Modules\EventManagement\Application\Ports\Driven\Queue\Queue as Port;
+use CloudCreativity\Modules\Testing\FakeQueue;
+
+$queue = new class () extends FakeQueue implements Port {};
+
+// do work that might queue a command
+
+$this->assertCount(2, $queue->commands);
+```
+
+If you expect exactly one command to be queued, use the `sole()` helper:
+
+```php
+$expected = new SomeCommand();
+
+$this->assertEquals($expected, $queue->sole());
+```
