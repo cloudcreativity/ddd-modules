@@ -616,9 +616,26 @@ $bus->through([LogMessageDispatch::class]);
 When logging that the command is being dispatched, we log all the public properties of the command message as log
 context. This is useful for debugging, as it allows you to see the data that was provided.
 
-However, there can be scenarios where you want to control what context is logged. A good example is a command message
-that has sensitive customer data on it that you do not want to end up in your logs. To control the log context,
-implement the `ContextProvider` interface on your command message:
+However, there may be scenarios where a property should not be logged, e.g. because it contains sensitive information.
+In this scenario, use the `Sensitive` attribute on the property, and it will not be logged:
+
+```php
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
+use CloudCreativity\Modules\Toolkit\Loggable\Sensitive;
+
+final readonly class CancelAttendeeTicketCommand implements Command
+{
+    public function __construct(
+        public Identifier $attendeeId,
+        #[Sensitive] public Identifier $ticketId,
+        public CancellationReasonEnum $reason,
+    ) {
+    }
+}
+```
+
+If you need full control over the log context, implement the `ContextProvider` interface on your command message:
 
 ```php
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;

@@ -356,42 +356,52 @@ any integration events at all.
 Your testing of aggregates and entities should encompass asserting that they dispatch the correct domain events, in the
 correct scenarios. If you are following our domain services pattern shown earlier in this chapter, this is easy to do.
 
-In your aggregate test case, setup and tear down the services:
+We also provide a `FakeDomainEventDispatcher` that you can use in your tests. This is a simple implementation of the
+domain event dispatcher that allows you to assert that events are dispatched.
+
+Putting the two together, the following is a good pattern for testing domain events:
 
 ```php
+use App\Modules\EventManagement\Domain\Events\DomainEventDispatcher as IDomainEventDispatcher;
+use CloudCreativity\Modules\Testing\FakeDomainEventDispatcher;
+
 class AttendeeTest extends TestCase
 {
-    private DomainEventDispatcher&MockObject $events;
+    private FakeDomainEventDispatcher $dispatcher;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->events = $this->createMock(DomainEventDispatcher::class);
-        Services::setEvents(fn() => $this->events);
+        
+        $this->dispatcher = new class () extends FakeDomainEventDispatcher implements IDomainEventDispatcher {};
+        
+        Services::setEvents(fn () => $this->dispatcher);
     }
 
     protected function tearDown(): void
     {
         Services::tearDown();
-        unset($this->events);
+        unset($this->dispatcher);
         parent::tearDown();
     }
 }
 ```
 
-Then in the relevant test:
+Then you can assert that events were dispatched via the fake dispatcher's `$events` property:
 
 ```php
-$this->events
-    ->expects($this->once())
-    ->method('dispatch')
-    ->with($this->callback(
-        function (AttendeeTicketWasCancelled $event) use ($eventId, $attendeeId, $ticketId, $reason): bool {
-            $this->assertObjectEquals($eventId, $event->eventId);
-            $this->assertObjectEquals($attendeeId, $event->attendeeId);
-            $this->assertObjectEquals($ticketId, $event->ticketId);
-            $this->assertSame($reason, $event->reason);
-            return true;
-        },
-    ));
+$this->assertCount(2, $this->dispatcher->events);
+```
+
+If you are only expecting exactly one event to be dispatched, use the `sole()` helper method:
+
+```php
+$expected = new AttendeeTicketWasCancelled(
+    eventId: $eventId,
+    attendeeId: $attendeeId,
+    ticketId: $ticketId,
+    reason: $reason,
+);
+
+$this->assertEquals($expected, $this->dispatcher->sole());
 ```

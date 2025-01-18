@@ -128,7 +128,7 @@ final class QueryBus extends QueryDispatcher implements Port
 
 ### Creating a Query Bus
 
-The query dispatcher class that your implementation extends (in the above example) allows you to build a query bus 
+The query dispatcher class that your implementation extends (in the above example) allows you to build a query bus
 specific to your domain. You do this by:
 
 1. Binding query handler factories into the query dispatcher; and
@@ -193,7 +193,8 @@ final class QueryBusProvider
 }
 ```
 
-Adapters in the presentation and delivery layer will use the driving ports. Typically this means we need to bind the port into a service container. For example, in Laravel:
+Adapters in the presentation and delivery layer will use the driving ports. Typically this means we need to bind the
+port into a service container. For example, in Laravel:
 
 ```php
 namespace App\Providers;
@@ -388,8 +389,9 @@ $middleware->bind(
 The use of this middleware is identical to that described in the [Commands chapter.](./commands#logging)
 See those instructions for more information, such as configuring the log levels.
 
-Additionally, if you need to customise the context that is logged for a query then implement the
-`ContextProvider` interface on your query message. See the example in the [Commands chapter.](./commands#logging)
+Additionally, you can customise the context that is logged for a query. To exclude properties, mark them with the
+`Sensitive` attribute. Alternatively, if you need full control over the context, implement the `ContextProvider`
+interface on your query message. See the examples in the [Commands chapter.](./commands#logging)
 
 ### Writing Middleware
 

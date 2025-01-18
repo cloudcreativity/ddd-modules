@@ -876,9 +876,9 @@ $middleware->bind(
 The use of this middleware is identical to that described in the [Commands chapter.](./commands#logging)
 See those instructions for more information, such as configuring the log levels.
 
-Additionally, if you need to customise the context that is logged for an integration event then implement the
-`ContextProvider` interface on your integration event message. See the example in the
-[Commands chapter.](./commands#logging)
+Additionally, you can customise the context that is logged for an event. To exclude properties, mark them with the
+`Sensitive` attribute. Alternatively, if you need full control over the context, implement the `ContextProvider`
+interface on your integration event. See the examples in the [Commands chapter.](./commands#logging)
 
 ### Writing Middleware
 

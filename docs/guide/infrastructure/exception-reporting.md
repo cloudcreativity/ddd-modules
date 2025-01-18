@@ -103,3 +103,30 @@ final readonly class ExceptionReporterAdapter implements
     }
 }
 ```
+
+## Testing
+
+We provide a fake exception reporter that you can use in tests. This is the
+`CloudCreativity\Modules\Testing\FakeUnitOfWork` class.
+
+You can access any exceptions that were reported via the `$reported` property:
+
+```php
+use CloudCreativity\Modules\Testing\FakeExceptionReporter;
+
+$reporter = new FakeExceptionReporter();
+
+// do work that might throw an exception
+
+$this->assertCount(2, $reporter->reported);
+```
+
+If you expect exactly one exception to be reported, use the `sole()` helper:
+
+```php
+$expected = new \LogicException('Boom!');
+
+// do work
+
+$this->assertSame($expected, $reporter->sole());
+```

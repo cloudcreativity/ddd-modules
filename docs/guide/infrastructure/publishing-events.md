@@ -352,3 +352,28 @@ If you're writing middleware that is only meant to be used for a specific integr
 `OutboundEventMiddleware` interface. Instead, use the same signature but change the event type-hint to the event class
 your middleware is designed to be used with.
 :::
+
+## Testing
+
+We provide a fake outbound event publisher that you can use in tests. This is the
+`CloudCreativity\Modules\Testing\FakeOutboundEventPublisher` class.
+
+You can access any published events via the `$events` property:
+
+```php
+use CloudCreativity\Modules\Testing\FakeOutboundEventPublisher;
+
+$publisher = new FakeOutboundEventPublisher();
+
+// do work that might publish an event
+
+$this->assertCount(2, $publisher->events);
+```
+
+If you expect exactly one integration event to be published, use the `sole()` helper:
+
+```php
+$expected = new SomeIntegrationEvent();
+
+$this->assertEquals($expected, $publisher->sole());
+```
