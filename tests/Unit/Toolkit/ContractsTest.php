@@ -23,7 +23,9 @@ class ContractsTest extends TestCase
      */
     public function testItDoesNotThrowWhenPreconditionIsTrue(): void
     {
+        /** @phpstan-ignore-next-line */
         Contracts::assert(true, 'Not expected error.');
+
         /** @phpstan-ignore-next-line */
         $this->assertTrue(true);
     }
@@ -36,6 +38,7 @@ class ContractsTest extends TestCase
         $this->expectException(ContractException::class);
         $this->expectExceptionMessage($expected = 'The expected message.');
 
+        /** @phpstan-ignore-next-line */
         Contracts::assert(false, $expected);
     }
 }

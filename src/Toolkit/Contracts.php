@@ -20,10 +20,11 @@ final class Contracts
      * @param bool $precondition
      * @param string $message
      * @return void
+     * @phpstan-assert true $precondition
      */
     public static function assert(bool $precondition, string $message = ''): void
     {
-        if (false === $precondition) {
+        if ($precondition === false) {
             throw new ContractException($message);
         }
     }

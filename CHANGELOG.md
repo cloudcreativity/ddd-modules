@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+### Added
+
+- Updated doc block for `Contracts::assert()` to add PHPStan assertion that the precondition is `true` if the method
+  call does not throw.
+
 ## [3.0.0-rc.2] - 2025-01-18
 
 ### Added
