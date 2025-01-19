@@ -4,33 +4,33 @@ deptrac:
   layers:
     - name: Toolkit
       collectors:
-        - type: className
+        - type: classLike
           value: CloudCreativity\\Modules\\Contracts\\Toolkit\\*
-        - type: className
+        - type: classLike
           value: CloudCreativity\\Modules\\Toolkit\\*
-        - type: className
+        - type: classLike
           value: Ramsey\\Uuid\\*
     - name: Domain
       collectors:
-        - type: className
+        - type: classLike
           value: CloudCreativity\\Modules\\Contracts\\Domain\\*
-        - type: className
+        - type: classLike
           value: CloudCreativity\\Modules\\Domain\\*
     - name: Application
       collectors:
-        - type: className
+        - type: classLike
           value: CloudCreativity\\Modules\\Contracts\\Application\\*
-        - type: className
+        - type: classLike
           value: CloudCreativity\\Modules\\Application\\*
     - name: Infrastructure
       collectors:
-        - type: className
+        - type: classLike
           value: CloudCreativity\\Modules\\Contracts\\Infrastructure\\*
-        - type: className
+        - type: classLike
           value: CloudCreativity\\Modules\\Infrastructure\\*
     - name: PSR Log
       collectors:
-        - type: className
+        - type: classLike
           value: Psr\\Log\\*
   ruleset:
     Toolkit:
