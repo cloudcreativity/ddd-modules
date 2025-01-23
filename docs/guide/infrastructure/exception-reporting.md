@@ -78,6 +78,13 @@ interface ExceptionReporter
 Your infrastructure layer should have an adapter that implements this port. This means you can tie your application
 layer to any logging service you are using.
 
+### PSR Log Implementation
+
+If all you need to do is log a reported exception as an error, we provide a default implementation that uses a PSR
+logger. The implementation is: `CloudCreativity\Modules\Infrastructure\ExceptionReporter\PsrLogExceptionReporter`
+
+Provide an instance of the PSR Log as the only constructor argument.
+
 ### Laravel Example
 
 For example, it is easy to implement this port in Laravel as it already provides an exception reporter. Our

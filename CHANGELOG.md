@@ -7,6 +7,8 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Added
 
+- New `PsrLogExceptionReporter` provides a default exception reporter implementation that logs the exception as an
+  error.
 - Updated doc block for `Contracts::assert()` to add PHPStan assertion that the precondition is `true` if the method
   call does not throw.
 
