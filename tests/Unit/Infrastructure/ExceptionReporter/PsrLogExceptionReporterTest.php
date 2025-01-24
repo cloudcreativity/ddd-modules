@@ -81,8 +81,6 @@ class PsrLogExceptionReporterTest extends TestCase
             );
 
         $this->reporter->report($exception);
-
-        $this->assertInstanceOf(ExceptionReporter::class, $this->reporter);
     }
 
     public function testItLogsContextForExceptionThatImplementsContextProvider(): void
@@ -108,8 +106,6 @@ class PsrLogExceptionReporterTest extends TestCase
             );
 
         $this->reporter->report($exception);
-
-        $this->assertInstanceOf(ExceptionReporter::class, $this->reporter);
     }
 
     public function testItLogsContextForExceptionThatHasContextMethod(): void
@@ -138,7 +134,5 @@ class PsrLogExceptionReporterTest extends TestCase
             );
 
         $this->reporter->report($exception);
-
-        $this->assertInstanceOf(ExceptionReporter::class, $this->reporter);
     }
 }
