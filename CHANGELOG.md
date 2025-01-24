@@ -13,6 +13,11 @@ All notable changes to this project will be documented in this file. This projec
   error.
 - Updated doc block for `Contracts::assert()` to add PHPStan assertion that the precondition is `true` if the method
   call does not throw.
+- The following fake classes are now countable, with the count representing the number of items they have captured:
+    - `Testing\FakeDomainEventDispatcher`
+    - `Testing\FakeExceptionReporter`
+    - `Testing\FakeOutboundEventPublisher`
+    - `Testing\FakeQueue`
 
 ## [3.0.0-rc.2] - 2025-01-18
 

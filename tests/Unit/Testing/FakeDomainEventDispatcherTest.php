@@ -31,7 +31,7 @@ class FakeDomainEventDispatcherTest extends TestCase
         $dispatcher->dispatch($event2);
 
         $this->assertInstanceOf(DomainEventDispatcher::class, $dispatcher);
-        $this->assertCount(2, $dispatcher->events);
+        $this->assertCount(2, $dispatcher);
         $this->assertSame($event1, $dispatcher->events[0]);
         $this->assertSame($event2, $dispatcher->events[1]);
     }

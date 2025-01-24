@@ -14,12 +14,13 @@ namespace CloudCreativity\Modules\Testing;
 
 use CloudCreativity\Modules\Contracts\Application\Ports\Driven\OutboundEventPublisher;
 use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
+use Countable;
 use LogicException;
 
-class FakeOutboundEventPublisher implements OutboundEventPublisher
+class FakeOutboundEventPublisher implements OutboundEventPublisher, Countable
 {
     /**
-     * @var array<IntegrationEvent>
+     * @var list<IntegrationEvent>
      */
     public array $events = [];
 
@@ -29,6 +30,14 @@ class FakeOutboundEventPublisher implements OutboundEventPublisher
     public function publish(IntegrationEvent $event): void
     {
         $this->events[] = $event;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function count(): int
+    {
+        return count($this->events);
     }
 
     /**

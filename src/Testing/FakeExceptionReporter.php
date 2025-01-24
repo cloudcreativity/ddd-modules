@@ -13,13 +13,14 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Testing;
 
 use CloudCreativity\Modules\Contracts\Application\Ports\Driven\ExceptionReporter;
+use Countable;
 use LogicException;
 use Throwable;
 
-final class FakeExceptionReporter implements ExceptionReporter
+final class FakeExceptionReporter implements ExceptionReporter, Countable
 {
     /**
-     * @var array<Throwable>
+     * @var list<Throwable>
      */
     public array $reported = [];
 
@@ -29,6 +30,14 @@ final class FakeExceptionReporter implements ExceptionReporter
     public function report(Throwable $ex): void
     {
         $this->reported[] = $ex;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function count(): int
+    {
+        return count($this->reported);
     }
 
     /**
