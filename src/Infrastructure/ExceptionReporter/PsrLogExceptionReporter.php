@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Infrastructure\ExceptionReporter;
 
 use CloudCreativity\Modules\Contracts\Application\Ports\Driven\ExceptionReporter;
+use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextProvider;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -34,7 +35,25 @@ final class PsrLogExceptionReporter implements ExceptionReporter
     {
         $this->logger->error(
             $ex->getMessage() ?: 'Unexpected error: ' . $ex::class,
-            ['exception' => $ex],
+            [...$this->context($ex), 'exception' => $ex],
         );
+    }
+
+    /**
+     * @param Throwable $ex
+     * @return array<array-key, mixed>
+     */
+    private function context(Throwable $ex): array
+    {
+        if ($ex instanceof ContextProvider) {
+            return $ex->context();
+        }
+
+        if (method_exists($ex, 'context')) {
+            $context = $ex->context();
+            return is_array($context) ? $context : [];
+        }
+
+        return [];
     }
 }

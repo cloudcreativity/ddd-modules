@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\ExceptionReporter;
 
 use CloudCreativity\Modules\Contracts\Application\Ports\Driven\ExceptionReporter;
+use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextProvider;
 use CloudCreativity\Modules\Infrastructure\ExceptionReporter\PsrLogExceptionReporter;
 use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -77,6 +78,63 @@ class PsrLogExceptionReporterTest extends TestCase
             ->with(
                 'Unexpected error: LogicException',
                 ['exception' => $exception],
+            );
+
+        $this->reporter->report($exception);
+
+        $this->assertInstanceOf(ExceptionReporter::class, $this->reporter);
+    }
+
+    public function testItLogsContextForExceptionThatImplementsContextProvider(): void
+    {
+        $exception = new class ('Boom!') extends LogicException implements ContextProvider {
+            public function context(): array
+            {
+                return ['foo' => 'bar', 'exception' => null];
+            }
+        };
+
+        $expected = [
+            'foo' => 'bar',
+            'exception' => $exception,
+        ];
+
+        $this->logger
+            ->expects($this->once())
+            ->method('error')
+            ->with(
+                $exception->getMessage(),
+                $this->identicalTo($expected),
+            );
+
+        $this->reporter->report($exception);
+
+        $this->assertInstanceOf(ExceptionReporter::class, $this->reporter);
+    }
+
+    public function testItLogsContextForExceptionThatHasContextMethod(): void
+    {
+        $exception = new class ('Boom!') extends LogicException {
+            /**
+             * @return array<string, mixed>
+             */
+            public function context(): array
+            {
+                return ['foo' => 'bar', 'exception' => null];
+            }
+        };
+
+        $expected = [
+            'foo' => 'bar',
+            'exception' => $exception,
+        ];
+
+        $this->logger
+            ->expects($this->once())
+            ->method('error')
+            ->with(
+                $exception->getMessage(),
+                $this->identicalTo($expected),
             );
 
         $this->reporter->report($exception);
