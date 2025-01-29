@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [3.0.0] - 2025-01-29
+
 ### Added
 
 - The `Uuid` class now has a static `tryFrom()` method. This will return `null` if the value provided cannot be cast to
@@ -27,10 +29,10 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Changed
 
-- The `ObjectContext` class has been renamed to `ObjectDecorator` and the static `from()` method has been removed. Use
-  the new `ContextFactory` implementation instead.
-- The `ResultContext` class has been renamed to `ResultDecorator` and the static `from()` method has been removed. Use
-  the new `ContextFactory` implementation instead.
+- **BREAKING** The `ObjectContext` class has been renamed to `ObjectDecorator` and the static `from()` method has been
+  removed. Use the new `ContextFactory` implementation instead.
+- **BREAKING** The `ResultContext` class has been renamed to `ResultDecorator` and the static `from()` method has been
+  removed. Use the new `ContextFactory` implementation instead.
 
 ## [3.0.0-rc.2] - 2025-01-18
 
@@ -389,5 +391,11 @@ All notable changes to this project will be documented in this file. This projec
 ## [0.1.0] - 2023-11-18
 
 Initial release.
+
+[3.0.0]: https://github.com/cloudcreativity/ddd-modules/compare/v3.0.0-rc.2...v3.0.0
+
+[3.0.0-rc.2]: https://github.com/cloudcreativity/ddd-modules/compare/v3.0.0-rc.1...v3.0.0-rc.2
+
+[3.0.0-rc.1]: https://github.com/cloudcreativity/ddd-modules/compare/v2.0.0...v3.0.0-rc.1
 
 [2.0.0]: https://github.com/cloudcreativity/ddd-modules/compare/v2.0.0-rc.3...v2.0.0

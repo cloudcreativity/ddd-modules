@@ -1,11 +1,10 @@
 # Upgrade Guide
 
-## 2.x to 3.x-rc.x
+## 2.x to 3.x
 
 Upgrade using Composer:
 
 ```bash
-composer config minimum-stability rc
 composer require cloudcreativity/ddd-modules:^3.0
 ```
 
@@ -28,6 +27,11 @@ The upgrade is relatively easy. You'll need to expose a new `CommandQueuer` driv
 presentation and delivery layer that you need to queue a command, import that port instead of the `CommandBus` port.
 
 The documentation provides guidance on how to set up a command queuer port.
+
+### Other Changes
+
+Refer to the [changelog](https://github.com/cloudcreativity/ddd-modules/blob/develop/CHANGELOG.md) for other changes in
+this release. These are unlikely to affect consuming applications.
 
 ## 1.x to 2.x
 
