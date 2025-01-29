@@ -66,13 +66,13 @@ class LogOutboundEventTest extends TestCase
         });
 
         $context = [
-            'uuid' => $this->event->uuid,
+            'uuid' => $this->event->uuid->context(),
             'occurredAt' => $this->event->occurredAt,
         ];
 
         $this->assertSame([
-            [LogLevel::DEBUG, "Publishing integration event {$eventName}.", $context],
-            [LogLevel::INFO, "Published integration event {$eventName}.", $context],
+            [LogLevel::DEBUG, "Publishing integration event {$eventName}.", ['event' => $context]],
+            [LogLevel::INFO, "Published integration event {$eventName}.", ['event' => $context]],
         ], $logs);
     }
 
@@ -98,13 +98,13 @@ class LogOutboundEventTest extends TestCase
         });
 
         $context = [
-            'uuid' => $this->event->uuid,
+            'uuid' => $this->event->uuid->context(),
             'occurredAt' => $this->event->occurredAt,
         ];
 
         $this->assertSame([
-            [LogLevel::NOTICE, "Publishing integration event {$eventName}.", $context],
-            [LogLevel::WARNING, "Published integration event {$eventName}.", $context],
+            [LogLevel::NOTICE, "Publishing integration event {$eventName}.", ['event' => $context]],
+            [LogLevel::WARNING, "Published integration event {$eventName}.", ['event' => $context]],
         ], $logs);
     }
 
@@ -117,14 +117,14 @@ class LogOutboundEventTest extends TestCase
         $eventName = ModuleBasename::from($this->event);
 
         $context = [
-            'uuid' => $this->event->uuid,
+            'uuid' => $this->event->uuid->context(),
             'occurredAt' => $this->event->occurredAt,
         ];
 
         $this->logger
             ->expects($this->once())
             ->method('log')
-            ->with(LogLevel::DEBUG, "Publishing integration event {$eventName}.", $context);
+            ->with(LogLevel::DEBUG, "Publishing integration event {$eventName}.", ['event' => $context]);
 
         $middleware = new LogOutboundEvent($this->logger);
 

@@ -13,11 +13,12 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Loggable;
 
 use BackedEnum;
-use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextProvider;
+use CloudCreativity\Modules\Contracts\Toolkit\Loggable\Contextual;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Error as IError;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result as IResult;
-use CloudCreativity\Modules\Toolkit\Loggable\ResultContext;
+use CloudCreativity\Modules\Toolkit\Loggable\ResultDecorator;
+use CloudCreativity\Modules\Toolkit\Loggable\SimpleContextFactory;
 use CloudCreativity\Modules\Toolkit\Result\Error;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\TestCase;
@@ -33,8 +34,31 @@ interface ErrorWithContext extends IError, ContextProvider
 {
 }
 
-class ResultContextTest extends TestCase
+class ResultDecoratorTest extends TestCase
 {
+    /**
+     * @var SimpleContextFactory
+     */
+    private SimpleContextFactory $factory;
+
+    /**
+     * @return void
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->factory = new SimpleContextFactory();
+    }
+
+    /**
+     * @return void
+     */
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        unset($this->factory);
+    }
+
     /**
      * @return void
      */
@@ -46,7 +70,8 @@ class ResultContextTest extends TestCase
             'success' => true,
         ];
 
-        $this->assertSame($expected, ResultContext::from($result)->context());
+        $this->assertSame($expected, (new ResultDecorator($result))->context());
+        $this->assertSame($expected, $this->factory->make($result));
     }
 
     /**
@@ -67,7 +92,8 @@ class ResultContextTest extends TestCase
 
         $result = Result::ok($value);
 
-        $this->assertSame($expected, ResultContext::from($result)->context());
+        $this->assertSame($expected, (new ResultDecorator($result))->context());
+        $this->assertSame($expected, $this->factory->make($result));
     }
 
     /**
@@ -80,12 +106,13 @@ class ResultContextTest extends TestCase
             'value' => 99,
         ];
 
-        $value = $this->createMock(Identifier::class);
+        $value = $this->createMock(Contextual::class);
         $value->method('context')->willReturn($expected['value']);
 
         $result = Result::ok($value);
 
-        $this->assertSame($expected, ResultContext::from($result)->context());
+        $this->assertSame($expected, (new ResultDecorator($result))->context());
+        $this->assertSame($expected, $this->factory->make($result));
     }
 
     /**
@@ -116,7 +143,8 @@ class ResultContextTest extends TestCase
 
         $result = Result::ok($value);
 
-        $this->assertSame($expected, ResultContext::from($result)->context());
+        $this->assertSame($expected, (new ResultDecorator($result))->context());
+        $this->assertSame($expected, $this->factory->make($result));
     }
 
     /**
@@ -133,7 +161,8 @@ class ResultContextTest extends TestCase
             ],
         ];
 
-        $this->assertSame($expected, ResultContext::from($result)->context());
+        $this->assertSame($expected, (new ResultDecorator($result))->context());
+        $this->assertSame($expected, $this->factory->make($result));
     }
 
     /**
@@ -161,7 +190,8 @@ class ResultContextTest extends TestCase
             'error' => is_string($error) ? $error : $error->message(),
         ];
 
-        $this->assertSame($expected, ResultContext::from($result)->context());
+        $this->assertSame($expected, (new ResultDecorator($result))->context());
+        $this->assertSame($expected, $this->factory->make($result));
     }
 
     /**
@@ -189,7 +219,8 @@ class ResultContextTest extends TestCase
             'error' => $error instanceof BackedEnum ? $error->value : $error->code()?->value,
         ];
 
-        $this->assertSame($expected, ResultContext::from($result)->context());
+        $this->assertSame($expected, (new ResultDecorator($result))->context());
+        $this->assertSame($expected, $this->factory->make($result));
     }
 
     /**
@@ -245,7 +276,8 @@ class ResultContextTest extends TestCase
             ],
         ];
 
-        $this->assertSame($expected, ResultContext::from($result)->context());
+        $this->assertSame($expected, (new ResultDecorator($result))->context());
+        $this->assertSame($expected, $this->factory->make($result));
     }
 
     /**
@@ -256,7 +288,8 @@ class ResultContextTest extends TestCase
         $mock = $this->createMock(ResultWithContext::class);
         $mock->method('context')->willReturn($expected = ['foo' => 'bar', 'baz' => 'bat']);
 
-        $this->assertSame($expected, ResultContext::from($mock)->context());
+        $this->assertSame($expected, (new ResultDecorator($mock))->context());
+        $this->assertSame($expected, $this->factory->make($mock));
     }
 
     /**
@@ -281,6 +314,7 @@ class ResultContextTest extends TestCase
             ],
         ];
 
-        $this->assertSame($expected, ResultContext::from($result)->context());
+        $this->assertSame($expected, (new ResultDecorator($result))->context());
+        $this->assertSame($expected, $this->factory->make($result));
     }
 }

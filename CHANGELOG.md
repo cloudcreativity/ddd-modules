@@ -18,6 +18,19 @@ All notable changes to this project will be documented in this file. This projec
     - `Testing\FakeExceptionReporter`
     - `Testing\FakeOutboundEventPublisher`
     - `Testing\FakeQueue`
+- New `ContextFactory` interface for converting messages and result objects to log context.
+- New `Contextual` interface for converting value objects to log context. This is now extended by the `Identifier`
+  interface.
+- All middleware that log messages are now injected with the new log context factory class. This allows the conversion
+  of messages and result objects to be customised by writing an implementation of this interface. This dependency
+  injection is optional, as the package provides its own implementation that is used by default.
+
+### Changed
+
+- The `ObjectContext` class has been renamed to `ObjectDecorator` and the static `from()` method has been removed. Use
+  the new `ContextFactory` implementation instead.
+- The `ResultContext` class has been renamed to `ResultDecorator` and the static `from()` method has been removed. Use
+  the new `ContextFactory` implementation instead.
 
 ## [3.0.0-rc.2] - 2025-01-18
 

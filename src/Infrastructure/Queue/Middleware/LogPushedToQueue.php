@@ -14,8 +14,9 @@ namespace CloudCreativity\Modules\Infrastructure\Queue\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Contracts\Infrastructure\Queue\QueueMiddleware;
+use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextFactory;
 use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
-use CloudCreativity\Modules\Toolkit\Loggable\ObjectContext;
+use CloudCreativity\Modules\Toolkit\Loggable\SimpleContextFactory;
 use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
@@ -28,11 +29,13 @@ final class LogPushedToQueue implements QueueMiddleware
      * @param LoggerInterface $log
      * @param string $queueLevel
      * @param string $queuedLevel
+     * @param ContextFactory $context
      */
     public function __construct(
         private readonly LoggerInterface $log,
         private readonly string $queueLevel = LogLevel::DEBUG,
         private readonly string $queuedLevel = LogLevel::INFO,
+        private readonly ContextFactory $context = new SimpleContextFactory(),
     ) {
     }
 
@@ -46,7 +49,7 @@ final class LogPushedToQueue implements QueueMiddleware
         $this->log->log(
             $this->queueLevel,
             "Queuing command {$name}.",
-            $context = ObjectContext::from($command)->context(),
+            $context = ['command' => $this->context->make($command)],
         );
 
         $next($command);

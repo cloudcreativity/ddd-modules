@@ -12,19 +12,43 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Loggable;
 
-use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextProvider;
-use CloudCreativity\Modules\Toolkit\Loggable\ObjectContext;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Message;
+use CloudCreativity\Modules\Toolkit\Loggable\ObjectDecorator;
 use CloudCreativity\Modules\Toolkit\Loggable\Sensitive;
+use CloudCreativity\Modules\Toolkit\Loggable\SimpleContextFactory;
 use PHPUnit\Framework\TestCase;
 
-class ObjectContextTest extends TestCase
+class ObjectDecoratorTest extends TestCase
 {
+    /**
+     * @var SimpleContextFactory
+     */
+    private SimpleContextFactory $factory;
+
+    /**
+     * @return void
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->factory = new SimpleContextFactory();
+    }
+
+    /**
+     * @return void
+     */
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        unset($this->factory);
+    }
+
     /**
      * @return void
      */
     public function testItUsesObjectProperties(): void
     {
-        $source = new class () {
+        $source = new class () implements Message {
             public string $foo = 'bar';
             public string $baz = 'bat';
             public ?string $blah = null;
@@ -37,7 +61,12 @@ class ObjectContextTest extends TestCase
             'blah' => null,
         ];
 
-        $this->assertSame($expected, ObjectContext::from($source)->context());
+        $iterator = new ObjectDecorator($source);
+
+        $this->assertSame(array_keys($expected), $iterator->keys());
+        $this->assertSame($expected, iterator_to_array($iterator));
+        $this->assertSame($expected, $iterator->all());
+        $this->assertSame($expected, $this->factory->make($source));
     }
 
     /**
@@ -45,7 +74,7 @@ class ObjectContextTest extends TestCase
      */
     public function testItExcludesSensitiveProperties(): void
     {
-        $source = new class ('Hello', 'World') {
+        $source = new class ('Hello', 'World') implements Message {
             public string $foo = 'bar';
             #[Sensitive]
             public string $baz = 'bat';
@@ -64,25 +93,10 @@ class ObjectContextTest extends TestCase
             'blah2' => 'World',
         ];
 
-        $this->assertSame($expected, ObjectContext::from($source)->context());
-    }
+        $iterator = new ObjectDecorator($source);
 
-    /**
-     * @return void
-     */
-    public function testItUsesImplementedContext(): void
-    {
-        $source = new class () implements ContextProvider {
-            public string $foo = 'bar';
-            public string $baz = 'bat';
-
-            public function context(): array
-            {
-                return ['foobar' => 'bazbat'];
-            }
-
-        };
-
-        $this->assertSame(['foobar' => 'bazbat'], ObjectContext::from($source)->context());
+        $this->assertSame(array_keys($expected), $iterator->keys());
+        $this->assertSame($expected, $iterator->all());
+        $this->assertSame($expected, $this->factory->make($source));
     }
 }

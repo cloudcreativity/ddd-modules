@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Result;
 
 use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextProvider;
-use CloudCreativity\Modules\Toolkit\Loggable\ResultContext;
+use CloudCreativity\Modules\Toolkit\Loggable\ResultDecorator;
 use CloudCreativity\Modules\Toolkit\Result\FailedResultException;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\TestCase;
@@ -33,7 +33,7 @@ class FailedResultExceptionTest extends TestCase
         $this->assertSame($result, $exception->getResult());
         $this->assertSame('Something went wrong.', $exception->getMessage());
         $this->assertInstanceOf(ContextProvider::class, $exception);
-        $this->assertSame(ResultContext::from($result)->context(), $exception->context());
+        $this->assertSame((new ResultDecorator($result))->context(), $exception->context());
     }
 
     /**
