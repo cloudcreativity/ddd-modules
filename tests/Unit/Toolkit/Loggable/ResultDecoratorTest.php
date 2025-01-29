@@ -70,7 +70,10 @@ class ResultDecoratorTest extends TestCase
             'success' => true,
         ];
 
-        $this->assertSame($expected, (new ResultDecorator($result))->context());
+        $decorator = new ResultDecorator($result);
+
+        $this->assertInstanceOf(ContextProvider::class, $decorator);
+        $this->assertSame($expected, $decorator->context());
         $this->assertSame($expected, $this->factory->make($result));
     }
 

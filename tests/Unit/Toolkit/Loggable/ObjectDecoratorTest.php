@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Loggable;
 
+use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextProvider;
 use CloudCreativity\Modules\Contracts\Toolkit\Messages\Message;
 use CloudCreativity\Modules\Toolkit\Loggable\ObjectDecorator;
 use CloudCreativity\Modules\Toolkit\Loggable\Sensitive;
@@ -61,11 +62,13 @@ class ObjectDecoratorTest extends TestCase
             'blah' => null,
         ];
 
-        $iterator = new ObjectDecorator($source);
+        $decorator = new ObjectDecorator($source);
 
-        $this->assertSame(array_keys($expected), $iterator->keys());
-        $this->assertSame($expected, iterator_to_array($iterator));
-        $this->assertSame($expected, $iterator->all());
+        $this->assertInstanceOf(ContextProvider::class, $decorator);
+        $this->assertSame(array_keys($expected), $decorator->keys());
+        $this->assertSame($expected, iterator_to_array($decorator));
+        $this->assertSame($expected, $decorator->all());
+        $this->assertSame($expected, $decorator->context());
         $this->assertSame($expected, $this->factory->make($source));
     }
 
@@ -93,10 +96,11 @@ class ObjectDecoratorTest extends TestCase
             'blah2' => 'World',
         ];
 
-        $iterator = new ObjectDecorator($source);
+        $decorator = new ObjectDecorator($source);
 
-        $this->assertSame(array_keys($expected), $iterator->keys());
-        $this->assertSame($expected, $iterator->all());
+        $this->assertSame(array_keys($expected), $decorator->keys());
+        $this->assertSame($expected, $decorator->all());
+        $this->assertSame($expected, $decorator->context());
         $this->assertSame($expected, $this->factory->make($source));
     }
 }
