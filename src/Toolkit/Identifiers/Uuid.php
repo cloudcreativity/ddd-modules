@@ -61,6 +61,22 @@ final class Uuid implements Identifier, JsonSerializable
     }
 
     /**
+     * @param Identifier|IBaseUuid|string|null $value
+     * @return self|null
+     */
+    public static function tryFrom(Identifier|IBaseUuid|string|null $value): ?self
+    {
+        $factory = self::getFactory();
+
+        return match(true) {
+            $value instanceof self => $value,
+            $value instanceof IBaseUuid => $factory->from($value),
+            is_string($value) && BaseUuid::isValid($value) => $factory->fromString($value),
+            default => null,
+        };
+    }
+
+    /**
      * Generate a random UUID, useful in tests.
      *
      * @return self

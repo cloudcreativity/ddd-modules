@@ -14,8 +14,9 @@ namespace CloudCreativity\Modules\Application\InboundEventBus\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Contracts\Application\InboundEventBus\InboundEventMiddleware;
+use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextFactory;
 use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
-use CloudCreativity\Modules\Toolkit\Loggable\ObjectContext;
+use CloudCreativity\Modules\Toolkit\Loggable\SimpleContextFactory;
 use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
@@ -28,11 +29,13 @@ final class LogInboundEvent implements InboundEventMiddleware
      * @param LoggerInterface $log
      * @param string $publishLevel
      * @param string $publishedLevel
+     * @param ContextFactory $context
      */
     public function __construct(
         private readonly LoggerInterface $log,
         private readonly string $publishLevel = LogLevel::DEBUG,
         private readonly string $publishedLevel = LogLevel::INFO,
+        private readonly ContextFactory $context = new SimpleContextFactory(),
     ) {
     }
 
@@ -46,7 +49,7 @@ final class LogInboundEvent implements InboundEventMiddleware
         $this->log->log(
             $this->publishLevel,
             "Receiving integration event {$name}.",
-            $context = ObjectContext::from($event)->context(),
+            $context = ['event' => $this->context->make($event)],
         );
 
         $next($event);

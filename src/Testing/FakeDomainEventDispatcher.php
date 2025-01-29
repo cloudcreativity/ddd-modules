@@ -14,12 +14,13 @@ namespace CloudCreativity\Modules\Testing;
 
 use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 use CloudCreativity\Modules\Contracts\Domain\Events\DomainEventDispatcher;
+use Countable;
 use LogicException;
 
-class FakeDomainEventDispatcher implements DomainEventDispatcher
+class FakeDomainEventDispatcher implements DomainEventDispatcher, Countable
 {
     /**
-     * @var array<DomainEvent>
+     * @var list<DomainEvent>
      */
     public array $events = [];
 
@@ -29,6 +30,14 @@ class FakeDomainEventDispatcher implements DomainEventDispatcher
     public function dispatch(DomainEvent $event): void
     {
         $this->events[] = $event;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function count(): int
+    {
+        return count($this->events);
     }
 
     /**

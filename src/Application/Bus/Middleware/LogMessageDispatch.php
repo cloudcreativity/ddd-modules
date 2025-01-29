@@ -14,11 +14,11 @@ namespace CloudCreativity\Modules\Application\Bus\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Contracts\Application\Bus\BusMiddleware;
+use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextFactory;
 use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
 use CloudCreativity\Modules\Contracts\Toolkit\Messages\Query;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
-use CloudCreativity\Modules\Toolkit\Loggable\ObjectContext;
-use CloudCreativity\Modules\Toolkit\Loggable\ResultContext;
+use CloudCreativity\Modules\Toolkit\Loggable\SimpleContextFactory;
 use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
@@ -31,11 +31,13 @@ final class LogMessageDispatch implements BusMiddleware
      * @param LoggerInterface $logger
      * @param string $dispatchLevel
      * @param string $dispatchedLevel
+     * @param ContextFactory $context
      */
     public function __construct(
         private readonly LoggerInterface $logger,
         private readonly string $dispatchLevel = LogLevel::DEBUG,
         private readonly string $dispatchedLevel = LogLevel::INFO,
+        private readonly ContextFactory $context = new SimpleContextFactory(),
     ) {
     }
 
@@ -45,11 +47,12 @@ final class LogMessageDispatch implements BusMiddleware
     public function __invoke(Command|Query $message, Closure $next): Result
     {
         $name = ModuleBasename::tryFrom($message)?->toString() ?? $message::class;
+        $key = ($message instanceof Command) ? 'command' : 'query';
 
         $this->logger->log(
             $this->dispatchLevel,
             "Bus dispatching {$name}.",
-            ObjectContext::from($message)->context(),
+            [$key => $this->context->make($message)],
         );
 
         /** @var Result<mixed> $result */
@@ -58,7 +61,7 @@ final class LogMessageDispatch implements BusMiddleware
         $this->logger->log(
             $this->dispatchedLevel,
             "Bus dispatched {$name}.",
-            ResultContext::from($result)->context(),
+            ['result' => $this->context->make($result)],
         );
 
         return $result;

@@ -14,12 +14,13 @@ namespace CloudCreativity\Modules\Testing;
 
 use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue;
 use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
+use Countable;
 use LogicException;
 
-class FakeQueue implements Queue
+class FakeQueue implements Queue, Countable
 {
     /**
-     * @var array<Command>
+     * @var list<Command>
      */
     public array $commands = [];
 
@@ -29,6 +30,14 @@ class FakeQueue implements Queue
     public function push(Command $command): void
     {
         $this->commands[] = $command;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function count(): int
+    {
+        return count($this->commands);
     }
 
     /**

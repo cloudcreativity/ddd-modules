@@ -21,7 +21,7 @@ use Throwable;
 final class FakeUnitOfWork implements UnitOfWork
 {
     /**
-     * @var array<string>
+     * @var list<string>
      */
     public array $sequence = [];
 

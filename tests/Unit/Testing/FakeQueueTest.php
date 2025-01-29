@@ -27,6 +27,7 @@ class FakeQueueTest extends TestCase
         $queue->push($command2 = $this->createMock(Command::class));
 
         $this->assertInstanceOf(Queue::class, $queue);
+        $this->assertCount(2, $queue);
         $this->assertSame([$command1, $command2], $queue->commands);
     }
 

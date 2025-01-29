@@ -31,7 +31,7 @@ class FakeOutboundEventPublisherTest extends TestCase
         $publisher->publish($event2);
 
         $this->assertInstanceOf(OutboundEventPublisher::class, $publisher);
-        $this->assertCount(2, $publisher->events);
+        $this->assertCount(2, $publisher);
         $this->assertSame($event1, $publisher->events[0]);
         $this->assertSame($event2, $publisher->events[1]);
     }

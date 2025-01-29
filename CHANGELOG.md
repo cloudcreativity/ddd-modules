@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [3.0.0] - 2025-01-29
+
+### Added
+
+- The `Uuid` class now has a static `tryFrom()` method. This will return `null` if the value provided cannot be cast to
+  a UUID identifier.
+- New `PsrLogExceptionReporter` provides a default exception reporter implementation that logs the exception as an
+  error.
+- Updated doc block for `Contracts::assert()` to add PHPStan assertion that the precondition is `true` if the method
+  call does not throw.
+- The following fake classes are now countable, with the count representing the number of items they have captured:
+    - `Testing\FakeDomainEventDispatcher`
+    - `Testing\FakeExceptionReporter`
+    - `Testing\FakeOutboundEventPublisher`
+    - `Testing\FakeQueue`
+- New `ContextFactory` interface for converting messages and result objects to log context.
+- New `Contextual` interface for converting value objects to log context. This is now extended by the `Identifier`
+  interface.
+- All middleware that log messages are now injected with the new log context factory class. This allows the conversion
+  of messages and result objects to be customised by writing an implementation of this interface. This dependency
+  injection is optional, as the package provides its own implementation that is used by default.
+
+### Changed
+
+- **BREAKING** The `ObjectContext` class has been renamed to `ObjectDecorator` and the static `from()` method has been
+  removed. Use the new `ContextFactory` implementation instead.
+- **BREAKING** The `ResultContext` class has been renamed to `ResultDecorator` and the static `from()` method has been
+  removed. Use the new `ContextFactory` implementation instead.
+
 ## [3.0.0-rc.2] - 2025-01-18
 
 ### Added
@@ -362,5 +391,11 @@ All notable changes to this project will be documented in this file. This projec
 ## [0.1.0] - 2023-11-18
 
 Initial release.
+
+[3.0.0]: https://github.com/cloudcreativity/ddd-modules/compare/v3.0.0-rc.2...v3.0.0
+
+[3.0.0-rc.2]: https://github.com/cloudcreativity/ddd-modules/compare/v3.0.0-rc.1...v3.0.0-rc.2
+
+[3.0.0-rc.1]: https://github.com/cloudcreativity/ddd-modules/compare/v2.0.0...v3.0.0-rc.1
 
 [2.0.0]: https://github.com/cloudcreativity/ddd-modules/compare/v2.0.0-rc.3...v2.0.0

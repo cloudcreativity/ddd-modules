@@ -27,6 +27,7 @@ class FakeExceptionReporterTest extends TestCase
         $reporter->report($ex2 = new RuntimeException('Whoops again!'));
 
         $this->assertInstanceOf(ExceptionReporter::class, $reporter);
+        $this->assertCount(2, $reporter);
         $this->assertSame([$ex1, $ex2], $reporter->reported);
     }
 

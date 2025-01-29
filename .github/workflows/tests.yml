@@ -36,24 +36,14 @@ jobs:
           max_attempts: 5
           command: composer update --prefer-dist --no-interaction --no-progress
 
+      - name: Execute architectural layers static analysis
+        run: composer run deptrac
+
+      - name: Execute code static analysis
+        run: composer run static
+
       - name: Execute style
         run: composer run style -- --bail
 
-      - name: Execute static analysis
-        run: composer run static
-
       - name: Execute tests
         run: composer run test
-
-  deptrac:
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Run Deptrac
-        uses: docker://smoench/deptrac-action:latest
-        with:
-          args: analyse --report-uncovered --fail-on-uncovered

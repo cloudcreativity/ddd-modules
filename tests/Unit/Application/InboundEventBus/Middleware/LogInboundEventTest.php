@@ -66,13 +66,13 @@ class LogInboundEventTest extends TestCase
         });
 
         $context = [
-            'uuid' => $this->event->uuid,
+            'uuid' => $this->event->uuid->context(),
             'occurredAt' => $this->event->occurredAt,
         ];
 
         $this->assertSame([
-            [LogLevel::DEBUG, "Receiving integration event {$eventName}.", $context],
-            [LogLevel::INFO, "Received integration event {$eventName}.", $context],
+            [LogLevel::DEBUG, "Receiving integration event {$eventName}.", ['event' => $context]],
+            [LogLevel::INFO, "Received integration event {$eventName}.", ['event' => $context]],
         ], $logs);
     }
 
@@ -98,13 +98,13 @@ class LogInboundEventTest extends TestCase
         });
 
         $context = [
-            'uuid' => $this->event->uuid,
+            'uuid' => $this->event->uuid->context(),
             'occurredAt' => $this->event->occurredAt,
         ];
 
         $this->assertSame([
-            [LogLevel::NOTICE, "Receiving integration event {$eventName}.", $context],
-            [LogLevel::WARNING, "Received integration event {$eventName}.", $context],
+            [LogLevel::NOTICE, "Receiving integration event {$eventName}.", ['event' => $context]],
+            [LogLevel::WARNING, "Received integration event {$eventName}.", ['event' => $context]],
         ], $logs);
     }
 
@@ -124,7 +124,7 @@ class LogInboundEventTest extends TestCase
         $this->logger
             ->expects($this->once())
             ->method('log')
-            ->with(LogLevel::DEBUG, "Receiving integration event {$eventName}.", $context);
+            ->with(LogLevel::DEBUG, "Receiving integration event {$eventName}.", ['event' => $context]);
 
         $middleware = new LogInboundEvent($this->logger);
 

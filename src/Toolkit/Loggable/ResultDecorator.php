@@ -12,24 +12,15 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Loggable;
 
-use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextProvider;
+use CloudCreativity\Modules\Contracts\Toolkit\Loggable\Contextual;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Error;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
-final class ResultContext implements ContextProvider
+final class ResultDecorator implements ContextProvider
 {
     /**
-     * @param Result<mixed> $result
-     * @return self
-     */
-    public static function from(Result $result): self
-    {
-        return new self($result);
-    }
-
-    /**
-     * ResultContext constructor.
+     * ResultDecorator constructor.
      *
      * @param Result<mixed> $result
      */
@@ -63,7 +54,7 @@ final class ResultContext implements ContextProvider
             'success' => $this->result->didSucceed(),
             'value' => match(true) {
                 $value instanceof ContextProvider => $value->context(),
-                $value instanceof Identifier => $value->context(),
+                $value instanceof Contextual => $value->context(),
                 is_scalar($value) => $value,
                 default => null,
             },

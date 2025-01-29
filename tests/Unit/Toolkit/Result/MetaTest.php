@@ -43,6 +43,20 @@ class MetaTest extends TestCase
     /**
      * @return void
      */
+    public function testItIsIterable(): void
+    {
+        $meta = new Meta($values = [
+            'foo' => 'bar',
+            'baz' => 'bat',
+            'foobar' => null,
+        ]);
+
+        $this->assertSame($values, iterator_to_array($meta));
+    }
+
+    /**
+     * @return void
+     */
     public function testEmpty(): void
     {
         $meta = new Meta();

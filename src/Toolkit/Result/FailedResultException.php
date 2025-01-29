@@ -14,7 +14,7 @@ namespace CloudCreativity\Modules\Toolkit\Result;
 
 use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextProvider;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
-use CloudCreativity\Modules\Toolkit\Loggable\ResultContext;
+use CloudCreativity\Modules\Toolkit\Loggable\ResultDecorator;
 use RuntimeException;
 use Throwable;
 
@@ -47,6 +47,6 @@ class FailedResultException extends RuntimeException implements ContextProvider
      */
     public function context(): array
     {
-        return ResultContext::from($this->result)->context();
+        return (new ResultDecorator($this->result))->context();
     }
 }
