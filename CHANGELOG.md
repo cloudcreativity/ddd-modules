@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file. This projec
 ### Added
 
 - Can now provide an enum as the type of the GUID identifier.
+- Can now provided multiple types when checking if a GUID is of a type - the `Guid::isType()` method. It returns `true`
+  if any of the provided types match the type of the GUID.
+- The `LazyListOfGuids` iterator now has an `only()` method. This can be provided a list of types, and the iterator will
+  yield only GUIDs with a matching type.
 
 ## [3.0.0] - 2025-01-29
 

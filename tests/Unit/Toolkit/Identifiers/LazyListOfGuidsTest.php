@@ -95,4 +95,28 @@ class LazyListOfGuidsTest extends TestCase
 
         iterator_to_array($guids->ofOneType($type));
     }
+
+    public function testOnlyYieldsExpectedTypes(): void
+    {
+        $guid1 = Guid::fromInteger($expected1 = TestUnitEnum::Baz, 1);
+        $guid2 = Guid::fromInteger(TestUnitEnum::Bat, 2);
+        $guid3 = Guid::fromInteger($expected2 = TestBackedEnum::Foo, 3);
+        $guid4 = Guid::fromInteger(TestBackedEnum::Bar, 4);
+        $guid5 = Guid::fromInteger($expected3 = 'SomeType', 5);
+        $guid6 = Guid::fromInteger('SomeOtherType', 5);
+        $guid7 = Guid::fromInteger($expected1, 7);
+        $guid8 = Guid::fromInteger($expected2, 7);
+        $guid9 = Guid::fromInteger($expected3, 7);
+
+        $all = [$guid1, $guid2, $guid3, $guid4, $guid5, $guid6, $guid7, $guid8, $guid9];
+        $expected = [$guid1, $guid3, $guid5, $guid7, $guid8, $guid9];
+
+        $guids = new LazyListOfGuids(function () use ($all) {
+            yield from $all;
+        });
+
+        $actual = $guids->only($expected1, $expected3, $expected2)->all();
+
+        $this->assertSame($expected, $actual);
+    }
 }

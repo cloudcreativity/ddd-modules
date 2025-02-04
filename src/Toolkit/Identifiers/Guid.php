@@ -108,12 +108,18 @@ final class Guid implements Identifier
     }
 
     /**
-     * @param UnitEnum|string $type
+     * @param UnitEnum|string ...$types
      * @return bool
      */
-    public function isType(UnitEnum|string $type): bool
+    public function isType(UnitEnum|string ...$types): bool
     {
-        return $this->type === $type;
+        foreach ($types as $type) {
+            if ($this->type === $type) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

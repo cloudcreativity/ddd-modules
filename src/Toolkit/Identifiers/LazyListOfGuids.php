@@ -62,4 +62,21 @@ final class LazyListOfGuids implements LazyList
             }
         });
     }
+
+    /**
+     * Return a list that only contains the provided types.
+     *
+     * @param UnitEnum|string ...$types
+     * @return self
+     */
+    public function only(UnitEnum|string ...$types): self
+    {
+        return new self(function () use ($types) {
+            foreach ($this as $guid) {
+                if ($guid->isType(...$types)) {
+                    yield $guid;
+                }
+            }
+        });
+    }
 }

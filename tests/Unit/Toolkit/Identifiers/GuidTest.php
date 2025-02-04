@@ -180,6 +180,22 @@ class GuidTest extends TestCase
 
     /**
      * @param UnitEnum|string $type
+     * @param string $value
+     * @param UnitEnum|string $other
+     * @return void
+     * @dataProvider typeProvider
+     */
+    public function testIsTypeWithMultipleTypes(UnitEnum|string $type, string $value, UnitEnum|string $other): void
+    {
+        $guid = Guid::fromInteger($type, 1);
+
+        $this->assertTrue($guid->isType($other, $type));
+        $this->assertFalse($guid->isType($other, 'Blah!'));
+        $this->assertFalse($guid->isType());
+    }
+
+    /**
+     * @param UnitEnum|string $type
      * @return void
      * @dataProvider typeProvider
      */
