@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Identifiers;
 
+use CloudCreativity\Modules\Tests\TestBackedEnum;
+use CloudCreativity\Modules\Tests\TestUnitEnum;
 use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
@@ -19,80 +21,116 @@ use CloudCreativity\Modules\Toolkit\Identifiers\StringId;
 use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid as BaseUuid;
+use UnitEnum;
 
 class GuidTest extends TestCase
 {
     /**
-     * @return void
+     * @return array<string, array<int, mixed>>
      */
-    public function testStringId(): void
+    public static function typeProvider(): array
     {
-        $guid = Guid::fromString('SomeType', '123');
+        return [
+            'string' => ['SomeType', 'SomeType', 'Other', 'Other'],
+            'unit enum' => [
+                TestUnitEnum::Baz,
+                TestUnitEnum::Baz->name,
+                TestUnitEnum::Bat,
+                TestUnitEnum::Bat->name,
+            ],
+            'backed enum' => [
+                TestBackedEnum::Foo,
+                TestBackedEnum::Foo->value,
+                TestBackedEnum::Bar,
+                TestBackedEnum::Bar->value,
+            ],
+        ];
+    }
+
+    /**
+     * @param TestUnitEnum|string $type
+     * @param string $value
+     * @param TestUnitEnum|string $other
+     * @return void
+     * @dataProvider typeProvider
+     */
+    public function testStringId(UnitEnum|string $type, string $value, UnitEnum|string $other): void
+    {
+        $guid = Guid::fromString($type, '123');
 
         $this->assertInstanceOf(\Stringable::class, $guid);
-        $this->assertSame('SomeType', $guid->type);
+        $this->assertSame($type, $guid->type);
+        $this->assertSame($value, $guid->type());
         $this->assertObjectEquals(new StringId('123'), $guid->id);
-        $this->assertSame('SomeType:123', $guid->toString());
-        $this->assertSame('SomeType:123', (string) $guid);
-        $this->assertTrue($guid->isType('SomeType'));
+        $this->assertSame($value . ':123', $guid->toString());
+        $this->assertSame($value . ':123', (string) $guid);
+        $this->assertTrue($guid->isType($type));
         $this->assertTrue($guid->is($guid));
         $this->assertTrue($guid->is(clone $guid));
-        $this->assertFalse($guid->is(Guid::fromInteger('SomeType', 123)));
-        $this->assertFalse($guid->is(Guid::fromString('SomeType', '234')));
-        $this->assertFalse($guid->is(Guid::fromString('SomeOtherType', '123')));
+        $this->assertFalse($guid->is(Guid::fromInteger($type, 123)));
+        $this->assertFalse($guid->is(Guid::fromString($type, '234')));
+        $this->assertFalse($guid->is(Guid::fromString($other, '123')));
         $this->assertFalse($guid->is(null));
-        $this->assertSame(['type' => 'SomeType', 'id' => '123'], $guid->context());
-        $this->assertEquals($guid, Guid::fromString('SomeType', '123'));
-        $this->assertObjectEquals($guid, Guid::fromString('SomeType', '123'));
-        $this->assertFalse($guid->equals(Guid::fromInteger('SomeType', 123)));
+        $this->assertSame(['type' => $value, 'id' => '123'], $guid->context());
+        $this->assertEquals($guid, Guid::fromString($type, '123'));
+        $this->assertObjectEquals($guid, Guid::fromString($type, '123'));
+        $this->assertFalse($guid->equals(Guid::fromInteger($type, 123)));
     }
 
     /**
+     * @param UnitEnum|string $type
+     * @param string $value
+     * @param UnitEnum|string $other
      * @return void
+     * @dataProvider typeProvider
      */
-    public function testIntegerId(): void
+    public function testIntegerId(UnitEnum|string $type, string $value, UnitEnum|string $other): void
     {
-        $guid = Guid::fromInteger('SomeType', 123);
+        $guid = Guid::fromInteger($type, 123);
 
-        $this->assertSame('SomeType', $guid->type);
+        $this->assertSame($type, $guid->type);
         $this->assertObjectEquals(new IntegerId(123), $guid->id);
-        $this->assertSame('SomeType:123', $guid->toString());
-        $this->assertSame('SomeType:123', (string) $guid);
-        $this->assertTrue($guid->isType('SomeType'));
+        $this->assertSame($value . ':123', $guid->toString());
+        $this->assertSame($value . ':123', (string) $guid);
+        $this->assertTrue($guid->isType($type));
         $this->assertTrue($guid->is($guid));
         $this->assertTrue($guid->is(clone $guid));
-        $this->assertFalse($guid->is(Guid::fromString('SomeType', '123')));
-        $this->assertFalse($guid->is(Guid::fromInteger('SomeType', 234)));
-        $this->assertFalse($guid->is(Guid::fromInteger('SomeOtherType', 123)));
+        $this->assertFalse($guid->is(Guid::fromString($type, '123')));
+        $this->assertFalse($guid->is(Guid::fromInteger($type, 234)));
+        $this->assertFalse($guid->is(Guid::fromInteger($other, 123)));
         $this->assertFalse($guid->is(null));
-        $this->assertSame(['type' => 'SomeType', 'id' => 123], $guid->context());
-        $this->assertEquals($guid, Guid::fromInteger('SomeType', 123));
-        $this->assertObjectEquals($guid, Guid::fromInteger('SomeType', 123));
-        $this->assertFalse($guid->equals(Guid::fromString('SomeType', '123')));
+        $this->assertSame(['type' => $value, 'id' => 123], $guid->context());
+        $this->assertEquals($guid, Guid::fromInteger($type, 123));
+        $this->assertObjectEquals($guid, Guid::fromInteger($type, 123));
+        $this->assertFalse($guid->equals(Guid::fromString($type, '123')));
     }
 
     /**
+     * @param UnitEnum|string $type
+     * @param string $value
+     * @param UnitEnum|string $other
      * @return void
+     * @dataProvider typeProvider
      */
-    public function testUuid(): void
+    public function testUuid(UnitEnum|string $type, string $value, UnitEnum|string $other): void
     {
         $uuid = Uuid::random();
-        $guid = Guid::fromUuid('SomeType', $uuid->value);
+        $guid = Guid::fromUuid($type, $uuid->value);
 
-        $this->assertSame('SomeType', $guid->type);
+        $this->assertSame($type, $guid->type);
         $this->assertObjectEquals($uuid, $guid->id);
-        $this->assertSame('SomeType:' . $uuid->toString(), $guid->toString());
-        $this->assertSame('SomeType:' . $uuid->toString(), (string) $guid);
-        $this->assertTrue($guid->isType('SomeType'));
+        $this->assertSame($value . ':' . $uuid->toString(), $guid->toString());
+        $this->assertSame($value . ':' . $uuid->toString(), (string) $guid);
+        $this->assertTrue($guid->isType($type));
         $this->assertTrue($guid->is($guid));
         $this->assertTrue($guid->is(clone $guid));
-        $this->assertFalse($guid->is(Guid::fromUuid('SomeOtherType', $uuid->value)));
-        $this->assertFalse($guid->is(Guid::fromUuid('SomeType', BaseUuid::uuid4())));
-        $this->assertFalse($guid->is(Guid::fromString('SomeType', $uuid->toString())));
-        $this->assertFalse($guid->is(Guid::fromInteger('SomeType', 234)));
+        $this->assertFalse($guid->is(Guid::fromUuid($other, $uuid->value)));
+        $this->assertFalse($guid->is(Guid::fromUuid($type, BaseUuid::uuid4())));
+        $this->assertFalse($guid->is(Guid::fromString($type, $uuid->toString())));
+        $this->assertFalse($guid->is(Guid::fromInteger($type, 234)));
         $this->assertFalse($guid->is(null));
-        $this->assertSame(['type' => 'SomeType', 'id' => $uuid->toString()], $guid->context());
-        $this->assertObjectEquals($guid, Guid::fromUuid('SomeType', $uuid->value));
+        $this->assertSame(['type' => $value, 'id' => $uuid->toString()], $guid->context());
+        $this->assertObjectEquals($guid, Guid::fromUuid($type, $uuid->value));
     }
 
     /**
@@ -141,24 +179,39 @@ class GuidTest extends TestCase
     }
 
     /**
+     * @param UnitEnum|string $type
      * @return void
+     * @dataProvider typeProvider
      */
-    public function testAssertTypeDoesNotThrowForExpectedType(): void
+    public function testAssertTypeDoesNotThrowForExpectedType(UnitEnum|string $type): void
     {
-        $guid = Guid::fromInteger('Event', 1);
+        $guid = Guid::fromInteger($type, 1);
 
-        $actual = $guid->assertType('Event');
+        $actual = $guid->assertType($type);
         $this->assertSame($guid, $actual);
     }
 
     /**
+     * @param UnitEnum|string $type
+     * @param string $value
+     * @param UnitEnum|string $other
+     * @param string $otherValue
      * @return void
+     * @dataProvider typeProvider
      */
-    public function testAssertTypeDoesThrowForUnexpectedType(): void
-    {
+    public function testAssertTypeDoesThrowForUnexpectedType(
+        UnitEnum|string $type,
+        string $value,
+        UnitEnum|string $other,
+        string $otherValue,
+    ): void {
         $this->expectException(ContractException::class);
-        $this->expectExceptionMessage('Expecting type "Foo", received "Event".');
+        $this->expectExceptionMessage(sprintf(
+            'Expecting type "%s", received "%s".',
+            $otherValue,
+            $value,
+        ));
 
-        Guid::fromInteger('Event', 1)->assertType('Foo');
+        Guid::fromInteger($type, 1)->assertType($other);
     }
 }

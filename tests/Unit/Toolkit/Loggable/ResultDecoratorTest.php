@@ -17,6 +17,7 @@ use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextProvider;
 use CloudCreativity\Modules\Contracts\Toolkit\Loggable\Contextual;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Error as IError;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result as IResult;
+use CloudCreativity\Modules\Tests\TestBackedEnum;
 use CloudCreativity\Modules\Toolkit\Loggable\ResultDecorator;
 use CloudCreativity\Modules\Toolkit\Loggable\SimpleContextFactory;
 use CloudCreativity\Modules\Toolkit\Result\Error;
@@ -203,8 +204,8 @@ class ResultDecoratorTest extends TestCase
     public static function onlyCodeProvider(): array
     {
         return [
-            [TestEnum::Foo],
-            [new Error(code: TestEnum::Bar)],
+            [TestBackedEnum::Foo],
+            [new Error(code: TestBackedEnum::Bar)],
         ];
     }
 
@@ -234,23 +235,23 @@ class ResultDecoratorTest extends TestCase
         $error1 = new Error(
             key: 'foo',
             message: 'Something went wrong.',
-            code: TestEnum::Bar,
+            code: TestBackedEnum::Bar,
         );
 
         $error2 = new Error(
             key: 'bar',
             message: 'Something else went wrong.',
-            code: TestEnum::Foo,
+            code: TestBackedEnum::Foo,
         );
 
         $expected1 = [
-            'code' => TestEnum::Bar->value,
+            'code' => TestBackedEnum::Bar->value,
             'key' => 'foo',
             'message' => 'Something went wrong.',
         ];
 
         $expected2 = [
-            'code' => TestEnum::Foo->value,
+            'code' => TestBackedEnum::Foo->value,
             'key' => 'bar',
             'message' => 'Something else went wrong.',
         ];

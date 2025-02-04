@@ -14,7 +14,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Result;
 
 use CloudCreativity\Modules\Contracts\Toolkit\Result\ListOfErrors as IListOfErrors;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result as IResult;
-use CloudCreativity\Modules\Tests\Unit\Toolkit\Loggable\TestEnum;
+use CloudCreativity\Modules\Tests\TestBackedEnum;
 use CloudCreativity\Modules\Toolkit\Result\Error;
 use CloudCreativity\Modules\Toolkit\Result\FailedResultException;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
@@ -98,8 +98,8 @@ class ResultTest extends TestCase
     public function testErrorWithMultipleErrors(): void
     {
         $errors = new ListOfErrors(
-            new Error(code: TestEnum::Foo),
-            new Error(code: TestEnum::Bar),
+            new Error(code: TestBackedEnum::Foo),
+            new Error(code: TestBackedEnum::Bar),
             new Error(message: 'Message A'),
             new Error(message: 'Message B'),
         );
@@ -180,7 +180,7 @@ class ResultTest extends TestCase
      */
     public function testFailedWithBackedEnum(): void
     {
-        $error = new Error(code: $code = TestEnum::Foo);
+        $error = new Error(code: $code = TestBackedEnum::Foo);
         $result = Result::failed($code);
 
         $this->assertEquals(new ListOfErrors($error), $result->errors());

@@ -12,48 +12,87 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Identifiers;
 
+use CloudCreativity\Modules\Tests\TestBackedEnum;
+use CloudCreativity\Modules\Tests\TestUnitEnum;
 use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
 use CloudCreativity\Modules\Toolkit\Identifiers\LazyListOfGuids;
 use PHPUnit\Framework\TestCase;
+use UnitEnum;
 
 class LazyListOfGuidsTest extends TestCase
 {
     /**
-     * @return void
-     * @throws \Exception
+     * @return array<string, array<int, mixed>>
      */
-    public function testOfOneTypeDoesNotThrowWhenItHasTheExpectedType(): void
+    public static function typeProvider(): array
+    {
+        return [
+            'string' => ['SomeType', 'SomeType', 'Other', 'Other'],
+            'unit enum' => [
+                TestUnitEnum::Baz,
+                TestUnitEnum::Baz->name,
+                TestUnitEnum::Bat,
+                TestUnitEnum::Bat->name,
+            ],
+            'backed enum' => [
+                TestBackedEnum::Foo,
+                TestBackedEnum::Foo->value,
+                TestBackedEnum::Bar,
+                TestBackedEnum::Bar->value,
+            ],
+        ];
+    }
+
+    /**
+     * @param UnitEnum|string $type
+     * @return void
+     * @dataProvider typeProvider
+     */
+    public function testOfOneTypeDoesNotThrowWhenItHasTheExpectedType(UnitEnum|string $type): void
     {
         $expected = [
-            Guid::fromInteger('SomeType', 1),
-            Guid::fromInteger('SomeType', 2),
-            Guid::fromInteger('SomeType', 3),
+            Guid::fromInteger($type, 1),
+            Guid::fromInteger($type, 2),
+            Guid::fromInteger($type, 3),
         ];
 
         $guids = new LazyListOfGuids(function () use ($expected) {
             yield from $expected;
         });
 
-        $actual = iterator_to_array($guids->ofOneType('SomeType'));
+        $actual = iterator_to_array($guids->ofOneType($type));
 
         $this->assertSame($expected, $actual);
     }
 
     /**
+     * @param UnitEnum|string $type
+     * @param string $value
+     * @param UnitEnum|string $other
+     * @param string $otherValue
      * @return void
+     * @dataProvider typeProvider
      */
-    public function testOfOneTypeThrowsWhenItIsNot(): void
-    {
+    public function testOfOneTypeThrowsWhenItIsNot(
+        UnitEnum|string $type,
+        string $value,
+        UnitEnum|string $other,
+        string $otherValue,
+    ): void {
         $this->expectException(ContractException::class);
-        $this->expectExceptionMessage('Expecting GUIDs of type "SomeType", found "SomeOtherType".');
+        $this->expectExceptionMessage(sprintf(
+            'Expecting GUIDs of type "%s", found "%s".',
+            $value,
+            $otherValue,
+        ));
 
-        $guids = new LazyListOfGuids(function () {
-            yield Guid::fromInteger('SomeType', 1);
-            yield Guid::fromInteger('SomeType', 2);
-            yield Guid::fromInteger('SomeOtherType', 3);
+        $guids = new LazyListOfGuids(function () use ($type, $other) {
+            yield Guid::fromInteger($type, 1);
+            yield Guid::fromInteger($type, 2);
+            yield Guid::fromInteger($other, 3);
         });
 
-        iterator_to_array($guids->ofOneType('SomeType'));
+        iterator_to_array($guids->ofOneType($type));
     }
 }

@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+### Added
+
+- Can now provide an enum as the type of the GUID identifier.
+
 ## [3.0.0] - 2025-01-29
 
 ### Added
