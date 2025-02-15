@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [3.1.0] - 2025-02-15
+
+### Added
+
+- Can now provide an enum as the type of the GUID identifier.
+- Can now provide multiple types when checking if a GUID is of a type - the `Guid::isType()` method. It returns `true`
+  if *any* of the provided types match the type of the GUID.
+- The `LazyListOfGuids` iterator now has an `only()` method. This can be provided a list of types, and the iterator will
+  yield only GUIDs with a matching type.
+
 ## [3.0.0] - 2025-01-29
 
 ### Added
@@ -391,6 +401,8 @@ All notable changes to this project will be documented in this file. This projec
 ## [0.1.0] - 2023-11-18
 
 Initial release.
+
+[3.1.0]: https://github.com/cloudcreativity/ddd-modules/compare/v3.0.0...v3.1.0
 
 [3.0.0]: https://github.com/cloudcreativity/ddd-modules/compare/v3.0.0-rc.2...v3.0.0
 

@@ -10,10 +10,10 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Loggable;
+namespace CloudCreativity\Modules\Tests;
 
-enum TestEnum: string
+enum TestBackedEnum: string
 {
-    case Foo = 'foo';
-    case Bar = 'bar';
+    case Foo = 'foo!';
+    case Bar = 'bar!';
 }

@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Result;
 
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Error as IError;
-use CloudCreativity\Modules\Tests\Unit\Toolkit\Loggable\TestEnum;
+use CloudCreativity\Modules\Tests\TestBackedEnum;
 use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Result\Error;
 use PHPUnit\Framework\TestCase;
@@ -25,14 +25,14 @@ class ErrorTest extends TestCase
      */
     public function test(): void
     {
-        $error = new Error(key: 'foo', message: 'Bar', code: TestEnum::Foo);
+        $error = new Error(key: 'foo', message: 'Bar', code: TestBackedEnum::Foo);
 
         $this->assertInstanceOf(IError::class, $error);
         $this->assertSame('foo', $error->key());
         $this->assertSame('Bar', $error->message());
-        $this->assertSame(TestEnum::Foo, $error->code());
-        $this->assertTrue($error->is(TestEnum::Foo));
-        $this->assertFalse($error->is(TestEnum::Bar));
+        $this->assertSame(TestBackedEnum::Foo, $error->code());
+        $this->assertTrue($error->is(TestBackedEnum::Foo));
+        $this->assertFalse($error->is(TestBackedEnum::Bar));
     }
 
     /**
@@ -52,11 +52,11 @@ class ErrorTest extends TestCase
      */
     public function testOnlyCode(): void
     {
-        $error = new Error(code: TestEnum::Foo);
+        $error = new Error(code: TestBackedEnum::Foo);
 
         $this->assertNull($error->key());
         $this->assertSame('', $error->message());
-        $this->assertSame(TestEnum::Foo, $error->code());
+        $this->assertSame(TestBackedEnum::Foo, $error->code());
     }
 
     /**

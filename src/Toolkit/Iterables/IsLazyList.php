@@ -40,10 +40,16 @@ trait IsLazyList
     }
 
     /**
-     * @return array<T>
+     * @return list<T>
      */
     public function all(): array
     {
-        return iterator_to_array($this->getIterator());
+        $all = [];
+
+        foreach ($this as $value) {
+            $all[] = $value;
+        }
+
+        return $all;
     }
 }

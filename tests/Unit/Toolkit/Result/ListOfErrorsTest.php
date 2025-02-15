@@ -14,7 +14,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Result;
 
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Error as IError;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\ListOfErrors as IListOfErrors;
-use CloudCreativity\Modules\Tests\Unit\Toolkit\Loggable\TestEnum;
+use CloudCreativity\Modules\Tests\TestBackedEnum;
 use CloudCreativity\Modules\Toolkit\Result\Error;
 use CloudCreativity\Modules\Toolkit\Result\KeyedSetOfErrors;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
@@ -106,14 +106,14 @@ class ListOfErrorsTest extends TestCase
             new Error(null, 'Message B'),
             $c = new Error(null, 'Message C'),
             new Error(null, 'Message D'),
-            $e = new Error(code: TestEnum::Bar),
+            $e = new Error(code: TestBackedEnum::Bar),
         );
 
         $this->assertSame($a, $errors->first());
         $this->assertSame($c, $errors->first(fn (IError $error) => 'Message C' === $error->message()));
-        $this->assertSame($e, $errors->first(TestEnum::Bar));
+        $this->assertSame($e, $errors->first(TestBackedEnum::Bar));
         $this->assertNull($errors->first(fn (IError $error) => 'Message E' === $error->message()));
-        $this->assertNull($errors->first(TestEnum::Foo));
+        $this->assertNull($errors->first(TestBackedEnum::Foo));
     }
 
     /**
@@ -125,13 +125,13 @@ class ListOfErrorsTest extends TestCase
             new Error(message: 'Message A'),
             new Error(message: 'Message B'),
             new Error(message: 'Message C'),
-            new Error(message: 'Message D', code: TestEnum::Foo),
+            new Error(message: 'Message D', code: TestBackedEnum::Foo),
         );
 
         $this->assertTrue($errors->contains(fn (IError $error) => 'Message C' === $error->message()));
-        $this->assertTrue($errors->contains(TestEnum::Foo));
+        $this->assertTrue($errors->contains(TestBackedEnum::Foo));
         $this->assertFalse($errors->contains(fn (IError $error) => 'Message E' === $error->message()));
-        $this->assertFalse($errors->contains(TestEnum::Bar));
+        $this->assertFalse($errors->contains(TestBackedEnum::Bar));
     }
 
     /**
@@ -141,11 +141,11 @@ class ListOfErrorsTest extends TestCase
     {
         $errors = new ListOfErrors(
             new Error(message: 'Message A'),
-            new Error(message: 'Message B', code: TestEnum::Foo),
-            new Error(message: 'Message C', code: TestEnum::Bar),
-            new Error(message: 'Message D', code: TestEnum::Foo),
+            new Error(message: 'Message B', code: TestBackedEnum::Foo),
+            new Error(message: 'Message C', code: TestBackedEnum::Bar),
+            new Error(message: 'Message D', code: TestBackedEnum::Foo),
         );
 
-        $this->assertSame([TestEnum::Foo, TestEnum::Bar], $errors->codes());
+        $this->assertSame([TestBackedEnum::Foo, TestBackedEnum::Bar], $errors->codes());
     }
 }

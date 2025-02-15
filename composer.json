@@ -57,8 +57,8 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-develop": "2.x-dev",
-            "dev-next": "3.x-dev"
+            "dev-develop": "3.x-dev",
+            "dev-next": "4.x-dev"
         }
     },
     "minimum-stability": "stable",
