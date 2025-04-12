@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+### Fixed
+
+- Make the `id` property on the `IsEntity` trait readonly. This is considered non-breaking because the `IsEntity` trait
+  is expected to be used on an entity that always has an identifier, so the id should be set via the constructor. This
+  fixes a bug where the trait could not be used on a readonly class.
+
 ## [3.1.0] - 2025-02-15
 
 ### Added
