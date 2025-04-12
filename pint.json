@@ -7,7 +7,7 @@
         },
         "nullable_type_declaration": true
     },
-    "exclude": [
+    "notPath": [
         "tests/Unit/Domain/TestReadOnlyEntity.php"
     ]
 }
