@@ -16,6 +16,9 @@ use CloudCreativity\Modules\Contracts\Domain\Entity;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Domain\IsEntity;
 
+/**
+ * @TODO remove when dropping PHP 8.1 and update `TestEntity` to be `readonly`.
+ */
 final readonly class TestReadOnlyEntity implements Entity
 {
     use IsEntity;
