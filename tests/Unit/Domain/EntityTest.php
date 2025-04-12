@@ -15,6 +15,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Domain;
 use CloudCreativity\Modules\Contracts\Domain\Entity;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
+use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
 use PHPUnit\Framework\TestCase;
 
 class EntityTest extends TestCase
@@ -96,5 +97,18 @@ class EntityTest extends TestCase
 
         $this->assertFalse($a->is($b));
         $this->assertTrue($a->isNot($b));
+    }
+
+    public function testItCanUseTraitOnReadonlyClass(): void
+    {
+        if (PHP_VERSION_ID < 80200) {
+            $this->markTestSkipped('This test requires PHP 8.2 or higher.');
+        }
+
+        $id = new IntegerId(123);
+        $entity = new TestReadOnlyEntity($id, 'Bob');
+
+        $this->assertSame($id, $entity->getId());
+        $this->assertSame('Bob', $entity->getName());
     }
 }

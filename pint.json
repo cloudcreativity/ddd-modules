@@ -6,5 +6,8 @@
             "elements": ["arguments", "arrays", "match", "parameters"]
         },
         "nullable_type_declaration": true
-    }
+    },
+    "notPath": [
+        "tests/Unit/Domain/TestReadOnlyEntity.php"
+    ]
 }
