@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+### Added
+
+- New `ApplicationException` for errors originating from the application layer.
+
 ### Fixed
 
 - Make the `id` property on the `IsEntity` trait readonly. This is considered non-breaking because the `IsEntity` trait
