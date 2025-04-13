@@ -12,20 +12,22 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit;
 
+use Closure;
+
 final class Contracts
 {
     /**
      * Assert that the provided precondition is true.
      *
      * @param bool $precondition
-     * @param string $message
+     * @param string|Closure(): string $message
      * @return void
      * @phpstan-assert true $precondition
      */
-    public static function assert(bool $precondition, string $message = ''): void
+    public static function assert(bool $precondition, string|Closure $message = ''): void
     {
         if ($precondition === false) {
-            throw new ContractException($message);
+            throw new ContractException(is_string($message) ? $message : $message());
         }
     }
 

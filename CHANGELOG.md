@@ -8,6 +8,8 @@ All notable changes to this project will be documented in this file. This projec
 ### Added
 
 - New `ApplicationException` for errors originating from the application layer.
+- Can now pass a closure to the `Contracts::assert()` method for the message. The closure is only invoked if the
+  precondition fails.
 
 ### Fixed
 
