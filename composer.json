@@ -27,10 +27,10 @@
         "ramsey/uuid": "^4.7"
     },
     "require-dev": {
+        "deptrac/deptrac": "^3.0",
         "laravel/pint": "^1.19",
         "phpstan/phpstan": "^2.1",
-        "phpunit/phpunit": "^10.5",
-        "qossmic/deptrac": "^2.0"
+        "phpunit/phpunit": "^10.5"
     },
     "autoload": {
         "psr-4": {
