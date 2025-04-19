@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [3.2.0] - 2024-04-19
+
+### Added
+
+- New `ApplicationException` for errors originating from the application layer.
+- Can now pass a closure to the `Contracts::assert()` method for the message. The closure is only invoked if the
+  precondition fails.
+
+### Fixed
+
+- Make the `id` property on the `IsEntity` trait readonly. This is considered non-breaking because the `IsEntity` trait
+  is expected to be used on an entity that always has an identifier, so the id should be set via the constructor. This
+  fixes a bug where the trait could not be used on a readonly class.
+
 ## [3.1.0] - 2025-02-15
 
 ### Added
@@ -401,6 +415,8 @@ All notable changes to this project will be documented in this file. This projec
 ## [0.1.0] - 2023-11-18
 
 Initial release.
+
+[3.2.0]: https://github.com/cloudcreativity/ddd-modules/compare/v3.1.0...v3.2.0
 
 [3.1.0]: https://github.com/cloudcreativity/ddd-modules/compare/v3.0.0...v3.1.0
 

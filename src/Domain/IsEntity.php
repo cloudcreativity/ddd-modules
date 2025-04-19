@@ -20,7 +20,7 @@ trait IsEntity
     /**
      * @var Identifier
      */
-    private Identifier $id;
+    private readonly Identifier $id;
 
     /**
      * @inheritDoc
