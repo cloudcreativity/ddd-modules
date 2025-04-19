@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [3.2.0] - 2024-04-19
+
 ### Added
 
 - New `ApplicationException` for errors originating from the application layer.
@@ -413,6 +415,8 @@ All notable changes to this project will be documented in this file. This projec
 ## [0.1.0] - 2023-11-18
 
 Initial release.
+
+[3.2.0]: https://github.com/cloudcreativity/ddd-modules/compare/v3.1.0...v3.2.0
 
 [3.1.0]: https://github.com/cloudcreativity/ddd-modules/compare/v3.0.0...v3.1.0
 
