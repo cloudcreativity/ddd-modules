@@ -119,6 +119,7 @@ class GuidTest extends TestCase
 
         $this->assertSame($type, $guid->type);
         $this->assertObjectEquals($uuid, $guid->id);
+        $this->assertObjectEquals($guid, Guid::fromUuid($type, $uuid));
         $this->assertSame($value . ':' . $uuid->toString(), $guid->toString());
         $this->assertSame($value . ':' . $uuid->toString(), (string) $guid);
         $this->assertTrue($guid->isType($type));

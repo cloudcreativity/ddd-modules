@@ -64,10 +64,10 @@ final class Guid implements Identifier
      * Create a GUID for a UUID.
      *
      * @param UnitEnum|string $type
-     * @param UuidInterface|string $uuid
+     * @param Uuid|UuidInterface|string $uuid
      * @return self
      */
-    public static function fromUuid(UnitEnum|string $type, UuidInterface|string $uuid): self
+    public static function fromUuid(UnitEnum|string $type, Uuid|UuidInterface|string $uuid): self
     {
         return new self($type, Uuid::from($uuid));
     }

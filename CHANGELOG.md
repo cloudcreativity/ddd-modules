@@ -8,6 +8,8 @@ All notable changes to this project will be documented in this file. This projec
 ### Added
 
 - New `enum_value` and `enum_string` helper functions for getting a scalar or string value from an enum.
+- The `Guid::fromUuid()` method now also accepts a `Uuid` object, so that it can be used to create a GUID from a UUID
+  identifier. Previously it required a Ramsey UUID object.
 
 ## [3.2.0] - 2024-04-19
 
