@@ -14,30 +14,25 @@ namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Result;
 
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Error as IError;
 use CloudCreativity\Modules\Tests\TestBackedEnum;
+use CloudCreativity\Modules\Tests\TestUnitEnum;
 use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Result\Error;
 use PHPUnit\Framework\TestCase;
 
 class ErrorTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test(): void
     {
-        $error = new Error(key: 'foo', message: 'Bar', code: TestBackedEnum::Foo);
+        $error = new Error(key: 'foo', message: 'Bar', code: TestUnitEnum::Baz);
 
         $this->assertInstanceOf(IError::class, $error);
         $this->assertSame('foo', $error->key());
         $this->assertSame('Bar', $error->message());
-        $this->assertSame(TestBackedEnum::Foo, $error->code());
-        $this->assertTrue($error->is(TestBackedEnum::Foo));
-        $this->assertFalse($error->is(TestBackedEnum::Bar));
+        $this->assertSame(TestUnitEnum::Baz, $error->code());
+        $this->assertTrue($error->is(TestUnitEnum::Baz));
+        $this->assertFalse($error->is(TestUnitEnum::Bat));
     }
 
-    /**
-     * @return void
-     */
     public function testOnlyMessage(): void
     {
         $error = new Error(message: 'Hello World');
@@ -47,9 +42,6 @@ class ErrorTest extends TestCase
         $this->assertNull($error->code());
     }
 
-    /**
-     * @return void
-     */
     public function testOnlyCode(): void
     {
         $error = new Error(code: TestBackedEnum::Foo);
@@ -59,9 +51,6 @@ class ErrorTest extends TestCase
         $this->assertSame(TestBackedEnum::Foo, $error->code());
     }
 
-    /**
-     * @return void
-     */
     public function testNoMessageOrCode(): void
     {
         $this->expectException(ContractException::class);

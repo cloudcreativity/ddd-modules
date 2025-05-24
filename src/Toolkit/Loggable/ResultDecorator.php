@@ -16,6 +16,7 @@ use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextProvider;
 use CloudCreativity\Modules\Contracts\Toolkit\Loggable\Contextual;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Error;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
+use function CloudCreativity\Modules\Toolkit\enum_string;
 
 final readonly class ResultDecorator implements ContextProvider
 {
@@ -85,8 +86,10 @@ final readonly class ResultDecorator implements ContextProvider
             return $error->context();
         }
 
+        $code = $error->code();
+
         return array_filter([
-            'code' => $error->code()?->value,
+            'code' => $code ? enum_string($code) : null,
             'key' => $error->key(),
             'message' => $error->message(),
         ]);

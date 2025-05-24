@@ -12,9 +12,9 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Contracts\Toolkit\Result;
 
-use BackedEnum;
 use Closure;
 use CloudCreativity\Modules\Contracts\Toolkit\Iterables\ListIterator;
+use UnitEnum;
 
 /**
  * @extends ListIterator<Error>
@@ -24,23 +24,23 @@ interface ListOfErrors extends ListIterator
     /**
      * Get the first error in the list, or the first matching error.
      *
-     * @param Closure(Error): bool|BackedEnum|null $matcher
+     * @param Closure(Error): bool|UnitEnum|null $matcher
      * @return Error|null
      */
-    public function first(Closure|BackedEnum|null $matcher = null): ?Error;
+    public function first(Closure|UnitEnum|null $matcher = null): ?Error;
 
     /**
      * Does the list contain a matching error?
      *
-     * @param Closure(Error): bool|BackedEnum $matcher
+     * @param Closure(Error): bool|UnitEnum $matcher
      * @return bool
      */
-    public function contains(Closure|BackedEnum $matcher): bool;
+    public function contains(Closure|UnitEnum $matcher): bool;
 
     /**
      * Get all the unique error codes in the list.
      *
-     * @return array<BackedEnum>
+     * @return array<UnitEnum>
      */
     public function codes(): array;
 

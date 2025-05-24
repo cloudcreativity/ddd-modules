@@ -18,12 +18,15 @@ use CloudCreativity\Modules\Contracts\Toolkit\Loggable\Contextual;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Error as IError;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result as IResult;
 use CloudCreativity\Modules\Tests\TestBackedEnum;
+use CloudCreativity\Modules\Tests\TestUnitEnum;
 use CloudCreativity\Modules\Toolkit\Loggable\ResultDecorator;
 use CloudCreativity\Modules\Toolkit\Loggable\SimpleContextFactory;
 use CloudCreativity\Modules\Toolkit\Result\Error;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use UnitEnum;
+use function CloudCreativity\Modules\Toolkit\enum_string;
 
 /**
  * @extends IResult<null>
@@ -200,12 +203,12 @@ class ResultDecoratorTest extends TestCase
     }
 
     /**
-     * @return array<array<BackedEnum|Error>>
+     * @return array<array<UnitEnum|Error>>
      */
     public static function onlyCodeProvider(): array
     {
         return [
-            [TestBackedEnum::Foo],
+            [TestUnitEnum::Baz],
             [new Error(code: TestBackedEnum::Bar)],
         ];
     }
@@ -215,13 +218,14 @@ class ResultDecoratorTest extends TestCase
      * @return void
      */
     #[DataProvider('onlyCodeProvider')]
-    public function testFailureContextWithErrorThatOnlyHasCode(BackedEnum|Error $error): void
+    public function testFailureContextWithErrorThatOnlyHasCode(UnitEnum|Error $error): void
     {
         $result = Result::failed($error);
+        $code = $error instanceof UnitEnum ? $error : $error->code();
 
         $expected = [
             'success' => false,
-            'error' => $error instanceof BackedEnum ? $error->value : $error->code()?->value,
+            'error' => enum_string($code ?? '!!'),
         ];
 
         $this->assertSame($expected, (new ResultDecorator($result))->context());

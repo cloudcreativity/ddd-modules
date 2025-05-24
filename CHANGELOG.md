@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Changed
 
+- **BREAKING** The error and error list interfaces now accept `UnitEnum` instead of `BackedEnum` for error codes.
+  Although technically breaking, this will only affect your implementation if you have implemented these interfaces. All
+  concrete classes provided by this package have been updated.
 - **BREAKING**: The `Guid::make()` method will now convert a string that is a UUID to a UUID GUID. Previously it would
   use a string id.
 - **BREAKING**: Updated the `GuidTypeMap` class so that it now supports enum aliases, enum types, and UUID identifiers.

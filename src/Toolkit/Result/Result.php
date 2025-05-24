@@ -12,10 +12,10 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Result;
 
-use BackedEnum;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Error as IError;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\ListOfErrors as IListOfErrors;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result as IResult;
+use UnitEnum;
 
 /**
  * @template TValue
@@ -38,10 +38,10 @@ final readonly class Result implements IResult
     /**
      * Return a failed result.
      *
-     * @param IListOfErrors|IError|BackedEnum|array<IError>|string $errorOrErrors
+     * @param IListOfErrors|IError|UnitEnum|array<IError>|string $errorOrErrors
      * @return Result<null>
      */
-    public static function failed(IListOfErrors|IError|BackedEnum|array|string $errorOrErrors): self
+    public static function failed(IListOfErrors|IError|UnitEnum|array|string $errorOrErrors): self
     {
         $errors = match(true) {
             $errorOrErrors instanceof IListOfErrors => $errorOrErrors,
@@ -58,10 +58,10 @@ final readonly class Result implements IResult
      *
      * This is an alias for the `failed` method.
      *
-     * @param IListOfErrors|IError|BackedEnum|array<IError>|string $errorOrErrors
+     * @param IListOfErrors|IError|UnitEnum|array<IError>|string $errorOrErrors
      * @return Result<null>
      */
-    public static function fail(IListOfErrors|IError|BackedEnum|array|string $errorOrErrors): self
+    public static function fail(IListOfErrors|IError|UnitEnum|array|string $errorOrErrors): self
     {
         return self::failed($errorOrErrors);
     }

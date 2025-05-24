@@ -12,11 +12,11 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Result;
 
-use BackedEnum;
 use Closure;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Error as IError;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\ListOfErrors as IListOfErrors;
 use CloudCreativity\Modules\Toolkit\Iterables\IsList;
+use UnitEnum;
 
 final class ListOfErrors implements IListOfErrors
 {
@@ -24,17 +24,17 @@ final class ListOfErrors implements IListOfErrors
     use IsList;
 
     /**
-     * @param IListOfErrors|IError|BackedEnum|array<IError>|string $value
+     * @param IListOfErrors|IError|UnitEnum|array<IError>|string $value
      * @return self
      */
-    public static function from(IListOfErrors|IError|BackedEnum|array|string $value): self
+    public static function from(IListOfErrors|IError|UnitEnum|array|string $value): self
     {
         return match(true) {
             $value instanceof self => $value,
             $value instanceof IListOfErrors, is_array($value) => new self(...$value),
             $value instanceof IError => new self($value),
             is_string($value) => new self(new Error(message: $value)),
-            $value instanceof BackedEnum => new self(new Error(code: $value)),
+            $value instanceof UnitEnum => new self(new Error(code: $value)),
         };
     }
 
@@ -49,13 +49,13 @@ final class ListOfErrors implements IListOfErrors
     /**
      * @inheritDoc
      */
-    public function first(Closure|BackedEnum|null $matcher = null): ?IError
+    public function first(Closure|UnitEnum|null $matcher = null): ?IError
     {
         if ($matcher === null) {
             return $this->stack[0] ?? null;
         }
 
-        if ($matcher instanceof BackedEnum) {
+        if ($matcher instanceof UnitEnum) {
             $matcher = static fn (IError $error): bool => $error->is($matcher);
         }
 
@@ -71,9 +71,9 @@ final class ListOfErrors implements IListOfErrors
     /**
      * @inheritDoc
      */
-    public function contains(Closure|BackedEnum $matcher): bool
+    public function contains(Closure|UnitEnum $matcher): bool
     {
-        if ($matcher instanceof BackedEnum) {
+        if ($matcher instanceof UnitEnum) {
             $matcher = static fn (IError $error): bool => $error->is($matcher);
         }
 

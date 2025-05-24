@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Contracts\Toolkit\Result;
 
-use BackedEnum;
+use UnitEnum;
 
 interface Error
 {
@@ -33,15 +33,15 @@ interface Error
     /**
      * Get the error code.
      *
-     * @return BackedEnum|null
+     * @return UnitEnum|null
      */
-    public function code(): ?BackedEnum;
+    public function code(): ?UnitEnum;
 
     /**
      * Is the error the specified error code?
      *
-     * @param BackedEnum $code
+     * @param UnitEnum $code
      * @return bool
      */
-    public function is(BackedEnum $code): bool;
+    public function is(UnitEnum $code): bool;
 }
