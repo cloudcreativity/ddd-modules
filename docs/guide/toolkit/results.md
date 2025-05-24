@@ -125,12 +125,12 @@ Alternatively, you can provide the `failed()` method with an error object or a l
 
 The error object provided by this package has the following properties:
 
+- `code`: an enum that identifies the error and can be used to programmatically detect and handle specific errors. It
+  is intentionally an enum, because to programmatically detect specific errors, the codes need to be a defined list of
+  values.
 - `message`: a string message that describes the error.
-- `code`: a backed enum that identifies error and can be used to programmatically detect and handle specific errors. It
-  is intentionally an enum, because if you need to detect specific errors, the codes need to be a defined list of
-  values - which is an enum.
-- `key`: optionally, a key for the error. This can be used to group errors by keys, for example to group errors by
-   properties that exist on a command message.
+- `key`: optionally, a key for the error. Use this to group errors by keys, for example to group errors by
+  properties that exist on a command message. The key can be a string or enum.
 
 Error objects _must_ be instantiated with either a code or a message. They are immutable, so you cannot change their
 properties after they have been created.
@@ -181,7 +181,7 @@ The error list class is iterable, countable and has `isEmpty()` and `isNotEmpty(
 ### Keyed Error Sets
 
 If you are using the `key` property on error objects, we provide a keyed set of errors class that groups errors by their
-key.
+key. Keys can be strings or enums.
 
 To create one, provide error objects to its constructor:
 
@@ -241,6 +241,16 @@ $errors = $result->errors();
 if ($errors->contains(CancelAttendeeTicketError::AlreadyCancelled)) {
     // handle the specific error
 }
+```
+
+If you only want to handle one error code at once, use the `code()` method on the errors list. This will return the first error code, or `null` if there are no error codes.
+
+```php
+$explanation = match ($errors->code()) {
+    CancelAttendeeTicketError::AlreadyCancelled => 'The ticket has already been cancelled.',
+    CancelAttendeeTicketError::NotFound => 'The ticket was not found.',
+    default => null,
+};
 ```
 
 ## Exception
