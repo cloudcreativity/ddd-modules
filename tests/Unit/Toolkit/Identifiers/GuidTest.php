@@ -63,7 +63,6 @@ class GuidTest extends TestCase
 
         $this->assertInstanceOf(\Stringable::class, $guid);
         $this->assertSame($type, $guid->type);
-        $this->assertSame($value, $guid->type());
         $this->assertObjectEquals(new StringId('123'), $guid->id);
         $this->assertSame($value . ':123', $guid->toString());
         $this->assertSame($value . ':123', (string) $guid);

@@ -20,7 +20,6 @@ use Ramsey\Uuid\UuidInterface;
 use UnitEnum;
 
 use function CloudCreativity\Modules\Toolkit\enum_string;
-use function CloudCreativity\Modules\Toolkit\enum_value;
 
 final readonly class Guid implements Identifier
 {
@@ -201,16 +200,5 @@ final readonly class Guid implements Identifier
         ));
 
         return $this;
-    }
-
-    /**
-     * Get the type expressed as a string or an integer.
-     *
-     * @return string|int
-     */
-    public function type(): string|int
-    {
-        // TODO 4.0 use enum_string() instead
-        return enum_value($this->type);
     }
 }

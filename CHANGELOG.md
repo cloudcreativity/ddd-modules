@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file. This projec
 ### Removed
 
 - Package no longer supports PHP 8.1. The minimum supported version is now PHP 8.2.
+- **BREAKING**: Remove the `Guid::type()` method - use `enum_value($guid->type)` or `enum_string($guid->type)` instead.
 
 ## Unreleased
 
