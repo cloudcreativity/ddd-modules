@@ -9,6 +9,8 @@ All notable changes to this project will be documented in this file. This projec
 
 - **BREAKING**: The `Guid::make()` method will now convert a string that is a UUID to a UUID GUID. Previously it would
   use a string id.
+- **BREAKING**: Updated the `GuidTypeMap` class so that it now supports enum aliases, enum types, and UUID identifiers.
+  This means the `type()` method now returns a string or enum, whereas previously it returned just a string.
 
 ### Removed
 
