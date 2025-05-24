@@ -45,6 +45,13 @@ interface ListOfErrors extends ListIterator
     public function codes(): array;
 
     /**
+     * Get the first error code in the list.
+     *
+     * @return UnitEnum|null
+     */
+    public function code(): ?UnitEnum;
+
+    /**
      * Return a new instance with the provided error pushed on to the end of the list.
      *
      * @param Error $error

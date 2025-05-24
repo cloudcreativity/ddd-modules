@@ -135,18 +135,39 @@ class ListOfErrorsTest extends TestCase
         $this->assertFalse($errors->contains(TestUnitEnum::Bat));
     }
 
-    /**
-     * @return void
-     */
     public function testCodes(): void
     {
-        $errors = new ListOfErrors(
+        $errors1 = new ListOfErrors(
             new Error(message: 'Message A'),
             new Error(message: 'Message B', code: TestBackedEnum::Foo),
             new Error(message: 'Message C', code: TestUnitEnum::Baz),
             new Error(message: 'Message D', code: TestBackedEnum::Foo),
         );
 
-        $this->assertSame([TestBackedEnum::Foo, TestUnitEnum::Baz], $errors->codes());
+        $errors2 = new ListOfErrors(
+            new Error(message: 'Message E'),
+            new Error(message: 'Message F'),
+        );
+
+        $this->assertSame([TestBackedEnum::Foo, TestUnitEnum::Baz], $errors1->codes());
+        $this->assertEmpty($errors2->codes());
+    }
+
+    public function testCode(): void
+    {
+        $errors1 = new ListOfErrors(
+            new Error(message: 'Message A'),
+            new Error(message: 'Message B', code: TestBackedEnum::Foo),
+            new Error(message: 'Message C', code: TestUnitEnum::Baz),
+            new Error(message: 'Message D', code: TestBackedEnum::Foo),
+        );
+
+        $errors2 = new ListOfErrors(
+            new Error(message: 'Message E'),
+            new Error(message: 'Message F'),
+        );
+
+        $this->assertSame(TestBackedEnum::Foo, $errors1->code());
+        $this->assertNull($errors2->code());
     }
 }

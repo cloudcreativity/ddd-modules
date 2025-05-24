@@ -107,6 +107,20 @@ final class ListOfErrors implements IListOfErrors
     /**
      * @inheritDoc
      */
+    public function code(): ?UnitEnum
+    {
+        foreach ($this->stack as $error) {
+            if ($code = $error->code()) {
+                return $code;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function push(IError $error): self
     {
         $copy = clone $this;

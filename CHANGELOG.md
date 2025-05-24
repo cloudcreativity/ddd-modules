@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Next Major Release
 
+### Added
+
+- **BREAKING**: Added `code()` method to the `ListOfErrors` interface. This returns the first error code in the list, or
+  `null` if there are no error codes.
+
 ### Changed
 
 - **BREAKING** The error and error list interfaces now accept `UnitEnum` instead of `BackedEnum` for error codes.
