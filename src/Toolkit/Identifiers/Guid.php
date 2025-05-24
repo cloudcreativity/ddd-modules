@@ -15,6 +15,7 @@ namespace CloudCreativity\Modules\Toolkit\Identifiers;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Contracts;
+use Ramsey\Uuid\Uuid as RamseyUuid;
 use Ramsey\Uuid\UuidInterface;
 use UnitEnum;
 
@@ -76,16 +77,17 @@ final readonly class Guid implements Identifier
      * Create a GUID.
      *
      * @param UnitEnum|string $type
-     * @param string|int $id
+     * @param Uuid|UuidInterface|string|int $id
      * @return self
      */
-    public static function make(UnitEnum|string $type, string|int $id): self
+    public static function make(UnitEnum|string $type, Uuid|UuidInterface|string|int $id): self
     {
-        if (is_int($id)) {
-            return self::fromInteger($type, $id);
-        }
-
-        return self::fromString($type, $id);
+        return match (true) {
+            $id instanceof Uuid, $id instanceof UuidInterface, is_string($id) && RamseyUuid::isValid($id)
+            => self::fromUuid($type, $id),
+            is_string($id) => self::fromString($type, $id),
+            is_int($id) => self::fromInteger($type, $id),
+        };
     }
 
     /**

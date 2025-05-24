@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Next Major Release
 
+### Changed
+
+- **BREAKING**: The `Guid::make()` method will now convert a string that is a UUID to a UUID GUID. Previously it would
+  use a string id.
+
 ### Removed
 
 - Package no longer supports PHP 8.1. The minimum supported version is now PHP 8.2.

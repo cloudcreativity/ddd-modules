@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Identifiers;
 
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Tests\TestBackedEnum;
 use CloudCreativity\Modules\Tests\TestUnitEnum;
 use CloudCreativity\Modules\Toolkit\ContractException;
@@ -22,6 +23,7 @@ use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid as BaseUuid;
+use Ramsey\Uuid\UuidInterface;
 use UnitEnum;
 
 class GuidTest extends TestCase
@@ -133,6 +135,29 @@ class GuidTest extends TestCase
         $this->assertFalse($guid->is(null));
         $this->assertSame(['type' => $value, 'id' => $uuid->toString()], $guid->context());
         $this->assertObjectEquals($guid, Guid::fromUuid($type, $uuid->value));
+    }
+
+    /**
+     * @return array<string, array{0: Uuid|UuidInterface|string|int, 1: Identifier}>
+     */
+    public static function makeProvider(): array
+    {
+        $uuid = Uuid::random();
+
+        return [
+            'integer' => [123, new IntegerId(123)],
+            'string' => ['some-slug', new StringId('some-slug')],
+            'ramsey uuid' => [$uuid->value, $uuid],
+            'uuid object' => [$uuid, $uuid],
+            'string uuid' => [$uuid->toString(), $uuid],
+        ];
+    }
+
+    #[DataProvider('makeProvider')]
+    public function testItMakesGuid(Uuid|UuidInterface|string|int $value, Identifier $expected): void
+    {
+        $guid = Guid::make('SomeType', $value);
+        $this->assertObjectEquals($expected, $guid->id);
     }
 
     /**
