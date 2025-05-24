@@ -12,12 +12,14 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
-use BackedEnum;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Contracts;
 use Ramsey\Uuid\UuidInterface;
 use UnitEnum;
+
+use function CloudCreativity\Modules\Toolkit\enum_string;
+use function CloudCreativity\Modules\Toolkit\enum_value;
 
 final class Guid implements Identifier
 {
@@ -62,10 +64,10 @@ final class Guid implements Identifier
      * Create a GUID for a UUID.
      *
      * @param UnitEnum|string $type
-     * @param UuidInterface|string $uuid
+     * @param Uuid|UuidInterface|string $uuid
      * @return self
      */
-    public static function fromUuid(UnitEnum|string $type, UuidInterface|string $uuid): self
+    public static function fromUuid(UnitEnum|string $type, Uuid|UuidInterface|string $uuid): self
     {
         return new self($type, Uuid::from($uuid));
     }
@@ -157,7 +159,7 @@ final class Guid implements Identifier
      */
     public function toString(string $glue = ':'): string
     {
-        $type = $this->type();
+        $type = enum_string($this->type);
 
         return "{$type}{$glue}{$this->id->value}";
     }
@@ -176,7 +178,7 @@ final class Guid implements Identifier
     public function context(): array
     {
         return [
-            'type' => $this->type(),
+            'type' => enum_string($this->type),
             'id' => $this->id->context(),
         ];
     }
@@ -190,14 +192,10 @@ final class Guid implements Identifier
      */
     public function assertType(UnitEnum|string $expected, string $message = ''): self
     {
-        Contracts::assert($this->type === $expected, $message ?: sprintf(
+        Contracts::assert($this->type === $expected, $message ?: fn () => sprintf(
             'Expecting type "%s", received "%s".',
-            match (true) {
-                $expected instanceof BackedEnum => $expected->value,
-                $expected instanceof UnitEnum => $expected->name,
-                default => $expected,
-            },
-            $this->type(),
+            enum_string($expected),
+            enum_string($this->type),
         ));
 
         return $this;
@@ -210,10 +208,7 @@ final class Guid implements Identifier
      */
     public function type(): string|int
     {
-        return match (true) {
-            $this->type instanceof BackedEnum => $this->type->value,
-            $this->type instanceof UnitEnum => $this->type->name,
-            default => $this->type,
-        };
+        // TODO 4.0 use enum_string() instead
+        return enum_value($this->type);
     }
 }

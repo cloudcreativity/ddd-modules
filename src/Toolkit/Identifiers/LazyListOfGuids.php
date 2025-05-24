@@ -12,13 +12,14 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
-use BackedEnum;
 use Closure;
 use CloudCreativity\Modules\Contracts\Toolkit\Iterables\LazyList;
 use CloudCreativity\Modules\Toolkit\Contracts;
 use CloudCreativity\Modules\Toolkit\Iterables\IsLazyList;
 use Generator;
 use UnitEnum;
+
+use function CloudCreativity\Modules\Toolkit\enum_string;
 
 /**
  * @implements LazyList<Guid>
@@ -49,14 +50,10 @@ final class LazyListOfGuids implements LazyList
     {
         return new self(function () use ($expected, $message) {
             foreach ($this as $guid) {
-                Contracts::assert($guid->isType($expected), $message ?: sprintf(
+                Contracts::assert($guid->isType($expected), $message ?: static fn () => sprintf(
                     'Expecting GUIDs of type "%s", found "%s".',
-                    match (true) {
-                        $expected instanceof BackedEnum => $expected->value,
-                        $expected instanceof UnitEnum => $expected->name,
-                        default => $expected,
-                    },
-                    $guid->type(),
+                    enum_string($expected),
+                    enum_string($guid->type),
                 ));
                 yield $guid;
             }
