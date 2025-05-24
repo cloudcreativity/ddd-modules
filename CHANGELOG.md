@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+### Added
+
+- New `enum_value` and `enum_string` helper functions for getting a scalar or string value from an enum.
+
 ## [3.2.0] - 2024-04-19
 
 ### Added
