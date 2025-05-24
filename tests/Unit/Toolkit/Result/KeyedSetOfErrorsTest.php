@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Result;
 
+use CloudCreativity\Modules\Tests\TestUnitEnum;
 use CloudCreativity\Modules\Toolkit\Result\Error;
 use CloudCreativity\Modules\Toolkit\Result\KeyedSetOfErrors;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
@@ -30,21 +31,28 @@ class KeyedSetOfErrorsTest extends TestCase
             $c = new Error('foo', 'Message C'),
             $d = new Error(null, 'Message D'),
             $e = new Error(null, 'Message E'),
+            $f = new Error(TestUnitEnum::Baz, 'Message F'),
+            $g = new Error(TestUnitEnum::Bat, 'Message G'),
+            $h = new Error(TestUnitEnum::Baz, 'Message H'),
         );
 
         $expected = [
             '_base' => new ListOfErrors($d, $e),
             'bar' => new ListOfErrors($b),
+            TestUnitEnum::Bat->name => new ListOfErrors($g),
+            TestUnitEnum::Baz->name => new ListOfErrors($f, $h),
             'foo' => new ListOfErrors($a, $c),
         ];
 
         $this->assertEquals($expected, iterator_to_array($errors));
         $this->assertEquals($expected, $errors->all());
-        $this->assertSame(['_base', 'bar', 'foo'], $errors->keys());
-        $this->assertEquals(new ListOfErrors($d, $e, $b, $a, $c), $errors->toList());
-        $this->assertCount(5, $errors);
+        $this->assertSame(['_base', 'bar', TestUnitEnum::Bat->name, TestUnitEnum::Baz->name, 'foo'], $errors->keys());
+        $this->assertEquals(new ListOfErrors($d, $e, $b, $g, $f, $h, $a, $c), $errors->toList());
+        $this->assertCount(8, $errors);
         $this->assertTrue($errors->isNotEmpty());
         $this->assertFalse($errors->isEmpty());
+        $this->assertEquals($expected['bar'], $errors->get('bar'));
+        $this->assertEquals($expected[TestUnitEnum::Baz->name], $errors->get(TestUnitEnum::Baz));
     }
 
     /**

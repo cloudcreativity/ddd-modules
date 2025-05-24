@@ -19,19 +19,19 @@ use UnitEnum;
 final readonly class Error implements IError
 {
     /**
-     * @var string|null
+     * @var UnitEnum|string|null
      */
-    private ?string $key;
+    private UnitEnum|string|null $key;
 
     /**
      * Error constructor.
      *
-     * @param string|null $key
+     * @param UnitEnum|string|null $key
      * @param string $message
      * @param UnitEnum|null $code
      */
     public function __construct(
-        ?string $key = null,
+        UnitEnum|string|null $key = null,
         private string $message = '',
         private ?UnitEnum $code = null,
     ) {
@@ -42,7 +42,7 @@ final readonly class Error implements IError
     /**
      * @inheritDoc
      */
-    public function key(): ?string
+    public function key(): UnitEnum|string|null
     {
         return $this->key;
     }

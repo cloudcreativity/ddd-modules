@@ -19,9 +19,9 @@ interface Error
     /**
      * Get the error key.
      *
-     * @return string|null
+     * @return UnitEnum|string|null
      */
-    public function key(): ?string;
+    public function key(): UnitEnum|string|null;
 
     /**
      * Get the error detail.

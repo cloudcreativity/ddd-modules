@@ -16,6 +16,9 @@ use CloudCreativity\Modules\Contracts\Toolkit\Iterables\KeyedSet;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Error as IError;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\ListOfErrors as IListOfErrors;
 use CloudCreativity\Modules\Toolkit\Iterables\IsKeyedSet;
+use UnitEnum;
+
+use function CloudCreativity\Modules\Toolkit\enum_string;
 
 /**
  * @implements KeyedSet<IListOfErrors>
@@ -55,7 +58,7 @@ final class KeyedSetOfErrors implements KeyedSet
             $this->stack[$key] = $this->get($key)->push($error);
         }
 
-        ksort($this->stack);
+        ksort($this->stack, SORT_STRING | SORT_FLAG_CASE);
     }
 
     /**
@@ -105,11 +108,13 @@ final class KeyedSetOfErrors implements KeyedSet
     /**
      * Get errors by key.
      *
-     * @param string $key
+     * @param UnitEnum|string $key
      * @return IListOfErrors
      */
-    public function get(string $key): IListOfErrors
+    public function get(UnitEnum|string $key): IListOfErrors
     {
+        $key = enum_string($key);
+
         return $this->stack[$key] ?? new ListOfErrors();
     }
 
@@ -151,6 +156,8 @@ final class KeyedSetOfErrors implements KeyedSet
      */
     private function keyFor(IError $error): string
     {
-        return $error->key() ?? self::DEFAULT_KEY;
+        $key = $error->key();
+
+        return $key === null ? self::DEFAULT_KEY : enum_string($key);
     }
 }
