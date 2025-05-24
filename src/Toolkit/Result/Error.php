@@ -26,14 +26,14 @@ final readonly class Error implements IError
     /**
      * Error constructor.
      *
-     * @param UnitEnum|string|null $key
-     * @param string $message
      * @param UnitEnum|null $code
+     * @param string $message
+     * @param UnitEnum|string|null $key
      */
     public function __construct(
-        UnitEnum|string|null $key = null,
-        private string $message = '',
         private ?UnitEnum $code = null,
+        private string $message = '',
+        UnitEnum|string|null $key = null,
     ) {
         Contracts::assert(!empty($message) || $code !== null, 'Error must have a message or a code.');
         $this->key = $key ?: null;

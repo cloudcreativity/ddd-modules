@@ -26,14 +26,14 @@ class KeyedSetOfErrorsTest extends TestCase
     public function test(): void
     {
         $errors = new KeyedSetOfErrors(
-            $a = new Error('foo', 'Message A'),
-            $b = new Error('bar', 'Message B'),
-            $c = new Error('foo', 'Message C'),
-            $d = new Error(null, 'Message D'),
-            $e = new Error(null, 'Message E'),
-            $f = new Error(TestUnitEnum::Baz, 'Message F'),
-            $g = new Error(TestUnitEnum::Bat, 'Message G'),
-            $h = new Error(TestUnitEnum::Baz, 'Message H'),
+            $a = new Error(message: 'Message A', key: 'foo'),
+            $b = new Error(message: 'Message B', key: 'bar'),
+            $c = new Error(message: 'Message C', key: 'foo'),
+            $d = new Error(message: 'Message D'),
+            $e = new Error(message: 'Message E'),
+            $f = new Error(message: 'Message F', key: TestUnitEnum::Baz),
+            $g = new Error(message: 'Message G', key: TestUnitEnum::Bat),
+            $h = new Error(message: 'Message H', key: TestUnitEnum::Baz),
         );
 
         $expected = [
@@ -73,12 +73,12 @@ class KeyedSetOfErrorsTest extends TestCase
     public function testPutNewKey(): void
     {
         $original = new KeyedSetOfErrors(
-            $a = new Error('foo', 'Message A'),
-            $b = new Error('bar', 'Message B'),
-            $c = new Error('foo', 'Message C'),
+            $a = new Error(message: 'Message A', key: 'foo'),
+            $b = new Error(message: 'Message B', key: 'bar'),
+            $c = new Error(message: 'Message C', key: 'foo'),
         );
 
-        $actual = $original->put($d = new Error('baz', 'Message D'));
+        $actual = $original->put($d = new Error(message: 'Message D', key: 'baz'));
 
         $this->assertNotSame($original, $actual);
         $this->assertEquals([
@@ -99,12 +99,12 @@ class KeyedSetOfErrorsTest extends TestCase
     public function testPutExistingKey(): void
     {
         $original = new KeyedSetOfErrors(
-            $a = new Error('foo', 'Message A'),
-            $b = new Error('bar', 'Message B'),
-            $c = new Error('foo', 'Message C'),
+            $a = new Error(message: 'Message A', key: 'foo'),
+            $b = new Error(message: 'Message B', key: 'bar'),
+            $c = new Error(message: 'Message C', key: 'foo'),
         );
 
-        $actual = $original->put($d = new Error('bar', 'Message D'));
+        $actual = $original->put($d = new Error(message: 'Message D', key: 'bar'));
 
         $this->assertNotSame($original, $actual);
         $this->assertEquals([
@@ -124,12 +124,12 @@ class KeyedSetOfErrorsTest extends TestCase
     public function testPutErrorWithoutKey1(): void
     {
         $original = new KeyedSetOfErrors(
-            $a = new Error('foo', 'Message A'),
-            $b = new Error('bar', 'Message B'),
-            $c = new Error('foo', 'Message C'),
+            $a = new Error(message: 'Message A', key: 'foo'),
+            $b = new Error(message: 'Message B', key: 'bar'),
+            $c = new Error(message: 'Message C', key: 'foo'),
         );
 
-        $actual = $original->put($d = new Error(null, 'Message D'));
+        $actual = $original->put($d = new Error(message: 'Message D'));
 
         $this->assertNotSame($original, $actual);
         $this->assertEquals([
@@ -150,12 +150,12 @@ class KeyedSetOfErrorsTest extends TestCase
     public function testPutErrorWithoutKey2(): void
     {
         $original = new KeyedSetOfErrors(
-            $a = new Error(null, 'Message A'),
-            $b = new Error('foo', 'Message B'),
-            $c = new Error(null, 'Message C'),
+            $a = new Error(message: 'Message A'),
+            $b = new Error(message: 'Message B', key: 'foo'),
+            $c = new Error(message: 'Message C'),
         );
 
-        $actual = $original->put($d = new Error(null, 'Message D'));
+        $actual = $original->put($d = new Error(message: 'Message D'));
 
         $this->assertNotSame($original, $actual);
         $this->assertEquals([
@@ -175,16 +175,16 @@ class KeyedSetOfErrorsTest extends TestCase
     public function testMerge(): void
     {
         $set1 = new KeyedSetOfErrors(
-            $a = new Error('foo', 'Message A'),
-            $b = new Error('bar', 'Message B'),
-            $c = new Error('foo', 'Message C'),
+            $a = new Error(message: 'Message A', key: 'foo'),
+            $b = new Error(message: 'Message B', key: 'bar'),
+            $c = new Error(message: 'Message C', key: 'foo'),
         );
 
         $set2 = new KeyedSetOfErrors(
-            $d = new Error('bar', 'Message D'),
-            $e = new Error('baz', 'Message E'),
-            $f = new Error('bar', 'Message F'),
-            $g = new Error(null, 'Message G'),
+            $d = new Error(message: 'Message D', key: 'bar'),
+            $e = new Error(message: 'Message E', key: 'baz'),
+            $f = new Error(message: 'Message F', key: 'bar'),
+            $g = new Error(message: 'Message G'),
         );
 
         $actual = $set1->merge($set2);

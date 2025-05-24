@@ -12,6 +12,10 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Changed
 
+- **BREAKING**: The constructor argument order for the `Error` class has changed. The new order is `code`, `message`,
+  `key`. Previously it was `key`, `message`, `code` because code was added later. However, in most instances `code` is
+  the most important property as it is used to programmatically detect specific error scenarios. This hopefully will not
+  be breaking, as the docs specified that named arguments should be used when constructing error objects.
 - **BREAKING** The error and error list interfaces now accept `UnitEnum` instead of `BackedEnum` for error codes.
   Although technically breaking, this will only affect your implementation if you have implemented these interfaces. All
   concrete classes provided by this package have been updated.
