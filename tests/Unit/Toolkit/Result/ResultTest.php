@@ -20,6 +20,7 @@ use CloudCreativity\Modules\Toolkit\Result\FailedResultException;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
 use CloudCreativity\Modules\Toolkit\Result\Meta;
 use CloudCreativity\Modules\Toolkit\Result\Result;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
 
 class ResultTest extends TestCase
@@ -80,8 +81,8 @@ class ResultTest extends TestCase
     /**
      * @param Result<mixed> $result
      * @return void
-     * @depends testFailed
      */
+    #[Depends('testFailed')]
     public function testAbort(Result $result): void
     {
         try {
@@ -112,8 +113,8 @@ class ResultTest extends TestCase
     /**
      * @param Result<null> $result
      * @return void
-     * @depends testFailed
      */
+    #[Depends('testFailed')]
     public function testItThrowsWhenGettingValueOnFailedResult(Result $result): void
     {
         try {

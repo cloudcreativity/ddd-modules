@@ -19,6 +19,7 @@ use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
 use CloudCreativity\Modules\Toolkit\Identifiers\StringId;
 use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid as BaseUuid;
 use UnitEnum;
@@ -52,8 +53,8 @@ class GuidTest extends TestCase
      * @param string $value
      * @param TestUnitEnum|string $other
      * @return void
-     * @dataProvider typeProvider
      */
+    #[DataProvider('typeProvider')]
     public function testStringId(UnitEnum|string $type, string $value, UnitEnum|string $other): void
     {
         $guid = Guid::fromString($type, '123');
@@ -82,8 +83,8 @@ class GuidTest extends TestCase
      * @param string $value
      * @param UnitEnum|string $other
      * @return void
-     * @dataProvider typeProvider
      */
+    #[DataProvider('typeProvider')]
     public function testIntegerId(UnitEnum|string $type, string $value, UnitEnum|string $other): void
     {
         $guid = Guid::fromInteger($type, 123);
@@ -110,8 +111,8 @@ class GuidTest extends TestCase
      * @param string $value
      * @param UnitEnum|string $other
      * @return void
-     * @dataProvider typeProvider
      */
+    #[DataProvider('typeProvider')]
     public function testUuid(UnitEnum|string $type, string $value, UnitEnum|string $other): void
     {
         $uuid = Uuid::random();
@@ -184,8 +185,8 @@ class GuidTest extends TestCase
      * @param string $value
      * @param UnitEnum|string $other
      * @return void
-     * @dataProvider typeProvider
      */
+    #[DataProvider('typeProvider')]
     public function testIsTypeWithMultipleTypes(UnitEnum|string $type, string $value, UnitEnum|string $other): void
     {
         $guid = Guid::fromInteger($type, 1);
@@ -198,8 +199,8 @@ class GuidTest extends TestCase
     /**
      * @param UnitEnum|string $type
      * @return void
-     * @dataProvider typeProvider
      */
+    #[DataProvider('typeProvider')]
     public function testAssertTypeDoesNotThrowForExpectedType(UnitEnum|string $type): void
     {
         $guid = Guid::fromInteger($type, 1);
@@ -214,8 +215,8 @@ class GuidTest extends TestCase
      * @param UnitEnum|string $other
      * @param string $otherValue
      * @return void
-     * @dataProvider typeProvider
      */
+    #[DataProvider('typeProvider')]
     public function testAssertTypeDoesThrowForUnexpectedType(
         UnitEnum|string $type,
         string $value,

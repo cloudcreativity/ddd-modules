@@ -21,6 +21,7 @@ use CloudCreativity\Modules\Contracts\Application\UnitOfWork\UnitOfWorkManager;
 use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 use CloudCreativity\Modules\Contracts\Domain\Events\DomainEventDispatcher;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -193,10 +194,7 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
         $this->dispatcher->dispatch($event);
     }
 
-    /**
-     * @return void
-     * @depends testItDoesNotDispatchImmediately
-     */
+    #[Depends('testItDoesNotDispatchImmediately')]
     public function testItDispatchesEventInBeforeCommitCallback(): void
     {
         $event = new TestDomainEvent();

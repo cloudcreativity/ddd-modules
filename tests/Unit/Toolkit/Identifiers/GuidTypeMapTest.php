@@ -15,6 +15,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Identifiers;
 use AssertionError;
 use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
 use CloudCreativity\Modules\Toolkit\Identifiers\GuidTypeMap;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
 
 class GuidTypeMapTest extends TestCase
@@ -39,11 +40,7 @@ class GuidTypeMapTest extends TestCase
         return $map;
     }
 
-    /**
-     * @param GuidTypeMap $map
-     * @return void
-     * @depends testItReturnsExpectedType
-     */
+    #[Depends('testItReturnsExpectedType')]
     public function testItReturnsExpectedGuid(GuidTypeMap $map): void
     {
         $this->assertEquals(
@@ -57,11 +54,7 @@ class GuidTypeMapTest extends TestCase
         );
     }
 
-    /**
-     * @param GuidTypeMap $map
-     * @return void
-     * @depends testItReturnsExpectedType
-     */
+    #[Depends('testItReturnsExpectedType')]
     public function testItThrowsIfTypeIsNotValidString(GuidTypeMap $map): void
     {
         $this->expectException(AssertionError::class);
@@ -70,11 +63,7 @@ class GuidTypeMapTest extends TestCase
         $map->typeFor('NotString');
     }
 
-    /**
-     * @param GuidTypeMap $map
-     * @return void
-     * @depends testItReturnsExpectedType
-     */
+    #[Depends('testItReturnsExpectedType')]
     public function testItThrowsIfTypeIsEmptyString(GuidTypeMap $map): void
     {
         $this->expectException(AssertionError::class);
@@ -83,11 +72,7 @@ class GuidTypeMapTest extends TestCase
         $map->typeFor('EmptyString');
     }
 
-    /**
-     * @param GuidTypeMap $map
-     * @return void
-     * @depends testItReturnsExpectedType
-     */
+    #[Depends('testItReturnsExpectedType')]
     public function testItThrowsIfTypeIsNotDefined(GuidTypeMap $map): void
     {
         $this->expectException(AssertionError::class);

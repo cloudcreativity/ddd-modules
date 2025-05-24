@@ -16,6 +16,7 @@ use CloudCreativity\Modules\Contracts\Domain\Entity;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
 
 class EntityWithNullableGuidTest extends TestCase
@@ -51,8 +52,8 @@ class EntityWithNullableGuidTest extends TestCase
     /**
      * @param TestEntityWithNullableId $entity
      * @return void
-     * @depends testWithNullId
      */
+    #[Depends('testWithNullId')]
     public function testGetIdOrFailWithoutId(TestEntityWithNullableId $entity): void
     {
         $this->expectException(\AssertionError::class);

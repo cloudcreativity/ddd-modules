@@ -18,6 +18,7 @@ use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
 use CloudCreativity\Modules\Toolkit\Identifiers\StringId;
 use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class StringIdTest extends TestCase
@@ -94,8 +95,8 @@ class StringIdTest extends TestCase
     /**
      * @param Identifier $other
      * @return void
-     * @dataProvider notStringIdProvider
      */
+    #[DataProvider('notStringIdProvider')]
     public function testIsWithOtherIdentifiers(Identifier $other): void
     {
         $id = new StringId('1');
@@ -116,8 +117,8 @@ class StringIdTest extends TestCase
     /**
      * @param Identifier $other
      * @return void
-     * @dataProvider notStringIdProvider
      */
+    #[DataProvider('notStringIdProvider')]
     public function testFromWithOtherIdentifiers(Identifier $other): void
     {
         $this->expectException(ContractException::class);

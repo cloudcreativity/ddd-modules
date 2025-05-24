@@ -17,6 +17,7 @@ use CloudCreativity\Modules\Tests\TestUnitEnum;
 use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
 use CloudCreativity\Modules\Toolkit\Identifiers\LazyListOfGuids;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use UnitEnum;
 
@@ -47,8 +48,8 @@ class LazyListOfGuidsTest extends TestCase
     /**
      * @param UnitEnum|string $type
      * @return void
-     * @dataProvider typeProvider
      */
+    #[DataProvider('typeProvider')]
     public function testOfOneTypeDoesNotThrowWhenItHasTheExpectedType(UnitEnum|string $type): void
     {
         $expected = [
@@ -72,8 +73,8 @@ class LazyListOfGuidsTest extends TestCase
      * @param UnitEnum|string $other
      * @param string $otherValue
      * @return void
-     * @dataProvider typeProvider
      */
+    #[DataProvider('typeProvider')]
     public function testOfOneTypeThrowsWhenItIsNot(
         UnitEnum|string $type,
         string $value,

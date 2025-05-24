@@ -22,6 +22,7 @@ use CloudCreativity\Modules\Toolkit\Loggable\ResultDecorator;
 use CloudCreativity\Modules\Toolkit\Loggable\SimpleContextFactory;
 use CloudCreativity\Modules\Toolkit\Result\Error;
 use CloudCreativity\Modules\Toolkit\Result\Result;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -136,8 +137,8 @@ class ResultDecoratorTest extends TestCase
     /**
      * @param mixed $value
      * @return void
-     * @dataProvider scalarProvider
      */
+    #[DataProvider('scalarProvider')]
     public function testSuccessWithScalarOrNull(mixed $value): void
     {
         $expected = [
@@ -183,8 +184,8 @@ class ResultDecoratorTest extends TestCase
     /**
      * @param string|Error $error
      * @return void
-     * @dataProvider onlyMessageProvider
      */
+    #[DataProvider('onlyMessageProvider')]
     public function testFailureContextWithErrorThatOnlyHasMessage(string|Error $error): void
     {
         $result = Result::failed($error);
@@ -212,8 +213,8 @@ class ResultDecoratorTest extends TestCase
     /**
      * @param BackedEnum|Error $error
      * @return void
-     * @dataProvider onlyCodeProvider
      */
+    #[DataProvider('onlyCodeProvider')]
     public function testFailureContextWithErrorThatOnlyHasCode(BackedEnum|Error $error): void
     {
         $result = Result::failed($error);
@@ -266,8 +267,8 @@ class ResultDecoratorTest extends TestCase
      * @param array<Error> $errors
      * @param array<int, array<string, mixed>> $expected
      * @return void
-     * @dataProvider errorsProvider
      */
+    #[DataProvider('errorsProvider')]
     public function testFailureContextWithMeta(array $errors, array $expected): void
     {
         $result = Result::failed($errors)->withMeta(['baz' => 'bat']);

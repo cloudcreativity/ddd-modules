@@ -19,6 +19,7 @@ use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
 use CloudCreativity\Modules\Toolkit\Identifiers\StringId;
 use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid as RamseyUuid;
 
@@ -92,8 +93,8 @@ class UuidTest extends TestCase
     /**
      * @param Identifier $other
      * @return void
-     * @dataProvider notUuidProvider
      */
+    #[DataProvider('notUuidProvider')]
     public function testIsWithOtherIdentifiers(Identifier $other): void
     {
         $id = new Uuid(RamseyUuid::fromString('6dcbad65-ed92-4e60-973b-9ba58a022816'));
@@ -114,8 +115,8 @@ class UuidTest extends TestCase
     /**
      * @param Identifier $other
      * @return void
-     * @dataProvider notUuidProvider
      */
+    #[DataProvider('notUuidProvider')]
     public function testFromWithOtherIdentifiers(Identifier $other): void
     {
         $this->expectException(ContractException::class);
@@ -126,8 +127,8 @@ class UuidTest extends TestCase
     /**
      * @param Identifier $other
      * @return void
-     * @dataProvider notUuidProvider
      */
+    #[DataProvider('notUuidProvider')]
     public function testTryFromWithOtherIdentifiers(Identifier $other): void
     {
         $this->assertNull(Uuid::tryFrom($other));

@@ -13,6 +13,8 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit;
 
 use CloudCreativity\Modules\Toolkit\ModuleBasename;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
 
 class ModuleBasenameTest extends TestCase
@@ -126,8 +128,8 @@ class ModuleBasenameTest extends TestCase
      * @param string $context
      * @param string $message
      * @return void
-     * @dataProvider moduleProvider
      */
+    #[DataProvider('moduleProvider')]
     public function testFromModule(string $value, string $context, string $message): void
     {
         $name = ModuleBasename::from($value);
@@ -144,8 +146,8 @@ class ModuleBasenameTest extends TestCase
      * @param string $value
      * @param string $message
      * @return void
-     * @dataProvider withoutModuleProvider
      */
+    #[DataProvider('withoutModuleProvider')]
     public function testFromWithoutModule(string $value, string $message): void
     {
         $name = ModuleBasename::from($value);
@@ -175,11 +177,7 @@ class ModuleBasenameTest extends TestCase
         return $value;
     }
 
-    /**
-     * @param ModuleBasename $value
-     * @return void
-     * @depends testToArray
-     */
+    #[Depends('testToArray')]
     public function testJsonSerialize(ModuleBasename $value): void
     {
         $expected = json_encode([
