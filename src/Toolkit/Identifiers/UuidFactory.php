@@ -23,12 +23,12 @@ use Ramsey\Uuid\UuidFactoryInterface as BaseUuidFactory;
 use Ramsey\Uuid\UuidInterface;
 use RuntimeException;
 
-final class UuidFactory implements IUuidFactory
+final readonly class UuidFactory implements IUuidFactory
 {
     /**
      * @var BaseUuidFactory
      */
-    private readonly BaseUuidFactory $baseFactory;
+    private BaseUuidFactory $baseFactory;
 
     /**
      * UuidFactory constructor.

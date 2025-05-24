@@ -22,14 +22,14 @@ use ReflectionProperty;
 /**
  * @implements IteratorAggregate<string, mixed>
  */
-final class ObjectDecorator implements IteratorAggregate, ContextProvider
+final readonly class ObjectDecorator implements IteratorAggregate, ContextProvider
 {
     /**
      * ObjectDecorator constructor.
      *
      * @param object $source
      */
-    public function __construct(private readonly object $source)
+    public function __construct(private object $source)
     {
     }
 

@@ -16,12 +16,12 @@ use BackedEnum;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Error as IError;
 use CloudCreativity\Modules\Toolkit\Contracts;
 
-final class Error implements IError
+final readonly class Error implements IError
 {
     /**
      * @var string|null
      */
-    private readonly ?string $key;
+    private ?string $key;
 
     /**
      * Error constructor.
@@ -32,8 +32,8 @@ final class Error implements IError
      */
     public function __construct(
         ?string $key = null,
-        private readonly string $message = '',
-        private readonly ?BackedEnum $code = null,
+        private string $message = '',
+        private ?BackedEnum $code = null,
     ) {
         Contracts::assert(!empty($message) || $code !== null, 'Error must have a message or a code.');
         $this->key = $key ?: null;

@@ -17,14 +17,14 @@ use CloudCreativity\Modules\Contracts\Application\UnitOfWork\DispatchAfterCommit
 use CloudCreativity\Modules\Contracts\Application\UnitOfWork\DispatchBeforeCommit;
 use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 
-final class EventHandler
+final readonly class EventHandler
 {
     /**
      * EventHandler constructor.
      *
      * @param object $listener
      */
-    public function __construct(private readonly object $listener)
+    public function __construct(private object $listener)
     {
         assert(
             !($this->listener instanceof DispatchBeforeCommit && $this->listener instanceof DispatchAfterCommit),

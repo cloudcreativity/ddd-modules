@@ -18,14 +18,14 @@ use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
 use CloudCreativity\Modules\Contracts\Toolkit\Messages\Query;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
-final class SetupBeforeDispatch implements BusMiddleware
+final readonly class SetupBeforeDispatch implements BusMiddleware
 {
     /**
      * SetupBeforeDispatch constructor.
      *
      * @param Closure(): ?Closure(): void $callback
      */
-    public function __construct(private readonly Closure $callback)
+    public function __construct(private Closure $callback)
     {
     }
 

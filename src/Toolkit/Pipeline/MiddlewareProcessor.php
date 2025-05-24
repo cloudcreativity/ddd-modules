@@ -15,12 +15,12 @@ namespace CloudCreativity\Modules\Toolkit\Pipeline;
 use Closure;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\Processor;
 
-final class MiddlewareProcessor implements Processor
+final readonly class MiddlewareProcessor implements Processor
 {
     /**
      * @var Closure
      */
-    private readonly Closure $destination;
+    private Closure $destination;
 
     /**
      * Return a new middleware processor that calls the destination and returns the result.

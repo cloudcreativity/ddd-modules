@@ -21,13 +21,8 @@ use CloudCreativity\Modules\Contracts\Toolkit\Result\Result as IResult;
  * @template TValue
  * @implements IResult<TValue>
  */
-final class Result implements IResult
+final readonly class Result implements IResult
 {
-    /**
-     * @var Meta
-     */
-    private Meta $meta;
-
     /**
      * Return a success result.
      *
@@ -79,11 +74,11 @@ final class Result implements IResult
      * @param IListOfErrors $errors
      */
     private function __construct(
-        private readonly bool $success,
-        private readonly mixed $value = null,
-        private readonly IListOfErrors $errors = new ListOfErrors(),
+        private bool $success,
+        private mixed $value = null,
+        private IListOfErrors $errors = new ListOfErrors(),
+        private Meta $meta = new Meta(),
     ) {
-        $this->meta = new Meta();
     }
 
     /**
@@ -168,9 +163,11 @@ final class Result implements IResult
      */
     public function withMeta(Meta|array $meta): self
     {
-        $copy = clone $this;
-        $copy->meta = $this->meta->merge($meta);
-
-        return $copy;
+        return new self(
+            success: $this->success,
+            value: $this->value,
+            errors: $this->errors,
+            meta: $this->meta->merge($meta),
+        );
     }
 }

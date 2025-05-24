@@ -15,14 +15,14 @@ namespace CloudCreativity\Modules\Infrastructure\OutboundEventBus;
 use CloudCreativity\Modules\Contracts\Infrastructure\OutboundEventBus\PublisherHandler as IPublisherHandler;
 use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
 
-final class PublisherHandler implements IPublisherHandler
+final readonly class PublisherHandler implements IPublisherHandler
 {
     /**
      * PublisherHandler constructor.
      *
      * @param object $handler
      */
-    public function __construct(private readonly object $handler)
+    public function __construct(private object $handler)
     {
     }
 

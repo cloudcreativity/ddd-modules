@@ -21,7 +21,7 @@ use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-final class LogPushedToQueue implements QueueMiddleware
+final readonly class LogPushedToQueue implements QueueMiddleware
 {
     /**
      * LogPushedToQueue constructor.
@@ -32,10 +32,10 @@ final class LogPushedToQueue implements QueueMiddleware
      * @param ContextFactory $context
      */
     public function __construct(
-        private readonly LoggerInterface $log,
-        private readonly string $queueLevel = LogLevel::DEBUG,
-        private readonly string $queuedLevel = LogLevel::INFO,
-        private readonly ContextFactory $context = new SimpleContextFactory(),
+        private LoggerInterface $log,
+        private string $queueLevel = LogLevel::DEBUG,
+        private string $queuedLevel = LogLevel::INFO,
+        private ContextFactory $context = new SimpleContextFactory(),
     ) {
     }
 

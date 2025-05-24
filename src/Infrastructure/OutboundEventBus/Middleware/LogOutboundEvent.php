@@ -21,7 +21,7 @@ use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-final class LogOutboundEvent implements OutboundEventMiddleware
+final readonly class LogOutboundEvent implements OutboundEventMiddleware
 {
     /**
      * LogOutboundEvent constructor.
@@ -32,10 +32,10 @@ final class LogOutboundEvent implements OutboundEventMiddleware
      * @param ContextFactory $context
      */
     public function __construct(
-        private readonly LoggerInterface $log,
-        private readonly string $publishLevel = LogLevel::DEBUG,
-        private readonly string $publishedLevel = LogLevel::INFO,
-        private readonly ContextFactory $context = new SimpleContextFactory(),
+        private LoggerInterface $log,
+        private string $publishLevel = LogLevel::DEBUG,
+        private string $publishedLevel = LogLevel::INFO,
+        private ContextFactory $context = new SimpleContextFactory(),
     ) {
     }
 

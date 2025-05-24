@@ -23,7 +23,7 @@ use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-final class LogMessageDispatch implements BusMiddleware
+final readonly class LogMessageDispatch implements BusMiddleware
 {
     /**
      * LogMessageDispatch constructor.
@@ -34,10 +34,10 @@ final class LogMessageDispatch implements BusMiddleware
      * @param ContextFactory $context
      */
     public function __construct(
-        private readonly LoggerInterface $logger,
-        private readonly string $dispatchLevel = LogLevel::DEBUG,
-        private readonly string $dispatchedLevel = LogLevel::INFO,
-        private readonly ContextFactory $context = new SimpleContextFactory(),
+        private LoggerInterface $logger,
+        private string $dispatchLevel = LogLevel::DEBUG,
+        private string $dispatchedLevel = LogLevel::INFO,
+        private ContextFactory $context = new SimpleContextFactory(),
     ) {
     }
 

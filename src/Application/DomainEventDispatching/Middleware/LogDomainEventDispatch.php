@@ -19,19 +19,19 @@ use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-class LogDomainEventDispatch implements DomainEventMiddleware
+final readonly class LogDomainEventDispatch implements DomainEventMiddleware
 {
     /**
-     * LogEventDispatch constructor
+     * LogDomainEventDispatch constructor
      *
      * @param LoggerInterface $logger
      * @param string $dispatchLevel
      * @param string $dispatchedLevel
      */
     public function __construct(
-        private readonly LoggerInterface $logger,
-        private readonly string $dispatchLevel = LogLevel::DEBUG,
-        private readonly string $dispatchedLevel = LogLevel::INFO,
+        private LoggerInterface $logger,
+        private string $dispatchLevel = LogLevel::DEBUG,
+        private string $dispatchedLevel = LogLevel::INFO,
     ) {
     }
 

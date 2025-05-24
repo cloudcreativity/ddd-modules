@@ -16,14 +16,14 @@ use Closure;
 use CloudCreativity\Modules\Contracts\Application\InboundEventBus\InboundEventMiddleware;
 use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
 
-final class SetupBeforeEvent implements InboundEventMiddleware
+final readonly class SetupBeforeEvent implements InboundEventMiddleware
 {
     /**
      * SetupBeforeEvent constructor.
      *
      * @param Closure(): ?Closure(): void $callback
      */
-    public function __construct(private readonly Closure $callback)
+    public function __construct(private Closure $callback)
     {
     }
 

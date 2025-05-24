@@ -17,7 +17,7 @@ use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Contracts;
 use JsonSerializable;
 
-final class StringId implements Identifier, JsonSerializable
+final readonly class StringId implements Identifier, JsonSerializable
 {
     /**
      * @param Identifier|string $value
@@ -39,7 +39,7 @@ final class StringId implements Identifier, JsonSerializable
      *
      * @param string $value
      */
-    public function __construct(public readonly string $value)
+    public function __construct(public string $value)
     {
         Contracts::assert(
             !empty($this->value) || '0' === $this->value,

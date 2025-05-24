@@ -17,14 +17,14 @@ use CloudCreativity\Modules\Contracts\Toolkit\Loggable\Contextual;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Error;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
-final class ResultDecorator implements ContextProvider
+final readonly class ResultDecorator implements ContextProvider
 {
     /**
      * ResultDecorator constructor.
      *
      * @param Result<mixed> $result
      */
-    public function __construct(private readonly Result $result)
+    public function __construct(private Result $result)
     {
     }
 

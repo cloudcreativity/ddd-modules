@@ -16,17 +16,17 @@ use CloudCreativity\Modules\Contracts\Domain\Entity;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Toolkit\ContractException;
 
-final class IdentifierOrEntity
+final readonly class IdentifierOrEntity
 {
     /**
      * @var Identifier|null
      */
-    public readonly ?Identifier $id;
+    public ?Identifier $id;
 
     /**
      * @var Entity|null
      */
-    public readonly ?Entity $entity;
+    public ?Entity $entity;
 
     /**
      * @param Identifier|Entity $idOrEntity

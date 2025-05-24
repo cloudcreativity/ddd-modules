@@ -21,7 +21,7 @@ use UnitEnum;
 use function CloudCreativity\Modules\Toolkit\enum_string;
 use function CloudCreativity\Modules\Toolkit\enum_value;
 
-final class Guid implements Identifier
+final readonly class Guid implements Identifier
 {
     /**
      * @param Identifier $value
@@ -95,8 +95,8 @@ final class Guid implements Identifier
      * @param StringId|IntegerId|Uuid $id
      */
     public function __construct(
-        public readonly UnitEnum|string $type,
-        public readonly StringId|IntegerId|Uuid $id,
+        public UnitEnum|string $type,
+        public StringId|IntegerId|Uuid $id,
     ) {
         Contracts::assert(!empty($this->type), 'Type must be a non-empty string.');
     }

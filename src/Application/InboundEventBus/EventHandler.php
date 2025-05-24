@@ -16,14 +16,14 @@ use CloudCreativity\Modules\Contracts\Application\InboundEventBus\EventHandler a
 use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
 use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
 
-final class EventHandler implements IEventHandler
+final readonly class EventHandler implements IEventHandler
 {
     /**
      * EventHandler constructor.
      *
      * @param object $handler
      */
-    public function __construct(private readonly object $handler)
+    public function __construct(private object $handler)
     {
     }
 

@@ -17,7 +17,7 @@ use CloudCreativity\Modules\Contracts\Application\InboundEventBus\InboundEventMi
 use CloudCreativity\Modules\Contracts\Application\UnitOfWork\UnitOfWorkManager;
 use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
 
-final class HandleInUnitOfWork implements InboundEventMiddleware
+final readonly class HandleInUnitOfWork implements InboundEventMiddleware
 {
     /**
      * HandleInUnitOfWork constructor.
@@ -26,8 +26,8 @@ final class HandleInUnitOfWork implements InboundEventMiddleware
      * @param int $attempts
      */
     public function __construct(
-        private readonly UnitOfWorkManager $unitOfWorkManager,
-        private readonly int $attempts = 1,
+        private UnitOfWorkManager $unitOfWorkManager,
+        private int $attempts = 1,
     ) {
     }
 
