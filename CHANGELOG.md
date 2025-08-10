@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [3.3.1] - 2025-08-10
+
+### Fixed
+
+- Ensure that the `Result` class uses `@template-covariant` for its result value. This now matches the result interface,
+  which already used template covariant.
+
 ## [3.3.0] - 2025-05-24
 
 ### Added

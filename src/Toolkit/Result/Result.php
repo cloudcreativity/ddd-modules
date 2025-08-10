@@ -18,7 +18,7 @@ use CloudCreativity\Modules\Contracts\Toolkit\Result\ListOfErrors as IListOfErro
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result as IResult;
 
 /**
- * @template TValue
+ * @template-covariant TValue
  * @implements IResult<TValue>
  */
 final class Result implements IResult
