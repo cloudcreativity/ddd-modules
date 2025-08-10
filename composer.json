@@ -53,7 +53,7 @@
             "@test"
         ],
         "deptrac": "deptrac analyse --report-uncovered --fail-on-uncovered",
-        "static": "phpstan analyse -c phpstan.neon",
+        "static": "phpstan analyse -c phpstan.neon --memory-limit=256M",
         "style": "pint --test",
         "style:fix": "pint",
         "test": "phpunit"
