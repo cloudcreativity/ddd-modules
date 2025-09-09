@@ -32,8 +32,13 @@ deptrac:
       collectors:
         - type: classLike
           value: Psr\\Log\\*
+    - name: Attributes
+      collectors:
+        - type: classLike
+          value: ^Deprecated$
   ruleset:
     Toolkit:
+      - Attributes
     Domain:
       - Toolkit
     Application:

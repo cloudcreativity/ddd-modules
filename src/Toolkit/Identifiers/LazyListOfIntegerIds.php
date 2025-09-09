@@ -30,6 +30,7 @@ final class LazyListOfIntegerIds implements LazyList
      *
      * @param Closure(): Generator<IntegerId>|null $source
      */
+    #[\Deprecated(since: '3.4')]
     public function __construct(?Closure $source = null)
     {
         $this->source = $source;
