@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [3.4.0] - 2025-09-09
+
 ### Deprecated
 
 - All identifier list classes are deprecated and will be removed in 4.0. These were not documented and are being removed
