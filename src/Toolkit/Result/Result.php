@@ -18,7 +18,7 @@ use CloudCreativity\Modules\Contracts\Toolkit\Result\Result as IResult;
 use UnitEnum;
 
 /**
- * @template TValue
+ * @template-covariant TValue
  * @implements IResult<TValue>
  */
 final readonly class Result implements IResult

@@ -29,6 +29,7 @@ final class ListOfIdentifiers implements ListIterator
      *
      * @param Identifier ...$identifiers
      */
+    #[\Deprecated(since: '3.4')]
     public function __construct(Identifier ...$identifiers)
     {
         $this->stack = array_values($identifiers);

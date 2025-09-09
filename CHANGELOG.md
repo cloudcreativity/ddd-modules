@@ -34,6 +34,27 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [3.4.0] - 2025-09-09
+
+### Deprecated
+
+- All identifier list classes are deprecated and will be removed in 4.0. These were not documented and are being removed
+  as they contain very limited functionality. Implementations can ship their own identifier list classes depending on
+  their unique needs. The classes deprecated are:
+    - `LazyListOfGuids`
+    - `LazyListOfIdentifiers`
+    - `LazyListOfIntegerIds`
+    - `LazyListOfStringIds`
+    - `LazyListOfUuids`
+    - `ListOfIdentifiers`
+
+## [3.3.1] - 2025-08-10
+
+### Fixed
+
+- Ensure that the `Result` class uses `@template-covariant` for its result value. This now matches the result interface,
+  which already used template covariant.
+
 ## [3.3.0] - 2025-05-24
 
 ### Added

@@ -16,4 +16,7 @@ use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
 
 class TestCommand implements Command
 {
+    public function __construct(public bool $fail = false)
+    {
+    }
 }

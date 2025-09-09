@@ -24,7 +24,8 @@
         "php": "^8.2",
         "ext-json": "*",
         "psr/log": "^1.0.1 || ^2.0 || ^3.0",
-        "ramsey/uuid": "^4.7"
+        "ramsey/uuid": "^4.7",
+        "symfony/polyfill-php84": "^1.33"
     },
     "require-dev": {
         "deptrac/deptrac": "^3.0",
