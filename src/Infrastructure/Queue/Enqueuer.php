@@ -17,10 +17,6 @@ use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
 
 final readonly class Enqueuer implements IEnqueuer
 {
-    /**
-     * Enqueuer constructor.
-     *
-     */
     public function __construct(private object $enqueuer)
     {
     }

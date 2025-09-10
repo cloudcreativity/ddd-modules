@@ -27,10 +27,6 @@ final readonly class IdentifierOrEntity
         return new self($idOrEntity);
     }
 
-    /**
-     * IdentifierOrEntity constructor.
-     *
-     */
     public function __construct(Entity|Identifier $idOrEntity)
     {
         $this->id = ($idOrEntity instanceof Identifier) ? $idOrEntity : null;

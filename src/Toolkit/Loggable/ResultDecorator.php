@@ -22,8 +22,6 @@ use function CloudCreativity\Modules\Toolkit\enum_string;
 final readonly class ResultDecorator implements ContextProvider
 {
     /**
-     * ResultDecorator constructor.
-     *
      * @param Result<mixed> $result
      */
     public function __construct(private Result $result)

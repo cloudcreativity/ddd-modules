@@ -23,10 +23,6 @@ use Psr\Log\LogLevel;
 
 final readonly class LogOutboundEvent implements OutboundEventMiddleware
 {
-    /**
-     * LogOutboundEvent constructor.
-     *
-     */
     public function __construct(
         private LoggerInterface $log,
         private string $publishLevel = LogLevel::DEBUG,

@@ -39,10 +39,6 @@ final readonly class MiddlewareProcessor implements Processor
         });
     }
 
-    /**
-     * MiddlewareProcessor constructor.
-     *
-     */
     public function __construct(?Closure $destination = null)
     {
         $this->destination = $destination ?? static fn ($payload) => $payload;

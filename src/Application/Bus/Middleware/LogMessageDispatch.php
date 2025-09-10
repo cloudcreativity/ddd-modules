@@ -25,10 +25,6 @@ use Psr\Log\LogLevel;
 
 final readonly class LogMessageDispatch implements BusMiddleware
 {
-    /**
-     * LogMessageDispatch constructor.
-     *
-     */
     public function __construct(
         private LoggerInterface $logger,
         private string $dispatchLevel = LogLevel::DEBUG,

@@ -28,10 +28,6 @@ abstract class ValidateCommand implements CommandMiddleware
      */
     abstract protected function rules(): iterable;
 
-    /**
-     * ValidateCommand constructor.
-     *
-     */
     public function __construct(private readonly Validator $validator)
     {
     }

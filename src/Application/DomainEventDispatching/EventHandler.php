@@ -19,10 +19,6 @@ use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 
 final readonly class EventHandler
 {
-    /**
-     * EventHandler constructor.
-     *
-     */
     public function __construct(private object $listener)
     {
         assert(

@@ -26,10 +26,6 @@ class InboundEventDispatcher implements IInboundEventDispatcher
      */
     private array $pipes = [];
 
-    /**
-     * EventDispatcher constructor.
-     *
-     */
     public function __construct(
         private readonly EventHandlerContainer $handlers,
         private readonly ?PipeContainer $middleware = null,

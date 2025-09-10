@@ -24,10 +24,6 @@ final readonly class PossiblyNumericId implements JsonSerializable, Stringable
         return new self($value);
     }
 
-    /**
-     * PossiblyNumericId constructor
-     *
-     */
     public function __construct(int|string $value)
     {
         if (is_string($value) && 1 === preg_match('/^\d+$/', $value)) {

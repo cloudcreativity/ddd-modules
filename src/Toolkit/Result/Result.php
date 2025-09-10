@@ -67,8 +67,6 @@ final readonly class Result implements IResult
     }
 
     /**
-     * Result constructor.
-     *
      * @param TValue $value
      */
     private function __construct(

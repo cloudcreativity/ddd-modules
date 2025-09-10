@@ -25,10 +25,6 @@ final class PublisherHandlerContainer implements IPublisherHandlerContainer
      */
     private array $bindings = [];
 
-    /**
-     * PublisherHandlerContainer constructor.
-     *
-     */
     public function __construct(private readonly ?Closure $default = null)
     {
     }

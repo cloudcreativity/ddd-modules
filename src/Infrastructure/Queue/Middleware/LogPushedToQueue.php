@@ -23,10 +23,6 @@ use Psr\Log\LogLevel;
 
 final readonly class LogPushedToQueue implements QueueMiddleware
 {
-    /**
-     * LogPushedToQueue constructor.
-     *
-     */
     public function __construct(
         private LoggerInterface $log,
         private string $queueLevel = LogLevel::DEBUG,

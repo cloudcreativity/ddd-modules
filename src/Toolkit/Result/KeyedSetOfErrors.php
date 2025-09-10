@@ -42,10 +42,6 @@ final class KeyedSetOfErrors implements KeyedSet
         };
     }
 
-    /**
-     * KeyedSetOfErrors constructor.
-     *
-     */
     public function __construct(IError ...$errors)
     {
         foreach ($errors as $error) {

@@ -30,10 +30,6 @@ final readonly class IntegerId implements Identifier, JsonSerializable
         };
     }
 
-    /**
-     * IntegerId constructor.
-     *
-     */
     public function __construct(public int $value)
     {
         Contracts::assert($this->value > 0, 'Identifier value must be greater than zero.');

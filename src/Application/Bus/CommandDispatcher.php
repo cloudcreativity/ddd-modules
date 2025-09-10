@@ -27,10 +27,6 @@ class CommandDispatcher implements ICommandDispatcher
      */
     private array $pipes = [];
 
-    /**
-     * CommandDispatcher constructor.
-     *
-     */
     public function __construct(
         private readonly CommandHandlerContainer $handlers,
         private readonly ?PipeContainer $middleware = null,

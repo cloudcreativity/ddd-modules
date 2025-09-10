@@ -20,8 +20,6 @@ use function CloudCreativity\Modules\Toolkit\enum_string;
 final class GuidTypeMap
 {
     /**
-     * GuidTypeMap constructor
-     *
      * @param array<string, mixed> $map
      */
     public function __construct(private array $map = [])

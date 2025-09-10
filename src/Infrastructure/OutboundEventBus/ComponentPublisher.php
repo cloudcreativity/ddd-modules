@@ -26,10 +26,6 @@ class ComponentPublisher implements OutboundEventPublisher
      */
     private array $pipes = [];
 
-    /**
-     * ComponentPublisher constructor.
-     *
-     */
     public function __construct(
         private readonly PublisherHandlerContainer $handlers,
         private readonly ?PipeContainer $middleware = null,

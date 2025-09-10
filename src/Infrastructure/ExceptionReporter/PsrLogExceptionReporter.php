@@ -19,10 +19,6 @@ use Throwable;
 
 final readonly class PsrLogExceptionReporter implements ExceptionReporter
 {
-    /**
-     * PsrLogExceptionReporter constructor.
-     *
-     */
     public function __construct(private LoggerInterface $logger)
     {
     }

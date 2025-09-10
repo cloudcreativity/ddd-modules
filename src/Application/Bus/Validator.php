@@ -29,10 +29,6 @@ final class Validator implements IValidator
      */
     private iterable $using = [];
 
-    /**
-     * AbstractValidator constructor
-     *
-     */
     public function __construct(private readonly ?PipeContainer $rules = null)
     {
     }

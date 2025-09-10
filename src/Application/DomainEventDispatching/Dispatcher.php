@@ -34,10 +34,6 @@ class Dispatcher implements DomainEventDispatcher
      */
     private array $pipes = [];
 
-    /**
-     * Dispatcher constructor.
-     *
-     */
     public function __construct(
         private readonly IListenerContainer $listeners = new ListenerContainer(),
         private readonly ?PipeContainer $middleware = null,

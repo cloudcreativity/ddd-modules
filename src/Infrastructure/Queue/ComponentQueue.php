@@ -26,10 +26,6 @@ class ComponentQueue implements Queue
      */
     private array $pipes = [];
 
-    /**
-     * ComponentQueue constructor.
-     *
-     */
     public function __construct(
         private readonly EnqueuerContainer $enqueuers,
         private readonly ?PipeContainer $middleware = null,

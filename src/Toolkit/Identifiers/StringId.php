@@ -30,10 +30,6 @@ final readonly class StringId implements Identifier, JsonSerializable
         };
     }
 
-    /**
-     * StringId constructor.
-     *
-     */
     public function __construct(public string $value)
     {
         Contracts::assert(

@@ -20,10 +20,6 @@ use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 
 class UnitOfWorkAwareDispatcher extends Dispatcher
 {
-    /**
-     * UnitOfWorkAwareDispatcher constructor.
-     *
-     */
     public function __construct(
         private readonly UnitOfWorkManager $unitOfWorkManager,
         IListenerContainer $listeners = new ListenerContainer(),

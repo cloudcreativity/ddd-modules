@@ -19,8 +19,6 @@ use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
 final readonly class SetupBeforeEvent implements InboundEventMiddleware
 {
     /**
-     * SetupBeforeEvent constructor.
-     *
      * @param Closure(): ?Closure(): void $callback
      */
     public function __construct(private Closure $callback)

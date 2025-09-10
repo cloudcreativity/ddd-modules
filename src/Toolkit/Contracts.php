@@ -29,9 +29,6 @@ final class Contracts
         }
     }
 
-    /**
-     * Contracts constructor.
-     */
     private function __construct()
     {
     }

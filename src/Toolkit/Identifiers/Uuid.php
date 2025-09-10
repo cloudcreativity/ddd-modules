@@ -76,10 +76,6 @@ final class Uuid implements Identifier, JsonSerializable
         return self::from(BaseUuid::NIL);
     }
 
-    /**
-     * Uuid constructor.
-     *
-     */
     public function __construct(public readonly IBaseUuid $value)
     {
     }

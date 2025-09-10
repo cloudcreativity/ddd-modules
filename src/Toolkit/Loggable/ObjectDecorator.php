@@ -24,10 +24,6 @@ use ReflectionProperty;
  */
 final readonly class ObjectDecorator implements IteratorAggregate, ContextProvider
 {
-    /**
-     * ObjectDecorator constructor.
-     *
-     */
     public function __construct(private object $source)
     {
     }

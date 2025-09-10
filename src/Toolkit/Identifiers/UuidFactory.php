@@ -27,10 +27,6 @@ final readonly class UuidFactory implements IUuidFactory
 {
     private BaseUuidFactory $baseFactory;
 
-    /**
-     * UuidFactory constructor.
-     *
-     */
     public function __construct(?BaseUuidFactory $factory = null)
     {
         $this->baseFactory = $factory ?? BaseUuid::getFactory();

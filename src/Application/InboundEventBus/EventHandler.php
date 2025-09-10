@@ -18,10 +18,6 @@ use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
 
 final readonly class EventHandler implements IEventHandler
 {
-    /**
-     * EventHandler constructor.
-     *
-     */
     public function __construct(private object $handler)
     {
     }

@@ -20,8 +20,6 @@ final class Pipeline implements IPipeline
     private readonly Processor $processor;
 
     /**
-     * Pipeline constructor.
-     *
      * @param callable[] $stages
      */
     public function __construct(

@@ -21,10 +21,6 @@ final class InterruptibleProcessor implements Processor
      */
     private $check;
 
-    /**
-     * InterruptibleProcessor constructor.
-     *
-     */
     public function __construct(callable $check)
     {
         $this->check = $check;

@@ -17,10 +17,6 @@ use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
 
 final readonly class PublisherHandler implements IPublisherHandler
 {
-    /**
-     * PublisherHandler constructor.
-     *
-     */
     public function __construct(private object $handler)
     {
     }

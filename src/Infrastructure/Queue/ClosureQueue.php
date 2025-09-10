@@ -31,10 +31,6 @@ class ClosureQueue implements Queue
      */
     private array $pipes = [];
 
-    /**
-     * ClosureQueue constructor.
-     *
-     */
     public function __construct(
         private readonly Closure $fn,
         private readonly ?PipeContainer $middleware = null,

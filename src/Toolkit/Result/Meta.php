@@ -41,8 +41,6 @@ final class Meta implements ArrayAccess, KeyedSet
     }
 
     /**
-     * ResultMeta constructor.
-     *
      * @param array<string, mixed> $values
      */
     public function __construct(array $values = [])

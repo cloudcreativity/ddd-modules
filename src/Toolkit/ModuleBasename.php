@@ -58,10 +58,6 @@ final readonly class ModuleBasename implements Stringable
         return null;
     }
 
-    /**
-     * ModuleBasename constructor.
-     *
-     */
     private function __construct(
         public ?string $module,
         public string $name,

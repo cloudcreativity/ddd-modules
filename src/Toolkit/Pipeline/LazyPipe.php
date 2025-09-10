@@ -18,10 +18,6 @@ use Throwable;
 
 final readonly class LazyPipe
 {
-    /**
-     * LazyPipe constructor.
-     *
-     */
     public function __construct(
         private PipeContainer $container,
         private string $pipeName,

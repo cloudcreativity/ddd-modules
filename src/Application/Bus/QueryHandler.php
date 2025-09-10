@@ -19,10 +19,6 @@ use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 final readonly class QueryHandler implements IQueryHandler
 {
-    /**
-     * QueryHandler constructor.
-     *
-     */
     public function __construct(private object $handler)
     {
     }

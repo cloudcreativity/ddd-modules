@@ -21,8 +21,6 @@ use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 final readonly class SetupBeforeDispatch implements BusMiddleware
 {
     /**
-     * SetupBeforeDispatch constructor.
-     *
      * @param Closure(): ?Closure(): void $callback
      */
     public function __construct(private Closure $callback)

@@ -21,10 +21,6 @@ use Psr\Log\LogLevel;
 
 final readonly class LogDomainEventDispatch implements DomainEventMiddleware
 {
-    /**
-     * LogDomainEventDispatch constructor
-     *
-     */
     public function __construct(
         private LoggerInterface $logger,
         private string $dispatchLevel = LogLevel::DEBUG,

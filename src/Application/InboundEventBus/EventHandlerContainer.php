@@ -25,8 +25,6 @@ final class EventHandlerContainer implements IEventHandlerContainer
     private array $bindings = [];
 
     /**
-     * EventHandlerContainer constructor.
-     *
      * @param ?Closure(): object $default
      */
     public function __construct(private readonly ?Closure $default = null)

@@ -19,10 +19,6 @@ use Psr\Log\LogLevel;
 
 final readonly class SwallowInboundEvent
 {
-    /**
-     * SwallowInboundEvent constructor.
-     *
-     */
     public function __construct(
         private ?LoggerInterface $logger = null,
         private string $level = LogLevel::DEBUG,

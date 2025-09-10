@@ -21,10 +21,6 @@ use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 final readonly class ExecuteInUnitOfWork implements CommandMiddleware
 {
-    /**
-     * ExecuteInUnitOfWork constructor.
-     *
-     */
     public function __construct(
         private UnitOfWorkManager $unitOfWorkManager,
         private int $attempts = 1,

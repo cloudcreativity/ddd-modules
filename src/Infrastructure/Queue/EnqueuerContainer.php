@@ -23,8 +23,6 @@ final class EnqueuerContainer implements IEnqueuerContainer
     private array $bindings = [];
 
     /**
-     * EnqueuerContainer constructor.
-     *
      * @param Closure(): object $default
      */
     public function __construct(private readonly Closure $default)

@@ -35,10 +35,6 @@ final class UnitOfWorkManager implements IUnitOfWorkManager
 
     private bool $committed = false;
 
-    /**
-     * UnitOfWorkManager constructor.
-     *
-     */
     public function __construct(
         private readonly UnitOfWork $unitOfWork,
         private readonly ?ExceptionReporter $reporter = null,

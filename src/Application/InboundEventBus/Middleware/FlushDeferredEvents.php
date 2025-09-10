@@ -20,10 +20,6 @@ use Throwable;
 
 final readonly class FlushDeferredEvents implements InboundEventMiddleware
 {
-    /**
-     * FlushDeferredEvents constructor.
-     *
-     */
     public function __construct(private DeferredDispatcher $dispatcher)
     {
     }

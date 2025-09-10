@@ -20,10 +20,6 @@ final readonly class Error implements IError
 {
     private string|UnitEnum|null $key;
 
-    /**
-     * Error constructor.
-     *
-     */
     public function __construct(
         private ?UnitEnum $code = null,
         private string $message = '',

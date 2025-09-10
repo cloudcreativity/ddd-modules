@@ -73,10 +73,6 @@ final readonly class Guid implements Identifier
         };
     }
 
-    /**
-     * Guid constructor.
-     *
-     */
     public function __construct(
         public string|UnitEnum $type,
         public IntegerId|StringId|Uuid $id,

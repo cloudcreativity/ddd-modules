@@ -27,10 +27,6 @@ class QueryDispatcher implements IQueryDispatcher
      */
     private array $pipes = [];
 
-    /**
-     * QueryDispatcher constructor.
-     *
-     */
     public function __construct(
         private readonly QueryHandlerContainer $handlers,
         private readonly ?PipeContainer $middleware = null,

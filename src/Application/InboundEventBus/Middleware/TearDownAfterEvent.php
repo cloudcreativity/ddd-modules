@@ -19,8 +19,6 @@ use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
 final readonly class TearDownAfterEvent implements InboundEventMiddleware
 {
     /**
-     * TearDownAfterEvent constructor.
-     *
      * @param Closure(): void $callback
      */
     public function __construct(private Closure $callback)

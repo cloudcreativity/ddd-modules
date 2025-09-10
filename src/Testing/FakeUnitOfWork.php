@@ -25,10 +25,6 @@ final class FakeUnitOfWork implements UnitOfWork
      */
     public array $sequence = [];
 
-    /**
-     * FakeUnitOfWork constructor.
-     *
-     */
     public function __construct(public FakeExceptionReporter $exceptions = new FakeExceptionReporter())
     {
     }

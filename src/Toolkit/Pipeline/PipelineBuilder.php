@@ -24,19 +24,11 @@ final class PipelineBuilder implements IPipelineBuilder
      */
     private array $stages = [];
 
-    /**
-     * Fluent constructor.
-     *
-     */
     public static function make(?PipeContainer $container = null): self
     {
         return new self($container);
     }
 
-    /**
-     * PipelineBuilder constructor.
-     *
-     */
     public function __construct(private readonly ?PipeContainer $container = null)
     {
     }

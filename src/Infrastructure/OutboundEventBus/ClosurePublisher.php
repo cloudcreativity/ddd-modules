@@ -31,10 +31,6 @@ class ClosurePublisher implements OutboundEventPublisher
      */
     private array $pipes = [];
 
-    /**
-     * ClosurePublisher constructor.
-     *
-     */
     public function __construct(
         private readonly Closure $fn,
         private readonly ?PipeContainer $middleware = null,

@@ -28,10 +28,6 @@ abstract class ValidateQuery implements QueryMiddleware
      */
     abstract protected function rules(): iterable;
 
-    /**
-     * ValidateQuery constructor.
-     *
-     */
     public function __construct(private readonly Validator $validator)
     {
     }
