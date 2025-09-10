@@ -30,9 +30,6 @@ final readonly class ResultDecorator implements ContextProvider
     {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function context(): array
     {
         if ($this->result instanceof ContextProvider) {
@@ -78,7 +75,6 @@ final readonly class ResultDecorator implements ContextProvider
     }
 
     /**
-     * @param Error $error
      * @return array<string, mixed>
      */
     private function error(Error $error): array

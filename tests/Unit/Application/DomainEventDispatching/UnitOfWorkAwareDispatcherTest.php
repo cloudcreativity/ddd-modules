@@ -27,29 +27,17 @@ use PHPUnit\Framework\TestCase;
 
 class UnitOfWorkAwareDispatcherTest extends TestCase
 {
-    /**
-     * @var ListenerContainer&MockObject
-     */
     private ListenerContainer&MockObject $listeners;
 
     /**
-     * @var UnitOfWorkManager&MockObject
+     * @var MockObject&UnitOfWorkManager
      */
     private UnitOfWorkManager $unitOfWorkManager;
 
-    /**
-     * @var MockObject&PipeContainer
-     */
-    private PipeContainer&MockObject $middleware;
+    private MockObject&PipeContainer $middleware;
 
-    /**
-     * @var UnitOfWorkAwareDispatcher
-     */
     private UnitOfWorkAwareDispatcher $dispatcher;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -61,9 +49,6 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
         );
     }
 
-    /**
-     * @return void
-     */
     public function testItDispatchesImmediately(): void
     {
         $sequence = [];
@@ -156,9 +141,6 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
         $this->assertSame($sequence, ['Listener1', 'Listener2', 'Listener3']);
     }
 
-    /**
-     * @return void
-     */
     public function testItDoesNotDispatchImmediately(): void
     {
         $event = $this->createMock(DomainEvent::class);
@@ -237,9 +219,6 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
         $this->dispatcher->dispatch($event);
     }
 
-    /**
-     * @return void
-     */
     public function testBeforeCommitListener(): void
     {
         $event = new TestImmediateDomainEvent();
@@ -271,9 +250,6 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
         $this->dispatcher->dispatch($event);
     }
 
-    /**
-     * @return void
-     */
     public function testAfterCommitListener(): void
     {
         $event = new TestImmediateDomainEvent();
@@ -305,9 +281,6 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
         $this->dispatcher->dispatch($event);
     }
 
-    /**
-     * @return void
-     */
     public function testNoListeners(): void
     {
         $event = $this->createMock(DomainEvent::class);
@@ -315,9 +288,6 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
         $this->dispatcher->dispatch($event);
     }
 
-    /**
-     * @return void
-     */
     public function testItDispatchesThroughMiddleware(): void
     {
         $event1 = new TestImmediateDomainEvent();
@@ -360,9 +330,6 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
         $this->dispatcher->dispatch($event1);
     }
 
-    /**
-     * @return void
-     */
     public function testListenerDoesNotHaveHandleMethod(): void
     {
         $event = new TestImmediateDomainEvent();
@@ -380,9 +347,6 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
         $this->dispatcher->dispatch($event);
     }
 
-    /**
-     * @return void
-     */
     public function testListenerCannotImplementBothBeforeAndAfterCommit(): void
     {
         $listener = new class () implements DispatchBeforeCommit, DispatchAfterCommit {

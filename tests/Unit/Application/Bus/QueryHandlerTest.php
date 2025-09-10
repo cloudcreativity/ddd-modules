@@ -18,9 +18,6 @@ use PHPUnit\Framework\TestCase;
 
 class QueryHandlerTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test(): void
     {
         $query = new TestQuery();
@@ -43,9 +40,6 @@ class QueryHandlerTest extends TestCase
         $this->assertSame($middleware, $handler->middleware());
     }
 
-    /**
-     * @return void
-     */
     public function testItDoesNotHaveExecuteMethod(): void
     {
         $handler = new QueryHandler(new \DateTime());

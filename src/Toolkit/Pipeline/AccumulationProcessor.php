@@ -29,8 +29,6 @@ final class AccumulationProcessor implements Processor
     /**
      * AccumulationProcessor
      *
-     * @param callable $accumulator
-     * @param mixed|null $initialValue
      */
     public function __construct(callable $accumulator, mixed $initialValue = null)
     {
@@ -38,9 +36,6 @@ final class AccumulationProcessor implements Processor
         $this->initialValue = $initialValue;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function process(mixed $payload, callable ...$stages): mixed
     {
         $result = $this->initialValue;

@@ -20,9 +20,6 @@ use PHPUnit\Framework\TestCase;
 
 class KeyedSetOfErrorsTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test(): void
     {
         $errors = new KeyedSetOfErrors(
@@ -55,9 +52,6 @@ class KeyedSetOfErrorsTest extends TestCase
         $this->assertEquals($expected[TestUnitEnum::Baz->name], $errors->get(TestUnitEnum::Baz));
     }
 
-    /**
-     * @return void
-     */
     public function testEmpty(): void
     {
         $errors = new KeyedSetOfErrors();
@@ -67,9 +61,6 @@ class KeyedSetOfErrorsTest extends TestCase
         $this->assertCount(0, $errors);
     }
 
-    /**
-     * @return void
-     */
     public function testPutNewKey(): void
     {
         $original = new KeyedSetOfErrors(
@@ -93,9 +84,6 @@ class KeyedSetOfErrorsTest extends TestCase
         $this->assertSame(['bar', 'baz', 'foo'], $actual->keys());
     }
 
-    /**
-     * @return void
-     */
     public function testPutExistingKey(): void
     {
         $original = new KeyedSetOfErrors(
@@ -118,9 +106,6 @@ class KeyedSetOfErrorsTest extends TestCase
         $this->assertSame(['bar', 'foo'], $actual->keys());
     }
 
-    /**
-     * @return void
-     */
     public function testPutErrorWithoutKey1(): void
     {
         $original = new KeyedSetOfErrors(
@@ -144,9 +129,6 @@ class KeyedSetOfErrorsTest extends TestCase
         $this->assertSame(['_base', 'bar', 'foo'], $actual->keys());
     }
 
-    /**
-     * @return void
-     */
     public function testPutErrorWithoutKey2(): void
     {
         $original = new KeyedSetOfErrors(
@@ -169,9 +151,6 @@ class KeyedSetOfErrorsTest extends TestCase
         $this->assertSame(['_base', 'foo'], $actual->keys());
     }
 
-    /**
-     * @return void
-     */
     public function testMerge(): void
     {
         $set1 = new KeyedSetOfErrors(

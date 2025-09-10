@@ -23,24 +23,12 @@ use RuntimeException;
 
 class UnitOfWorkManagerTest extends TestCase
 {
-    /**
-     * @var UnitOfWork&MockObject
-     */
-    private UnitOfWork&MockObject $unitOfWork;
+    private MockObject&UnitOfWork $unitOfWork;
 
-    /**
-     * @var MockObject&ExceptionReporter
-     */
     private ExceptionReporter&MockObject $reporter;
 
-    /**
-     * @var UnitOfWorkManager
-     */
     private UnitOfWorkManager $manager;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -51,9 +39,6 @@ class UnitOfWorkManagerTest extends TestCase
         );
     }
 
-    /**
-     * @return void
-     */
     public function testItExecutesCallbacks(): void
     {
         $sequence = [];
@@ -103,9 +88,6 @@ class UnitOfWorkManagerTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @return void
-     */
     public function testItExecutesCallbackWhenTransactionFailsToCommit(): void
     {
         $expected = new \RuntimeException('Boom');
@@ -152,7 +134,6 @@ class UnitOfWorkManagerTest extends TestCase
     /**
      * If any callbacks get registered by other callbacks, they are executed.
      *
-     * @return void
      */
     public function testItExecutesAdditionalCommitCallbacks(): void
     {
@@ -231,9 +212,6 @@ class UnitOfWorkManagerTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @return void
-     */
     public function testItFlushesCallbacksOnSuccessfulTransaction(): void
     {
         $this->unitOfWork
@@ -253,9 +231,6 @@ class UnitOfWorkManagerTest extends TestCase
         $this->assertSame(2, $result2);
     }
 
-    /**
-     * @return void
-     */
     public function testItFlushesCallbacksOnUnsuccessfulTransaction(): void
     {
         $ex = new LogicException('Boom');
@@ -305,7 +280,6 @@ class UnitOfWorkManagerTest extends TestCase
      * is thrown should be forgotten. Otherwise, if the callback is retried, the before
      * callbacks will be executed twice.
      *
-     * @return void
      */
     public function testItHandlesCallbackExecutingMultipleTimes(): void
     {
@@ -396,7 +370,6 @@ class UnitOfWorkManagerTest extends TestCase
      * because any that are registered on one of the failed attempts should havbe been
      * forgotten.
      *
-     * @return void
      */
     public function testItHandlesUnitOfWorkFailingMultipleTimes(): void
     {
@@ -469,9 +442,6 @@ class UnitOfWorkManagerTest extends TestCase
         ], $sequence);
     }
 
-    /**
-     * @return void
-     */
     public function testItFailsIfBeforeCallbacksAreQueuedBeforeTransaction(): void
     {
         $this->unitOfWork
@@ -484,9 +454,6 @@ class UnitOfWorkManagerTest extends TestCase
         $this->manager->beforeCommit(fn () => null);
     }
 
-    /**
-     * @return void
-     */
     public function testItFailsIfAfterCallbacksAreQueuedBeforeTransaction(): void
     {
         $this->expectException(RuntimeException::class);
@@ -495,9 +462,6 @@ class UnitOfWorkManagerTest extends TestCase
         $this->manager->afterCommit(fn () => null);
     }
 
-    /**
-     * @return void
-     */
     public function testItCannotStartTransactionWithinAnExistingOne(): void
     {
         $this->unitOfWork
@@ -515,9 +479,6 @@ class UnitOfWorkManagerTest extends TestCase
         });
     }
 
-    /**
-     * @return void
-     */
     public function testItFailsIfAfterCommitCallbackRegistersBeforeCommitCallback(): void
     {
         $this->unitOfWork
@@ -534,9 +495,6 @@ class UnitOfWorkManagerTest extends TestCase
         });
     }
 
-    /**
-     * @return void
-     */
     public function testAttemptsMustBeGreaterThanZero(): void
     {
         $this->expectException(RuntimeException::class);

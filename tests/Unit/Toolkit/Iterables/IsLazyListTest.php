@@ -18,9 +18,6 @@ use PHPUnit\Framework\TestCase;
 
 class IsLazyListTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function testItIteratesOverList(): void
     {
         $expected = ['one', 'two', 'three'];
@@ -43,9 +40,6 @@ class IsLazyListTest extends TestCase
         $this->assertSame($expected, $list->all());
     }
 
-    /**
-     * @return void
-     */
     public function testItYieldsListFromKeyedSet(): void
     {
         $expected = ['one' => 'foo', 'two' => 'bar', 'three' => 'baz'];

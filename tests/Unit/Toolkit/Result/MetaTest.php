@@ -17,9 +17,6 @@ use PHPUnit\Framework\TestCase;
 
 class MetaTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test(): void
     {
         $meta = new Meta($values = [
@@ -40,9 +37,6 @@ class MetaTest extends TestCase
         $this->assertFalse($meta->isEmpty());
     }
 
-    /**
-     * @return void
-     */
     public function testItIsIterable(): void
     {
         $meta = new Meta($values = [
@@ -54,9 +48,6 @@ class MetaTest extends TestCase
         $this->assertSame($values, iterator_to_array($meta));
     }
 
-    /**
-     * @return void
-     */
     public function testEmpty(): void
     {
         $meta = new Meta();
@@ -66,9 +57,6 @@ class MetaTest extends TestCase
         $this->assertFalse($meta->isNotEmpty());
     }
 
-    /**
-     * @return void
-     */
     public function testArrayAccess(): void
     {
         $meta = new Meta(['foo' => 'bar', 'baz' => 'bat', 'foobar' => null]);
@@ -79,9 +67,6 @@ class MetaTest extends TestCase
         $this->assertFalse(isset($meta['blah']));
     }
 
-    /**
-     * @return void
-     */
     public function testOffsetUnset(): void
     {
         $meta = new Meta(['foo' => 'bar']);
@@ -90,9 +75,6 @@ class MetaTest extends TestCase
         unset($meta['foo']);
     }
 
-    /**
-     * @return void
-     */
     public function testOffsetSet(): void
     {
         $meta = new Meta(['foo' => 'bar']);
@@ -101,9 +83,6 @@ class MetaTest extends TestCase
         $meta['foo'] = 'foobar';
     }
 
-    /**
-     * @return void
-     */
     public function testPut(): void
     {
         $original = new Meta(['foo' => 'bar', 'baz' => 'bat']);
@@ -114,9 +93,6 @@ class MetaTest extends TestCase
         $this->assertSame(['foo' => 'foobar', 'baz' => 'bat'], $actual->all());
     }
 
-    /**
-     * @return void
-     */
     public function testMergeArray(): void
     {
         $original = new Meta(['foo' => 'bar', 'baz' => 'bat']);
@@ -127,9 +103,6 @@ class MetaTest extends TestCase
         $this->assertSame(['foo' => null, 'baz' => 'bat', 'foobar' => 'bazbat'], $actual->all());
     }
 
-    /**
-     * @return void
-     */
     public function testMergeMeta(): void
     {
         $original = new Meta(['foo' => 'bar', 'baz' => 'bat']);

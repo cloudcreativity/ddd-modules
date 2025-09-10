@@ -17,24 +17,18 @@ interface Pipeline
     /**
      * Process the payload.
      *
-     * @param mixed $payload
-     * @return mixed
      */
     public function __invoke(mixed $payload): mixed;
 
     /**
      * Create a new pipeline with the appended stage.
      *
-     * @param callable $stage
-     * @return Pipeline
      */
     public function pipe(callable $stage): self;
 
     /**
      * Process the payload through the pipeline.
      *
-     * @param mixed $payload
-     * @return mixed
      */
     public function process(mixed $payload): mixed;
 }

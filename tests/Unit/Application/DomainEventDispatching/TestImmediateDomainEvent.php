@@ -18,9 +18,6 @@ use DateTimeImmutable;
 
 class TestImmediateDomainEvent implements DomainEvent, OccursImmediately
 {
-    /**
-     * @inheritDoc
-     */
     public function getOccurredAt(): DateTimeImmutable
     {
         return new DateTimeImmutable();

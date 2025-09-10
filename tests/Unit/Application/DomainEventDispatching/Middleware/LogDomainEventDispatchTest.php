@@ -28,14 +28,8 @@ class LogDomainEventDispatchTest extends TestCase
      */
     private LoggerInterface $logger;
 
-    /**
-     * @var DomainEvent
-     */
     private DomainEvent $event;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -60,9 +54,6 @@ class LogDomainEventDispatchTest extends TestCase
         };
     }
 
-    /**
-     * @return void
-     */
     public function testWithDefaultLevels(): void
     {
         $eventName = $this->event::class;
@@ -87,9 +78,6 @@ class LogDomainEventDispatchTest extends TestCase
         ], $logs);
     }
 
-    /**
-     * @return void
-     */
     public function testWithCustomLevels(): void
     {
         $eventName = $this->event::class;
@@ -114,9 +102,6 @@ class LogDomainEventDispatchTest extends TestCase
         ], $logs);
     }
 
-    /**
-     * @return void
-     */
     public function testItLogsAfterTheNextClosureIsInvoked(): void
     {
         $expected = new LogicException();

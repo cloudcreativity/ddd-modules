@@ -17,8 +17,6 @@ interface IdentifierFactory
     /**
      * Make an identifier.
      *
-     * @param mixed $id
-     * @return Identifier
      */
     public function make(mixed $id): Identifier;
 }

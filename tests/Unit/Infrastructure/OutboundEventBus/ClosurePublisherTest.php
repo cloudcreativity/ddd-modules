@@ -20,24 +20,15 @@ use PHPUnit\Framework\TestCase;
 
 class ClosurePublisherTest extends TestCase
 {
-    /**
-     * @var MockObject&PipeContainer
-     */
-    private PipeContainer&MockObject $middleware;
+    private MockObject&PipeContainer $middleware;
 
     /**
      * @var array<IntegrationEvent>
      */
     private array $actual = [];
 
-    /**
-     * @var ClosurePublisher
-     */
     private ClosurePublisher $publisher;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -50,18 +41,12 @@ class ClosurePublisherTest extends TestCase
         );
     }
 
-    /**
-     * @return void
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
         unset($this->publisher, $this->middleware, $this->actual);
     }
 
-    /**
-     * @return void
-     */
     public function test(): void
     {
         $event = $this->createMock(IntegrationEvent::class);
@@ -71,9 +56,6 @@ class ClosurePublisherTest extends TestCase
         $this->assertSame([$event], $this->actual);
     }
 
-    /**
-     * @return void
-     */
     public function testWithMiddleware(): void
     {
         $event1 = $this->createMock(IntegrationEvent::class);
@@ -114,9 +96,6 @@ class ClosurePublisherTest extends TestCase
     }
 
 
-    /**
-     * @return void
-     */
     public function testWithAlternativeHandlers(): void
     {
         $expected = new TestOutboundEvent();

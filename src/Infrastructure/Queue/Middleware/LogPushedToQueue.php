@@ -26,10 +26,6 @@ final readonly class LogPushedToQueue implements QueueMiddleware
     /**
      * LogPushedToQueue constructor.
      *
-     * @param LoggerInterface $log
-     * @param string $queueLevel
-     * @param string $queuedLevel
-     * @param ContextFactory $context
      */
     public function __construct(
         private LoggerInterface $log,
@@ -39,9 +35,6 @@ final readonly class LogPushedToQueue implements QueueMiddleware
     ) {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function __invoke(Command $command, Closure $next): void
     {
         $name = ModuleBasename::tryFrom($command)?->toString() ?? $command::class;

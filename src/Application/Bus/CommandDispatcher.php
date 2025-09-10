@@ -23,15 +23,13 @@ use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 class CommandDispatcher implements ICommandDispatcher
 {
     /**
-     * @var array<string|callable>
+     * @var array<callable|string>
      */
     private array $pipes = [];
 
     /**
      * CommandDispatcher constructor.
      *
-     * @param CommandHandlerContainer $handlers
-     * @param PipeContainer|null $middleware
      */
     public function __construct(
         private readonly CommandHandlerContainer $handlers,
@@ -42,8 +40,7 @@ class CommandDispatcher implements ICommandDispatcher
     /**
      * Dispatch messages through the provided pipes.
      *
-     * @param array<string|callable> $pipes
-     * @return void
+     * @param array<callable|string> $pipes
      */
     public function through(array $pipes): void
     {
@@ -52,9 +49,6 @@ class CommandDispatcher implements ICommandDispatcher
         $this->pipes = $pipes;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function dispatch(Command $command): Result
     {
         $pipeline = PipelineBuilder::make($this->middleware)
@@ -71,7 +65,6 @@ class CommandDispatcher implements ICommandDispatcher
     }
 
     /**
-     * @param Command $command
      * @return Result<mixed>
      */
     private function execute(Command $command): Result

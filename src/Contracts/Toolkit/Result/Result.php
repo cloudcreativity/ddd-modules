@@ -21,20 +21,13 @@ use CloudCreativity\Modules\Toolkit\Result\Meta;
  */
 interface Result
 {
-    /**
-     * @return bool
-     */
     public function didSucceed(): bool;
 
-    /**
-     * @return bool
-     */
     public function didFail(): bool;
 
     /**
      * Abort execution if the result failed.
      *
-     * @return void
      * @throws FailedResultException if the result is not a success.
      */
     public function abort(): void;
@@ -57,29 +50,26 @@ interface Result
     /**
      * Get the errors.
      *
-     * @return IListOfErrors
      */
     public function errors(): IListOfErrors;
 
     /**
      * Get an error message string.
      *
-     * @return string|null
      */
     public function error(): ?string;
 
     /**
      * Get the result meta.
      *
-     * @return Meta
      */
     public function meta(): Meta;
 
     /**
      * Return a new instance with the provided meta.
      *
-     * @param Meta|array<string, mixed> $meta
+     * @param array<string, mixed>|Meta $meta
      * @return Result<TValue>
      */
-    public function withMeta(Meta|array $meta): self;
+    public function withMeta(array|Meta $meta): self;
 }

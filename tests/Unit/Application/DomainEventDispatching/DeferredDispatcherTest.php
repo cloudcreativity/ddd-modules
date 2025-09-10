@@ -23,24 +23,15 @@ use PHPUnit\Framework\TestCase;
 
 class DeferredDispatcherTest extends TestCase
 {
-    /**
-     * @var ListenerContainer&MockObject
-     */
     private ListenerContainer&MockObject $listeners;
 
     /**
-     * @var MockObject&PipeContainer&MockObject
+     * @var MockObject&MockObject&PipeContainer
      */
-    private PipeContainer&MockObject $middleware;
+    private MockObject&PipeContainer $middleware;
 
-    /**
-     * @var DeferredDispatcher
-     */
     private DeferredDispatcher $dispatcher;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -51,9 +42,6 @@ class DeferredDispatcherTest extends TestCase
         );
     }
 
-    /**
-     * @return void
-     */
     public function testItDispatchesImmediately(): void
     {
         $sequence = [];
@@ -117,9 +105,6 @@ class DeferredDispatcherTest extends TestCase
         $this->assertSame($sequence, ['Listener1', 'Listener2', 'Listener3']);
     }
 
-    /**
-     * @return void
-     */
     public function testItFlushesDeferredEvents(): void
     {
         $sequence = [];
@@ -191,9 +176,6 @@ class DeferredDispatcherTest extends TestCase
         $this->assertSame($sequence, ['Listener1', 'Listener2', 'Listener3', 'Listener4']);
     }
 
-    /**
-     * @return void
-     */
     public function testItFlushesDeferredEventsIncludingEventsDispatchedByListeners(): void
     {
         $sequence = [];
@@ -250,9 +232,6 @@ class DeferredDispatcherTest extends TestCase
         $this->assertSame($sequence, ['Listener1', 'Listener2', 'Listener3']);
     }
 
-    /**
-     * @return void
-     */
     public function testItForgetsDeferredEvents(): void
     {
         $sequence = [];
@@ -314,9 +293,6 @@ class DeferredDispatcherTest extends TestCase
         $this->assertSame($step3, ['Listener1', 'Listener2']);
     }
 
-    /**
-     * @return void
-     */
     public function testItForgetsDeferredEventsAfterException(): void
     {
         $sequence = [];
@@ -379,9 +355,6 @@ class DeferredDispatcherTest extends TestCase
         $this->dispatcher->flush(); // flush again, not expecting any events to be triggered.
     }
 
-    /**
-     * @return void
-     */
     public function testNoListeners(): void
     {
         $event = $this->createMock(DomainEvent::class);
@@ -389,9 +362,6 @@ class DeferredDispatcherTest extends TestCase
         $this->dispatcher->dispatch($event);
     }
 
-    /**
-     * @return void
-     */
     public function testItDispatchesThroughMiddleware(): void
     {
         $event1 = new TestImmediateDomainEvent();
@@ -434,9 +404,6 @@ class DeferredDispatcherTest extends TestCase
         $this->dispatcher->dispatch($event1);
     }
 
-    /**
-     * @return void
-     */
     public function testListenerDoesNotHaveHandleMethod(): void
     {
         $event = new TestImmediateDomainEvent();

@@ -24,18 +24,12 @@ use PHPUnit\Framework\TestCase;
 class ValidateQueryTest extends TestCase
 {
     /**
-     * @var Validator&MockObject
+     * @var MockObject&Validator
      */
     private Validator $validator;
 
-    /**
-     * @var ValidateQuery
-     */
     private ValidateQuery $middleware;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -53,9 +47,6 @@ class ValidateQueryTest extends TestCase
         };
     }
 
-    /**
-     * @return void
-     */
     public function testItSucceeds(): void
     {
         $rules = [];
@@ -91,9 +82,6 @@ class ValidateQueryTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @return void
-     */
     public function testItFails(): void
     {
         $this->validator

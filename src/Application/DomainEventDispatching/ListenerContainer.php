@@ -26,18 +26,12 @@ final class ListenerContainer implements IListenerContainer
     /**
      * Bind a listener factory into the container.
      *
-     * @param string $listenerName
-     * @param Closure $binding
-     * @return void
      */
     public function bind(string $listenerName, Closure $binding): void
     {
         $this->bindings[$listenerName] = $binding;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function get(string $listenerName): object
     {
         $factory = $this->bindings[$listenerName] ?? null;

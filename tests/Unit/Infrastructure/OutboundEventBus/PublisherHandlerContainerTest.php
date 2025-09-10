@@ -19,9 +19,6 @@ use RuntimeException;
 
 class PublisherHandlerContainerTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function testItDoesNotHaveDefaultHandler(): void
     {
         $a = new TestPublisher();
@@ -44,9 +41,6 @@ class PublisherHandlerContainerTest extends TestCase
         $container->get($event3::class);
     }
 
-    /**
-     * @return void
-     */
     public function testItHasDefaultHandler(): void
     {
         $a = new TestPublisher();

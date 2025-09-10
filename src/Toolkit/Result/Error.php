@@ -18,54 +18,36 @@ use UnitEnum;
 
 final readonly class Error implements IError
 {
-    /**
-     * @var UnitEnum|string|null
-     */
-    private UnitEnum|string|null $key;
+    private string|UnitEnum|null $key;
 
     /**
      * Error constructor.
      *
-     * @param UnitEnum|null $code
-     * @param string $message
-     * @param UnitEnum|string|null $key
      */
     public function __construct(
         private ?UnitEnum $code = null,
         private string $message = '',
-        UnitEnum|string|null $key = null,
+        string|UnitEnum|null $key = null,
     ) {
         Contracts::assert(!empty($message) || $code !== null, 'Error must have a message or a code.');
         $this->key = $key ?: null;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function key(): UnitEnum|string|null
+    public function key(): string|UnitEnum|null
     {
         return $this->key;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function message(): string
     {
         return $this->message;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function code(): ?UnitEnum
     {
         return $this->code;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function is(UnitEnum $code): bool
     {
         return $this->code === $code;

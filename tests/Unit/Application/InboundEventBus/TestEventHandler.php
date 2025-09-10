@@ -16,18 +16,11 @@ use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddle
 
 class TestEventHandler implements DispatchThroughMiddleware
 {
-    /**
-     * @param TestInboundEvent $command
-     * @return void
-     */
     public function handle(TestInboundEvent $command): void
     {
         // no-op
     }
 
-    /**
-     * @inheritDoc
-     */
     public function middleware(): array
     {
         return [];

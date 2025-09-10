@@ -28,10 +28,6 @@ final readonly class LogMessageDispatch implements BusMiddleware
     /**
      * LogMessageDispatch constructor.
      *
-     * @param LoggerInterface $logger
-     * @param string $dispatchLevel
-     * @param string $dispatchedLevel
-     * @param ContextFactory $context
      */
     public function __construct(
         private LoggerInterface $logger,
@@ -41,9 +37,6 @@ final readonly class LogMessageDispatch implements BusMiddleware
     ) {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function __invoke(Command|Query $message, Closure $next): Result
     {
         $name = ModuleBasename::tryFrom($message)?->toString() ?? $message::class;

@@ -21,32 +21,20 @@ use PHPUnit\Framework\TestCase;
 
 class ObjectDecoratorTest extends TestCase
 {
-    /**
-     * @var SimpleContextFactory
-     */
     private SimpleContextFactory $factory;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
         $this->factory = new SimpleContextFactory();
     }
 
-    /**
-     * @return void
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
         unset($this->factory);
     }
 
-    /**
-     * @return void
-     */
     public function testItUsesObjectProperties(): void
     {
         $source = new class () implements Message {
@@ -72,9 +60,6 @@ class ObjectDecoratorTest extends TestCase
         $this->assertSame($expected, $this->factory->make($source));
     }
 
-    /**
-     * @return void
-     */
     public function testItExcludesSensitiveProperties(): void
     {
         $source = new class ('Hello', 'World') implements Message {

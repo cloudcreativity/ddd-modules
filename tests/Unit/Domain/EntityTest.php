@@ -21,9 +21,6 @@ use PHPUnit\Framework\TestCase;
 
 class EntityTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test(): void
     {
         $entity = new TestEntity($guid = Guid::fromInteger('SomeType', 1));
@@ -34,9 +31,6 @@ class EntityTest extends TestCase
         $this->assertTrue($entity->isNot(null));
     }
 
-    /**
-     * @return void
-     */
     public function testItIsTheSame(): void
     {
         $a = new TestEntity(
@@ -57,9 +51,6 @@ class EntityTest extends TestCase
         $this->assertFalse($a->isNot($b));
     }
 
-    /**
-     * @return void
-     */
     public function testItIsNotTheSame(): void
     {
         $a = new TestEntity(
@@ -80,9 +71,6 @@ class EntityTest extends TestCase
         $this->assertTrue($a->isNot($b));
     }
 
-    /**
-     * @return void
-     */
     public function testItIsDifferentClass(): void
     {
         $a = new TestEntity(

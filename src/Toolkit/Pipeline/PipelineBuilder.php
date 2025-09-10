@@ -27,8 +27,6 @@ final class PipelineBuilder implements IPipelineBuilder
     /**
      * Fluent constructor.
      *
-     * @param PipeContainer|null $container
-     * @return self
      */
     public static function make(?PipeContainer $container = null): self
     {
@@ -38,15 +36,11 @@ final class PipelineBuilder implements IPipelineBuilder
     /**
      * PipelineBuilder constructor.
      *
-     * @param PipeContainer|null $container
      */
     public function __construct(private readonly ?PipeContainer $container = null)
     {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function add(callable|string $stage): static
     {
         $this->stages[] = $this->normalize($stage);
@@ -54,9 +48,6 @@ final class PipelineBuilder implements IPipelineBuilder
         return $this;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function through(iterable $stages): static
     {
         foreach ($stages as $stage) {
@@ -66,18 +57,11 @@ final class PipelineBuilder implements IPipelineBuilder
         return $this;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function build(?Processor $processor = null): Pipeline
     {
         return new Pipeline($processor, $this->stages);
     }
 
-    /**
-     * @param callable|string $stage
-     * @return callable
-     */
     private function normalize(callable|string $stage): callable
     {
         if (is_callable($stage)) {

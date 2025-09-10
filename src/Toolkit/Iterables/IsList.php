@@ -40,25 +40,16 @@ trait IsList
         return $this->stack;
     }
 
-    /**
-     * @return int
-     */
     public function count(): int
     {
         return count($this->stack);
     }
 
-    /**
-     * @return bool
-     */
     public function isEmpty(): bool
     {
         return empty($this->stack);
     }
 
-    /**
-     * @return bool
-     */
     public function isNotEmpty(): bool
     {
         return !empty($this->stack);

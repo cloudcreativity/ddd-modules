@@ -25,7 +25,6 @@ final readonly class ModuleBasename implements Stringable
     /**
      * Create a message name from a class string.
      *
-     * @param object|string $class
      * @return static
      */
     public static function from(object|string $class): self
@@ -40,7 +39,6 @@ final readonly class ModuleBasename implements Stringable
     /**
      * Try to create a message name from a class.
      *
-     * @param object|string $class
      * @return static|null
      */
     public static function tryFrom(object|string $class): ?self
@@ -63,8 +61,6 @@ final readonly class ModuleBasename implements Stringable
     /**
      * ModuleBasename constructor.
      *
-     * @param string|null $module
-     * @param string $name
      */
     private function __construct(
         public ?string $module,
@@ -72,9 +68,6 @@ final readonly class ModuleBasename implements Stringable
     ) {
     }
 
-    /**
-     * @return string
-     */
     public function __toString(): string
     {
         return $this->toString();
@@ -83,8 +76,6 @@ final readonly class ModuleBasename implements Stringable
     /**
      * Fluent to-string method.
      *
-     * @param string $delimiter
-     * @return string
      */
     public function toString(string $delimiter = ':'): string
     {

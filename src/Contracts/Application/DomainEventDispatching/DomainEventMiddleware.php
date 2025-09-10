@@ -20,9 +20,7 @@ interface DomainEventMiddleware
     /**
      * Handle the domain event.
      *
-     * @param DomainEvent $event
      * @param Closure(DomainEvent): void $next
-     * @return void
      */
     public function __invoke(DomainEvent $event, Closure $next): void;
 }

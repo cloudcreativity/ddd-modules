@@ -18,9 +18,6 @@ use PHPUnit\Framework\TestCase;
 
 class IsNonEmptyListTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test(): void
     {
         $expected = ['one', 'two', 'three'];

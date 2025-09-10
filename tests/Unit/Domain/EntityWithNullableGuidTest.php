@@ -34,9 +34,6 @@ class EntityWithNullableGuidTest extends TestCase
         $this->assertTrue($entity->hasId());
     }
 
-    /**
-     * @return TestEntityWithNullableId
-     */
     public function testWithNullId(): TestEntityWithNullableId
     {
         $entity = new TestEntityWithNullableId();
@@ -49,10 +46,6 @@ class EntityWithNullableGuidTest extends TestCase
         return $entity;
     }
 
-    /**
-     * @param TestEntityWithNullableId $entity
-     * @return void
-     */
     #[Depends('testWithNullId')]
     public function testGetIdOrFailWithoutId(TestEntityWithNullableId $entity): void
     {
@@ -79,9 +72,6 @@ class EntityWithNullableGuidTest extends TestCase
         $entity->setId(Guid::fromInteger('SomeType', 2));
     }
 
-    /**
-     * @return void
-     */
     public function testItIsTheSame(): void
     {
         $a = new TestEntityWithNullableId(
@@ -102,9 +92,6 @@ class EntityWithNullableGuidTest extends TestCase
         $this->assertFalse($a->isNot($b));
     }
 
-    /**
-     * @return void
-     */
     public function testItIsNotTheSameWithNullId(): void
     {
         $a = new TestEntityWithNullableId();
@@ -121,9 +108,6 @@ class EntityWithNullableGuidTest extends TestCase
         $this->assertTrue($a->isNot($b));
     }
 
-    /**
-     * @return void
-     */
     public function testItIsTheSameWhenOtherHasNullId(): void
     {
         $a = new TestEntityWithNullableId(
@@ -142,9 +126,6 @@ class EntityWithNullableGuidTest extends TestCase
         $this->assertTrue($a->isNot($b));
     }
 
-    /**
-     * @return void
-     */
     public function testItIsNotTheSame(): void
     {
         $a = new TestEntityWithNullableId(
@@ -165,9 +146,6 @@ class EntityWithNullableGuidTest extends TestCase
         $this->assertTrue($a->isNot($b));
     }
 
-    /**
-     * @return void
-     */
     public function testItIsDifferentClass(): void
     {
         $a = new TestEntityWithNullableId(

@@ -17,9 +17,6 @@ use PHPUnit\Framework\TestCase;
 
 class EventHandlerTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test(): void
     {
         $event = new TestInboundEvent();
@@ -41,9 +38,6 @@ class EventHandlerTest extends TestCase
         $this->assertSame($middleware, $handler->middleware());
     }
 
-    /**
-     * @return void
-     */
     public function testItDoesNotHaveExecuteMethod(): void
     {
         $handler = new EventHandler(new \DateTime());

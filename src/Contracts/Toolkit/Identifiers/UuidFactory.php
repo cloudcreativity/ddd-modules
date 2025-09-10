@@ -23,8 +23,6 @@ interface UuidFactory
     /**
      * Create a UUID identifier from an identifier or a base UUID interface.
      *
-     * @param Identifier|UuidInterface $uuid
-     * @return Uuid
      */
     public function from(Identifier|UuidInterface $uuid): Uuid;
 
@@ -121,7 +119,7 @@ interface UuidFactory
      * @param string $name The name to use for creating a UUID
      * @return Uuid A UUID instance that represents a version 3 UUID
      */
-    public function uuid3(UuidInterface|string $ns, string $name): Uuid;
+    public function uuid3(string|UuidInterface $ns, string $name): Uuid;
 
     /**
      * Returns a version 4 (random) UUID
@@ -138,7 +136,7 @@ interface UuidFactory
      * @param string $name The name to use for creating a UUID
      * @return Uuid A UUID instance that represents a version 5 UUID
      */
-    public function uuid5(UuidInterface|string $ns, string $name): Uuid;
+    public function uuid5(string|UuidInterface $ns, string $name): Uuid;
 
     /**
      * Returns a version 6 (reordered time) UUID from a host ID, sequence number,

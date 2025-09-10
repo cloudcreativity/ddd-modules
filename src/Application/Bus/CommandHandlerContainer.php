@@ -26,18 +26,12 @@ final class CommandHandlerContainer implements ICommandHandlerContainer
     /**
      * Bind a command handler into the container.
      *
-     * @param string $commandClass
-     * @param Closure $binding
-     * @return void
      */
     public function bind(string $commandClass, Closure $binding): void
     {
         $this->bindings[$commandClass] = $binding;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function get(string $commandClass): CommandHandler
     {
         $factory = $this->bindings[$commandClass] ?? null;

@@ -34,18 +34,12 @@ final class EnqueuerContainer implements IEnqueuerContainer
     /**
      * Bind an enqueuer factory into the container.
      *
-     * @param string $queueableName
-     * @param Closure $binding
-     * @return void
      */
     public function bind(string $queueableName, Closure $binding): void
     {
         $this->bindings[$queueableName] = $binding;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function get(string $command): Enqueuer
     {
         $factory = $this->bindings[$command] ?? $this->default;

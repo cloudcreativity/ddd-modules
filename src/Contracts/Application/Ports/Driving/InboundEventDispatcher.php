@@ -19,8 +19,6 @@ interface InboundEventDispatcher
     /**
      * Dispatch an inbound integration event.
      *
-     * @param IntegrationEvent $event
-     * @return void
      */
     public function dispatch(IntegrationEvent $event): void;
 }

@@ -27,9 +27,6 @@ class SetupBeforeDispatchTest extends TestCase
      */
     private array $sequence = [];
 
-    /**
-     * @return void
-     */
     public function testItSetsUpAndSucceedsWithoutTeardown(): void
     {
         $message = $this->createMock(Command::class);
@@ -50,9 +47,6 @@ class SetupBeforeDispatchTest extends TestCase
         $this->assertSame(['setup', 'next'], $this->sequence);
     }
 
-    /**
-     * @return void
-     */
     public function testItSetsUpAndSucceedsWithTeardown(): void
     {
         $message = $this->createMock(Query::class);
@@ -75,9 +69,6 @@ class SetupBeforeDispatchTest extends TestCase
         $this->assertSame(['setup', 'next', 'teardown'], $this->sequence);
     }
 
-    /**
-     * @return void
-     */
     public function testItSetsUpAndFailsWithoutTeardown(): void
     {
         $message = $this->createMock(Command::class);
@@ -98,9 +89,6 @@ class SetupBeforeDispatchTest extends TestCase
         $this->assertSame(['setup', 'next'], $this->sequence);
     }
 
-    /**
-     * @return void
-     */
     public function testItSetsUpAndFailsWithTeardown(): void
     {
         $message = $this->createMock(Command::class);
@@ -123,9 +111,6 @@ class SetupBeforeDispatchTest extends TestCase
         $this->assertSame(['setup', 'next', 'teardown'], $this->sequence);
     }
 
-    /**
-     * @return void
-     */
     public function testItSetsUpAndThrowsExceptionWithoutTeardown(): void
     {
         $message = $this->createMock(Command::class);
@@ -152,9 +137,6 @@ class SetupBeforeDispatchTest extends TestCase
         $this->assertSame(['setup', 'next'], $this->sequence);
     }
 
-    /**
-     * @return void
-     */
     public function testItSetsUpAndThrowsExceptionWithTeardown(): void
     {
         $message = $this->createMock(Query::class);

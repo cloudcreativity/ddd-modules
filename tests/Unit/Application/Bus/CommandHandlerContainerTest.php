@@ -18,9 +18,6 @@ use PHPUnit\Framework\TestCase;
 
 class CommandHandlerContainerTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test(): void
     {
         $a = new TestCommandHandler();

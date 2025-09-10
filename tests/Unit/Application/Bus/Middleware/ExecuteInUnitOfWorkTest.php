@@ -26,9 +26,6 @@ class ExecuteInUnitOfWorkTest extends TestCase
      */
     private array $sequence = [];
 
-    /**
-     * @return void
-     */
     public function testItCommitsUnitOfWorkOnSuccess(): void
     {
         $command = $this->createMock(Command::class);
@@ -60,9 +57,6 @@ class ExecuteInUnitOfWorkTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @return void
-     */
     public function testItDoesNotCommitUnitOfWorkOnFailure(): void
     {
         $command = $this->createMock(Command::class);
@@ -94,9 +88,6 @@ class ExecuteInUnitOfWorkTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @return void
-     */
     public function testItDoesNotCatchExceptions(): void
     {
         $command = $this->createMock(Command::class);

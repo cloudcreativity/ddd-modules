@@ -21,9 +21,6 @@ use PHPUnit\Framework\TestCase;
 
 class PipelineBuilderTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test(): void
     {
         $expected = new Pipeline(
@@ -39,9 +36,6 @@ class PipelineBuilderTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    /**
-     * @return void
-     */
     public function testServiceString(): void
     {
         $container = $this->createMock(PipeContainer::class);
@@ -60,9 +54,6 @@ class PipelineBuilderTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    /**
-     * @return void
-     */
     public function testServiceStringWithoutContainer(): void
     {
         $processor = $this->createMock(Processor::class);

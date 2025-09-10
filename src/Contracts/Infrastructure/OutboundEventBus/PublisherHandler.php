@@ -19,8 +19,6 @@ interface PublisherHandler
     /**
      * Handle the integration event.
      *
-     * @param IntegrationEvent $event
-     * @return void
      */
     public function __invoke(IntegrationEvent $event): void;
 }

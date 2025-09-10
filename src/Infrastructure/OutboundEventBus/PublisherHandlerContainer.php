@@ -28,7 +28,6 @@ final class PublisherHandlerContainer implements IPublisherHandlerContainer
     /**
      * PublisherHandlerContainer constructor.
      *
-     * @param Closure|null $default
      */
     public function __construct(private readonly ?Closure $default = null)
     {
@@ -38,17 +37,12 @@ final class PublisherHandlerContainer implements IPublisherHandlerContainer
      * Bind a handler factory into the container.
      *
      * @param class-string<IntegrationEvent> $eventName
-     * @param Closure $binding
-     * @return void
      */
     public function bind(string $eventName, Closure $binding): void
     {
         $this->bindings[$eventName] = $binding;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function get(string $eventName): PublisherHandler
     {
         $factory = $this->bindings[$eventName] ?? $this->default;

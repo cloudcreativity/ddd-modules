@@ -22,19 +22,10 @@ use PHPUnit\Framework\TestCase;
 
 class ComponentQueueTest extends TestCase
 {
-    /**
-     * @var EnqueuerContainer&MockObject
-     */
     private EnqueuerContainer&MockObject $enqueuers;
 
-    /**
-     * @var MockObject&PipeContainer
-     */
-    private PipeContainer&MockObject $middleware;
+    private MockObject&PipeContainer $middleware;
 
-    /**
-     * @var ComponentQueue
-     */
     private ComponentQueue $queue;
 
     /**
@@ -42,9 +33,6 @@ class ComponentQueueTest extends TestCase
      */
     private array $sequence = [];
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -55,18 +43,12 @@ class ComponentQueueTest extends TestCase
         );
     }
 
-    /**
-     * @return void
-     */
     protected function tearDown(): void
     {
         unset($this->queue, $this->enqueuers, $this->middleware, $this->sequence);
         parent::tearDown();
     }
 
-    /**
-     * @return void
-     */
     public function test(): void
     {
         $command = $this->createMock(Command::class);
@@ -85,9 +67,6 @@ class ComponentQueueTest extends TestCase
         $this->queue->push($command);
     }
 
-    /**
-     * @return void
-     */
     public function testItQueuesThroughMiddleware(): void
     {
         $command1 = $this->createMock(Command::class);

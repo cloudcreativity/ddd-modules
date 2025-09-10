@@ -31,11 +31,8 @@ final class GuidTypeMap
     /**
      * Define an alias to type mapping.
      *
-     * @param UnitEnum|string $alias
-     * @param UnitEnum|string $type
-     * @return void
      */
-    public function define(UnitEnum|string $alias, UnitEnum|string $type): void
+    public function define(string|UnitEnum $alias, string|UnitEnum $type): void
     {
         $alias = enum_string($alias);
 
@@ -45,11 +42,8 @@ final class GuidTypeMap
     /**
      * Get the GUID for the specified alias and id.
      *
-     * @param UnitEnum|string $alias
-     * @param Uuid|UuidInterface|string|int $id
-     * @return Guid
      */
-    public function guidFor(UnitEnum|string $alias, Uuid|UuidInterface|string|int $id): Guid
+    public function guidFor(string|UnitEnum $alias, int|string|Uuid|UuidInterface $id): Guid
     {
         return Guid::make($this->typeFor($alias), $id);
     }
@@ -57,10 +51,8 @@ final class GuidTypeMap
     /**
      * Get the GUID type for the specified alias.
      *
-     * @param UnitEnum|string $alias
-     * @return UnitEnum|string
      */
-    public function typeFor(UnitEnum|string $alias): UnitEnum|string
+    public function typeFor(string|UnitEnum $alias): string|UnitEnum
     {
         $alias = enum_string($alias);
 

@@ -33,11 +33,7 @@ final class KeyedSetOfErrors implements KeyedSet
      */
     public const DEFAULT_KEY = '_base';
 
-    /**
-     * @param KeyedSetOfErrors|IListOfErrors|IError $value
-     * @return self
-     */
-    public static function from(self|IListOfErrors|IError $value): self
+    public static function from(IError|IListOfErrors|self $value): self
     {
         return match(true) {
             $value instanceof self => $value,
@@ -49,7 +45,6 @@ final class KeyedSetOfErrors implements KeyedSet
     /**
      * KeyedSetOfErrors constructor.
      *
-     * @param IError ...$errors
      */
     public function __construct(IError ...$errors)
     {
@@ -64,8 +59,6 @@ final class KeyedSetOfErrors implements KeyedSet
     /**
      * Return a new instance with the provided error added to the set of errors.
      *
-     * @param IError $error
-     * @return KeyedSetOfErrors
      */
     public function put(IError $error): self
     {
@@ -80,10 +73,6 @@ final class KeyedSetOfErrors implements KeyedSet
         return $copy;
     }
 
-    /**
-     * @param IListOfErrors|self $other
-     * @return self
-     */
     public function merge(IListOfErrors|self $other): self
     {
         $copy = clone $this;
@@ -108,19 +97,14 @@ final class KeyedSetOfErrors implements KeyedSet
     /**
      * Get errors by key.
      *
-     * @param UnitEnum|string $key
-     * @return IListOfErrors
      */
-    public function get(UnitEnum|string $key): IListOfErrors
+    public function get(string|UnitEnum $key): IListOfErrors
     {
         $key = enum_string($key);
 
         return $this->stack[$key] ?? new ListOfErrors();
     }
 
-    /**
-     * @return IListOfErrors
-     */
     public function toList(): IListOfErrors
     {
         return array_reduce(
@@ -130,30 +114,24 @@ final class KeyedSetOfErrors implements KeyedSet
         );
     }
 
-    /**
-     * @inheritDoc
-     */
     public function all(): array
     {
         return $this->stack;
     }
 
-    /**
-     * @return int
-     */
     public function count(): int
     {
-        return array_reduce(
+        $count = array_reduce(
             $this->stack,
             static fn (int $carry, IListOfErrors $errors) => $carry + $errors->count(),
             0,
         );
+
+        assert($count >= 0, 'Expecting count to be zero or greater.');
+
+        return $count;
     }
 
-    /**
-     * @param IError $error
-     * @return string
-     */
     private function keyFor(IError $error): string
     {
         $key = $error->key();

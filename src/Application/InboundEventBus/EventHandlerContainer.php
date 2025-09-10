@@ -38,16 +38,12 @@ final class EventHandlerContainer implements IEventHandlerContainer
      *
      * @param class-string<IntegrationEvent> $eventName
      * @param Closure(): object $binding
-     * @return void
      */
     public function bind(string $eventName, Closure $binding): void
     {
         $this->bindings[$eventName] = $binding;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function get(string $eventName): EventHandler
     {
         $factory = $this->bindings[$eventName] ?? $this->default;

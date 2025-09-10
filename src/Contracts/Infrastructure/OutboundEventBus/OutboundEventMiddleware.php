@@ -20,9 +20,7 @@ interface OutboundEventMiddleware
     /**
      * Handle the outbound integration event.
      *
-     * @param IntegrationEvent $event
      * @param Closure(IntegrationEvent): void $next
-     * @return void
      */
     public function __invoke(IntegrationEvent $event, Closure $next): void;
 }

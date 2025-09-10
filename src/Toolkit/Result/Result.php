@@ -38,10 +38,10 @@ final readonly class Result implements IResult
     /**
      * Return a failed result.
      *
-     * @param IListOfErrors|IError|UnitEnum|array<IError>|string $errorOrErrors
+     * @param array<IError>|IError|IListOfErrors|string|UnitEnum $errorOrErrors
      * @return Result<null>
      */
-    public static function failed(IListOfErrors|IError|UnitEnum|array|string $errorOrErrors): self
+    public static function failed(array|IError|IListOfErrors|string|UnitEnum $errorOrErrors): self
     {
         $errors = match(true) {
             $errorOrErrors instanceof IListOfErrors => $errorOrErrors,
@@ -58,10 +58,10 @@ final readonly class Result implements IResult
      *
      * This is an alias for the `failed` method.
      *
-     * @param IListOfErrors|IError|UnitEnum|array<IError>|string $errorOrErrors
+     * @param array<IError>|IError|IListOfErrors|string|UnitEnum $errorOrErrors
      * @return Result<null>
      */
-    public static function fail(IListOfErrors|IError|UnitEnum|array|string $errorOrErrors): self
+    public static function fail(array|IError|IListOfErrors|string|UnitEnum $errorOrErrors): self
     {
         return self::failed($errorOrErrors);
     }
@@ -69,9 +69,7 @@ final readonly class Result implements IResult
     /**
      * Result constructor.
      *
-     * @param bool $success
      * @param TValue $value
-     * @param IListOfErrors $errors
      */
     private function __construct(
         private bool $success,
@@ -81,25 +79,16 @@ final readonly class Result implements IResult
     ) {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function didSucceed(): bool
     {
         return $this->success === true;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function didFail(): bool
     {
         return $this->success === false;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function abort(): void
     {
         if ($this->success === false) {
@@ -107,9 +96,6 @@ final readonly class Result implements IResult
         }
     }
 
-    /**
-     * @inheritDoc
-     */
     public function value(): mixed
     {
         if ($this->success === true) {
@@ -119,25 +105,16 @@ final readonly class Result implements IResult
         throw new FailedResultException($this);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function safe(): mixed
     {
         return $this->success ? $this->value : null;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function errors(): IListOfErrors
     {
         return $this->errors;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function error(): ?string
     {
         foreach ($this->errors as $error) {
@@ -149,19 +126,16 @@ final readonly class Result implements IResult
         return null;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function meta(): Meta
     {
         return $this->meta;
     }
 
     /**
-     * @param Meta|array<string, mixed> $meta
+     * @param array<string, mixed>|Meta $meta
      * @return Result<TValue>
      */
-    public function withMeta(Meta|array $meta): self
+    public function withMeta(array|Meta $meta): self
     {
         return new self(
             success: $this->success,

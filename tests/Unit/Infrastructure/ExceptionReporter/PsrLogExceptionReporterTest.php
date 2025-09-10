@@ -22,19 +22,10 @@ use Psr\Log\LoggerInterface;
 
 class PsrLogExceptionReporterTest extends TestCase
 {
-    /**
-     * @var LoggerInterface&MockObject
-     */
     private LoggerInterface&MockObject $logger;
 
-    /**
-     * @var PsrLogExceptionReporter
-     */
     private PsrLogExceptionReporter $reporter;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -42,9 +33,6 @@ class PsrLogExceptionReporterTest extends TestCase
         $this->reporter = new PsrLogExceptionReporter($this->logger);
     }
 
-    /**
-     * @return void
-     */
     protected function tearDown(): void
     {
         parent::tearDown();

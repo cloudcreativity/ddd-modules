@@ -17,8 +17,6 @@ class TestPublisher
     /**
      * Publish the integration event.
      *
-     * @param TestOutboundEvent $event
-     * @return void
      */
     public function publish(TestOutboundEvent $event): void
     {

@@ -18,21 +18,11 @@ use CloudCreativity\Modules\Toolkit\ContractException;
 
 final readonly class IdentifierOrEntity
 {
-    /**
-     * @var Identifier|null
-     */
     public ?Identifier $id;
 
-    /**
-     * @var Entity|null
-     */
     public ?Entity $entity;
 
-    /**
-     * @param Identifier|Entity $idOrEntity
-     * @return self
-     */
-    public static function make(Identifier|Entity $idOrEntity): self
+    public static function make(Entity|Identifier $idOrEntity): self
     {
         return new self($idOrEntity);
     }
@@ -40,17 +30,13 @@ final readonly class IdentifierOrEntity
     /**
      * IdentifierOrEntity constructor.
      *
-     * @param Identifier|Entity $idOrEntity
      */
-    public function __construct(Identifier|Entity $idOrEntity)
+    public function __construct(Entity|Identifier $idOrEntity)
     {
         $this->id = ($idOrEntity instanceof Identifier) ? $idOrEntity : null;
         $this->entity = ($idOrEntity instanceof Entity) ? $idOrEntity : null;
     }
 
-    /**
-     * @return Identifier|null
-     */
     public function id(): ?Identifier
     {
         if ($this->entity) {
@@ -60,9 +46,6 @@ final readonly class IdentifierOrEntity
         return $this->id;
     }
 
-    /**
-     * @return Identifier
-     */
     public function idOrFail(): Identifier
     {
         if ($id = $this->id()) {

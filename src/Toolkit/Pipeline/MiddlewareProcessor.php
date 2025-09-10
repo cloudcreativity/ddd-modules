@@ -17,16 +17,11 @@ use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\Processor;
 
 final readonly class MiddlewareProcessor implements Processor
 {
-    /**
-     * @var Closure
-     */
     private Closure $destination;
 
     /**
      * Return a new middleware processor that calls the destination and returns the result.
      *
-     * @param callable $destination
-     * @return MiddlewareProcessor
      */
     public static function wrap(callable $destination): self
     {
@@ -36,8 +31,6 @@ final readonly class MiddlewareProcessor implements Processor
     /**
      * Return a new middleware processor that calls the destination without returning a result.
      *
-     * @param callable $destination
-     * @return MiddlewareProcessor
      */
     public static function call(callable $destination): self
     {
@@ -49,16 +42,12 @@ final readonly class MiddlewareProcessor implements Processor
     /**
      * MiddlewareProcessor constructor.
      *
-     * @param Closure|null $destination
      */
     public function __construct(?Closure $destination = null)
     {
         $this->destination = $destination ?? static fn ($payload) => $payload;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function process(mixed $payload, callable ...$stages): mixed
     {
         $pipeline = array_reduce(
@@ -72,9 +61,6 @@ final readonly class MiddlewareProcessor implements Processor
         return $pipeline($payload);
     }
 
-    /**
-     * @return Closure
-     */
     private function carry(): Closure
     {
         return function ($stack, callable $stage): Closure {

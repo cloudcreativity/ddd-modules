@@ -18,9 +18,6 @@ use PHPUnit\Framework\TestCase;
 
 class CommandHandlerTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test(): void
     {
         $command = new TestCommand();
@@ -43,9 +40,6 @@ class CommandHandlerTest extends TestCase
         $this->assertSame($middleware, $handler->middleware());
     }
 
-    /**
-     * @return void
-     */
     public function testItDoesNotHaveExecuteMethod(): void
     {
         $handler = new CommandHandler(new \DateTime());

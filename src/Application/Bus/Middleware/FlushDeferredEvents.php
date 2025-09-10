@@ -24,15 +24,11 @@ final readonly class FlushDeferredEvents implements CommandMiddleware
     /**
      * FlushDeferredEvents constructor.
      *
-     * @param DeferredDispatcher $dispatcher
      */
     public function __construct(private DeferredDispatcher $dispatcher)
     {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function __invoke(Command $command, Closure $next): Result
     {
         try {

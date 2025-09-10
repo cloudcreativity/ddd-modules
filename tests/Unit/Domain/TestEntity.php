@@ -23,8 +23,6 @@ final readonly class TestEntity implements Entity
     /**
      * TestEntity constructor
      *
-     * @param Identifier $id
-     * @param string $name
      */
     public function __construct(Identifier $id, private string $name = 'John Doe')
     {
@@ -34,7 +32,6 @@ final readonly class TestEntity implements Entity
     /**
      * Get the entity's name.
      *
-     * @return string
      */
     public function getName(): string
     {

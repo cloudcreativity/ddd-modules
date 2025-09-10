@@ -17,8 +17,6 @@ interface ListenerContainer
     /**
      * Get a listener by its name.
      *
-     * @param string $listenerName
-     * @return object
      */
     public function get(string $listenerName): object;
 }

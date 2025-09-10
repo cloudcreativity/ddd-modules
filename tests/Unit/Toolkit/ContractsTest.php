@@ -18,9 +18,6 @@ use PHPUnit\Framework\TestCase;
 
 class ContractsTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function testItDoesNotThrowWhenPreconditionIsTrue(): void
     {
         /** @phpstan-ignore-next-line */
@@ -30,9 +27,6 @@ class ContractsTest extends TestCase
         $this->assertTrue(true);
     }
 
-    /**
-     * @return void
-     */
     public function testItDoesNotThrowWhenPreconditionIsTrueWithLazyMessage(): void
     {
         /** @phpstan-ignore-next-line */
@@ -42,9 +36,6 @@ class ContractsTest extends TestCase
         $this->assertTrue(true);
     }
 
-    /**
-     * @return void
-     */
     public function testItThrowsWhenPreconditionIsFalse(): void
     {
         $this->expectException(ContractException::class);
@@ -54,9 +45,6 @@ class ContractsTest extends TestCase
         Contracts::assert(false, $expected);
     }
 
-    /**
-     * @return void
-     */
     public function testItThrowsWhenPreconditionIsFalseWithLazyMessage(): void
     {
         $this->expectException(ContractException::class);

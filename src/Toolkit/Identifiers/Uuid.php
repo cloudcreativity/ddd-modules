@@ -20,23 +20,13 @@ use Ramsey\Uuid\UuidInterface as IBaseUuid;
 
 final class Uuid implements Identifier, JsonSerializable
 {
-    /**
-     * @var IUuidFactory|null
-     */
     private static ?IUuidFactory $factory = null;
 
-    /**
-     * @param IUuidFactory|null $factory
-     * @return void
-     */
     public static function setFactory(?IUuidFactory $factory): void
     {
         self::$factory = $factory;
     }
 
-    /**
-     * @return IUuidFactory
-     */
     public static function getFactory(): IUuidFactory
     {
         if (self::$factory) {
@@ -46,11 +36,7 @@ final class Uuid implements Identifier, JsonSerializable
         return self::$factory = new UuidFactory();
     }
 
-    /**
-     * @param Identifier|IBaseUuid|string $value
-     * @return self
-     */
-    public static function from(Identifier|IBaseUuid|string $value): self
+    public static function from(IBaseUuid|Identifier|string $value): self
     {
         $factory = self::getFactory();
 
@@ -60,11 +46,7 @@ final class Uuid implements Identifier, JsonSerializable
         };
     }
 
-    /**
-     * @param Identifier|IBaseUuid|string|null $value
-     * @return self|null
-     */
-    public static function tryFrom(Identifier|IBaseUuid|string|null $value): ?self
+    public static function tryFrom(IBaseUuid|Identifier|string|null $value): ?self
     {
         $factory = self::getFactory();
 
@@ -79,7 +61,6 @@ final class Uuid implements Identifier, JsonSerializable
     /**
      * Generate a random UUID, useful in tests.
      *
-     * @return self
      */
     public static function random(): self
     {
@@ -89,7 +70,6 @@ final class Uuid implements Identifier, JsonSerializable
     /**
      * Create a nil UUID.
      *
-     * @return self
      */
     public static function nil(): self
     {
@@ -99,40 +79,27 @@ final class Uuid implements Identifier, JsonSerializable
     /**
      * Uuid constructor.
      *
-     * @param IBaseUuid $value
      */
     public function __construct(public readonly IBaseUuid $value)
     {
     }
 
 
-    /**
-     * @inheritDoc
-     */
     public function __toString(): string
     {
         return $this->toString();
     }
 
-    /**
-     * @inheritDoc
-     */
     public function toString(): string
     {
         return $this->value->toString();
     }
 
-    /**
-     * @return string
-     */
     public function getBytes(): string
     {
         return $this->value->getBytes();
     }
 
-    /**
-     * @inheritDoc
-     */
     public function is(?Identifier $other): bool
     {
         if ($other instanceof self) {
@@ -142,34 +109,21 @@ final class Uuid implements Identifier, JsonSerializable
         return false;
     }
 
-    /**
-     * @param Uuid $other
-     * @return bool
-     */
     public function equals(self $other): bool
     {
         return $this->value->equals($other->value);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function key(): string
     {
         return $this->value->toString();
     }
 
-    /**
-     * @inheritDoc
-     */
     public function context(): string
     {
         return $this->value->toString();
     }
 
-    /**
-     * @inheritDoc
-     */
     public function jsonSerialize(): string
     {
         return $this->value->toString();

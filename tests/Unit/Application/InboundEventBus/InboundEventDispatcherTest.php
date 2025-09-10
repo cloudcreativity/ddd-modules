@@ -22,19 +22,10 @@ use PHPUnit\Framework\TestCase;
 
 class InboundEventDispatcherTest extends TestCase
 {
-    /**
-     * @var EventHandlerContainer&MockObject
-     */
     private EventHandlerContainer&MockObject $handlers;
 
-    /**
-     * @var PipeContainer&MockObject
-     */
-    private PipeContainer&MockObject $middleware;
+    private MockObject&PipeContainer $middleware;
 
-    /**
-     * @var InboundEventDispatcher
-     */
     private InboundEventDispatcher $dispatcher;
 
     /**
@@ -42,9 +33,6 @@ class InboundEventDispatcherTest extends TestCase
      */
     private array $sequence = [];
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -55,18 +43,12 @@ class InboundEventDispatcherTest extends TestCase
         );
     }
 
-    /**
-     * @return void
-     */
     protected function tearDown(): void
     {
         unset($this->handlers, $this->middleware, $this->dispatcher, $this->sequence);
         parent::tearDown();
     }
 
-    /**
-     * @return void
-     */
     public function test(): void
     {
         $event = $this->createMock(IntegrationEvent::class);
@@ -85,9 +67,6 @@ class InboundEventDispatcherTest extends TestCase
         $this->dispatcher->dispatch($event);
     }
 
-    /**
-     * @return void
-     */
     public function testWithMiddleware(): void
     {
         $event1 = new TestInboundEvent();

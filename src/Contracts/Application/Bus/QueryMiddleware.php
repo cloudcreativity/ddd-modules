@@ -21,7 +21,6 @@ interface QueryMiddleware
     /**
      * Handle the query.
      *
-     * @param Query $query
      * @param Closure(Query): Result<mixed> $next
      * @return Result<mixed>
      */

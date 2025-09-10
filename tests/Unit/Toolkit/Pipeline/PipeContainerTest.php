@@ -17,9 +17,6 @@ use PHPUnit\Framework\TestCase;
 
 class PipeContainerTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test(): void
     {
         $a = fn () => 1;

@@ -21,7 +21,7 @@ interface Validator
     /**
      * Set the rules for the validation.
      *
-     * @param iterable<string|callable> $rules
+     * @param iterable<callable|string> $rules
      * @return $this
      */
     public function using(iterable $rules): static;
@@ -29,8 +29,6 @@ interface Validator
     /**
      * Validate the provided message.
      *
-     * @param Command|Query $message
-     * @return ListOfErrors
      */
     public function validate(Command|Query $message): ListOfErrors;
 }

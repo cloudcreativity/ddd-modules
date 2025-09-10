@@ -24,10 +24,9 @@ final class ListOfErrors implements IListOfErrors
     use IsList;
 
     /**
-     * @param IListOfErrors|IError|UnitEnum|array<IError>|string $value
-     * @return self
+     * @param array<IError>|IError|IListOfErrors|string|UnitEnum $value
      */
-    public static function from(IListOfErrors|IError|UnitEnum|array|string $value): self
+    public static function from(array|IError|IListOfErrors|string|UnitEnum $value): self
     {
         return match(true) {
             $value instanceof self => $value,
@@ -38,17 +37,11 @@ final class ListOfErrors implements IListOfErrors
         };
     }
 
-    /**
-     * @param IError ...$errors
-     */
     public function __construct(IError ...$errors)
     {
         $this->stack = array_values($errors);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function first(Closure|UnitEnum|null $matcher = null): ?IError
     {
         if ($matcher === null) {
@@ -68,9 +61,6 @@ final class ListOfErrors implements IListOfErrors
         return null;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function contains(Closure|UnitEnum $matcher): bool
     {
         if ($matcher instanceof UnitEnum) {
@@ -86,9 +76,6 @@ final class ListOfErrors implements IListOfErrors
         return false;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function codes(): array
     {
         $codes = [];
@@ -104,9 +91,6 @@ final class ListOfErrors implements IListOfErrors
         return $codes;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function code(): ?UnitEnum
     {
         foreach ($this->stack as $error) {
@@ -118,9 +102,6 @@ final class ListOfErrors implements IListOfErrors
         return null;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function push(IError $error): self
     {
         $copy = clone $this;
@@ -129,9 +110,6 @@ final class ListOfErrors implements IListOfErrors
         return $copy;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function merge(IListOfErrors $other): self
     {
         $copy = clone $this;
@@ -143,9 +121,6 @@ final class ListOfErrors implements IListOfErrors
         return $copy;
     }
 
-    /**
-     * @return KeyedSetOfErrors
-     */
     public function toKeyedSet(): KeyedSetOfErrors
     {
         return new KeyedSetOfErrors(...$this->stack);

@@ -26,10 +26,6 @@ final readonly class LogOutboundEvent implements OutboundEventMiddleware
     /**
      * LogOutboundEvent constructor.
      *
-     * @param LoggerInterface $log
-     * @param string $publishLevel
-     * @param string $publishedLevel
-     * @param ContextFactory $context
      */
     public function __construct(
         private LoggerInterface $log,
@@ -39,9 +35,6 @@ final readonly class LogOutboundEvent implements OutboundEventMiddleware
     ) {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function __invoke(IntegrationEvent $event, Closure $next): void
     {
         $name = ModuleBasename::tryFrom($event)?->toString() ?? $event::class;

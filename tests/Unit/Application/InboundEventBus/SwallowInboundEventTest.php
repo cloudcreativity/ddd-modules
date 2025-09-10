@@ -20,9 +20,6 @@ use Psr\Log\LogLevel;
 
 class SwallowInboundEventTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function testItDoesNothing(): void
     {
         $handler = new SwallowInboundEvent();
@@ -31,9 +28,6 @@ class SwallowInboundEventTest extends TestCase
         $this->assertTrue(true);
     }
 
-    /**
-     * @return void
-     */
     public function testItLogsThatItDoesNothing(): void
     {
         $event = new TestInboundEvent();
@@ -52,9 +46,6 @@ class SwallowInboundEventTest extends TestCase
         $handler->handle($event);
     }
 
-    /**
-     * @return void
-     */
     public function testItLogsThatItDoesNothingWithSpecifiedLogLevel(): void
     {
         $event = new TestInboundEvent();

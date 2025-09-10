@@ -18,9 +18,6 @@ use PHPUnit\Framework\TestCase;
 
 class PublisherHandlerTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test(): void
     {
         $event = new TestOutboundEvent();

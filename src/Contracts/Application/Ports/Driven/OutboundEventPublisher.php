@@ -19,8 +19,6 @@ interface OutboundEventPublisher
     /**
      * Publish an outbound integration event.
      *
-     * @param IntegrationEvent $event
-     * @return void
      */
     public function publish(IntegrationEvent $event): void;
 }

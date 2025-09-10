@@ -20,15 +20,12 @@ interface Identifier extends Stringable, Contextual
     /**
      * Is the identifier the same as the provided identifier?
      *
-     * @param Identifier|null $other
-     * @return bool
      */
     public function is(?self $other): bool;
 
     /**
      * Fluent to-string method.
      *
-     * @return string
      */
     public function toString(): string;
 
@@ -37,5 +34,5 @@ interface Identifier extends Stringable, Contextual
      *
      * @return array-key
      */
-    public function key(): string|int;
+    public function key(): int|string;
 }

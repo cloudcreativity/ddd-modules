@@ -19,19 +19,10 @@ use PHPUnit\Framework\TestCase;
 
 class CommandQueuerTest extends TestCase
 {
-    /**
-     * @var MockObject&Queue
-     */
-    private Queue&MockObject $queue;
+    private MockObject&Queue $queue;
 
-    /**
-     * @var CommandQueuer
-     */
     private CommandQueuer $queuer;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -41,18 +32,12 @@ class CommandQueuerTest extends TestCase
         );
     }
 
-    /**
-     * @return void
-     */
     protected function tearDown(): void
     {
         unset($this->queue, $this->queuer);
         parent::tearDown();
     }
 
-    /**
-     * @return void
-     */
     public function test(): void
     {
         $this->queue

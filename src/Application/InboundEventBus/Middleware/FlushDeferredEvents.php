@@ -23,15 +23,11 @@ final readonly class FlushDeferredEvents implements InboundEventMiddleware
     /**
      * FlushDeferredEvents constructor.
      *
-     * @param DeferredDispatcher $dispatcher
      */
     public function __construct(private DeferredDispatcher $dispatcher)
     {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function __invoke(IntegrationEvent $event, Closure $next): void
     {
         try {

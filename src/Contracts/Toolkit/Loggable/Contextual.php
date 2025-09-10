@@ -17,7 +17,6 @@ interface Contextual
     /**
      * Get the value to use when adding the value to log context.
      *
-     * @return mixed
      */
     public function context(): mixed;
 }

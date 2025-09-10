@@ -26,9 +26,6 @@ class SetupBeforeEventTest extends TestCase
      */
     private array $sequence = [];
 
-    /**
-     * @return void
-     */
     public function testItSetsUpAndSucceedsWithoutTeardown(): void
     {
         $event = $this->createMock(IntegrationEvent::class);
@@ -46,9 +43,6 @@ class SetupBeforeEventTest extends TestCase
         $this->assertSame(['setup', 'next'], $this->sequence);
     }
 
-    /**
-     * @return void
-     */
     public function testItSetsUpAndSucceedsWithTeardown(): void
     {
         $event = $this->createMock(IntegrationEvent::class);
@@ -68,9 +62,6 @@ class SetupBeforeEventTest extends TestCase
         $this->assertSame(['setup', 'next', 'teardown'], $this->sequence);
     }
 
-    /**
-     * @return void
-     */
     public function testItSetsUpAndThrowsExceptionWithoutTeardown(): void
     {
         $event = $this->createMock(IntegrationEvent::class);
@@ -97,9 +88,6 @@ class SetupBeforeEventTest extends TestCase
         $this->assertSame(['setup', 'next'], $this->sequence);
     }
 
-    /**
-     * @return void
-     */
     public function testItSetsUpAndThrowsExceptionWithTeardown(): void
     {
         $event = $this->createMock(IntegrationEvent::class);

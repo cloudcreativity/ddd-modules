@@ -22,8 +22,6 @@ final readonly class HandleInUnitOfWork implements InboundEventMiddleware
     /**
      * HandleInUnitOfWork constructor.
      *
-     * @param UnitOfWorkManager $unitOfWorkManager
-     * @param int $attempts
      */
     public function __construct(
         private UnitOfWorkManager $unitOfWorkManager,
@@ -31,9 +29,6 @@ final readonly class HandleInUnitOfWork implements InboundEventMiddleware
     ) {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function __invoke(IntegrationEvent $event, Closure $next): void
     {
         $this->unitOfWorkManager->execute(

@@ -24,17 +24,11 @@ class FakeDomainEventDispatcher implements DomainEventDispatcher, Countable
      */
     public array $events = [];
 
-    /**
-     * @inheritDoc
-     */
     public function dispatch(DomainEvent $event): void
     {
         $this->events[] = $event;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function count(): int
     {
         return count($this->events);
@@ -43,7 +37,6 @@ class FakeDomainEventDispatcher implements DomainEventDispatcher, Countable
     /**
      * Expect a single event to be dispatched and return it.
      *
-     * @return DomainEvent
      */
     public function sole(): DomainEvent
     {

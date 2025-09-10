@@ -19,10 +19,6 @@ use JsonSerializable;
 
 final readonly class StringId implements Identifier, JsonSerializable
 {
-    /**
-     * @param Identifier|string $value
-     * @return self
-     */
     public static function from(Identifier|string $value): self
     {
         return match(true) {
@@ -37,7 +33,6 @@ final readonly class StringId implements Identifier, JsonSerializable
     /**
      * StringId constructor.
      *
-     * @param string $value
      */
     public function __construct(public string $value)
     {
@@ -47,25 +42,16 @@ final readonly class StringId implements Identifier, JsonSerializable
         );
     }
 
-    /**
-     * @inheritDoc
-     */
     public function __toString(): string
     {
         return $this->value;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function toString(): string
     {
         return $this->value;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function is(?Identifier $other): bool
     {
         if ($other instanceof self) {
@@ -75,34 +61,21 @@ final readonly class StringId implements Identifier, JsonSerializable
         return false;
     }
 
-    /**
-     * @param StringId $other
-     * @return bool
-     */
     public function equals(self $other): bool
     {
         return $this->value === $other->value;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function key(): string
     {
         return $this->value;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function context(): string
     {
         return $this->value;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function jsonSerialize(): string
     {
         return $this->value;

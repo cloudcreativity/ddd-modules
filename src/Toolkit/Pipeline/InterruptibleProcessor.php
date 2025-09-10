@@ -24,16 +24,12 @@ final class InterruptibleProcessor implements Processor
     /**
      * InterruptibleProcessor constructor.
      *
-     * @param callable $check
      */
     public function __construct(callable $check)
     {
         $this->check = $check;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function process(mixed $payload, callable ...$stages): mixed
     {
         foreach ($stages as $stage) {

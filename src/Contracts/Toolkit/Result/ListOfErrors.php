@@ -25,7 +25,6 @@ interface ListOfErrors extends ListIterator
      * Get the first error in the list, or the first matching error.
      *
      * @param Closure(Error): bool|UnitEnum|null $matcher
-     * @return Error|null
      */
     public function first(Closure|UnitEnum|null $matcher = null): ?Error;
 
@@ -33,7 +32,6 @@ interface ListOfErrors extends ListIterator
      * Does the list contain a matching error?
      *
      * @param Closure(Error): bool|UnitEnum $matcher
-     * @return bool
      */
     public function contains(Closure|UnitEnum $matcher): bool;
 
@@ -47,14 +45,12 @@ interface ListOfErrors extends ListIterator
     /**
      * Get the first error code in the list.
      *
-     * @return UnitEnum|null
      */
     public function code(): ?UnitEnum;
 
     /**
      * Return a new instance with the provided error pushed on to the end of the list.
      *
-     * @param Error $error
      * @return static
      */
     public function push(Error $error): self;
@@ -62,7 +58,6 @@ interface ListOfErrors extends ListIterator
     /**
      * Return a new instance with the provided errors merged in.
      *
-     * @param ListOfErrors $other
      * @return static
      */
     public function merge(ListOfErrors $other): self;

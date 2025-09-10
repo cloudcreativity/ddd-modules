@@ -24,9 +24,6 @@ final readonly class LogDomainEventDispatch implements DomainEventMiddleware
     /**
      * LogDomainEventDispatch constructor
      *
-     * @param LoggerInterface $logger
-     * @param string $dispatchLevel
-     * @param string $dispatchedLevel
      */
     public function __construct(
         private LoggerInterface $logger,
@@ -35,9 +32,6 @@ final readonly class LogDomainEventDispatch implements DomainEventMiddleware
     ) {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function __invoke(DomainEvent $event, Closure $next): void
     {
         $name = ModuleBasename::tryFrom($event)?->toString() ?? $event::class;

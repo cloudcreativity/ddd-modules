@@ -22,8 +22,6 @@ final readonly class SwallowInboundEvent
     /**
      * SwallowInboundEvent constructor.
      *
-     * @param ?LoggerInterface $logger
-     * @param string $level
      */
     public function __construct(
         private ?LoggerInterface $logger = null,
@@ -34,8 +32,6 @@ final readonly class SwallowInboundEvent
     /**
      * Handle the event.
      *
-     * @param IntegrationEvent $event
-     * @return void
      */
     public function handle(IntegrationEvent $event): void
     {

@@ -25,20 +25,18 @@ use InvalidArgumentException;
 class Dispatcher implements DomainEventDispatcher
 {
     /**
-     * @var array<string, array<string|callable>>
+     * @var array<string, array<callable|string>>
      */
     private array $bindings = [];
 
     /**
-     * @var array<string|callable>
+     * @var array<callable|string>
      */
     private array $pipes = [];
 
     /**
      * Dispatcher constructor.
      *
-     * @param IListenerContainer $listeners
-     * @param PipeContainer|null $middleware
      */
     public function __construct(
         private readonly IListenerContainer $listeners = new ListenerContainer(),
@@ -49,8 +47,7 @@ class Dispatcher implements DomainEventDispatcher
     /**
      * Dispatch events through the provided pipes.
      *
-     * @param array<string|callable> $pipes
-     * @return void
+     * @param array<callable|string> $pipes
      */
     public function through(array $pipes): void
     {
@@ -60,11 +57,9 @@ class Dispatcher implements DomainEventDispatcher
     }
 
     /**
-     * @param string $event
-     * @param string|Closure|list<string|Closure> $listener
-     * @return void
+     * @param Closure|list<Closure|string>|string $listener
      */
-    public function listen(string $event, string|Closure|array $listener): void
+    public function listen(string $event, array|Closure|string $listener): void
     {
         $bindings = $this->bindings[$event] ?? [];
 
@@ -80,9 +75,6 @@ class Dispatcher implements DomainEventDispatcher
         $this->bindings[$event] = $bindings;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function dispatch(DomainEvent $event): void
     {
         $this->dispatchNow($event);
@@ -91,8 +83,6 @@ class Dispatcher implements DomainEventDispatcher
     /**
      * Dispatch the events immediately.
      *
-     * @param DomainEvent $event
-     * @return void
      */
     protected function dispatchNow(DomainEvent $event): void
     {
@@ -103,9 +93,6 @@ class Dispatcher implements DomainEventDispatcher
         $pipeline->process($event);
     }
 
-    /**
-     * @return Closure
-     */
     private function dispatcher(): Closure
     {
         return function (DomainEvent $event): DomainEvent {
@@ -119,7 +106,6 @@ class Dispatcher implements DomainEventDispatcher
     /**
      * Get a cursor to iterate through all listeners for the event.
      *
-     * @param string $eventName
      * @return Generator<EventHandler>
      */
     protected function cursor(string $eventName): Generator
@@ -138,9 +124,6 @@ class Dispatcher implements DomainEventDispatcher
     /**
      * Execute the listener.
      *
-     * @param DomainEvent $event
-     * @param EventHandler $listener
-     * @return void
      */
     protected function execute(DomainEvent $event, EventHandler $listener): void
     {
@@ -150,8 +133,6 @@ class Dispatcher implements DomainEventDispatcher
     /**
      * Is the provided listener valid to attach to an event?
      *
-     * @param mixed $listener
-     * @return bool
      */
     private function canAttach(mixed $listener): bool
     {

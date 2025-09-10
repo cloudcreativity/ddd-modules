@@ -23,10 +23,6 @@ use function CloudCreativity\Modules\Toolkit\enum_string;
 
 final readonly class Guid implements Identifier
 {
-    /**
-     * @param Identifier $value
-     * @return self
-     */
     public static function from(Identifier $value): self
     {
         if ($value instanceof self) {
@@ -39,11 +35,8 @@ final readonly class Guid implements Identifier
     /**
      * Create a GUID with an integer id.
      *
-     * @param UnitEnum|string $type
-     * @param int $id
-     * @return self
      */
-    public static function fromInteger(UnitEnum|string $type, int $id): self
+    public static function fromInteger(string|UnitEnum $type, int $id): self
     {
         return new self($type, new IntegerId($id));
     }
@@ -51,11 +44,8 @@ final readonly class Guid implements Identifier
     /**
      * Create a GUID with a string id.
      *
-     * @param UnitEnum|string $type
-     * @param string $id
-     * @return self
      */
-    public static function fromString(UnitEnum|string $type, string $id): self
+    public static function fromString(string|UnitEnum $type, string $id): self
     {
         return new self($type, new StringId($id));
     }
@@ -63,11 +53,8 @@ final readonly class Guid implements Identifier
     /**
      * Create a GUID for a UUID.
      *
-     * @param UnitEnum|string $type
-     * @param Uuid|UuidInterface|string $uuid
-     * @return self
      */
-    public static function fromUuid(UnitEnum|string $type, Uuid|UuidInterface|string $uuid): self
+    public static function fromUuid(string|UnitEnum $type, string|Uuid|UuidInterface $uuid): self
     {
         return new self($type, Uuid::from($uuid));
     }
@@ -75,11 +62,8 @@ final readonly class Guid implements Identifier
     /**
      * Create a GUID.
      *
-     * @param UnitEnum|string $type
-     * @param Uuid|UuidInterface|string|int $id
-     * @return self
      */
-    public static function make(UnitEnum|string $type, Uuid|UuidInterface|string|int $id): self
+    public static function make(string|UnitEnum $type, int|string|Uuid|UuidInterface $id): self
     {
         return match (true) {
             $id instanceof Uuid, $id instanceof UuidInterface, is_string($id) && RamseyUuid::isValid($id)
@@ -92,29 +76,20 @@ final readonly class Guid implements Identifier
     /**
      * Guid constructor.
      *
-     * @param UnitEnum|string $type
-     * @param StringId|IntegerId|Uuid $id
      */
     public function __construct(
-        public UnitEnum|string $type,
-        public StringId|IntegerId|Uuid $id,
+        public string|UnitEnum $type,
+        public IntegerId|StringId|Uuid $id,
     ) {
         Contracts::assert(!empty($this->type), 'Type must be a non-empty string.');
     }
 
-    /**
-     * @return string
-     */
     public function __toString(): string
     {
         return $this->toString();
     }
 
-    /**
-     * @param UnitEnum|string ...$types
-     * @return bool
-     */
-    public function isType(UnitEnum|string ...$types): bool
+    public function isType(string|UnitEnum ...$types): bool
     {
         foreach ($types as $type) {
             if ($this->type === $type) {
@@ -125,9 +100,6 @@ final readonly class Guid implements Identifier
         return false;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function is(?Identifier $other): bool
     {
         if ($this === $other) {
@@ -143,10 +115,6 @@ final readonly class Guid implements Identifier
         return false;
     }
 
-    /**
-     * @param Guid $other
-     * @return bool
-     */
     public function equals(self $other): bool
     {
         return $this->is($other);
@@ -155,8 +123,6 @@ final readonly class Guid implements Identifier
     /**
      * Fluent to-string method.
      *
-     * @param string $glue
-     * @return string
      */
     public function toString(string $glue = ':'): string
     {
@@ -165,9 +131,6 @@ final readonly class Guid implements Identifier
         return "{$type}{$glue}{$this->id->value}";
     }
 
-    /**
-     * @inheritDoc
-     */
     public function key(): string
     {
         return $this->toString();
@@ -187,11 +150,9 @@ final readonly class Guid implements Identifier
     /**
      * Assert that this GUID is of the expected type.
      *
-     * @param UnitEnum|string $expected
-     * @param string $message
      * @return $this
      */
-    public function assertType(UnitEnum|string $expected, string $message = ''): self
+    public function assertType(string|UnitEnum $expected, string $message = ''): self
     {
         Contracts::assert($this->type === $expected, $message ?: fn () => sprintf(
             'Expecting type "%s", received "%s".',

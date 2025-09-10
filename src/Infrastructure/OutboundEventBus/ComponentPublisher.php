@@ -22,15 +22,13 @@ use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 class ComponentPublisher implements OutboundEventPublisher
 {
     /**
-     * @var array<string|callable>
+     * @var array<callable|string>
      */
     private array $pipes = [];
 
     /**
      * ComponentPublisher constructor.
      *
-     * @param PublisherHandlerContainer $handlers
-     * @param PipeContainer|null $middleware
      */
     public function __construct(
         private readonly PublisherHandlerContainer $handlers,
@@ -41,8 +39,7 @@ class ComponentPublisher implements OutboundEventPublisher
     /**
      * Publish events through the provided pipes.
      *
-     * @param list<string|callable> $pipes
-     * @return void
+     * @param list<callable|string> $pipes
      */
     public function through(array $pipes): void
     {
@@ -51,9 +48,6 @@ class ComponentPublisher implements OutboundEventPublisher
         $this->pipes = $pipes;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function publish(IntegrationEvent $event): void
     {
         $pipeline = PipelineBuilder::make($this->middleware)

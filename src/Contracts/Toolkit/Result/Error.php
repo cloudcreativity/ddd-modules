@@ -19,29 +19,24 @@ interface Error
     /**
      * Get the error key.
      *
-     * @return UnitEnum|string|null
      */
-    public function key(): UnitEnum|string|null;
+    public function key(): string|UnitEnum|null;
 
     /**
      * Get the error detail.
      *
-     * @return string
      */
     public function message(): string;
 
     /**
      * Get the error code.
      *
-     * @return UnitEnum|null
      */
     public function code(): ?UnitEnum;
 
     /**
      * Is the error the specified error code?
      *
-     * @param UnitEnum $code
-     * @return bool
      */
     public function is(UnitEnum $code): bool;
 }

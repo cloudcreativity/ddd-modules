@@ -21,15 +21,11 @@ final readonly class EventHandler implements IEventHandler
     /**
      * EventHandler constructor.
      *
-     * @param object $handler
      */
     public function __construct(private object $handler)
     {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function __invoke(IntegrationEvent $event): void
     {
         assert(method_exists($this->handler, 'handle'), sprintf(
@@ -41,9 +37,6 @@ final readonly class EventHandler implements IEventHandler
         $this->handler->handle($event);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function middleware(): array
     {
         if ($this->handler instanceof DispatchThroughMiddleware) {

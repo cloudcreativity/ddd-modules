@@ -22,7 +22,6 @@ interface BusMiddleware
     /**
      * Handle the command or query.
      *
-     * @param Command|Query $message
      * @param Closure(Command|Query): Result<mixed> $next
      * @return Result<mixed>
      */

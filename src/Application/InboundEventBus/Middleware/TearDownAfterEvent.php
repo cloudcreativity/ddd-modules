@@ -27,9 +27,6 @@ final readonly class TearDownAfterEvent implements InboundEventMiddleware
     {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function __invoke(IntegrationEvent $event, Closure $next): void
     {
         try {

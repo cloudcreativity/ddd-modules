@@ -27,7 +27,6 @@ final readonly class ObjectDecorator implements IteratorAggregate, ContextProvid
     /**
      * ObjectDecorator constructor.
      *
-     * @param object $source
      */
     public function __construct(private object $source)
     {
@@ -64,9 +63,6 @@ final readonly class ObjectDecorator implements IteratorAggregate, ContextProvid
         return iterator_to_array($this);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function context(): array
     {
         return $this->all();

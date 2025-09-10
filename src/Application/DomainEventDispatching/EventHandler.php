@@ -22,7 +22,6 @@ final readonly class EventHandler
     /**
      * EventHandler constructor.
      *
-     * @param object $listener
      */
     public function __construct(private object $listener)
     {
@@ -38,7 +37,6 @@ final readonly class EventHandler
     /**
      * Should the handler be executed before the transaction is committed?
      *
-     * @return bool
      */
     public function beforeCommit(): bool
     {
@@ -48,7 +46,6 @@ final readonly class EventHandler
     /**
      * Should the handler be executed after the transaction is committed?
      *
-     * @return bool
      */
     public function afterCommit(): bool
     {
@@ -58,8 +55,6 @@ final readonly class EventHandler
     /**
      * Execute the listener.
      *
-     * @param DomainEvent $event
-     * @return void
      */
     public function __invoke(DomainEvent $event): void
     {

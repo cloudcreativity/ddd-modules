@@ -28,15 +28,11 @@ final class FakeUnitOfWork implements UnitOfWork
     /**
      * FakeUnitOfWork constructor.
      *
-     * @param FakeExceptionReporter $exceptions
      */
     public function __construct(public FakeExceptionReporter $exceptions = new FakeExceptionReporter())
     {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function execute(Closure $callback, int $attempts = 1): mixed
     {
         if ($attempts < 1) {

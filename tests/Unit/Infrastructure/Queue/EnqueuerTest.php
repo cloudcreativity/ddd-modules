@@ -18,9 +18,6 @@ use PHPUnit\Framework\TestCase;
 
 class EnqueuerTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test(): void
     {
         $command = $this->createMock(Command::class);

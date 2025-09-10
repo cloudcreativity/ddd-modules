@@ -24,22 +24,18 @@ abstract class ValidateQuery implements QueryMiddleware
     /**
      * Get the rules for the validation.
      *
-     * @return iterable<string|callable>
+     * @return iterable<callable|string>
      */
     abstract protected function rules(): iterable;
 
     /**
      * ValidateQuery constructor.
      *
-     * @param Validator $validator
      */
     public function __construct(private readonly Validator $validator)
     {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function __invoke(Query $query, Closure $next): IResult
     {
         $errors = $this->validator

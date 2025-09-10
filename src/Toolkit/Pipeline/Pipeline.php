@@ -17,15 +17,11 @@ use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\Processor;
 
 final class Pipeline implements IPipeline
 {
-    /**
-     * @var Processor
-     */
     private readonly Processor $processor;
 
     /**
      * Pipeline constructor.
      *
-     * @param Processor|null $processor
      * @param callable[] $stages
      */
     public function __construct(
@@ -35,17 +31,11 @@ final class Pipeline implements IPipeline
         $this->processor = $processor ?? new SimpleProcessor();
     }
 
-    /**
-     * @inheritDoc
-     */
     public function __invoke(mixed $payload): mixed
     {
         return $this->process($payload);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function pipe(callable $stage): Pipeline
     {
         $pipeline = clone $this;
@@ -54,9 +44,6 @@ final class Pipeline implements IPipeline
         return $pipeline;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function process(mixed $payload): mixed
     {
         return $this->processor->process($payload, ...$this->stages);

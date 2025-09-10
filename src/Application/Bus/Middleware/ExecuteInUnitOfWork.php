@@ -24,8 +24,6 @@ final readonly class ExecuteInUnitOfWork implements CommandMiddleware
     /**
      * ExecuteInUnitOfWork constructor.
      *
-     * @param UnitOfWorkManager $unitOfWorkManager
-     * @param int $attempts
      */
     public function __construct(
         private UnitOfWorkManager $unitOfWorkManager,
@@ -33,9 +31,6 @@ final readonly class ExecuteInUnitOfWork implements CommandMiddleware
     ) {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function __invoke(Command $command, Closure $next): Result
     {
         try {

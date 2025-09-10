@@ -21,22 +21,16 @@ use PHPUnit\Framework\TestCase;
 class LazyPipeTest extends TestCase
 {
     /**
-     * @var PipeContainer&MockObject
+     * @var MockObject&PipeContainer
      */
     private PipeContainer $container;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
         $this->container = $this->createMock(PipeContainer::class);
     }
 
-    /**
-     * @return void
-     */
     public function test(): void
     {
         $this->container
@@ -57,9 +51,6 @@ class LazyPipeTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @return void
-     */
     public function testItRethrowsException(): void
     {
         $this->container

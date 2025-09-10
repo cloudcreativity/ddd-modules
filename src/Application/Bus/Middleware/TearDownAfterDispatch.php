@@ -29,9 +29,6 @@ final readonly class TearDownAfterDispatch implements BusMiddleware
     {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function __invoke(Command|Query $message, Closure $next): Result
     {
         try {

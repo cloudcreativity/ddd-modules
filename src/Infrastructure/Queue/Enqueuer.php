@@ -20,15 +20,11 @@ final readonly class Enqueuer implements IEnqueuer
     /**
      * Enqueuer constructor.
      *
-     * @param object $enqueuer
      */
     public function __construct(private object $enqueuer)
     {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function __invoke(Command $command): void
     {
         assert(method_exists($this->enqueuer, 'push'), sprintf(

@@ -37,12 +37,11 @@ class ValidatorTest extends TestCase
 
     /**
      * @param class-string<Command|Query> $message
-     * @return void
      */
     #[DataProvider('messageProvider')]
     public function test(string $message): void
     {
-        /** @var (Command&MockObject)|(Query&MockObject) $query */
+        /** @var (Command&MockObject)|(MockObject&Query) $query */
         $query = $this->createMock($message);
         $error1 = new Error(null, 'Message 1');
         $error2 = new Error(null, 'Message 2');
@@ -82,9 +81,6 @@ class ValidatorTest extends TestCase
         $this->assertSame([$error1, $error2, $error3], $actual->all());
     }
 
-    /**
-     * @return void
-     */
     public function testNoRules(): void
     {
         $query = $this->createMock(Query::class);

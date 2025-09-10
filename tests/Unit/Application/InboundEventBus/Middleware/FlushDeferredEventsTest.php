@@ -20,14 +20,8 @@ use PHPUnit\Framework\TestCase;
 
 class FlushDeferredEventsTest extends TestCase
 {
-    /**
-     * @var MockObject&DeferredDispatcher
-     */
     private DeferredDispatcher&MockObject $dispatcher;
 
-    /**
-     * @var FlushDeferredEvents
-     */
     private FlushDeferredEvents $middleware;
 
     /**
@@ -35,9 +29,6 @@ class FlushDeferredEventsTest extends TestCase
      */
     private array $sequence = [];
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -47,9 +38,6 @@ class FlushDeferredEventsTest extends TestCase
         );
     }
 
-    /**
-     * @return void
-     */
     public function testItFlushesDeferredEvents(): void
     {
         $event = $this->createMock(IntegrationEvent::class);
@@ -74,9 +62,6 @@ class FlushDeferredEventsTest extends TestCase
     }
 
 
-    /**
-     * @return void
-     */
     public function testItForgetsDeferredEventsOnException(): void
     {
         $event = $this->createMock(IntegrationEvent::class);

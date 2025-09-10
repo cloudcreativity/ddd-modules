@@ -17,8 +17,6 @@ interface CommandHandlerContainer
     /**
      * Get a command handler for the provided command name.
      *
-     * @param string $commandClass
-     * @return CommandHandler
      */
     public function get(string $commandClass): CommandHandler;
 }

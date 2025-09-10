@@ -23,9 +23,6 @@ use PHPUnit\Framework\TestCase;
 
 class StringIdTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test(): void
     {
         $id = new StringId('99');
@@ -41,18 +38,12 @@ class StringIdTest extends TestCase
         );
     }
 
-    /**
-     * @return void
-     */
     public function testItCanBeZero(): void
     {
         $id = new StringId('0');
         $this->assertSame('0', $id->value);
     }
 
-    /**
-     * @return void
-     */
     public function testItMustNotBeEmpty(): void
     {
         $this->expectException(ContractException::class);
@@ -60,9 +51,6 @@ class StringIdTest extends TestCase
         new StringId('');
     }
 
-    /**
-     * @return void
-     */
     public function testItIsEquals(): void
     {
         $this->assertObjectEquals($id = new StringId('99'), $other = StringId::from('99'));
@@ -70,9 +58,6 @@ class StringIdTest extends TestCase
         $this->assertTrue($id->is($other));
     }
 
-    /**
-     * @return void
-     */
     public function testItIsNotEqual(): void
     {
         $id = new StringId('99');
@@ -92,10 +77,6 @@ class StringIdTest extends TestCase
         ];
     }
 
-    /**
-     * @param Identifier $other
-     * @return void
-     */
     #[DataProvider('notStringIdProvider')]
     public function testIsWithOtherIdentifiers(Identifier $other): void
     {
@@ -104,9 +85,6 @@ class StringIdTest extends TestCase
         $this->assertFalse($id->is($other));
     }
 
-    /**
-     * @return void
-     */
     public function testIsWithNull(): void
     {
         $id = new StringId('1');
@@ -114,10 +92,6 @@ class StringIdTest extends TestCase
         $this->assertFalse($id->is(null));
     }
 
-    /**
-     * @param Identifier $other
-     * @return void
-     */
     #[DataProvider('notStringIdProvider')]
     public function testFromWithOtherIdentifiers(Identifier $other): void
     {

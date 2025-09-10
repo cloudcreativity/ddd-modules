@@ -27,9 +27,6 @@ final readonly class SetupBeforeEvent implements InboundEventMiddleware
     {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function __invoke(IntegrationEvent $event, Closure $next): void
     {
         $tearDown = ($this->callback)();

@@ -17,8 +17,6 @@ interface QueryHandlerContainer
     /**
      * Get a query handler for the provided query name.
      *
-     * @param string $queryClass
-     * @return QueryHandler
      */
     public function get(string $queryClass): QueryHandler;
 }

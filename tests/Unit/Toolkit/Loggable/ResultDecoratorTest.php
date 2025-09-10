@@ -42,32 +42,20 @@ interface ErrorWithContext extends IError, ContextProvider
 
 class ResultDecoratorTest extends TestCase
 {
-    /**
-     * @var SimpleContextFactory
-     */
     private SimpleContextFactory $factory;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
         $this->factory = new SimpleContextFactory();
     }
 
-    /**
-     * @return void
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
         unset($this->factory);
     }
 
-    /**
-     * @return void
-     */
     public function testSuccess(): void
     {
         $result = Result::ok();
@@ -83,9 +71,6 @@ class ResultDecoratorTest extends TestCase
         $this->assertSame($expected, $this->factory->make($result));
     }
 
-    /**
-     * @return void
-     */
     public function testSuccessWithContextProvider(): void
     {
         $expected = [
@@ -105,9 +90,6 @@ class ResultDecoratorTest extends TestCase
         $this->assertSame($expected, $this->factory->make($result));
     }
 
-    /**
-     * @return void
-     */
     public function testSuccessWithIdentifier(): void
     {
         $expected = [
@@ -138,10 +120,6 @@ class ResultDecoratorTest extends TestCase
         ];
     }
 
-    /**
-     * @param mixed $value
-     * @return void
-     */
     #[DataProvider('scalarProvider')]
     public function testSuccessWithScalarOrNull(mixed $value): void
     {
@@ -156,9 +134,6 @@ class ResultDecoratorTest extends TestCase
         $this->assertSame($expected, $this->factory->make($result));
     }
 
-    /**
-     * @return void
-     */
     public function testSuccessContextWithMeta(): void
     {
         $result = Result::ok()->withMeta(['foo' => 'bar']);
@@ -175,7 +150,7 @@ class ResultDecoratorTest extends TestCase
     }
 
     /**
-     * @return array<array<string|Error>>
+     * @return array<array<Error|string>>
      */
     public static function onlyMessageProvider(): array
     {
@@ -185,12 +160,8 @@ class ResultDecoratorTest extends TestCase
         ];
     }
 
-    /**
-     * @param string|Error $error
-     * @return void
-     */
     #[DataProvider('onlyMessageProvider')]
-    public function testFailureContextWithErrorThatOnlyHasMessage(string|Error $error): void
+    public function testFailureContextWithErrorThatOnlyHasMessage(Error|string $error): void
     {
         $result = Result::failed($error);
 
@@ -204,7 +175,7 @@ class ResultDecoratorTest extends TestCase
     }
 
     /**
-     * @return array<array<UnitEnum|Error>>
+     * @return array<array<Error|UnitEnum>>
      */
     public static function onlyCodeProvider(): array
     {
@@ -216,10 +187,9 @@ class ResultDecoratorTest extends TestCase
 
     /**
      * @param BackedEnum|Error $error
-     * @return void
      */
     #[DataProvider('onlyCodeProvider')]
-    public function testFailureContextWithErrorThatOnlyHasCode(UnitEnum|Error $error): void
+    public function testFailureContextWithErrorThatOnlyHasCode(Error|UnitEnum $error): void
     {
         $result = Result::failed($error);
         $code = $error instanceof UnitEnum ? $error : $error->code();
@@ -271,7 +241,6 @@ class ResultDecoratorTest extends TestCase
     /**
      * @param array<Error> $errors
      * @param array<int, array<string, mixed>> $expected
-     * @return void
      */
     #[DataProvider('errorsProvider')]
     public function testFailureContextWithMeta(array $errors, array $expected): void
@@ -290,9 +259,6 @@ class ResultDecoratorTest extends TestCase
         $this->assertSame($expected, $this->factory->make($result));
     }
 
-    /**
-     * @return void
-     */
     public function testItHasLogContext(): void
     {
         $mock = $this->createMock(ResultWithContext::class);
@@ -302,9 +268,6 @@ class ResultDecoratorTest extends TestCase
         $this->assertSame($expected, $this->factory->make($mock));
     }
 
-    /**
-     * @return void
-     */
     public function testItHasErrorWithLogContext(): void
     {
         $mock = $this->createMock(ErrorWithContext::class);

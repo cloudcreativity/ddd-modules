@@ -35,13 +35,8 @@ class PossiblyNumericIdTest extends TestCase
         ];
     }
 
-    /**
-     * @param string|int $value
-     * @param string|int $expected
-     * @return void
-     */
     #[DataProvider('valueProvider')]
-    public function test(string|int $value, string|int $expected): void
+    public function test(int|string $value, int|string $expected): void
     {
         $actual = new PossiblyNumericId($value);
         $expectedId = is_string($expected) ? new StringId($expected) : new IntegerId($expected);

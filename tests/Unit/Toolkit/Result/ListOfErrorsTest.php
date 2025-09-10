@@ -23,9 +23,6 @@ use PHPUnit\Framework\TestCase;
 
 class ListOfErrorsTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test(): void
     {
         $errors = new ListOfErrors(
@@ -42,9 +39,6 @@ class ListOfErrorsTest extends TestCase
         $this->assertFalse($errors->isEmpty());
     }
 
-    /**
-     * @return void
-     */
     public function testEmpty(): void
     {
         $errors = new ListOfErrors();
@@ -56,9 +50,6 @@ class ListOfErrorsTest extends TestCase
         $this->assertEmpty($errors->codes());
     }
 
-    /**
-     * @return void
-     */
     public function testPush(): void
     {
         $original = new ListOfErrors(
@@ -73,9 +64,6 @@ class ListOfErrorsTest extends TestCase
         $this->assertSame([$a, $b, $c], $actual->all());
     }
 
-    /**
-     * @return void
-     */
     public function testMerge(): void
     {
         $stack1 = new ListOfErrors(
@@ -97,9 +85,6 @@ class ListOfErrorsTest extends TestCase
         $this->assertSame([$a, $b, $c, $d], $actual->all());
     }
 
-    /**
-     * @return void
-     */
     public function testFirst(): void
     {
         $errors = new ListOfErrors(
@@ -117,9 +102,6 @@ class ListOfErrorsTest extends TestCase
         $this->assertNull($errors->first(TestUnitEnum::Baz));
     }
 
-    /**
-     * @return void
-     */
     public function testContains(): void
     {
         $errors = new ListOfErrors(

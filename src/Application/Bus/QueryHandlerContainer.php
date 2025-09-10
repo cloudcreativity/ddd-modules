@@ -26,18 +26,12 @@ final class QueryHandlerContainer implements IQueryHandlerContainer
     /**
      * Bind a query handler into the container.
      *
-     * @param string $queryClass
-     * @param Closure $binding
-     * @return void
      */
     public function bind(string $queryClass, Closure $binding): void
     {
         $this->bindings[$queryClass] = $binding;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function get(string $queryClass): QueryHandler
     {
         $factory = $this->bindings[$queryClass] ?? null;

@@ -18,22 +18,13 @@ use CloudCreativity\Modules\Toolkit\Contracts;
 
 trait IsEntityWithNullableId
 {
-    /**
-     * @var Identifier|null
-     */
     private ?Identifier $id = null;
 
-    /**
-     * @inheritDoc
-     */
     public function getId(): ?Identifier
     {
         return $this->id;
     }
 
-    /**
-     * @return Identifier
-     */
     public function getIdOrFail(): Identifier
     {
         assert($this->id instanceof Identifier, 'Entity does not have an identifier.');
@@ -41,16 +32,12 @@ trait IsEntityWithNullableId
         return $this->id;
     }
 
-    /**
-     * @return bool
-     */
     public function hasId(): bool
     {
         return $this->id instanceof Identifier;
     }
 
     /**
-     * @param Identifier $id
      * @return $this
      */
     public function setId(Identifier $id): static
@@ -62,9 +49,6 @@ trait IsEntityWithNullableId
         return $this;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function is(?Entity $other): bool
     {
         if ($other instanceof $this && $this->id) {
@@ -76,9 +60,6 @@ trait IsEntityWithNullableId
         return false;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function isNot(?Entity $other): bool
     {
         return !$this->is($other);

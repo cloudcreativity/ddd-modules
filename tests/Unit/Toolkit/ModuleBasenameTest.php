@@ -123,12 +123,6 @@ class ModuleBasenameTest extends TestCase
         ];
     }
 
-    /**
-     * @param string $value
-     * @param string $context
-     * @param string $message
-     * @return void
-     */
     #[DataProvider('moduleProvider')]
     public function testFromModule(string $value, string $context, string $message): void
     {
@@ -142,11 +136,6 @@ class ModuleBasenameTest extends TestCase
         $this->assertSame("{$context}:{$message}", (string) $name);
     }
 
-    /**
-     * @param string $value
-     * @param string $message
-     * @return void
-     */
     #[DataProvider('withoutModuleProvider')]
     public function testFromWithoutModule(string $value, string $message): void
     {
@@ -160,9 +149,6 @@ class ModuleBasenameTest extends TestCase
         $this->assertSame($message, (string) $name);
     }
 
-    /**
-     * @return ModuleBasename
-     */
     public function testToArray(): ModuleBasename
     {
         $value = ModuleBasename::from(
@@ -188,9 +174,6 @@ class ModuleBasenameTest extends TestCase
         $this->assertJsonStringEqualsJsonString($expected, json_encode($value, JSON_THROW_ON_ERROR));
     }
 
-    /**
-     * @return void
-     */
     public function testTryFromWithInvalid(): void
     {
         $name = ModuleBasename::tryFrom(ModuleBasename::class);
@@ -198,9 +181,6 @@ class ModuleBasenameTest extends TestCase
         $this->assertNull($name);
     }
 
-    /**
-     * @return void
-     */
     public function testFromWithInvalid(): void
     {
         $this->expectException(\UnexpectedValueException::class);

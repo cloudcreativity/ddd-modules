@@ -19,8 +19,6 @@ class TestListener
     /**
      * Handle the event.
      *
-     * @param DomainEvent $event
-     * @return void
      */
     public function handle(DomainEvent $event): void
     {

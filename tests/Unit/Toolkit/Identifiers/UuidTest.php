@@ -25,18 +25,12 @@ use Ramsey\Uuid\Uuid as RamseyUuid;
 
 class UuidTest extends TestCase
 {
-    /**
-     * @return void
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
         Uuid::setFactory(null);
     }
 
-    /**
-     * @return void
-     */
     public function test(): void
     {
         $base = RamseyUuid::uuid4();
@@ -54,9 +48,6 @@ class UuidTest extends TestCase
         );
     }
 
-    /**
-     * @return void
-     */
     public function testItIsEquals(): void
     {
         $base = RamseyUuid::uuid4();
@@ -66,9 +57,6 @@ class UuidTest extends TestCase
         $this->assertTrue($id->is($other));
     }
 
-    /**
-     * @return void
-     */
     public function testItIsNotEqual(): void
     {
         $id = new Uuid(RamseyUuid::fromString('6dcbad65-ed92-4e60-973b-9ba58a022816'));
@@ -90,10 +78,6 @@ class UuidTest extends TestCase
         ];
     }
 
-    /**
-     * @param Identifier $other
-     * @return void
-     */
     #[DataProvider('notUuidProvider')]
     public function testIsWithOtherIdentifiers(Identifier $other): void
     {
@@ -102,9 +86,6 @@ class UuidTest extends TestCase
         $this->assertFalse($id->is($other));
     }
 
-    /**
-     * @return void
-     */
     public function testIsWithNull(): void
     {
         $id = new Uuid(RamseyUuid::uuid4());
@@ -112,10 +93,6 @@ class UuidTest extends TestCase
         $this->assertFalse($id->is(null));
     }
 
-    /**
-     * @param Identifier $other
-     * @return void
-     */
     #[DataProvider('notUuidProvider')]
     public function testFromWithOtherIdentifiers(Identifier $other): void
     {
@@ -124,19 +101,12 @@ class UuidTest extends TestCase
         Uuid::from($other);
     }
 
-    /**
-     * @param Identifier $other
-     * @return void
-     */
     #[DataProvider('notUuidProvider')]
     public function testTryFromWithOtherIdentifiers(Identifier $other): void
     {
         $this->assertNull(Uuid::tryFrom($other));
     }
 
-    /**
-     * @return void
-     */
     public function testFromWithString(): void
     {
         Uuid::setFactory($factory = $this->createMock(UuidFactory::class));
@@ -150,9 +120,6 @@ class UuidTest extends TestCase
         $this->assertSame($expected, Uuid::from($str));
     }
 
-    /**
-     * @return void
-     */
     public function testTryFromWithString(): void
     {
         Uuid::setFactory($factory = $this->createMock(UuidFactory::class));
@@ -167,9 +134,6 @@ class UuidTest extends TestCase
         $this->assertNull(Uuid::tryFrom('invalid'));
     }
 
-    /**
-     * @return void
-     */
     public function testFromAndTryFromWithBaseUuid(): void
     {
         Uuid::setFactory($factory = $this->createMock(UuidFactory::class));
@@ -184,9 +148,6 @@ class UuidTest extends TestCase
         $this->assertSame($expected, Uuid::tryFrom($base));
     }
 
-    /**
-     * @return void
-     */
     public function testTryFromWithNull(): void
     {
         Uuid::setFactory($factory = $this->createMock(UuidFactory::class));
@@ -198,9 +159,6 @@ class UuidTest extends TestCase
         $this->assertNull(Uuid::tryFrom(null));
     }
 
-    /**
-     * @return void
-     */
     public function testNil(): void
     {
         $base = RamseyUuid::fromString(RamseyUuid::NIL);

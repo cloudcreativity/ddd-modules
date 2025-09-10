@@ -21,8 +21,6 @@ final readonly class LazyPipe
     /**
      * LazyPipe constructor.
      *
-     * @param PipeContainer $container
-     * @param string $pipeName
      */
     public function __construct(
         private PipeContainer $container,
@@ -30,10 +28,6 @@ final readonly class LazyPipe
     ) {
     }
 
-    /**
-     * @param mixed ...$args
-     * @return mixed
-     */
     public function __invoke(mixed ...$args): mixed
     {
         try {
