@@ -13,19 +13,21 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\DomainEventDispatching;
 
 use Closure;
+use CloudCreativity\Modules\Application\ApplicationException;
 use CloudCreativity\Modules\Contracts\Application\DomainEventDispatching\ListenerContainer as IListenerContainer;
-use RuntimeException;
 
 final class ListenerContainer implements IListenerContainer
 {
     /**
-     * @var array<string,Closure>
+     * @var array<non-empty-string,Closure>
      */
     private array $bindings = [];
 
     /**
      * Bind a listener factory into the container.
      *
+     * @param non-empty-string $listenerName
+     * @param Closure():object $binding
      */
     public function bind(string $listenerName, Closure $binding): void
     {
@@ -42,6 +44,6 @@ final class ListenerContainer implements IListenerContainer
             return $listener;
         }
 
-        throw new RuntimeException('Unrecognised listener name: ' . $listenerName);
+        throw new ApplicationException('Unrecognised listener name: ' . $listenerName);
     }
 }

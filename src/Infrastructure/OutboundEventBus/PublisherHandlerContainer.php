@@ -21,7 +21,7 @@ use CloudCreativity\Modules\Infrastructure\InfrastructureException;
 final class PublisherHandlerContainer implements IPublisherHandlerContainer
 {
     /**
-     * @var array<string, Closure>
+     * @var array<class-string<IntegrationEvent>, Closure>
      */
     private array $bindings = [];
 

@@ -508,6 +508,7 @@ class UnitOfWorkManagerTest extends TestCase
             ->method('execute')
             ->willReturnCallback(fn (Closure $callback) => $callback());
 
+        /** @phpstan-ignore-next-line */
         $this->manager->execute(fn () => throw new \LogicException('Boom!'), 0);
     }
 }

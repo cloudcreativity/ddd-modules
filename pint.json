@@ -22,6 +22,8 @@
         "ordered_types": {
             "null_adjustment": "always_last"
         },
+        "phpdoc_summary": true,
+        "phpdoc_types": true,
         "phpdoc_types_order": {
             "null_adjustment": "always_last"
         },

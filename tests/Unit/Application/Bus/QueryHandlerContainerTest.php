@@ -12,8 +12,10 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Application\Bus;
 
+use CloudCreativity\Modules\Application\ApplicationException;
 use CloudCreativity\Modules\Application\Bus\QueryHandler;
 use CloudCreativity\Modules\Application\Bus\QueryHandlerContainer;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Query;
 use PHPUnit\Framework\TestCase;
 
 class QueryHandlerContainerTest extends TestCase
@@ -23,16 +25,20 @@ class QueryHandlerContainerTest extends TestCase
         $a = new TestQueryHandler();
         $b = $this->createMock(TestQueryHandler::class);
 
+        $query1 = new class () implements Query {};
+        $query2 = new class () implements Query {};
+        $query3 = new class () implements Query {};
+
         $container = new QueryHandlerContainer();
-        $container->bind('QueryClassA', fn () => $a);
-        $container->bind('QueryClassB', fn () => $b);
+        $container->bind($query1::class, fn () => $a);
+        $container->bind($query2::class, fn () => $b);
 
-        $this->assertEquals(new QueryHandler($a), $container->get('QueryClassA'));
-        $this->assertEquals(new QueryHandler($b), $container->get('QueryClassB'));
+        $this->assertEquals(new QueryHandler($a), $container->get($query1::class));
+        $this->assertEquals(new QueryHandler($b), $container->get($query2::class));
 
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('No query handler bound for query class: QueryClassC');
+        $this->expectException(ApplicationException::class);
+        $this->expectExceptionMessage('No query handler bound for query class: ' . $query3::class);
 
-        $container->get('QueryClassC');
+        $container->get($query3::class);
     }
 }

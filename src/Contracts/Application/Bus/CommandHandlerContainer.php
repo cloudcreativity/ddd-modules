@@ -12,11 +12,14 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Contracts\Application\Bus;
 
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
+
 interface CommandHandlerContainer
 {
     /**
      * Get a command handler for the provided command name.
      *
+     * @param class-string<Command> $commandClass
      */
     public function get(string $commandClass): CommandHandler;
 }

@@ -21,7 +21,7 @@ final readonly class TestEntity implements Entity
     use IsEntity;
 
     /**
-     * TestEntity constructor
+     * TestEntity constructor.
      *
      */
     public function __construct(Identifier $id, private string $name = 'John Doe')

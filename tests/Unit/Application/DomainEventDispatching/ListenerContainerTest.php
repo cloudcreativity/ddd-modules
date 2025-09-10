@@ -38,6 +38,7 @@ class ListenerContainerTest extends TestCase
     public function testItHandlesBindingNotReturningAnObject(): void
     {
         $container = new ListenerContainer();
+        /** @phpstan-ignore-next-line */
         $container->bind('foo', fn () => 'bar');
         $this->expectExceptionMessage('Listener binding for foo must return an object.');
         $container->get('foo');

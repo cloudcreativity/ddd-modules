@@ -21,6 +21,9 @@ use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 final readonly class ExecuteInUnitOfWork implements CommandMiddleware
 {
+    /**
+     * @param int<1, max> $attempts
+     */
     public function __construct(
         private UnitOfWorkManager $unitOfWorkManager,
         private int $attempts = 1,

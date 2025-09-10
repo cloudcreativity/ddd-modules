@@ -21,6 +21,7 @@ interface UnitOfWorkManager
      *
      * @template TReturn
      * @param Closure(): TReturn $callback
+     * @param int<1, max> $attempts
      * @return TReturn
      */
     public function execute(Closure $callback, int $attempts = 1): mixed;

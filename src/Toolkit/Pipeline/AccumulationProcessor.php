@@ -21,15 +21,8 @@ final class AccumulationProcessor implements Processor
      */
     private $accumulator;
 
-    /**
-     * @var mixed|null
-     */
     private mixed $initialValue;
 
-    /**
-     * AccumulationProcessor
-     *
-     */
     public function __construct(callable $accumulator, mixed $initialValue = null)
     {
         $this->accumulator = $accumulator;
