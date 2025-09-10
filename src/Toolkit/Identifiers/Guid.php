@@ -34,7 +34,6 @@ final readonly class Guid implements Identifier
 
     /**
      * Create a GUID with an integer id.
-     *
      */
     public static function fromInteger(string|UnitEnum $type, int $id): self
     {
@@ -43,7 +42,6 @@ final readonly class Guid implements Identifier
 
     /**
      * Create a GUID with a string id.
-     *
      */
     public static function fromString(string|UnitEnum $type, string $id): self
     {
@@ -52,7 +50,6 @@ final readonly class Guid implements Identifier
 
     /**
      * Create a GUID for a UUID.
-     *
      */
     public static function fromUuid(string|UnitEnum $type, string|Uuid|UuidInterface $uuid): self
     {
@@ -61,7 +58,6 @@ final readonly class Guid implements Identifier
 
     /**
      * Create a GUID.
-     *
      */
     public static function make(string|UnitEnum $type, int|string|Uuid|UuidInterface $id): self
     {
@@ -118,7 +114,6 @@ final readonly class Guid implements Identifier
 
     /**
      * Fluent to-string method.
-     *
      */
     public function toString(string $glue = ':'): string
     {

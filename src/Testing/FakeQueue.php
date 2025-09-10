@@ -36,7 +36,6 @@ class FakeQueue implements Queue, Countable
 
     /**
      * Expect a single command to be queued and return it.
-     *
      */
     public function sole(): Command
     {

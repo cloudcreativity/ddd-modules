@@ -27,7 +27,6 @@ final readonly class SwallowInboundEvent
 
     /**
      * Handle the event.
-     *
      */
     public function handle(IntegrationEvent $event): void
     {

@@ -28,7 +28,6 @@ interface Validator
 
     /**
      * Validate the provided message.
-     *
      */
     public function validate(Command|Query $message): ListOfErrors;
 }

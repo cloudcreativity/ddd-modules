@@ -71,7 +71,6 @@ final readonly class ModuleBasename implements Stringable
 
     /**
      * Fluent to-string method.
-     *
      */
     public function toString(string $delimiter = ':'): string
     {

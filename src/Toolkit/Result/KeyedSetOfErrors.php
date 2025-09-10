@@ -54,7 +54,6 @@ final class KeyedSetOfErrors implements KeyedSet
 
     /**
      * Return a new instance with the provided error added to the set of errors.
-     *
      */
     public function put(IError $error): self
     {
@@ -92,7 +91,6 @@ final class KeyedSetOfErrors implements KeyedSet
 
     /**
      * Get errors by key.
-     *
      */
     public function get(string|UnitEnum $key): IListOfErrors
     {

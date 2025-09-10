@@ -16,7 +16,6 @@ interface IdentifierFactory
 {
     /**
      * Make an identifier.
-     *
      */
     public function make(mixed $id): Identifier;
 }

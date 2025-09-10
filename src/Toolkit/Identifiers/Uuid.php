@@ -60,7 +60,6 @@ final class Uuid implements Identifier, JsonSerializable
 
     /**
      * Generate a random UUID, useful in tests.
-     *
      */
     public static function random(): self
     {
@@ -69,7 +68,6 @@ final class Uuid implements Identifier, JsonSerializable
 
     /**
      * Create a nil UUID.
-     *
      */
     public static function nil(): self
     {

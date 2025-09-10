@@ -36,7 +36,6 @@ class FakeDomainEventDispatcher implements DomainEventDispatcher, Countable
 
     /**
      * Expect a single event to be dispatched and return it.
-     *
      */
     public function sole(): DomainEvent
     {

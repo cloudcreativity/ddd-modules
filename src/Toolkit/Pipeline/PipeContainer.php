@@ -25,7 +25,6 @@ final class PipeContainer implements IPipeContainer
 
     /**
      * Bind a pipe into the container.
-     *
      */
     public function bind(string $pipeName, Closure $factory): void
     {

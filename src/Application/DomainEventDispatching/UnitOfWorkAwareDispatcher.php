@@ -42,7 +42,6 @@ class UnitOfWorkAwareDispatcher extends Dispatcher
 
     /**
      * Execute the listener or queue it in the unit of work manager.
-     *
      */
     protected function execute(DomainEvent $event, EventHandler $listener): void
     {

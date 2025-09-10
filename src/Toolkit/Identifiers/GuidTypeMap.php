@@ -28,7 +28,6 @@ final class GuidTypeMap
 
     /**
      * Define an alias to type mapping.
-     *
      */
     public function define(string|UnitEnum $alias, string|UnitEnum $type): void
     {
@@ -39,7 +38,6 @@ final class GuidTypeMap
 
     /**
      * Get the GUID for the specified alias and id.
-     *
      */
     public function guidFor(string|UnitEnum $alias, int|string|Uuid|UuidInterface $id): Guid
     {
@@ -48,7 +46,6 @@ final class GuidTypeMap
 
     /**
      * Get the GUID type for the specified alias.
-     *
      */
     public function typeFor(string|UnitEnum $alias): string|UnitEnum
     {

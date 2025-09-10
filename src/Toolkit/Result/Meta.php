@@ -81,7 +81,6 @@ final class Meta implements ArrayAccess, KeyedSet
 
     /**
      * Does a value for the provided key exist?
-     *
      */
     public function exists(string $key): bool
     {

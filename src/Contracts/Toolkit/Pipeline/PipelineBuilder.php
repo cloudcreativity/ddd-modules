@@ -31,7 +31,6 @@ interface PipelineBuilder
 
     /**
      * Build a new pipeline.
-     *
      */
     public function build(?Processor $processor = null): Pipeline;
 }

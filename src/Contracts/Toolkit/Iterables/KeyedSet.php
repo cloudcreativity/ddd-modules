@@ -30,13 +30,11 @@ interface KeyedSet extends IteratorAggregate, Countable
 
     /**
      * Is the set empty?
-     *
      */
     public function isEmpty(): bool;
 
     /**
      * Is the set not empty?
-     *
      */
     public function isNotEmpty(): bool;
 }

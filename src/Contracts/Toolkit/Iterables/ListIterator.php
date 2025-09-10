@@ -30,13 +30,11 @@ interface ListIterator extends IteratorAggregate, Countable
 
     /**
      * Is the list empty?
-     *
      */
     public function isEmpty(): bool;
 
     /**
      * Is the list not empty?
-     *
      */
     public function isNotEmpty(): bool;
 }

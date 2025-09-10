@@ -133,7 +133,6 @@ class UnitOfWorkManagerTest extends TestCase
 
     /**
      * If any callbacks get registered by other callbacks, they are executed.
-     *
      */
     public function testItExecutesAdditionalCommitCallbacks(): void
     {
@@ -279,7 +278,6 @@ class UnitOfWorkManagerTest extends TestCase
      * However, in this scenario any callbacks that were registered before the exception
      * is thrown should be forgotten. Otherwise, if the callback is retried, the before
      * callbacks will be executed twice.
-     *
      */
     public function testItHandlesCallbackExecutingMultipleTimes(): void
     {
@@ -369,7 +367,6 @@ class UnitOfWorkManagerTest extends TestCase
      * commit of the inner transaction. They should not be executed more than once,
      * because any that are registered on one of the failed attempts should havbe been
      * forgotten.
-     *
      */
     public function testItHandlesUnitOfWorkFailingMultipleTimes(): void
     {

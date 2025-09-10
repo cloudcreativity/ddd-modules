@@ -19,7 +19,6 @@ class TestListenerBeforeCommit implements DispatchBeforeCommit
 {
     /**
      * Handle the event.
-     *
      */
     public function handle(DomainEvent $event): void
     {

@@ -19,7 +19,6 @@ class TestListenerAfterCommit implements DispatchAfterCommit
 {
     /**
      * Handle the event.
-     *
      */
     public function handle(DomainEvent $event): void
     {

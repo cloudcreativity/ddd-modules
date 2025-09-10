@@ -21,7 +21,6 @@ final readonly class MiddlewareProcessor implements Processor
 
     /**
      * Return a new middleware processor that calls the destination and returns the result.
-     *
      */
     public static function wrap(callable $destination): self
     {
@@ -30,7 +29,6 @@ final readonly class MiddlewareProcessor implements Processor
 
     /**
      * Return a new middleware processor that calls the destination without returning a result.
-     *
      */
     public static function call(callable $destination): self
     {

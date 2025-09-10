@@ -16,7 +16,6 @@ interface Processor
 {
     /**
      * Process the payload through the provided stages.
-     *
      */
     public function process(mixed $payload, callable ...$stages): mixed;
 }

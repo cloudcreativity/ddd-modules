@@ -18,7 +18,6 @@ interface Queue
 {
     /**
      * Push a command on to the queue.
-     *
      */
     public function push(Command $command): void;
 }

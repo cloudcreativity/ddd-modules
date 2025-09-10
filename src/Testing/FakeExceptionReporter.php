@@ -36,7 +36,6 @@ final class FakeExceptionReporter implements ExceptionReporter, Countable
 
     /**
      * Expect a single exception to be reported and return it.
-     *
      */
     public function sole(): Throwable
     {

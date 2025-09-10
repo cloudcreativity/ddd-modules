@@ -36,7 +36,6 @@ class FakeOutboundEventPublisher implements OutboundEventPublisher, Countable
 
     /**
      * Expect a single event to be published and return it.
-     *
      */
     public function sole(): IntegrationEvent
     {

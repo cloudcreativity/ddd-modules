@@ -16,7 +16,6 @@ interface DomainEventDispatcher
 {
     /**
      * Dispatch a domain event.
-     *
      */
     public function dispatch(DomainEvent $event): void;
 }

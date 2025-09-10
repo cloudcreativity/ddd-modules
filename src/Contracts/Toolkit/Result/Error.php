@@ -18,25 +18,21 @@ interface Error
 {
     /**
      * Get the error key.
-     *
      */
     public function key(): string|UnitEnum|null;
 
     /**
      * Get the error detail.
-     *
      */
     public function message(): string;
 
     /**
      * Get the error code.
-     *
      */
     public function code(): ?UnitEnum;
 
     /**
      * Is the error the specified error code?
-     *
      */
     public function is(UnitEnum $code): bool;
 }

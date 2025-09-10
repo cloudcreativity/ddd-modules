@@ -18,7 +18,6 @@ interface Enqueuer
 {
     /**
      * Put the command on the queue.
-     *
      */
     public function __invoke(Command $command): void;
 }

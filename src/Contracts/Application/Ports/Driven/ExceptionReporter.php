@@ -18,7 +18,6 @@ interface ExceptionReporter
 {
     /**
      * Report the exception.
-     *
      */
     public function report(Throwable $ex): void;
 }

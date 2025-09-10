@@ -18,7 +18,6 @@ use UnitEnum;
 if (!function_exists(__NAMESPACE__ . '\enum_value')) {
     /**
      * Return a scalar value for an enum.
-     *
      */
     function enum_value(int|string|UnitEnum $value): int|string
     {
@@ -33,7 +32,6 @@ if (!function_exists(__NAMESPACE__ . '\enum_value')) {
 if (!function_exists(__NAMESPACE__ . '\enum_string')) {
     /**
      * Return a string value for an enum.
-     *
      */
     function enum_string(string|UnitEnum $value): string
     {

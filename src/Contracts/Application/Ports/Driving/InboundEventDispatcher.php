@@ -18,7 +18,6 @@ interface InboundEventDispatcher
 {
     /**
      * Dispatch an inbound integration event.
-     *
      */
     public function dispatch(IntegrationEvent $event): void;
 }

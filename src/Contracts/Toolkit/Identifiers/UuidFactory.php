@@ -22,7 +22,6 @@ interface UuidFactory
 {
     /**
      * Create a UUID identifier from an identifier or a base UUID interface.
-     *
      */
     public function from(Identifier|UuidInterface $uuid): Uuid;
 

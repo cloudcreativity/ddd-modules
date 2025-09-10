@@ -18,13 +18,11 @@ interface DeferredDispatcher extends DomainEventDispatcher
 {
     /**
      * Dispatch any deferred events.
-     *
      */
     public function flush(): void;
 
     /**
      * Clear deferred events without dispatching them.
-     *
      */
     public function forget(): void;
 }

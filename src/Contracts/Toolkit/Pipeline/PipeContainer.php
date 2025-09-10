@@ -16,7 +16,6 @@ interface PipeContainer
 {
     /**
      * Get a pipe by its name.
-     *
      */
     public function get(string $pipeName): callable;
 }

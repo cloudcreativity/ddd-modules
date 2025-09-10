@@ -78,7 +78,6 @@ class Dispatcher implements DomainEventDispatcher
 
     /**
      * Dispatch the events immediately.
-     *
      */
     protected function dispatchNow(DomainEvent $event): void
     {
@@ -119,7 +118,6 @@ class Dispatcher implements DomainEventDispatcher
 
     /**
      * Execute the listener.
-     *
      */
     protected function execute(DomainEvent $event, EventHandler $listener): void
     {
@@ -128,7 +126,6 @@ class Dispatcher implements DomainEventDispatcher
 
     /**
      * Is the provided listener valid to attach to an event?
-     *
      */
     private function canAttach(mixed $listener): bool
     {

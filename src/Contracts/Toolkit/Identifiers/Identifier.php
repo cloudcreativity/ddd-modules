@@ -19,13 +19,11 @@ interface Identifier extends Stringable, Contextual
 {
     /**
      * Is the identifier the same as the provided identifier?
-     *
      */
     public function is(?self $other): bool;
 
     /**
      * Fluent to-string method.
-     *
      */
     public function toString(): string;
 

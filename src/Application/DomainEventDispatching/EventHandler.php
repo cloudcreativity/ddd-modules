@@ -32,7 +32,6 @@ final readonly class EventHandler
 
     /**
      * Should the handler be executed before the transaction is committed?
-     *
      */
     public function beforeCommit(): bool
     {
@@ -41,7 +40,6 @@ final readonly class EventHandler
 
     /**
      * Should the handler be executed after the transaction is committed?
-     *
      */
     public function afterCommit(): bool
     {
@@ -50,7 +48,6 @@ final readonly class EventHandler
 
     /**
      * Execute the listener.
-     *
      */
     public function __invoke(DomainEvent $event): void
     {

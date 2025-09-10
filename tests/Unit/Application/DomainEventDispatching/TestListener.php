@@ -18,7 +18,6 @@ class TestListener
 {
     /**
      * Handle the event.
-     *
      */
     public function handle(DomainEvent $event): void
     {

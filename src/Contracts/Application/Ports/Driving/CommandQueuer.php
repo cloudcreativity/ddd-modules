@@ -18,7 +18,6 @@ interface CommandQueuer
 {
     /**
      * Queue a command for asynchronous dispatching.
-     *
      */
     public function queue(Command $command): void;
 }

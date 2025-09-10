@@ -49,19 +49,16 @@ interface Result
 
     /**
      * Get the errors.
-     *
      */
     public function errors(): IListOfErrors;
 
     /**
      * Get an error message string.
-     *
      */
     public function error(): ?string;
 
     /**
      * Get the result meta.
-     *
      */
     public function meta(): Meta;
 

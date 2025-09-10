@@ -44,7 +44,6 @@ interface ListOfErrors extends ListIterator
 
     /**
      * Get the first error code in the list.
-     *
      */
     public function code(): ?UnitEnum;
 

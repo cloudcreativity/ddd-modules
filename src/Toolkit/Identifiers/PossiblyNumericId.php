@@ -40,7 +40,6 @@ final readonly class PossiblyNumericId implements JsonSerializable, Stringable
 
     /**
      * Fluent to-string method.
-     *
      */
     public function toString(): string
     {

@@ -18,7 +18,6 @@ interface DomainEvent
 {
     /**
      * The date/time the event occurred.
-     *
      */
     public function getOccurredAt(): DateTimeImmutable;
 }
