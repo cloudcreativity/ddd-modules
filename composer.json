@@ -28,7 +28,7 @@
         "symfony/polyfill-php84": "^1.33"
     },
     "require-dev": {
-        "deptrac/deptrac": "^3.0",
+        "deptrac/deptrac": "^4.2",
         "laravel/pint": "^1.19",
         "phpstan/phpstan": "^2.1",
         "phpunit/phpunit": "^11.5"
