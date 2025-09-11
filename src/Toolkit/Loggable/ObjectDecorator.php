@@ -19,6 +19,9 @@ use IteratorAggregate;
 use Ramsey\Uuid\UuidInterface;
 use ReflectionClass;
 use ReflectionProperty;
+use UnitEnum;
+
+use function CloudCreativity\Modules\Toolkit\enum_string;
 
 /**
  * @implements IteratorAggregate<string, mixed>
@@ -40,6 +43,7 @@ final readonly class ObjectDecorator implements IteratorAggregate, ContextProvid
                 $value instanceof ContextProvider => $value->context(),
                 $value instanceof Contextual => $value->context(),
                 $value instanceof UuidInterface => $value->toString(),
+                $value instanceof UnitEnum => enum_string($value),
                 default => $value,
             };
         }

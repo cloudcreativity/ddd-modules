@@ -14,12 +14,16 @@ namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Loggable;
 
 use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextProvider;
 use CloudCreativity\Modules\Contracts\Toolkit\Messages\Message;
+use CloudCreativity\Modules\Tests\TestBackedEnum;
+use CloudCreativity\Modules\Tests\TestBackedIntEnum;
+use CloudCreativity\Modules\Tests\TestUnitEnum;
 use CloudCreativity\Modules\Toolkit\Loggable\ObjectDecorator;
 use CloudCreativity\Modules\Toolkit\Loggable\Sensitive;
 use CloudCreativity\Modules\Toolkit\Loggable\SimpleContextFactory;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
+use UnitEnum;
 
 class ObjectDecoratorTest extends TestCase
 {
@@ -45,6 +49,9 @@ class ObjectDecoratorTest extends TestCase
             public string $foo = 'bar';
             public string $baz = 'bat';
             public ?string $blah = null;
+            public UnitEnum $enum1 = TestBackedEnum::Foo;
+            public UnitEnum $enum2 = TestBackedIntEnum::FooBar;
+            public UnitEnum $enum3 = TestUnitEnum::Baz;
             protected string $foobar = 'foobar';
 
             public function __construct(public UuidInterface $uuid)
@@ -56,6 +63,9 @@ class ObjectDecoratorTest extends TestCase
             'foo' => 'bar',
             'baz' => 'bat',
             'blah' => null,
+            'enum1' => TestBackedEnum::Foo->value,
+            'enum2' => TestBackedIntEnum::FooBar->name,
+            'enum3' => TestUnitEnum::Baz->name,
             'uuid' => $uuid->toString(),
         ];
 

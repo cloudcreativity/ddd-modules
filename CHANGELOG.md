@@ -26,6 +26,7 @@ All notable changes to this project will be documented in this file. This projec
   use a string id.
 - **BREAKING**: Updated the `GuidTypeMap` class so that it now supports enum aliases, enum types, and UUID identifiers.
   This means the `type()` method now returns a string or enum, whereas previously it returned just a string.
+- Object log context now casts Ramsey UUIDs and enums to strings.
 
 ### Removed
 
