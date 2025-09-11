@@ -18,6 +18,8 @@ use CloudCreativity\Modules\Toolkit\Loggable\ObjectDecorator;
 use CloudCreativity\Modules\Toolkit\Loggable\Sensitive;
 use CloudCreativity\Modules\Toolkit\Loggable\SimpleContextFactory;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 class ObjectDecoratorTest extends TestCase
 {
@@ -37,17 +39,24 @@ class ObjectDecoratorTest extends TestCase
 
     public function testItUsesObjectProperties(): void
     {
-        $source = new class () implements Message {
+        $uuid = Uuid::uuid4();
+
+        $source = new class ($uuid) implements Message {
             public string $foo = 'bar';
             public string $baz = 'bat';
             public ?string $blah = null;
             protected string $foobar = 'foobar';
+
+            public function __construct(public UuidInterface $uuid)
+            {
+            }
         };
 
         $expected = [
             'foo' => 'bar',
             'baz' => 'bat',
             'blah' => null,
+            'uuid' => $uuid->toString(),
         ];
 
         $decorator = new ObjectDecorator($source);

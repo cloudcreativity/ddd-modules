@@ -16,6 +16,7 @@ use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextProvider;
 use CloudCreativity\Modules\Contracts\Toolkit\Loggable\Contextual;
 use Generator;
 use IteratorAggregate;
+use Ramsey\Uuid\UuidInterface;
 use ReflectionClass;
 use ReflectionProperty;
 
@@ -38,6 +39,7 @@ final readonly class ObjectDecorator implements IteratorAggregate, ContextProvid
             yield $key => match (true) {
                 $value instanceof ContextProvider => $value->context(),
                 $value instanceof Contextual => $value->context(),
+                $value instanceof UuidInterface => $value->toString(),
                 default => $value,
             };
         }
