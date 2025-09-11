@@ -45,6 +45,10 @@ class EnumStringTest extends TestCase
                 'foo',
                 'foo',
             ],
+            'empty string' => [
+                '',
+                '',
+            ],
         ];
     }
 

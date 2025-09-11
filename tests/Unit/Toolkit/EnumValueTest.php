@@ -45,6 +45,10 @@ class EnumValueTest extends TestCase
                 'foo',
                 'foo',
             ],
+            'empty string' => [
+                '',
+                '',
+            ],
             'int' => [
                 123,
                 123,

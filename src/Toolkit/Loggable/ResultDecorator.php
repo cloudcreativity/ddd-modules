@@ -81,11 +81,9 @@ final readonly class ResultDecorator implements ContextProvider
             return $error->context();
         }
 
-        $code = $error->code();
-
         return array_filter([
-            'code' => $code ? enum_string($code) : null,
-            'key' => $error->key(),
+            'code' => enum_string($error->code() ?? ''),
+            'key' => enum_string($error->key() ?? ''),
             'message' => $error->message(),
         ]);
     }
