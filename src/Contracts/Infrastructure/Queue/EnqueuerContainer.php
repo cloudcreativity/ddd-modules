@@ -20,7 +20,6 @@ interface EnqueuerContainer
      * Get an enqueuer for the provided command.
      *
      * @param class-string<Command> $command
-     * @return Enqueuer
      */
     public function get(string $command): Enqueuer;
 }

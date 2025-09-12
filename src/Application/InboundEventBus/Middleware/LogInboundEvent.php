@@ -21,27 +21,16 @@ use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-final class LogInboundEvent implements InboundEventMiddleware
+final readonly class LogInboundEvent implements InboundEventMiddleware
 {
-    /**
-     * LogInboundEvent constructor.
-     *
-     * @param LoggerInterface $log
-     * @param string $publishLevel
-     * @param string $publishedLevel
-     * @param ContextFactory $context
-     */
     public function __construct(
-        private readonly LoggerInterface $log,
-        private readonly string $publishLevel = LogLevel::DEBUG,
-        private readonly string $publishedLevel = LogLevel::INFO,
-        private readonly ContextFactory $context = new SimpleContextFactory(),
+        private LoggerInterface $log,
+        private string $publishLevel = LogLevel::DEBUG,
+        private string $publishedLevel = LogLevel::INFO,
+        private ContextFactory $context = new SimpleContextFactory(),
     ) {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function __invoke(IntegrationEvent $event, Closure $next): void
     {
         $name = ModuleBasename::tryFrom($event)?->toString() ?? $event::class;

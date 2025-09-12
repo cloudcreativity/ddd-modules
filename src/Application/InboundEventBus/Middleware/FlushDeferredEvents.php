@@ -18,20 +18,12 @@ use CloudCreativity\Modules\Contracts\Application\InboundEventBus\InboundEventMi
 use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
 use Throwable;
 
-final class FlushDeferredEvents implements InboundEventMiddleware
+final readonly class FlushDeferredEvents implements InboundEventMiddleware
 {
-    /**
-     * FlushDeferredEvents constructor.
-     *
-     * @param DeferredDispatcher $dispatcher
-     */
-    public function __construct(private readonly DeferredDispatcher $dispatcher)
+    public function __construct(private DeferredDispatcher $dispatcher)
     {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function __invoke(IntegrationEvent $event, Closure $next): void
     {
         try {

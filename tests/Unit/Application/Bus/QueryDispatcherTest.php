@@ -24,18 +24,15 @@ use PHPUnit\Framework\TestCase;
 class QueryDispatcherTest extends TestCase
 {
     /**
-     * @var QueryHandlerContainer&MockObject
+     * @var MockObject&QueryHandlerContainer
      */
     private QueryHandlerContainer $handlers;
 
     /**
-     * @var PipeContainer&MockObject
+     * @var MockObject&PipeContainer
      */
     private PipeContainer $middleware;
 
-    /**
-     * @var QueryDispatcher
-     */
     private QueryDispatcher $dispatcher;
 
     /**
@@ -43,9 +40,6 @@ class QueryDispatcherTest extends TestCase
      */
     private array $sequence = [];
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -56,18 +50,12 @@ class QueryDispatcherTest extends TestCase
         );
     }
 
-    /**
-     * @return void
-     */
     protected function tearDown(): void
     {
         unset($this->handlers, $this->middleware, $this->dispatcher, $this->sequence);
         parent::tearDown();
     }
 
-    /**
-     * @return void
-     */
     public function test(): void
     {
         $query = $this->createMock(Query::class);
@@ -89,9 +77,6 @@ class QueryDispatcherTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @return void
-     */
     public function testWithMiddleware(): void
     {
         $query1 = new TestQuery();

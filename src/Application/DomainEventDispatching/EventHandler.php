@@ -17,14 +17,9 @@ use CloudCreativity\Modules\Contracts\Application\UnitOfWork\DispatchAfterCommit
 use CloudCreativity\Modules\Contracts\Application\UnitOfWork\DispatchBeforeCommit;
 use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 
-final class EventHandler
+final readonly class EventHandler
 {
-    /**
-     * EventHandler constructor.
-     *
-     * @param object $listener
-     */
-    public function __construct(private readonly object $listener)
+    public function __construct(private object $listener)
     {
         assert(
             !($this->listener instanceof DispatchBeforeCommit && $this->listener instanceof DispatchAfterCommit),
@@ -37,8 +32,6 @@ final class EventHandler
 
     /**
      * Should the handler be executed before the transaction is committed?
-     *
-     * @return bool
      */
     public function beforeCommit(): bool
     {
@@ -47,8 +40,6 @@ final class EventHandler
 
     /**
      * Should the handler be executed after the transaction is committed?
-     *
-     * @return bool
      */
     public function afterCommit(): bool
     {
@@ -57,9 +48,6 @@ final class EventHandler
 
     /**
      * Execute the listener.
-     *
-     * @param DomainEvent $event
-     * @return void
      */
     public function __invoke(DomainEvent $event): void
     {

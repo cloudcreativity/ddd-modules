@@ -23,9 +23,6 @@ class DeferredDispatcher extends Dispatcher implements IDeferredDispatcher
      */
     private array $deferred = [];
 
-    /**
-     * @inheritDoc
-     */
     public function dispatch(DomainEvent $event): void
     {
         if ($event instanceof OccursImmediately) {
@@ -36,9 +33,6 @@ class DeferredDispatcher extends Dispatcher implements IDeferredDispatcher
         $this->deferred[] = $event;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function flush(): void
     {
         try {
@@ -50,9 +44,6 @@ class DeferredDispatcher extends Dispatcher implements IDeferredDispatcher
         }
     }
 
-    /**
-     * @inheritDoc
-     */
     public function forget(): void
     {
         $this->deferred = [];

@@ -20,7 +20,6 @@ interface QueryDispatcher
     /**
      * Dispatch the given query.
      *
-     * @param Query $query
      * @return Result<mixed>
      */
     public function dispatch(Query $query): Result;

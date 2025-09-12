@@ -27,15 +27,10 @@ class ClosureQueue implements Queue
     private array $bindings = [];
 
     /**
-     * @var list<string|callable>
+     * @var list<callable|string>
      */
     private array $pipes = [];
 
-    /**
-     * ClosureQueue constructor.
-     *
-     * @param Closure $fn
-     */
     public function __construct(
         private readonly Closure $fn,
         private readonly ?PipeContainer $middleware = null,
@@ -46,8 +41,6 @@ class ClosureQueue implements Queue
      * Bind an enqueuer for the specified command.
      *
      * @param class-string<Command> $command
-     * @param Closure $fn
-     * @return void
      */
     public function bind(string $command, Closure $fn): void
     {
@@ -57,17 +50,13 @@ class ClosureQueue implements Queue
     /**
      * Queue commands through the provided pipes.
      *
-     * @param list<string|callable> $pipes
-     * @return void
+     * @param list<callable|string> $pipes
      */
     public function through(array $pipes): void
     {
         $this->pipes = array_values($pipes);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function push(Command $command): void
     {
         $enqueuer = $this->bindings[$command::class] ?? $this->fn;

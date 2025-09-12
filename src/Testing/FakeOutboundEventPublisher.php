@@ -24,17 +24,11 @@ class FakeOutboundEventPublisher implements OutboundEventPublisher, Countable
      */
     public array $events = [];
 
-    /**
-     * @inheritDoc
-     */
     public function publish(IntegrationEvent $event): void
     {
         $this->events[] = $event;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function count(): int
     {
         return count($this->events);
@@ -42,8 +36,6 @@ class FakeOutboundEventPublisher implements OutboundEventPublisher, Countable
 
     /**
      * Expect a single event to be published and return it.
-     *
-     * @return IntegrationEvent
      */
     public function sole(): IntegrationEvent
     {

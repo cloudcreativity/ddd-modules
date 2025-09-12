@@ -19,9 +19,6 @@ use PHPUnit\Framework\TestCase;
 
 class IdentifierOrEntityTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function testItIsAGuid(): void
     {
         $guidOrEntity = IdentifierOrEntity::make($guid = Guid::fromInteger('SomeType', 1));
@@ -31,9 +28,6 @@ class IdentifierOrEntityTest extends TestCase
         $this->assertNull($guidOrEntity->entity);
     }
 
-    /**
-     * @return void
-     */
     public function testItIsAnEntityWithGuid(): void
     {
         $entity = $this->createMock(Entity::class);
@@ -46,9 +40,6 @@ class IdentifierOrEntityTest extends TestCase
         $this->assertSame($entity, $guidOrEntity->entity);
     }
 
-    /**
-     * @return void
-     */
     public function testItIsAnEntityWithoutGuid(): void
     {
         $entity = $this->createMock(Entity::class);

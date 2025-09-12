@@ -15,28 +15,16 @@ namespace CloudCreativity\Modules\Toolkit\Identifiers;
 use JsonSerializable;
 use Stringable;
 
-final class PossiblyNumericId implements JsonSerializable, Stringable
+final readonly class PossiblyNumericId implements JsonSerializable, Stringable
 {
-    /**
-     * @var string|int
-     */
-    public readonly string|int $value;
+    public int|string $value;
 
-    /**
-     * @param string|int $value
-     * @return self
-     */
-    public static function from(string|int $value): self
+    public static function from(int|string $value): self
     {
         return new self($value);
     }
 
-    /**
-     * PossiblyNumericId constructor
-     *
-     * @param string|int $value
-     */
-    public function __construct(string|int $value)
+    public function __construct(int|string $value)
     {
         if (is_string($value) && 1 === preg_match('/^\d+$/', $value)) {
             $value = (int) $value;
@@ -45,9 +33,6 @@ final class PossiblyNumericId implements JsonSerializable, Stringable
         $this->value = $value;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function __toString(): string
     {
         return $this->toString();
@@ -55,18 +40,13 @@ final class PossiblyNumericId implements JsonSerializable, Stringable
 
     /**
      * Fluent to-string method.
-     *
-     * @return string
      */
     public function toString(): string
     {
         return (string) $this->value;
     }
 
-    /**
-     * @return StringId|IntegerId
-     */
-    public function toId(): StringId|IntegerId
+    public function toId(): IntegerId|StringId
     {
         if (is_int($this->value)) {
             return new IntegerId($this->value);
@@ -75,10 +55,7 @@ final class PossiblyNumericId implements JsonSerializable, Stringable
         return new StringId($this->value);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function jsonSerialize(): string|int
+    public function jsonSerialize(): int|string
     {
         return $this->value;
     }

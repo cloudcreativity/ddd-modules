@@ -12,61 +12,39 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Result;
 
-use BackedEnum;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Error as IError;
 use CloudCreativity\Modules\Toolkit\Contracts;
+use UnitEnum;
 
-final class Error implements IError
+final readonly class Error implements IError
 {
-    /**
-     * @var string|null
-     */
-    private readonly ?string $key;
+    private string|UnitEnum|null $key;
 
-    /**
-     * Error constructor.
-     *
-     * @param string|null $key
-     * @param string $message
-     * @param BackedEnum|null $code
-     */
     public function __construct(
-        ?string $key = null,
-        private readonly string $message = '',
-        private readonly ?BackedEnum $code = null,
+        private ?UnitEnum $code = null,
+        private string $message = '',
+        string|UnitEnum|null $key = null,
     ) {
         Contracts::assert(!empty($message) || $code !== null, 'Error must have a message or a code.');
         $this->key = $key ?: null;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function key(): ?string
+    public function key(): string|UnitEnum|null
     {
         return $this->key;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function message(): string
     {
         return $this->message;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function code(): ?BackedEnum
+    public function code(): ?UnitEnum
     {
         return $this->code;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function is(BackedEnum $code): bool
+    public function is(UnitEnum $code): bool
     {
         return $this->code === $code;
     }

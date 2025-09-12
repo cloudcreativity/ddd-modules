@@ -18,14 +18,8 @@ use DateTimeImmutable;
 
 class TestOutboundEvent implements IntegrationEvent
 {
-    /**
-     * @var Uuid
-     */
     public readonly Uuid $uuid;
 
-    /**
-     * @var DateTimeImmutable
-     */
     public readonly DateTimeImmutable $occurredAt;
 
     /**
@@ -37,17 +31,11 @@ class TestOutboundEvent implements IntegrationEvent
         $this->occurredAt = new DateTimeImmutable();
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getUuid(): Uuid
     {
         return $this->uuid;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getOccurredAt(): DateTimeImmutable
     {
         return $this->occurredAt;

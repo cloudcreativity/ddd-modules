@@ -20,7 +20,6 @@ class TestQueryHandler implements DispatchThroughMiddleware
     /**
      * Execute the query.
      *
-     * @param TestQuery $query
      * @return Result<int>
      */
     public function execute(TestQuery $query): Result
@@ -28,9 +27,6 @@ class TestQueryHandler implements DispatchThroughMiddleware
         return Result::ok(99);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function middleware(): array
     {
         return [];

@@ -33,9 +33,6 @@ class LogPushedToQueueTest extends TestCase
      */
     private ContextFactory $context;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -43,18 +40,12 @@ class LogPushedToQueueTest extends TestCase
         $this->context = $this->createMock(ContextFactory::class);
     }
 
-    /**
-     * @return void
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
         unset($this->logger, $this->context);
     }
 
-    /**
-     * @return void
-     */
     public function testWithDefaultLevels(): void
     {
         $command = new class () implements Command {
@@ -88,9 +79,6 @@ class LogPushedToQueueTest extends TestCase
         ], $logs);
     }
 
-    /**
-     * @return void
-     */
     public function testWithCustomLevels(): void
     {
         $command = new class () implements Command {
@@ -121,9 +109,6 @@ class LogPushedToQueueTest extends TestCase
         ], $logs);
     }
 
-    /**
-     * @return void
-     */
     public function testItLogsAfterTheNextClosureIsInvoked(): void
     {
         $command = new class () implements Command {
@@ -153,7 +138,6 @@ class LogPushedToQueueTest extends TestCase
     }
 
     /**
-     * @param object $expected
      * @return array<string, mixed>
      */
     private function withContext(object $expected): array

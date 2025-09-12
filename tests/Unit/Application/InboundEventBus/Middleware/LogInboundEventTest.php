@@ -29,14 +29,8 @@ class LogInboundEventTest extends TestCase
      */
     private LoggerInterface $logger;
 
-    /**
-     * @var TestOutboundEvent
-     */
     private TestOutboundEvent $event;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -45,9 +39,6 @@ class LogInboundEventTest extends TestCase
         $this->event = new TestOutboundEvent();
     }
 
-    /**
-     * @return void
-     */
     public function test(): void
     {
         $eventName = ModuleBasename::from($this->event);
@@ -76,9 +67,6 @@ class LogInboundEventTest extends TestCase
         ], $logs);
     }
 
-    /**
-     * @return void
-     */
     public function testWithCustomLevels(): void
     {
         $eventName = ModuleBasename::from($this->event);
@@ -108,9 +96,6 @@ class LogInboundEventTest extends TestCase
         ], $logs);
     }
 
-    /**
-     * @return void
-     */
     public function testItLogsAfterTheNextClosureIsInvoked(): void
     {
         $expected = new LogicException();

@@ -15,20 +15,12 @@ namespace CloudCreativity\Modules\Infrastructure\Queue;
 use CloudCreativity\Modules\Contracts\Infrastructure\Queue\Enqueuer as IEnqueuer;
 use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
 
-final class Enqueuer implements IEnqueuer
+final readonly class Enqueuer implements IEnqueuer
 {
-    /**
-     * Enqueuer constructor.
-     *
-     * @param object $enqueuer
-     */
-    public function __construct(private readonly object $enqueuer)
+    public function __construct(private object $enqueuer)
     {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function __invoke(Command $command): void
     {
         assert(method_exists($this->enqueuer, 'push'), sprintf(

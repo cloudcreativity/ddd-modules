@@ -13,20 +13,18 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\InboundEventBus;
 
 use Closure;
+use CloudCreativity\Modules\Application\ApplicationException;
 use CloudCreativity\Modules\Contracts\Application\InboundEventBus\EventHandlerContainer as IEventHandlerContainer;
 use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
-use RuntimeException;
 
 final class EventHandlerContainer implements IEventHandlerContainer
 {
     /**
-     * @var array<string, Closure>
+     * @var array<class-string<IntegrationEvent>, Closure>
      */
     private array $bindings = [];
 
     /**
-     * EventHandlerContainer constructor.
-     *
      * @param ?Closure(): object $default
      */
     public function __construct(private readonly ?Closure $default = null)
@@ -38,16 +36,12 @@ final class EventHandlerContainer implements IEventHandlerContainer
      *
      * @param class-string<IntegrationEvent> $eventName
      * @param Closure(): object $binding
-     * @return void
      */
     public function bind(string $eventName, Closure $binding): void
     {
         $this->bindings[$eventName] = $binding;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function get(string $eventName): EventHandler
     {
         $factory = $this->bindings[$eventName] ?? $this->default;
@@ -58,6 +52,6 @@ final class EventHandlerContainer implements IEventHandlerContainer
             return new EventHandler($handler);
         }
 
-        throw new RuntimeException('No handler bound for integration event: ' . $eventName);
+        throw new ApplicationException('No handler bound for integration event: ' . $eventName);
     }
 }

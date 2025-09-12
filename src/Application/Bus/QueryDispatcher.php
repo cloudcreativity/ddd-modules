@@ -23,16 +23,10 @@ use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 class QueryDispatcher implements IQueryDispatcher
 {
     /**
-     * @var array<string|callable>
+     * @var array<callable|string>
      */
     private array $pipes = [];
 
-    /**
-     * QueryDispatcher constructor.
-     *
-     * @param QueryHandlerContainer $handlers
-     * @param PipeContainer|null $middleware
-     */
     public function __construct(
         private readonly QueryHandlerContainer $handlers,
         private readonly ?PipeContainer $middleware = null,
@@ -42,8 +36,7 @@ class QueryDispatcher implements IQueryDispatcher
     /**
      * Dispatch messages through the provided pipes.
      *
-     * @param array<string|callable> $pipes
-     * @return void
+     * @param array<callable|string> $pipes
      */
     public function through(array $pipes): void
     {
@@ -52,9 +45,6 @@ class QueryDispatcher implements IQueryDispatcher
         $this->pipes = $pipes;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function dispatch(Query $query): Result
     {
         $pipeline = PipelineBuilder::make($this->middleware)
@@ -71,7 +61,6 @@ class QueryDispatcher implements IQueryDispatcher
     }
 
     /**
-     * @param Query $query
      * @return Result<mixed>
      */
     private function execute(Query $query): Result

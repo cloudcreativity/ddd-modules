@@ -22,16 +22,10 @@ use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 class InboundEventDispatcher implements IInboundEventDispatcher
 {
     /**
-     * @var array<string|callable>
+     * @var array<callable|string>
      */
     private array $pipes = [];
 
-    /**
-     * EventDispatcher constructor.
-     *
-     * @param EventHandlerContainer $handlers
-     * @param PipeContainer|null $middleware
-     */
     public function __construct(
         private readonly EventHandlerContainer $handlers,
         private readonly ?PipeContainer $middleware = null,
@@ -41,8 +35,7 @@ class InboundEventDispatcher implements IInboundEventDispatcher
     /**
      * Dispatch events through the provided pipes.
      *
-     * @param list<string|callable> $pipes
-     * @return void
+     * @param list<callable|string> $pipes
      */
     public function through(array $pipes): void
     {
@@ -51,9 +44,6 @@ class InboundEventDispatcher implements IInboundEventDispatcher
         $this->pipes = $pipes;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function dispatch(IntegrationEvent $event): void
     {
         $pipeline = PipelineBuilder::make($this->middleware)
@@ -65,10 +55,6 @@ class InboundEventDispatcher implements IInboundEventDispatcher
         $pipeline->process($event);
     }
 
-    /**
-     * @param IntegrationEvent $event
-     * @return void
-     */
     private function execute(IntegrationEvent $event): void
     {
         $handler = $this->handlers->get($event::class);

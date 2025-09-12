@@ -17,7 +17,6 @@ interface PipelineBuilder
     /**
      * Add the provided stage.
      *
-     * @param callable|string $stage
      * @return $this
      */
     public function add(callable|string $stage): static;
@@ -25,16 +24,13 @@ interface PipelineBuilder
     /**
      * Add the provided stages.
      *
-     * @param iterable<string|callable> $stages
+     * @param iterable<callable|string> $stages
      * @return $this
      */
     public function through(iterable $stages): static;
 
     /**
      * Build a new pipeline.
-     *
-     * @param Processor|null $processor
-     * @return Pipeline
      */
     public function build(?Processor $processor = null): Pipeline;
 }

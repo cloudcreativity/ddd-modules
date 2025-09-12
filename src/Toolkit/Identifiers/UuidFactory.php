@@ -23,26 +23,15 @@ use Ramsey\Uuid\UuidFactoryInterface as BaseUuidFactory;
 use Ramsey\Uuid\UuidInterface;
 use RuntimeException;
 
-final class UuidFactory implements IUuidFactory
+final readonly class UuidFactory implements IUuidFactory
 {
-    /**
-     * @var BaseUuidFactory
-     */
-    private readonly BaseUuidFactory $baseFactory;
+    private BaseUuidFactory $baseFactory;
 
-    /**
-     * UuidFactory constructor.
-     *
-     * @param BaseUuidFactory|null $factory
-     */
     public function __construct(?BaseUuidFactory $factory = null)
     {
         $this->baseFactory = $factory ?? BaseUuid::getFactory();
     }
 
-    /**
-     * @inheritDoc
-     */
     public function from(Identifier|UuidInterface $uuid): Uuid
     {
         return match(true) {
@@ -54,41 +43,26 @@ final class UuidFactory implements IUuidFactory
         };
     }
 
-    /**
-     * @inheritDoc
-     */
     public function fromBytes(string $bytes): Uuid
     {
         return new Uuid($this->baseFactory->fromBytes($bytes));
     }
 
-    /**
-     * @inheritDoc
-     */
     public function fromDateTime(DateTimeInterface $dateTime, ?Hexadecimal $node = null, ?int $clockSeq = null): Uuid
     {
         return new Uuid($this->baseFactory->fromDateTime($dateTime, $node, $clockSeq));
     }
 
-    /**
-     * @inheritDoc
-     */
     public function fromInteger(string $integer): Uuid
     {
         return new Uuid($this->baseFactory->fromInteger($integer));
     }
 
-    /**
-     * @inheritDoc
-     */
     public function fromString(string $uuid): Uuid
     {
         return new Uuid($this->baseFactory->fromString($uuid));
     }
 
-    /**
-     * @inheritDoc
-     */
     public function uuid1(
         Hexadecimal|int|string|null $node = null,
         ?int $clockSeq = null,
@@ -96,9 +70,6 @@ final class UuidFactory implements IUuidFactory
         return new Uuid($this->baseFactory->uuid1($node, $clockSeq));
     }
 
-    /**
-     * @inheritDoc
-     */
     public function uuid2(
         int $localDomain,
         ?IntegerObject $localIdentifier = null,
@@ -108,41 +79,26 @@ final class UuidFactory implements IUuidFactory
         return new Uuid($this->baseFactory->uuid2($localDomain, $localIdentifier, $node, $clockSeq));
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function uuid3(UuidInterface|string $ns, string $name): Uuid
+    public function uuid3(string|UuidInterface $ns, string $name): Uuid
     {
         return new Uuid($this->baseFactory->uuid3($ns, $name));
     }
 
-    /**
-     * @inheritDoc
-     */
     public function uuid4(): Uuid
     {
         return new Uuid($this->baseFactory->uuid4());
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function uuid5(UuidInterface|string $ns, string $name): Uuid
+    public function uuid5(string|UuidInterface $ns, string $name): Uuid
     {
         return new Uuid($this->baseFactory->uuid5($ns, $name));
     }
 
-    /**
-     * @inheritDoc
-     */
     public function uuid6(?Hexadecimal $node = null, ?int $clockSeq = null): Uuid
     {
         return new Uuid($this->baseFactory->uuid6($node, $clockSeq));
     }
 
-    /**
-     * @inheritDoc
-     */
     public function uuid7(?DateTimeInterface $dateTime = null): Uuid
     {
         if (method_exists($this->baseFactory, 'uuid7')) {
@@ -154,9 +110,6 @@ final class UuidFactory implements IUuidFactory
         throw new RuntimeException('UUID version 7 is not supported by the underlying factory.');
     }
 
-    /**
-     * @inheritDoc
-     */
     public function uuid8(string $bytes): Uuid
     {
         if (method_exists($this->baseFactory, 'uuid8')) {

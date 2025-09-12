@@ -15,7 +15,7 @@ namespace CloudCreativity\Modules\Toolkit;
 use Stringable;
 use UnexpectedValueException;
 
-final class ModuleBasename implements Stringable
+final readonly class ModuleBasename implements Stringable
 {
     /** @var string  */
     private const REGEX_MODULES = '/\\\\Modules\\\\(\w+)\\\\[\w\\\\]+\\\\(\w+)$/m';
@@ -25,7 +25,6 @@ final class ModuleBasename implements Stringable
     /**
      * Create a message name from a class string.
      *
-     * @param object|string $class
      * @return static
      */
     public static function from(object|string $class): self
@@ -40,7 +39,6 @@ final class ModuleBasename implements Stringable
     /**
      * Try to create a message name from a class.
      *
-     * @param object|string $class
      * @return static|null
      */
     public static function tryFrom(object|string $class): ?self
@@ -60,21 +58,12 @@ final class ModuleBasename implements Stringable
         return null;
     }
 
-    /**
-     * ModuleBasename constructor.
-     *
-     * @param string|null $module
-     * @param string $name
-     */
     private function __construct(
-        public readonly ?string $module,
-        public readonly string $name,
+        public ?string $module,
+        public string $name,
     ) {
     }
 
-    /**
-     * @return string
-     */
     public function __toString(): string
     {
         return $this->toString();
@@ -82,9 +71,6 @@ final class ModuleBasename implements Stringable
 
     /**
      * Fluent to-string method.
-     *
-     * @param string $delimiter
-     * @return string
      */
     public function toString(string $delimiter = ':'): string
     {

@@ -27,19 +27,10 @@ use Ramsey\Uuid\UuidFactoryInterface as BaseUuidFactoryInterface;
 
 class UuidFactoryTest extends TestCase
 {
-    /**
-     * @var MockObject&BaseUuidFactory
-     */
     private BaseUuidFactory&MockObject $baseFactory;
 
-    /**
-     * @var UuidFactory
-     */
     private UuidFactory $factory;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -49,9 +40,6 @@ class UuidFactoryTest extends TestCase
         );
     }
 
-    /**
-     * @return void
-     */
     public function testFromWithBaseUuid(): void
     {
         $this->baseFactory
@@ -64,9 +52,6 @@ class UuidFactoryTest extends TestCase
         $this->assertSame($base, $uuid->value);
     }
 
-    /**
-     * @return void
-     */
     public function testFromWithUuid(): void
     {
         $this->baseFactory
@@ -78,9 +63,6 @@ class UuidFactoryTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @return void
-     */
     public function testFromWithIdentifierInterface(): void
     {
         $this->baseFactory
@@ -94,9 +76,6 @@ class UuidFactoryTest extends TestCase
         );
     }
 
-    /**
-     * @return void
-     */
     public function testFromBytes(): void
     {
         $this->baseFactory
@@ -111,9 +90,6 @@ class UuidFactoryTest extends TestCase
         $this->assertSame($uuid->value, $base);
     }
 
-    /**
-     * @return void
-     */
     public function testFromDateTime(): void
     {
         $this->baseFactory
@@ -132,9 +108,6 @@ class UuidFactoryTest extends TestCase
         $this->assertSame($uuid->value, $base);
     }
 
-    /**
-     * @return void
-     */
     public function testFromInteger(): void
     {
         $this->baseFactory
@@ -149,9 +122,6 @@ class UuidFactoryTest extends TestCase
         $this->assertSame($uuid->value, $base);
     }
 
-    /**
-     * @return void
-     */
     public function testFromString(): void
     {
         $this->baseFactory
@@ -166,9 +136,6 @@ class UuidFactoryTest extends TestCase
         $this->assertSame($uuid->value, $base);
     }
 
-    /**
-     * @return void
-     */
     public function testUuid1(): void
     {
         $this->baseFactory
@@ -186,9 +153,6 @@ class UuidFactoryTest extends TestCase
         $this->assertSame($uuid->value, $base);
     }
 
-    /**
-     * @return void
-     */
     public function testUuid2(): void
     {
         $this->baseFactory
@@ -208,9 +172,6 @@ class UuidFactoryTest extends TestCase
         $this->assertSame($uuid->value, $base);
     }
 
-    /**
-     * @return void
-     */
     public function testUuid3(): void
     {
         $this->baseFactory
@@ -228,9 +189,6 @@ class UuidFactoryTest extends TestCase
         $this->assertSame($uuid->value, $base);
     }
 
-    /**
-     * @return void
-     */
     public function testUuid4(): void
     {
         $this->baseFactory
@@ -244,9 +202,6 @@ class UuidFactoryTest extends TestCase
         $this->assertSame($uuid->value, $base);
     }
 
-    /**
-     * @return void
-     */
     public function testUuid5(): void
     {
         $this->baseFactory
@@ -264,9 +219,6 @@ class UuidFactoryTest extends TestCase
         $this->assertSame($uuid->value, $base);
     }
 
-    /**
-     * @return void
-     */
     public function testUuid6(): void
     {
         $this->baseFactory
@@ -284,9 +236,6 @@ class UuidFactoryTest extends TestCase
         $this->assertSame($uuid->value, $base);
     }
 
-    /**
-     * @return void
-     */
     public function testUuid7(): void
     {
         $date = new \DateTimeImmutable();
@@ -303,9 +252,6 @@ class UuidFactoryTest extends TestCase
         $this->assertSame($uuid->value, $base);
     }
 
-    /**
-     * @return void
-     */
     public function testUuid7NotSupported(): void
     {
         $factory = new UuidFactory(
@@ -318,9 +264,6 @@ class UuidFactoryTest extends TestCase
         $factory->uuid7();
     }
 
-    /**
-     * @return void
-     */
     public function testUuid8(): void
     {
         $bytes = 'blah!';
@@ -337,9 +280,6 @@ class UuidFactoryTest extends TestCase
         $this->assertSame($uuid->value, $base);
     }
 
-    /**
-     * @return void
-     */
     public function testUuid8NotSupported(): void
     {
         $factory = new UuidFactory(

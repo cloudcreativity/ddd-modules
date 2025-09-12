@@ -40,9 +40,6 @@ trait IsNonEmptyList
         return $this->stack;
     }
 
-    /**
-     * @return int
-     */
     public function count(): int
     {
         return count($this->stack);

@@ -24,7 +24,7 @@ use function CloudCreativity\Modules\Toolkit\enum_value;
 class EnumValueTest extends TestCase
 {
     /**
-     * @return array<string, array{0: UnitEnum|string|int, 1: string|int}>
+     * @return array<string, array{0: int|string|UnitEnum, 1: int|string}>
      */
     public static function valueProvider(): array
     {
@@ -45,6 +45,10 @@ class EnumValueTest extends TestCase
                 'foo',
                 'foo',
             ],
+            'empty string' => [
+                '',
+                '',
+            ],
             'int' => [
                 123,
                 123,
@@ -53,7 +57,7 @@ class EnumValueTest extends TestCase
     }
 
     #[DataProvider('valueProvider')]
-    public function testItReturnsScalarValue(UnitEnum|string|int $value, string|int $expected): void
+    public function testItReturnsScalarValue(int|string|UnitEnum $value, int|string $expected): void
     {
         $this->assertSame($expected, enum_value($value));
     }

@@ -24,7 +24,7 @@ use function CloudCreativity\Modules\Toolkit\enum_string;
 class EnumStringTest extends TestCase
 {
     /**
-     * @return array<string, array{0: UnitEnum|string|int, 1: string}>
+     * @return array<string, array{0: int|string|UnitEnum, 1: string}>
      */
     public static function valueProvider(): array
     {
@@ -45,11 +45,15 @@ class EnumStringTest extends TestCase
                 'foo',
                 'foo',
             ],
+            'empty string' => [
+                '',
+                '',
+            ],
         ];
     }
 
     #[DataProvider('valueProvider')]
-    public function testItReturnsScalarValue(UnitEnum|string $value, string $expected): void
+    public function testItReturnsScalarValue(string|UnitEnum $value, string $expected): void
     {
         $this->assertSame($expected, enum_string($value));
     }

@@ -20,7 +20,6 @@ interface EventHandlerContainer
      * Get a handler for the specified integration event.
      *
      * @param class-string<IntegrationEvent> $eventName
-     * @return EventHandler
      */
     public function get(string $eventName): EventHandler;
 }

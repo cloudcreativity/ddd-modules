@@ -24,17 +24,11 @@ class FakeQueue implements Queue, Countable
      */
     public array $commands = [];
 
-    /**
-     * @inheritDoc
-     */
     public function push(Command $command): void
     {
         $this->commands[] = $command;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function count(): int
     {
         return count($this->commands);
@@ -42,8 +36,6 @@ class FakeQueue implements Queue, Countable
 
     /**
      * Expect a single command to be queued and return it.
-     *
-     * @return Command
      */
     public function sole(): Command
     {

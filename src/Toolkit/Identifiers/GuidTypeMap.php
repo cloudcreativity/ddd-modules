@@ -12,37 +12,45 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
+use Ramsey\Uuid\UuidInterface;
+use UnitEnum;
+
+use function CloudCreativity\Modules\Toolkit\enum_string;
+
 final class GuidTypeMap
 {
     /**
-     * GuidTypeMap constructor
-     *
      * @param array<string, mixed> $map
      */
-    public function __construct(private readonly array $map)
+    public function __construct(private array $map = [])
     {
     }
 
     /**
-     * Get the GUID for the specified alias and id.
-     *
-     * @param string $alias
-     * @param string|int $id
-     * @return Guid
+     * Define an alias to type mapping.
      */
-    public function guidFor(string $alias, string|int $id): Guid
+    public function define(string|UnitEnum $alias, string|UnitEnum $type): void
+    {
+        $alias = enum_string($alias);
+
+        $this->map[$alias] = $type;
+    }
+
+    /**
+     * Get the GUID for the specified alias and id.
+     */
+    public function guidFor(string|UnitEnum $alias, int|string|Uuid|UuidInterface $id): Guid
     {
         return Guid::make($this->typeFor($alias), $id);
     }
 
     /**
      * Get the GUID type for the specified alias.
-     *
-     * @param string $alias
-     * @return string
      */
-    public function typeFor(string $alias): string
+    public function typeFor(string|UnitEnum $alias): string|UnitEnum
     {
+        $alias = enum_string($alias);
+
         assert(
             isset($this->map[$alias]),
             sprintf('Alias "%s" is not defined in the type map.', $alias),
@@ -51,7 +59,7 @@ final class GuidTypeMap
         $type = $this->map[$alias] ?? null;
 
         assert(
-            is_string($type) && !empty($type),
+            (is_string($type) || $type instanceof UnitEnum) && !empty($type),
             sprintf('Expecting type for alias "%s" to be a non-empty string.', $alias),
         );
 

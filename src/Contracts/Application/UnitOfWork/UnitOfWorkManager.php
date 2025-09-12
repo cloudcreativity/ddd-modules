@@ -21,7 +21,7 @@ interface UnitOfWorkManager
      *
      * @template TReturn
      * @param Closure(): TReturn $callback
-     * @param int $attempts
+     * @param int<1, max> $attempts
      * @return TReturn
      */
     public function execute(Closure $callback, int $attempts = 1): mixed;
@@ -30,7 +30,6 @@ interface UnitOfWorkManager
      * Register a callback to be executed before the unit of work is committed.
      *
      * @param callable(): void $callback
-     * @return void
      */
     public function beforeCommit(callable $callback): void;
 
@@ -38,7 +37,6 @@ interface UnitOfWorkManager
      * Register a callback to be executed after the unit of work is committed.
      *
      * @param callable(): void $callback
-     * @return void
      */
     public function afterCommit(callable $callback): void;
 }

@@ -22,16 +22,10 @@ use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 class ComponentQueue implements Queue
 {
     /**
-     * @var list<string|callable>
+     * @var list<callable|string>
      */
     private array $pipes = [];
 
-    /**
-     * ComponentQueue constructor.
-     *
-     * @param EnqueuerContainer $enqueuers
-     * @param PipeContainer|null $middleware
-     */
     public function __construct(
         private readonly EnqueuerContainer $enqueuers,
         private readonly ?PipeContainer $middleware = null,
@@ -41,17 +35,13 @@ class ComponentQueue implements Queue
     /**
      * Dispatch messages through the provided pipes.
      *
-     * @param list<string|callable> $pipes
-     * @return void
+     * @param list<callable|string> $pipes
      */
     public function through(array $pipes): void
     {
         $this->pipes = array_values($pipes);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function push(Command $command): void
     {
         $pipeline = PipelineBuilder::make($this->middleware)

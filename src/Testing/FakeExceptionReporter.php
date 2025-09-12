@@ -24,17 +24,11 @@ final class FakeExceptionReporter implements ExceptionReporter, Countable
      */
     public array $reported = [];
 
-    /**
-     * @inheritDoc
-     */
     public function report(Throwable $ex): void
     {
         $this->reported[] = $ex;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function count(): int
     {
         return count($this->reported);
@@ -42,8 +36,6 @@ final class FakeExceptionReporter implements ExceptionReporter, Countable
 
     /**
      * Expect a single exception to be reported and return it.
-     *
-     * @return Throwable
      */
     public function sole(): Throwable
     {

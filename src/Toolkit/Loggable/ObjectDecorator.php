@@ -16,20 +16,19 @@ use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextProvider;
 use CloudCreativity\Modules\Contracts\Toolkit\Loggable\Contextual;
 use Generator;
 use IteratorAggregate;
+use Ramsey\Uuid\UuidInterface;
 use ReflectionClass;
 use ReflectionProperty;
+use UnitEnum;
+
+use function CloudCreativity\Modules\Toolkit\enum_string;
 
 /**
  * @implements IteratorAggregate<string, mixed>
  */
-final class ObjectDecorator implements IteratorAggregate, ContextProvider
+final readonly class ObjectDecorator implements IteratorAggregate, ContextProvider
 {
-    /**
-     * ObjectDecorator constructor.
-     *
-     * @param object $source
-     */
-    public function __construct(private readonly object $source)
+    public function __construct(private object $source)
     {
     }
 
@@ -43,6 +42,8 @@ final class ObjectDecorator implements IteratorAggregate, ContextProvider
             yield $key => match (true) {
                 $value instanceof ContextProvider => $value->context(),
                 $value instanceof Contextual => $value->context(),
+                $value instanceof UuidInterface => $value->toString(),
+                $value instanceof UnitEnum => enum_string($value),
                 default => $value,
             };
         }
@@ -64,9 +65,6 @@ final class ObjectDecorator implements IteratorAggregate, ContextProvider
         return iterator_to_array($this);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function context(): array
     {
         return $this->all();

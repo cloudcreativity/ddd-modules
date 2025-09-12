@@ -18,6 +18,7 @@ use CloudCreativity\Modules\Contracts\Toolkit\Messages\Query;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Toolkit\Result\Error;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -36,12 +37,11 @@ class ValidatorTest extends TestCase
 
     /**
      * @param class-string<Command|Query> $message
-     * @return void
-     * @dataProvider messageProvider
      */
+    #[DataProvider('messageProvider')]
     public function test(string $message): void
     {
-        /** @var (Command&MockObject)|(Query&MockObject) $query */
+        /** @var (Command&MockObject)|(MockObject&Query) $query */
         $query = $this->createMock($message);
         $error1 = new Error(null, 'Message 1');
         $error2 = new Error(null, 'Message 2');
@@ -81,9 +81,6 @@ class ValidatorTest extends TestCase
         $this->assertSame([$error1, $error2, $error3], $actual->all());
     }
 
-    /**
-     * @return void
-     */
     public function testNoRules(): void
     {
         $query = $this->createMock(Query::class);

@@ -17,20 +17,12 @@ use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddle
 use CloudCreativity\Modules\Contracts\Toolkit\Messages\Query;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
-final class QueryHandler implements IQueryHandler
+final readonly class QueryHandler implements IQueryHandler
 {
-    /**
-     * QueryHandler constructor.
-     *
-     * @param object $handler
-     */
-    public function __construct(private readonly object $handler)
+    public function __construct(private object $handler)
     {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function __invoke(Query $query): Result
     {
         assert(method_exists($this->handler, 'execute'), sprintf(
@@ -46,9 +38,6 @@ final class QueryHandler implements IQueryHandler
         return $result;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function middleware(): array
     {
         if ($this->handler instanceof DispatchThroughMiddleware) {

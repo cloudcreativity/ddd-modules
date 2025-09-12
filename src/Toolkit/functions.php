@@ -18,11 +18,8 @@ use UnitEnum;
 if (!function_exists(__NAMESPACE__ . '\enum_value')) {
     /**
      * Return a scalar value for an enum.
-     *
-     * @param UnitEnum|string|int $value
-     * @return string|int
      */
-    function enum_value(UnitEnum|string|int $value): string|int
+    function enum_value(int|string|UnitEnum $value): int|string
     {
         return match (true) {
             $value instanceof BackedEnum => $value->value,
@@ -35,11 +32,8 @@ if (!function_exists(__NAMESPACE__ . '\enum_value')) {
 if (!function_exists(__NAMESPACE__ . '\enum_string')) {
     /**
      * Return a string value for an enum.
-     *
-     * @param UnitEnum|string $value
-     * @return string
      */
-    function enum_string(UnitEnum|string $value): string
+    function enum_string(string|UnitEnum $value): string
     {
         return match (true) {
             $value instanceof BackedEnum && is_string($value->value) => $value->value,

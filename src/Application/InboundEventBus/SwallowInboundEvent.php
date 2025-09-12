@@ -17,25 +17,16 @@ use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-final class SwallowInboundEvent
+final readonly class SwallowInboundEvent
 {
-    /**
-     * SwallowInboundEvent constructor.
-     *
-     * @param ?LoggerInterface $logger
-     * @param string $level
-     */
     public function __construct(
-        private readonly ?LoggerInterface $logger = null,
-        private readonly string $level = LogLevel::DEBUG,
+        private ?LoggerInterface $logger = null,
+        private string $level = LogLevel::DEBUG,
     ) {
     }
 
     /**
      * Handle the event.
-     *
-     * @param IntegrationEvent $event
-     * @return void
      */
     public function handle(IntegrationEvent $event): void
     {

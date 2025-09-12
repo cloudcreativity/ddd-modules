@@ -25,19 +25,12 @@ final class PipeContainer implements IPipeContainer
 
     /**
      * Bind a pipe into the container.
-     *
-     * @param string $pipeName
-     * @param Closure $factory
-     * @return void
      */
     public function bind(string $pipeName, Closure $factory): void
     {
         $this->pipes[$pipeName] = $factory;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function get(string $pipeName): callable
     {
         $factory = $this->pipes[$pipeName] ?? null;

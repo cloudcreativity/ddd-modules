@@ -16,17 +16,23 @@ use CloudCreativity\Modules\Contracts\Domain\Entity;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Domain\IsEntity;
 
-class TestEntity implements Entity
+final readonly class TestEntity implements Entity
 {
     use IsEntity;
 
     /**
-     * TestEntity constructor
-     *
-     * @param Identifier $id
+     * TestEntity constructor.
      */
-    public function __construct(Identifier $id)
+    public function __construct(Identifier $id, private string $name = 'John Doe')
     {
         $this->id = $id;
+    }
+
+    /**
+     * Get the entity's name.
+     */
+    public function getName(): string
+    {
+        return $this->name;
     }
 }

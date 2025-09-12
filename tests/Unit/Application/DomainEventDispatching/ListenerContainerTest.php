@@ -17,9 +17,6 @@ use PHPUnit\Framework\TestCase;
 
 class ListenerContainerTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function testItCreatesListener(): void
     {
         $container = new ListenerContainer();
@@ -31,9 +28,6 @@ class ListenerContainerTest extends TestCase
         $this->assertSame($listener, $container->get('foo'));
     }
 
-    /**
-     * @return void
-     */
     public function testItDoesNotRecogniseListenerName(): void
     {
         $container = new ListenerContainer();
@@ -41,12 +35,10 @@ class ListenerContainerTest extends TestCase
         $container->get('foo');
     }
 
-    /**
-     * @return void
-     */
     public function testItHandlesBindingNotReturningAnObject(): void
     {
         $container = new ListenerContainer();
+        /** @phpstan-ignore-next-line */
         $container->bind('foo', fn () => 'bar');
         $this->expectExceptionMessage('Listener binding for foo must return an object.');
         $container->get('foo');

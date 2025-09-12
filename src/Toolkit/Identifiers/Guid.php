@@ -15,18 +15,14 @@ namespace CloudCreativity\Modules\Toolkit\Identifiers;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Contracts;
+use Ramsey\Uuid\Uuid as RamseyUuid;
 use Ramsey\Uuid\UuidInterface;
 use UnitEnum;
 
 use function CloudCreativity\Modules\Toolkit\enum_string;
-use function CloudCreativity\Modules\Toolkit\enum_value;
 
-final class Guid implements Identifier
+final readonly class Guid implements Identifier
 {
-    /**
-     * @param Identifier $value
-     * @return self
-     */
     public static function from(Identifier $value): self
     {
         if ($value instanceof self) {
@@ -38,82 +34,54 @@ final class Guid implements Identifier
 
     /**
      * Create a GUID with an integer id.
-     *
-     * @param UnitEnum|string $type
-     * @param int $id
-     * @return self
      */
-    public static function fromInteger(UnitEnum|string $type, int $id): self
+    public static function fromInteger(string|UnitEnum $type, int $id): self
     {
         return new self($type, new IntegerId($id));
     }
 
     /**
      * Create a GUID with a string id.
-     *
-     * @param UnitEnum|string $type
-     * @param string $id
-     * @return self
      */
-    public static function fromString(UnitEnum|string $type, string $id): self
+    public static function fromString(string|UnitEnum $type, string $id): self
     {
         return new self($type, new StringId($id));
     }
 
     /**
      * Create a GUID for a UUID.
-     *
-     * @param UnitEnum|string $type
-     * @param Uuid|UuidInterface|string $uuid
-     * @return self
      */
-    public static function fromUuid(UnitEnum|string $type, Uuid|UuidInterface|string $uuid): self
+    public static function fromUuid(string|UnitEnum $type, string|Uuid|UuidInterface $uuid): self
     {
         return new self($type, Uuid::from($uuid));
     }
 
     /**
      * Create a GUID.
-     *
-     * @param UnitEnum|string $type
-     * @param string|int $id
-     * @return self
      */
-    public static function make(UnitEnum|string $type, string|int $id): self
+    public static function make(string|UnitEnum $type, int|string|Uuid|UuidInterface $id): self
     {
-        if (is_int($id)) {
-            return self::fromInteger($type, $id);
-        }
-
-        return self::fromString($type, $id);
+        return match (true) {
+            $id instanceof Uuid, $id instanceof UuidInterface, is_string($id) && RamseyUuid::isValid($id)
+            => self::fromUuid($type, $id),
+            is_string($id) => self::fromString($type, $id),
+            is_int($id) => self::fromInteger($type, $id),
+        };
     }
 
-    /**
-     * Guid constructor.
-     *
-     * @param UnitEnum|string $type
-     * @param StringId|IntegerId|Uuid $id
-     */
     public function __construct(
-        public readonly UnitEnum|string $type,
-        public readonly StringId|IntegerId|Uuid $id,
+        public string|UnitEnum $type,
+        public IntegerId|StringId|Uuid $id,
     ) {
         Contracts::assert(!empty($this->type), 'Type must be a non-empty string.');
     }
 
-    /**
-     * @return string
-     */
     public function __toString(): string
     {
         return $this->toString();
     }
 
-    /**
-     * @param UnitEnum|string ...$types
-     * @return bool
-     */
-    public function isType(UnitEnum|string ...$types): bool
+    public function isType(string|UnitEnum ...$types): bool
     {
         foreach ($types as $type) {
             if ($this->type === $type) {
@@ -124,9 +92,6 @@ final class Guid implements Identifier
         return false;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function is(?Identifier $other): bool
     {
         if ($this === $other) {
@@ -142,10 +107,6 @@ final class Guid implements Identifier
         return false;
     }
 
-    /**
-     * @param Guid $other
-     * @return bool
-     */
     public function equals(self $other): bool
     {
         return $this->is($other);
@@ -153,9 +114,6 @@ final class Guid implements Identifier
 
     /**
      * Fluent to-string method.
-     *
-     * @param string $glue
-     * @return string
      */
     public function toString(string $glue = ':'): string
     {
@@ -164,9 +122,6 @@ final class Guid implements Identifier
         return "{$type}{$glue}{$this->id->value}";
     }
 
-    /**
-     * @inheritDoc
-     */
     public function key(): string
     {
         return $this->toString();
@@ -186,11 +141,9 @@ final class Guid implements Identifier
     /**
      * Assert that this GUID is of the expected type.
      *
-     * @param UnitEnum|string $expected
-     * @param string $message
      * @return $this
      */
-    public function assertType(UnitEnum|string $expected, string $message = ''): self
+    public function assertType(string|UnitEnum $expected, string $message = ''): self
     {
         Contracts::assert($this->type === $expected, $message ?: fn () => sprintf(
             'Expecting type "%s", received "%s".',
@@ -199,16 +152,5 @@ final class Guid implements Identifier
         ));
 
         return $this;
-    }
-
-    /**
-     * Get the type expressed as a string or an integer.
-     *
-     * @return string|int
-     */
-    public function type(): string|int
-    {
-        // TODO 4.0 use enum_string() instead
-        return enum_value($this->type);
     }
 }

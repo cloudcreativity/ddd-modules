@@ -21,8 +21,6 @@ use Throwable;
 class FailedResultException extends RuntimeException implements ContextProvider
 {
     /**
-     * FailedResultException constructor.
-     *
      * @param Result<mixed> $result
      */
     public function __construct(

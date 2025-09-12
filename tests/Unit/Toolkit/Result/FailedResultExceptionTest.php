@@ -20,9 +20,6 @@ use PHPUnit\Framework\TestCase;
 
 class FailedResultExceptionTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test(): void
     {
         $result = Result::failed('Something went wrong.')
@@ -36,9 +33,6 @@ class FailedResultExceptionTest extends TestCase
         $this->assertSame((new ResultDecorator($result))->context(), $exception->context());
     }
 
-    /**
-     * @return void
-     */
     public function testItHasCodeAndPreviousException(): void
     {
         $result = Result::failed('Something went wrong.');

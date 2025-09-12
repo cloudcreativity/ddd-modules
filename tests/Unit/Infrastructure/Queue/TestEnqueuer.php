@@ -16,10 +16,6 @@ use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
 
 class TestEnqueuer
 {
-    /**
-     * @param Command $command
-     * @return void
-     */
     public function push(Command $command): void
     {
         // no-op

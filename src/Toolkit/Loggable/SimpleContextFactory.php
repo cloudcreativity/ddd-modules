@@ -19,9 +19,6 @@ use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 final class SimpleContextFactory implements ContextFactory
 {
-    /**
-     * @inheritDoc
-     */
     public function make(Message|Result $object): array
     {
         $object = match (true) {

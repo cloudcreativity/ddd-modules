@@ -18,18 +18,10 @@ use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
 
 class CommandQueuer implements ICommandQueuer
 {
-    /**
-     * CommandQueuer constructor.
-     *
-     * @param Queue $queue
-     */
     public function __construct(private readonly Queue $queue)
     {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function queue(Command $command): void
     {
         $this->queue->push($command);

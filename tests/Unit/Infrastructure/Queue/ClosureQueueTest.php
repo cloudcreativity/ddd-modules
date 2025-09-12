@@ -21,24 +21,15 @@ use PHPUnit\Framework\TestCase;
 
 class ClosureQueueTest extends TestCase
 {
-    /**
-     * @var MockObject&PipeContainer
-     */
-    private PipeContainer&MockObject $middleware;
+    private MockObject&PipeContainer $middleware;
 
     /**
      * @var array<Command>
      */
     private array $actual = [];
 
-    /**
-     * @var ClosureQueue
-     */
     private ClosureQueue $queue;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -51,18 +42,12 @@ class ClosureQueueTest extends TestCase
         );
     }
 
-    /**
-     * @return void
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
         unset($this->queue, $this->middleware, $this->actual);
     }
 
-    /**
-     * @return void
-     */
     public function test(): void
     {
         $command = $this->createMock(Command::class);
@@ -72,9 +57,6 @@ class ClosureQueueTest extends TestCase
         $this->assertSame([$command], $this->actual);
     }
 
-    /**
-     * @return void
-     */
     public function testWithMiddleware(): void
     {
         $command1 = $this->createMock(Command::class);
@@ -115,9 +97,6 @@ class ClosureQueueTest extends TestCase
     }
 
 
-    /**
-     * @return void
-     */
     public function testWithAlternativeHandlers(): void
     {
         $expected = new TestCommand();

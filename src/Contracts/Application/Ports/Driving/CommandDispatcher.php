@@ -20,7 +20,6 @@ interface CommandDispatcher
     /**
      * Dispatch the given command.
      *
-     * @param Command $command
      * @return Result<mixed>
      */
     public function dispatch(Command $command): Result;

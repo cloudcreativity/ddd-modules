@@ -29,10 +29,9 @@ final class Meta implements ArrayAccess, KeyedSet
     /**
      * Cast a value to meta.
      *
-     * @param Meta|array<string, mixed> $values
-     * @return Meta
+     * @param array<string, mixed>|Meta $values
      */
-    public static function cast(self|array $values): self
+    public static function cast(array|self $values): self
     {
         if ($values instanceof self) {
             return $values;
@@ -42,8 +41,6 @@ final class Meta implements ArrayAccess, KeyedSet
     }
 
     /**
-     * ResultMeta constructor.
-     *
      * @param array<string, mixed> $values
      */
     public function __construct(array $values = [])
@@ -53,43 +50,26 @@ final class Meta implements ArrayAccess, KeyedSet
         $this->stack = $values;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function offsetExists(mixed $offset): bool
     {
         return $this->exists($offset);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function offsetGet(mixed $offset): mixed
     {
         return $this->get($offset);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function offsetSet(mixed $offset, mixed $value): never
     {
         throw new LogicException('Result meta is immutable.');
     }
 
-    /**
-     * @inheritDoc
-     */
     public function offsetUnset(mixed $offset): never
     {
         throw new LogicException('Result meta is immutable.');
     }
 
-    /**
-     * @param string $key
-     * @param mixed $default
-     * @return mixed
-     */
     public function get(string $key, mixed $default = null): mixed
     {
         if ($this->exists($key)) {
@@ -101,9 +81,6 @@ final class Meta implements ArrayAccess, KeyedSet
 
     /**
      * Does a value for the provided key exist?
-     *
-     * @param string $key
-     * @return bool
      */
     public function exists(string $key): bool
     {
@@ -113,8 +90,6 @@ final class Meta implements ArrayAccess, KeyedSet
     /**
      * Put a value into the meta.
      *
-     * @param string $key
-     * @param mixed $value
      * @return $this
      */
     public function put(string $key, mixed $value): self
@@ -128,10 +103,10 @@ final class Meta implements ArrayAccess, KeyedSet
     /**
      * Merge values into the meta.
      *
-     * @param self|array<string, mixed> $values
+     * @param array<string, mixed>|self $values
      * @return $this
      */
-    public function merge(self|array $values): self
+    public function merge(array|self $values): self
     {
         if ($values instanceof self) {
             $values = $values->stack;
@@ -143,9 +118,6 @@ final class Meta implements ArrayAccess, KeyedSet
         return $copy;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function all(): array
     {
         return $this->stack;

@@ -15,18 +15,17 @@ namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Result;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\ListOfErrors as IListOfErrors;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result as IResult;
 use CloudCreativity\Modules\Tests\TestBackedEnum;
+use CloudCreativity\Modules\Tests\TestUnitEnum;
 use CloudCreativity\Modules\Toolkit\Result\Error;
 use CloudCreativity\Modules\Toolkit\Result\FailedResultException;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
 use CloudCreativity\Modules\Toolkit\Result\Meta;
 use CloudCreativity\Modules\Toolkit\Result\Result;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
 
 class ResultTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function testOk(): void
     {
         $result = Result::ok();
@@ -42,9 +41,6 @@ class ResultTest extends TestCase
         $this->assertNull($result->error());
     }
 
-    /**
-     * @return void
-     */
     public function testOkWithValue(): void
     {
         $result = Result::ok($value = 99);
@@ -79,9 +75,8 @@ class ResultTest extends TestCase
 
     /**
      * @param Result<mixed> $result
-     * @return void
-     * @depends testFailed
      */
+    #[Depends('testFailed')]
     public function testAbort(Result $result): void
     {
         try {
@@ -92,14 +87,11 @@ class ResultTest extends TestCase
         }
     }
 
-    /**
-     * @return void
-     */
     public function testErrorWithMultipleErrors(): void
     {
         $errors = new ListOfErrors(
             new Error(code: TestBackedEnum::Foo),
-            new Error(code: TestBackedEnum::Bar),
+            new Error(code: TestUnitEnum::Baz),
             new Error(message: 'Message A'),
             new Error(message: 'Message B'),
         );
@@ -111,9 +103,8 @@ class ResultTest extends TestCase
 
     /**
      * @param Result<null> $result
-     * @return void
-     * @depends testFailed
      */
+    #[Depends('testFailed')]
     public function testItThrowsWhenGettingValueOnFailedResult(Result $result): void
     {
         try {
@@ -124,9 +115,6 @@ class ResultTest extends TestCase
         }
     }
 
-    /**
-     * @return void
-     */
     public function testFailedWithListOfErrorsInterface(): void
     {
         $errors = $this->createMock(IListOfErrors::class);
@@ -139,9 +127,6 @@ class ResultTest extends TestCase
         $this->assertEquals($result, Result::fail($errors));
     }
 
-    /**
-     * @return void
-     */
     public function testFailedWithError(): void
     {
         $error = new Error(null, 'Something went wrong.');
@@ -151,9 +136,6 @@ class ResultTest extends TestCase
         $this->assertEquals($result, Result::fail($error));
     }
 
-    /**
-     * @return void
-     */
     public function testFailedWithString(): void
     {
         $error = new Error(null, 'Something went wrong.');
@@ -163,9 +145,6 @@ class ResultTest extends TestCase
         $this->assertEquals($result, Result::fail($error->message()));
     }
 
-    /**
-     * @return void
-     */
     public function testFailedWithArray(): void
     {
         $error = new Error(null, 'Something went wrong.');
@@ -175,9 +154,6 @@ class ResultTest extends TestCase
         $this->assertEquals($result, Result::fail([$error]));
     }
 
-    /**
-     * @return void
-     */
     public function testFailedWithBackedEnum(): void
     {
         $error = new Error(code: $code = TestBackedEnum::Foo);
@@ -187,27 +163,18 @@ class ResultTest extends TestCase
         $this->assertEquals($result, Result::fail($code));
     }
 
-    /**
-     * @return void
-     */
     public function testFailedWithoutErrors(): void
     {
         $this->expectException(\AssertionError::class);
         Result::failed(new ListOfErrors());
     }
 
-    /**
-     * @return void
-     */
     public function testFailWithoutErrors(): void
     {
         $this->expectException(\AssertionError::class);
         Result::fail(new ListOfErrors());
     }
 
-    /**
-     * @return void
-     */
     public function testWithMeta(): void
     {
         $meta = new Meta(['foo' => 'bar']);
@@ -216,9 +183,6 @@ class ResultTest extends TestCase
         $this->assertEquals($meta, $result->meta());
     }
 
-    /**
-     * @return void
-     */
     public function testWithMetaArray(): void
     {
         $meta = new Meta(['foo' => 'bar']);
@@ -227,9 +191,6 @@ class ResultTest extends TestCase
         $this->assertEquals($meta, $result->meta());
     }
 
-    /**
-     * @return void
-     */
     public function testWithMetaMergesValues(): void
     {
         $result1 = Result::ok()

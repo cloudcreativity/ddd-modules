@@ -24,22 +24,14 @@ abstract class ValidateCommand implements CommandMiddleware
     /**
      * Get the rules for the validation.
      *
-     * @return iterable<string|callable>
+     * @return iterable<callable|string>
      */
     abstract protected function rules(): iterable;
 
-    /**
-     * ValidateCommand constructor.
-     *
-     * @param Validator $validator
-     */
     public function __construct(private readonly Validator $validator)
     {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function __invoke(Command $command, Closure $next): IResult
     {
         $errors = $this->validator

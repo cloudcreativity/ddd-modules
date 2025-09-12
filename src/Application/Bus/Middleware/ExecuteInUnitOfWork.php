@@ -19,23 +19,17 @@ use CloudCreativity\Modules\Contracts\Application\UnitOfWork\UnitOfWorkManager;
 use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
-final class ExecuteInUnitOfWork implements CommandMiddleware
+final readonly class ExecuteInUnitOfWork implements CommandMiddleware
 {
     /**
-     * ExecuteInUnitOfWork constructor.
-     *
-     * @param UnitOfWorkManager $unitOfWorkManager
-     * @param int $attempts
+     * @param int<1, max> $attempts
      */
     public function __construct(
-        private readonly UnitOfWorkManager $unitOfWorkManager,
-        private readonly int $attempts = 1,
+        private UnitOfWorkManager $unitOfWorkManager,
+        private int $attempts = 1,
     ) {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function __invoke(Command $command, Closure $next): Result
     {
         try {

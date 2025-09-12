@@ -20,9 +20,7 @@ interface QueueMiddleware
     /**
      * Handle the command being queued.
      *
-     * @param Command $command
      * @param Closure(Command): void $next
-     * @return void
      */
     public function __invoke(Command $command, Closure $next): void;
 }

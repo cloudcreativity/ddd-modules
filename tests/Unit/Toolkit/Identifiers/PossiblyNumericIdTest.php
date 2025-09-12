@@ -15,6 +15,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Identifiers;
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
 use CloudCreativity\Modules\Toolkit\Identifiers\PossiblyNumericId;
 use CloudCreativity\Modules\Toolkit\Identifiers\StringId;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class PossiblyNumericIdTest extends TestCase
@@ -34,13 +35,8 @@ class PossiblyNumericIdTest extends TestCase
         ];
     }
 
-    /**
-     * @param string|int $value
-     * @param string|int $expected
-     * @return void
-     * @dataProvider valueProvider
-     */
-    public function test(string|int $value, string|int $expected): void
+    #[DataProvider('valueProvider')]
+    public function test(int|string $value, int|string $expected): void
     {
         $actual = new PossiblyNumericId($value);
         $expectedId = is_string($expected) ? new StringId($expected) : new IntegerId($expected);

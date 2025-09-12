@@ -20,13 +20,6 @@ use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 
 class UnitOfWorkAwareDispatcher extends Dispatcher
 {
-    /**
-     * UnitOfWorkAwareDispatcher constructor.
-     *
-     * @param UnitOfWorkManager $unitOfWorkManager
-     * @param IListenerContainer $listeners
-     * @param PipeContainer|null $middleware
-     */
     public function __construct(
         private readonly UnitOfWorkManager $unitOfWorkManager,
         IListenerContainer $listeners = new ListenerContainer(),
@@ -35,9 +28,6 @@ class UnitOfWorkAwareDispatcher extends Dispatcher
         parent::__construct($listeners, $middleware);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function dispatch(DomainEvent $event): void
     {
         if ($event instanceof OccursImmediately) {
@@ -52,10 +42,6 @@ class UnitOfWorkAwareDispatcher extends Dispatcher
 
     /**
      * Execute the listener or queue it in the unit of work manager.
-     *
-     * @param DomainEvent $event
-     * @param EventHandler $listener
-     * @return void
      */
     protected function execute(DomainEvent $event, EventHandler $listener): void
     {

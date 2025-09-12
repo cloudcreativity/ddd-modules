@@ -17,12 +17,8 @@ use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Contracts;
 use JsonSerializable;
 
-final class IntegerId implements Identifier, JsonSerializable
+final readonly class IntegerId implements Identifier, JsonSerializable
 {
-    /**
-     * @param Identifier|int $value
-     * @return self
-     */
     public static function from(Identifier|int $value): self
     {
         return match(true) {
@@ -34,35 +30,21 @@ final class IntegerId implements Identifier, JsonSerializable
         };
     }
 
-    /**
-     * IntegerId constructor.
-     *
-     * @param int $value
-     */
-    public function __construct(public readonly int $value)
+    public function __construct(public int $value)
     {
         Contracts::assert($this->value > 0, 'Identifier value must be greater than zero.');
     }
 
-    /**
-     * @inheritDoc
-     */
     public function __toString(): string
     {
         return $this->toString();
     }
 
-    /**
-     * @inheritDoc
-     */
     public function toString(): string
     {
         return (string) $this->value;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function is(?Identifier $other): bool
     {
         if ($other instanceof self) {
@@ -72,34 +54,21 @@ final class IntegerId implements Identifier, JsonSerializable
         return false;
     }
 
-    /**
-     * @param IntegerId $other
-     * @return bool
-     */
     public function equals(self $other): bool
     {
         return $this->value === $other->value;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function key(): int
     {
         return $this->value;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function context(): int
     {
         return $this->value;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function jsonSerialize(): int
     {
         return $this->value;

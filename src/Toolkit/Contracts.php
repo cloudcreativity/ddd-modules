@@ -19,21 +19,16 @@ final class Contracts
     /**
      * Assert that the provided precondition is true.
      *
-     * @param bool $precondition
-     * @param string|Closure(): string $message
-     * @return void
+     * @param Closure(): string|string $message
      * @phpstan-assert true $precondition
      */
-    public static function assert(bool $precondition, string|Closure $message = ''): void
+    public static function assert(bool $precondition, Closure|string $message = ''): void
     {
         if ($precondition === false) {
             throw new ContractException(is_string($message) ? $message : $message());
         }
     }
 
-    /**
-     * Contracts constructor.
-     */
     private function __construct()
     {
     }

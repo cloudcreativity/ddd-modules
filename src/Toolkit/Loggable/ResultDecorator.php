@@ -17,20 +17,17 @@ use CloudCreativity\Modules\Contracts\Toolkit\Loggable\Contextual;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Error;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
-final class ResultDecorator implements ContextProvider
+use function CloudCreativity\Modules\Toolkit\enum_string;
+
+final readonly class ResultDecorator implements ContextProvider
 {
     /**
-     * ResultDecorator constructor.
-     *
      * @param Result<mixed> $result
      */
-    public function __construct(private readonly Result $result)
+    public function __construct(private Result $result)
     {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function context(): array
     {
         if ($this->result instanceof ContextProvider) {
@@ -76,7 +73,6 @@ final class ResultDecorator implements ContextProvider
     }
 
     /**
-     * @param Error $error
      * @return array<string, mixed>
      */
     private function error(Error $error): array
@@ -86,8 +82,8 @@ final class ResultDecorator implements ContextProvider
         }
 
         return array_filter([
-            'code' => $error->code()?->value,
-            'key' => $error->key(),
+            'code' => enum_string($error->code() ?? ''),
+            'key' => enum_string($error->key() ?? ''),
             'message' => $error->message(),
         ]);
     }

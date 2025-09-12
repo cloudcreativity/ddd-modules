@@ -3,6 +3,4 @@ parameters:
     paths:
         - src
         - tests
-    excludePaths:
-        - tests/Unit/Domain/TestReadOnlyEntity.php
     treatPhpDocTypesAsCertain: false

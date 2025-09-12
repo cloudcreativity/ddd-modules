@@ -16,24 +16,14 @@ use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use RuntimeException;
 use Throwable;
 
-final class LazyPipe
+final readonly class LazyPipe
 {
-    /**
-     * LazyPipe constructor.
-     *
-     * @param PipeContainer $container
-     * @param string $pipeName
-     */
     public function __construct(
-        private readonly PipeContainer $container,
-        private readonly string $pipeName,
+        private PipeContainer $container,
+        private string $pipeName,
     ) {
     }
 
-    /**
-     * @param mixed ...$args
-     * @return mixed
-     */
     public function __invoke(mixed ...$args): mixed
     {
         try {

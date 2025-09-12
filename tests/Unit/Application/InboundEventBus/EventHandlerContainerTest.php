@@ -19,9 +19,6 @@ use PHPUnit\Framework\TestCase;
 
 class EventHandlerContainerTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function testItHasHandlers(): void
     {
         $a = new TestEventHandler();
@@ -35,9 +32,6 @@ class EventHandlerContainerTest extends TestCase
         $this->assertEquals(new EventHandler($b), $container->get(TestOutboundEvent::class));
     }
 
-    /**
-     * @return void
-     */
     public function testItHasDefaultHandler(): void
     {
         $a = new TestEventHandler();
@@ -51,9 +45,6 @@ class EventHandlerContainerTest extends TestCase
     }
 
 
-    /**
-     * @return void
-     */
     public function testItDoesNotHaveHandler(): void
     {
         $container = new EventHandlerContainer();

@@ -23,24 +23,12 @@ use PHPUnit\Framework\TestCase;
 
 class DispatcherTest extends TestCase
 {
-    /**
-     * @var ListenerContainer&MockObject
-     */
     private ListenerContainer&MockObject $listeners;
 
-    /**
-     * @var MockObject&PipeContainer
-     */
-    private PipeContainer&MockObject $middleware;
+    private MockObject&PipeContainer $middleware;
 
-    /**
-     * @var Dispatcher
-     */
     private Dispatcher $dispatcher;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -51,9 +39,6 @@ class DispatcherTest extends TestCase
         );
     }
 
-    /**
-     * @return void
-     */
     public function testItDispatchesImmediately(): void
     {
         $sequence = [];
@@ -116,9 +101,6 @@ class DispatcherTest extends TestCase
         $this->assertSame($sequence, ['Listener1', 'Listener2', 'Listener3']);
     }
 
-    /**
-     * @return void
-     */
     public function testNoListeners(): void
     {
         $event = $this->createMock(DomainEvent::class);
@@ -126,9 +108,6 @@ class DispatcherTest extends TestCase
         $this->dispatcher->dispatch($event);
     }
 
-    /**
-     * @return void
-     */
     public function testItDispatchesThroughMiddleware(): void
     {
         $event1 = new TestDomainEvent();
@@ -171,9 +150,6 @@ class DispatcherTest extends TestCase
         $this->dispatcher->dispatch($event1);
     }
 
-    /**
-     * @return void
-     */
     public function testListenerDoesNotHaveHandleMethod(): void
     {
         $event = new TestImmediateDomainEvent();

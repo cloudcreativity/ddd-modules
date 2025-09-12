@@ -19,9 +19,6 @@ use RuntimeException;
 
 class TearDownAfterEventTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function testItInvokesCallbackAfterSuccess(): void
     {
         $event = $this->createMock(IntegrationEvent::class);
@@ -39,9 +36,6 @@ class TearDownAfterEventTest extends TestCase
         $this->assertSame(['next', 'teardown'], $sequence);
     }
 
-    /**
-     * @return void
-     */
     public function testItInvokesCallbackAfterException(): void
     {
         $event = $this->createMock(IntegrationEvent::class);

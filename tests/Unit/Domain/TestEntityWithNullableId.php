@@ -22,8 +22,6 @@ class TestEntityWithNullableId implements Entity
 
     /**
      * TestEntityWithNullableGuid constructor.
-     *
-     * @param Identifier|null $id
      */
     public function __construct(?Identifier $id = null)
     {

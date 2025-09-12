@@ -21,9 +21,6 @@ use RuntimeException;
 
 class TearDownAfterDispatchTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function testItInvokesCallbackAfterSuccess(): void
     {
         $message = $this->createMock(Command::class);
@@ -44,9 +41,6 @@ class TearDownAfterDispatchTest extends TestCase
         $this->assertSame(['next', 'teardown'], $sequence);
     }
 
-    /**
-     * @return void
-     */
     public function testItInvokesCallbackAfterFailure(): void
     {
         $message = $this->createMock(Query::class);
@@ -67,9 +61,6 @@ class TearDownAfterDispatchTest extends TestCase
         $this->assertSame(['next', 'teardown'], $sequence);
     }
 
-    /**
-     * @return void
-     */
     public function testItInvokesCallbackAfterException(): void
     {
         $message = $this->createMock(Command::class);

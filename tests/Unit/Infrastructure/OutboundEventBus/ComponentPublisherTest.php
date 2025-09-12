@@ -23,18 +23,12 @@ use PHPUnit\Framework\TestCase;
 class ComponentPublisherTest extends TestCase
 {
     /**
-     * @var PublisherHandlerContainer&MockObject
+     * @var MockObject&PublisherHandlerContainer
      */
     private PublisherHandlerContainer $handlers;
 
-    /**
-     * @var MockObject&PipeContainer
-     */
-    private PipeContainer&MockObject $middleware;
+    private MockObject&PipeContainer $middleware;
 
-    /**
-     * @var ComponentPublisher
-     */
     private ComponentPublisher $publisher;
 
     /**
@@ -42,9 +36,6 @@ class ComponentPublisherTest extends TestCase
      */
     private array $sequence = [];
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -55,18 +46,12 @@ class ComponentPublisherTest extends TestCase
         );
     }
 
-    /**
-     * @return void
-     */
     protected function tearDown(): void
     {
         unset($this->publisher, $this->handlers, $this->middleware);
         parent::tearDown();
     }
 
-    /**
-     * @return void
-     */
     public function testPublish(): void
     {
         $event = new TestOutboundEvent();
@@ -85,9 +70,6 @@ class ComponentPublisherTest extends TestCase
         $this->publisher->publish($event);
     }
 
-    /**
-     * @return void
-     */
     public function testPublishWithMiddleware(): void
     {
         $event1 = new TestOutboundEvent();

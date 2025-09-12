@@ -25,21 +25,16 @@ use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
 final class Validator implements IValidator
 {
     /**
-     * @var iterable<string|callable>
+     * @var iterable<callable|string>
      */
     private iterable $using = [];
 
-    /**
-     * AbstractValidator constructor
-     *
-     * @param PipeContainer|null $rules
-     */
     public function __construct(private readonly ?PipeContainer $rules = null)
     {
     }
 
     /**
-     * @param iterable<string|callable> $rules
+     * @param iterable<callable|string> $rules
      * @return $this
      */
     public function using(iterable $rules): static
@@ -49,9 +44,6 @@ final class Validator implements IValidator
         return $this;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function validate(Command|Query $message): IListOfErrors
     {
         $errors = $this
@@ -63,9 +55,6 @@ final class Validator implements IValidator
         return $errors;
     }
 
-    /**
-     * @return Pipeline
-     */
     private function getPipeline(): Pipeline
     {
         return PipelineBuilder::make($this->rules)
@@ -73,9 +62,6 @@ final class Validator implements IValidator
             ->build($this->processor());
     }
 
-    /**
-     * @return AccumulationProcessor
-     */
     private function processor(): AccumulationProcessor
     {
         return new AccumulationProcessor(

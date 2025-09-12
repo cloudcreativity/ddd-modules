@@ -5,6 +5,43 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [4.0.0] - 2025-09-12
+
+### Added
+
+- **BREAKING**: Added `code()` method to the `ListOfErrors` interface. This returns the first error code in the list, or
+  `null` if there are no error codes.
+
+### Changed
+
+- **BREAKING**: The constructor argument order for the `Error` class has changed. The new order is `code`, `message`,
+  `key`. Previously it was `key`, `message`, `code` because code was added later. However, in most instances `code` is
+  the most important property as it is used to programmatically detect specific error scenarios. This hopefully will not
+  be breaking, as the docs specified that named arguments should be used when constructing error objects.
+- **BREAKING** The error and error list interfaces now accept `UnitEnum` instead of `BackedEnum` for error codes.
+  Although technically breaking, this will only affect your implementation if you have implemented these interfaces. All
+  concrete classes provided by this package have been updated.
+- **BREAKING**: The key of an error can now be a enum - previously only strings were accepted. This is only breaking if
+  you have implemented the interface yourself.
+- Updated `KeyedSetOfErrors` to handle error keys now being strings or enums.
+- **BREAKING**: The `Guid::make()` method will now convert a string that is a UUID to a UUID GUID. Previously it would
+  use a string id.
+- **BREAKING**: Updated the `GuidTypeMap` class so that it now supports enum aliases, enum types, and UUID identifiers.
+  This means the `type()` method now returns a string or enum, whereas previously it returned just a string.
+- Object log context now casts Ramsey UUIDs and enums to strings.
+
+### Removed
+
+- Package no longer supports PHP 8.1. The minimum supported version is now PHP 8.2.
+- **BREAKING**: Removed the `Guid::type()` method - use `enum_value($guid->type)` or `enum_string($guid->type)` instead.
+- Removed the following classes that were deprecated in 3.4:
+    - `LazyListOfGuids`
+    - `LazyListOfIdentifiers`
+    - `LazyListOfIntegerIds`
+    - `LazyListOfStringIds`
+    - `LazyListOfUuids`
+    - `ListOfIdentifiers`
+
 ## [3.4.0] - 2025-09-09
 
 ### Deprecated
@@ -444,6 +481,12 @@ All notable changes to this project will be documented in this file. This projec
 ## [0.1.0] - 2023-11-18
 
 Initial release.
+
+[4.0.0]: https://github.com/cloudcreativity/ddd-modules/compare/v3.4.0...v4.0.0
+
+[3.4.0]: https://github.com/cloudcreativity/ddd-modules/compare/v3.3.1...v3.4.0
+
+[3.3.1]: https://github.com/cloudcreativity/ddd-modules/compare/v3.3.0...v3.3.1
 
 [3.3.0]: https://github.com/cloudcreativity/ddd-modules/compare/v3.2.0...v3.3.0
 

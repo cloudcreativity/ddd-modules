@@ -18,11 +18,17 @@ use CloudCreativity\Modules\Contracts\Toolkit\Loggable\Contextual;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Error as IError;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result as IResult;
 use CloudCreativity\Modules\Tests\TestBackedEnum;
+use CloudCreativity\Modules\Tests\TestBackedIntEnum;
+use CloudCreativity\Modules\Tests\TestUnitEnum;
 use CloudCreativity\Modules\Toolkit\Loggable\ResultDecorator;
 use CloudCreativity\Modules\Toolkit\Loggable\SimpleContextFactory;
 use CloudCreativity\Modules\Toolkit\Result\Error;
 use CloudCreativity\Modules\Toolkit\Result\Result;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use UnitEnum;
+
+use function CloudCreativity\Modules\Toolkit\enum_string;
 
 /**
  * @extends IResult<null>
@@ -37,32 +43,20 @@ interface ErrorWithContext extends IError, ContextProvider
 
 class ResultDecoratorTest extends TestCase
 {
-    /**
-     * @var SimpleContextFactory
-     */
     private SimpleContextFactory $factory;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
         $this->factory = new SimpleContextFactory();
     }
 
-    /**
-     * @return void
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
         unset($this->factory);
     }
 
-    /**
-     * @return void
-     */
     public function testSuccess(): void
     {
         $result = Result::ok();
@@ -78,9 +72,6 @@ class ResultDecoratorTest extends TestCase
         $this->assertSame($expected, $this->factory->make($result));
     }
 
-    /**
-     * @return void
-     */
     public function testSuccessWithContextProvider(): void
     {
         $expected = [
@@ -100,9 +91,6 @@ class ResultDecoratorTest extends TestCase
         $this->assertSame($expected, $this->factory->make($result));
     }
 
-    /**
-     * @return void
-     */
     public function testSuccessWithIdentifier(): void
     {
         $expected = [
@@ -133,11 +121,7 @@ class ResultDecoratorTest extends TestCase
         ];
     }
 
-    /**
-     * @param mixed $value
-     * @return void
-     * @dataProvider scalarProvider
-     */
+    #[DataProvider('scalarProvider')]
     public function testSuccessWithScalarOrNull(mixed $value): void
     {
         $expected = [
@@ -151,9 +135,6 @@ class ResultDecoratorTest extends TestCase
         $this->assertSame($expected, $this->factory->make($result));
     }
 
-    /**
-     * @return void
-     */
     public function testSuccessContextWithMeta(): void
     {
         $result = Result::ok()->withMeta(['foo' => 'bar']);
@@ -170,7 +151,7 @@ class ResultDecoratorTest extends TestCase
     }
 
     /**
-     * @return array<array<string|Error>>
+     * @return array<array<Error|string>>
      */
     public static function onlyMessageProvider(): array
     {
@@ -180,12 +161,8 @@ class ResultDecoratorTest extends TestCase
         ];
     }
 
-    /**
-     * @param string|Error $error
-     * @return void
-     * @dataProvider onlyMessageProvider
-     */
-    public function testFailureContextWithErrorThatOnlyHasMessage(string|Error $error): void
+    #[DataProvider('onlyMessageProvider')]
+    public function testFailureContextWithErrorThatOnlyHasMessage(Error|string $error): void
     {
         $result = Result::failed($error);
 
@@ -199,28 +176,28 @@ class ResultDecoratorTest extends TestCase
     }
 
     /**
-     * @return array<array<BackedEnum|Error>>
+     * @return array<array<Error|UnitEnum>>
      */
     public static function onlyCodeProvider(): array
     {
         return [
-            [TestBackedEnum::Foo],
+            [TestUnitEnum::Baz],
             [new Error(code: TestBackedEnum::Bar)],
         ];
     }
 
     /**
      * @param BackedEnum|Error $error
-     * @return void
-     * @dataProvider onlyCodeProvider
      */
-    public function testFailureContextWithErrorThatOnlyHasCode(BackedEnum|Error $error): void
+    #[DataProvider('onlyCodeProvider')]
+    public function testFailureContextWithErrorThatOnlyHasCode(Error|UnitEnum $error): void
     {
         $result = Result::failed($error);
+        $code = $error instanceof UnitEnum ? $error : $error->code();
 
         $expected = [
             'success' => false,
-            'error' => $error instanceof BackedEnum ? $error->value : $error->code()?->value,
+            'error' => enum_string($code ?? '!!'),
         ];
 
         $this->assertSame($expected, (new ResultDecorator($result))->context());
@@ -233,15 +210,15 @@ class ResultDecoratorTest extends TestCase
     public static function errorsProvider(): array
     {
         $error1 = new Error(
-            key: 'foo',
-            message: 'Something went wrong.',
             code: TestBackedEnum::Bar,
+            message: 'Something went wrong.',
+            key: 'foo',
         );
 
         $error2 = new Error(
-            key: 'bar',
+            code: TestBackedIntEnum::FooBar,
             message: 'Something else went wrong.',
-            code: TestBackedEnum::Foo,
+            key: TestBackedIntEnum::BazBat,
         );
 
         $expected1 = [
@@ -251,8 +228,8 @@ class ResultDecoratorTest extends TestCase
         ];
 
         $expected2 = [
-            'code' => TestBackedEnum::Foo->value,
-            'key' => 'bar',
+            'code' => TestBackedIntEnum::FooBar->name,
+            'key' => TestBackedIntEnum::BazBat->name,
             'message' => 'Something else went wrong.',
         ];
 
@@ -265,9 +242,8 @@ class ResultDecoratorTest extends TestCase
     /**
      * @param array<Error> $errors
      * @param array<int, array<string, mixed>> $expected
-     * @return void
-     * @dataProvider errorsProvider
      */
+    #[DataProvider('errorsProvider')]
     public function testFailureContextWithMeta(array $errors, array $expected): void
     {
         $result = Result::failed($errors)->withMeta(['baz' => 'bat']);
@@ -284,9 +260,6 @@ class ResultDecoratorTest extends TestCase
         $this->assertSame($expected, $this->factory->make($result));
     }
 
-    /**
-     * @return void
-     */
     public function testItHasLogContext(): void
     {
         $mock = $this->createMock(ResultWithContext::class);
@@ -296,9 +269,6 @@ class ResultDecoratorTest extends TestCase
         $this->assertSame($expected, $this->factory->make($mock));
     }
 
-    /**
-     * @return void
-     */
     public function testItHasErrorWithLogContext(): void
     {
         $mock = $this->createMock(ErrorWithContext::class);

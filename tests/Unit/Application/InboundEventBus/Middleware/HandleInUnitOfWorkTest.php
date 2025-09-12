@@ -25,9 +25,6 @@ class HandleInUnitOfWorkTest extends TestCase
      */
     private array $sequence = [];
 
-    /**
-     * @return void
-     */
     public function testItCommitsUnitOfWork(): void
     {
         $event = $this->createMock(IntegrationEvent::class);
@@ -56,9 +53,6 @@ class HandleInUnitOfWorkTest extends TestCase
         $this->assertSame(['begin', 'handler', 'commit'], $this->sequence);
     }
 
-    /**
-     * @return void
-     */
     public function testItDoesNotCatchExceptions(): void
     {
         $event = $this->createMock(IntegrationEvent::class);

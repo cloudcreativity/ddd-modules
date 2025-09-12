@@ -16,9 +16,6 @@ use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\Processor;
 
 final class SimpleProcessor implements Processor
 {
-    /**
-     * @inheritDoc
-     */
     public function process(mixed $payload, callable ...$stages): mixed
     {
         foreach ($stages as $stage) {

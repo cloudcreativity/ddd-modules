@@ -23,19 +23,10 @@ use PHPUnit\Framework\TestCase;
 
 class CommandDispatcherTest extends TestCase
 {
-    /**
-     * @var CommandHandlerContainer&MockObject
-     */
     private CommandHandlerContainer&MockObject $handlers;
 
-    /**
-     * @var PipeContainer&MockObject
-     */
-    private PipeContainer&MockObject $middleware;
+    private MockObject&PipeContainer $middleware;
 
-    /**
-     * @var CommandDispatcher
-     */
     private CommandDispatcher $dispatcher;
 
     /**
@@ -43,9 +34,6 @@ class CommandDispatcherTest extends TestCase
      */
     private array $sequence = [];
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -56,18 +44,12 @@ class CommandDispatcherTest extends TestCase
         );
     }
 
-    /**
-     * @return void
-     */
     protected function tearDown(): void
     {
         unset($this->handlers, $this->middleware, $this->dispatcher, $this->sequence);
         parent::tearDown();
     }
 
-    /**
-     * @return void
-     */
     public function test(): void
     {
         $command = $this->createMock(Command::class);
@@ -89,9 +71,6 @@ class CommandDispatcherTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @return void
-     */
     public function testWithMiddleware(): void
     {
         $command1 = new TestCommand();

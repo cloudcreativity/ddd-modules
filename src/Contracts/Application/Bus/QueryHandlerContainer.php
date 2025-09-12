@@ -12,13 +12,14 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Contracts\Application\Bus;
 
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Query;
+
 interface QueryHandlerContainer
 {
     /**
      * Get a query handler for the provided query name.
      *
-     * @param string $queryClass
-     * @return QueryHandler
+     * @param class-string<Query> $queryClass
      */
     public function get(string $queryClass): QueryHandler;
 }

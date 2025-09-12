@@ -17,20 +17,12 @@ use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextProvider;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
-final class PsrLogExceptionReporter implements ExceptionReporter
+final readonly class PsrLogExceptionReporter implements ExceptionReporter
 {
-    /**
-     * PsrLogExceptionReporter constructor.
-     *
-     * @param LoggerInterface $logger
-     */
-    public function __construct(private readonly LoggerInterface $logger)
+    public function __construct(private LoggerInterface $logger)
     {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function report(Throwable $ex): void
     {
         $this->logger->error(
@@ -40,7 +32,6 @@ final class PsrLogExceptionReporter implements ExceptionReporter
     }
 
     /**
-     * @param Throwable $ex
      * @return array<array-key, mixed>
      */
     private function context(Throwable $ex): array

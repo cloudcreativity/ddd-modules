@@ -18,17 +18,11 @@ use DateTimeImmutable;
 
 class TestInboundEvent implements IntegrationEvent
 {
-    /**
-     * @return Uuid
-     */
     public function getUuid(): Uuid
     {
         return Uuid::random();
     }
 
-    /**
-     * @return DateTimeImmutable
-     */
     public function getOccurredAt(): DateTimeImmutable
     {
         return new DateTimeImmutable();

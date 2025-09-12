@@ -18,31 +18,21 @@ interface Entity
 {
     /**
      * Get the entity's identifier.
-     *
-     * @return Identifier|null
      */
     public function getId(): ?Identifier;
 
     /**
      * Get the entity's identifier, or fail if one is not set.
-     *
-     * @return Identifier
      */
     public function getIdOrFail(): Identifier;
 
     /**
      * Is this entity the same as the provided entity?
-     *
-     * @param Entity|null $other
-     * @return bool
      */
     public function is(?Entity $other): bool;
 
     /**
      * Is this entity not the same as the provided entity?
-     *
-     * @param Entity|null $other
-     * @return bool
      */
     public function isNot(?Entity $other): bool;
 }

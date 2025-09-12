@@ -19,9 +19,6 @@ use Ramsey\Uuid\UuidInterface;
 
 final class IdentifierFactory implements IIdentifierFactory
 {
-    /**
-     * @inheritDoc
-     */
     public function make(mixed $id): Identifier
     {
         return match(true) {

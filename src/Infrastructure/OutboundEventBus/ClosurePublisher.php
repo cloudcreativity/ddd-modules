@@ -27,15 +27,10 @@ class ClosurePublisher implements OutboundEventPublisher
     private array $bindings = [];
 
     /**
-     * @var list<string|callable>
+     * @var list<callable|string>
      */
     private array $pipes = [];
 
-    /**
-     * ClosurePublisher constructor.
-     *
-     * @param Closure $fn
-     */
     public function __construct(
         private readonly Closure $fn,
         private readonly ?PipeContainer $middleware = null,
@@ -46,8 +41,6 @@ class ClosurePublisher implements OutboundEventPublisher
      * Bind a publisher for the specified event.
      *
      * @param class-string<IntegrationEvent> $event
-     * @param Closure $fn
-     * @return void
      */
     public function bind(string $event, Closure $fn): void
     {
@@ -57,17 +50,13 @@ class ClosurePublisher implements OutboundEventPublisher
     /**
      * Publish events through the provided pipes.
      *
-     * @param list<string|callable> $pipes
-     * @return void
+     * @param list<callable|string> $pipes
      */
     public function through(array $pipes): void
     {
         $this->pipes = array_values($pipes);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function publish(IntegrationEvent $event): void
     {
         $publisher = $this->bindings[$event::class] ?? $this->fn;

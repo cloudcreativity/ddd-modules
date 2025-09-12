@@ -20,7 +20,6 @@ interface PublisherHandlerContainer
      * Get a handler for the specified integration event.
      *
      * @param class-string<IntegrationEvent> $eventName
-     * @return PublisherHandler
      */
     public function get(string $eventName): PublisherHandler;
 }

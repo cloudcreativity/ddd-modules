@@ -26,24 +26,12 @@ use Psr\Log\LogLevel;
 
 class LogMessageDispatchTest extends TestCase
 {
-    /**
-     * @var LoggerInterface&MockObject
-     */
     private LoggerInterface&MockObject $logger;
 
-    /**
-     * @var MockObject&ContextFactory
-     */
     private ContextFactory&MockObject $context;
 
-    /**
-     * @var Command
-     */
     private Command $message;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -53,18 +41,12 @@ class LogMessageDispatchTest extends TestCase
         $this->message = new class () implements Command {};
     }
 
-    /**
-     * @return void
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
         unset($this->logger, $this->context, $this->message);
     }
 
-    /**
-     * @return void
-     */
     public function testWithDefaultLevels(): void
     {
         $expected = Result::ok()->withMeta(['foobar' => 'bazbat']);
@@ -104,9 +86,6 @@ class LogMessageDispatchTest extends TestCase
         ], $logs);
     }
 
-    /**
-     * @return void
-     */
     public function testWithCustomLevels(): void
     {
         $expected = Result::failed('Something went wrong.');
@@ -147,9 +126,6 @@ class LogMessageDispatchTest extends TestCase
         ], $logs);
     }
 
-    /**
-     * @return void
-     */
     public function testItLogsAfterTheNextClosureIsInvoked(): void
     {
         $expected = new LogicException();

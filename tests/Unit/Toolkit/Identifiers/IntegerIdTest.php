@@ -18,13 +18,11 @@ use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
 use CloudCreativity\Modules\Toolkit\Identifiers\StringId;
 use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class IntegerIdTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test(): void
     {
         $id = new IntegerId(99);
@@ -40,9 +38,6 @@ class IntegerIdTest extends TestCase
         );
     }
 
-    /**
-     * @return void
-     */
     public function testItMustBeGreaterThanZero(): void
     {
         $this->expectException(ContractException::class);
@@ -50,9 +45,6 @@ class IntegerIdTest extends TestCase
         new IntegerId(0);
     }
 
-    /**
-     * @return void
-     */
     public function testItIsEquals(): void
     {
         $this->assertObjectEquals($id = new IntegerId(99), $other = IntegerId::from(99));
@@ -60,9 +52,6 @@ class IntegerIdTest extends TestCase
         $this->assertTrue($id->is($other));
     }
 
-    /**
-     * @return void
-     */
     public function testItIsNotEqual(): void
     {
         $id = new IntegerId(99);
@@ -82,11 +71,7 @@ class IntegerIdTest extends TestCase
         ];
     }
 
-    /**
-     * @param Identifier $other
-     * @return void
-     * @dataProvider notIntegerIdProvider
-     */
+    #[DataProvider('notIntegerIdProvider')]
     public function testIsWithOtherIdentifiers(Identifier $other): void
     {
         $id = new IntegerId(1);
@@ -94,9 +79,6 @@ class IntegerIdTest extends TestCase
         $this->assertFalse($id->is($other));
     }
 
-    /**
-     * @return void
-     */
     public function testIsWithNull(): void
     {
         $id = new IntegerId(1);
@@ -104,11 +86,7 @@ class IntegerIdTest extends TestCase
         $this->assertFalse($id->is(null));
     }
 
-    /**
-     * @param Identifier $other
-     * @return void
-     * @dataProvider notIntegerIdProvider
-     */
+    #[DataProvider('notIntegerIdProvider')]
     public function testFromWithOtherIdentifiers(Identifier $other): void
     {
         $this->expectException(ContractException::class);

@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Identifiers;
 
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Tests\TestBackedEnum;
 use CloudCreativity\Modules\Tests\TestUnitEnum;
 use CloudCreativity\Modules\Toolkit\ContractException;
@@ -19,8 +20,10 @@ use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
 use CloudCreativity\Modules\Toolkit\Identifiers\StringId;
 use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid as BaseUuid;
+use Ramsey\Uuid\UuidInterface;
 use UnitEnum;
 
 class GuidTest extends TestCase
@@ -48,19 +51,16 @@ class GuidTest extends TestCase
     }
 
     /**
-     * @param TestUnitEnum|string $type
-     * @param string $value
-     * @param TestUnitEnum|string $other
-     * @return void
-     * @dataProvider typeProvider
+     * @param string|TestUnitEnum $type
+     * @param string|TestUnitEnum $other
      */
-    public function testStringId(UnitEnum|string $type, string $value, UnitEnum|string $other): void
+    #[DataProvider('typeProvider')]
+    public function testStringId(string|UnitEnum $type, string $value, string|UnitEnum $other): void
     {
         $guid = Guid::fromString($type, '123');
 
         $this->assertInstanceOf(\Stringable::class, $guid);
         $this->assertSame($type, $guid->type);
-        $this->assertSame($value, $guid->type());
         $this->assertObjectEquals(new StringId('123'), $guid->id);
         $this->assertSame($value . ':123', $guid->toString());
         $this->assertSame($value . ':123', (string) $guid);
@@ -77,14 +77,8 @@ class GuidTest extends TestCase
         $this->assertFalse($guid->equals(Guid::fromInteger($type, 123)));
     }
 
-    /**
-     * @param UnitEnum|string $type
-     * @param string $value
-     * @param UnitEnum|string $other
-     * @return void
-     * @dataProvider typeProvider
-     */
-    public function testIntegerId(UnitEnum|string $type, string $value, UnitEnum|string $other): void
+    #[DataProvider('typeProvider')]
+    public function testIntegerId(string|UnitEnum $type, string $value, string|UnitEnum $other): void
     {
         $guid = Guid::fromInteger($type, 123);
 
@@ -105,14 +99,8 @@ class GuidTest extends TestCase
         $this->assertFalse($guid->equals(Guid::fromString($type, '123')));
     }
 
-    /**
-     * @param UnitEnum|string $type
-     * @param string $value
-     * @param UnitEnum|string $other
-     * @return void
-     * @dataProvider typeProvider
-     */
-    public function testUuid(UnitEnum|string $type, string $value, UnitEnum|string $other): void
+    #[DataProvider('typeProvider')]
+    public function testUuid(string|UnitEnum $type, string $value, string|UnitEnum $other): void
     {
         $uuid = Uuid::random();
         $guid = Guid::fromUuid($type, $uuid->value);
@@ -135,58 +123,60 @@ class GuidTest extends TestCase
     }
 
     /**
-     * @return void
+     * @return array<string, array{0: int|string|Uuid|UuidInterface, 1: Identifier}>
      */
+    public static function makeProvider(): array
+    {
+        $uuid = Uuid::random();
+
+        return [
+            'integer' => [123, new IntegerId(123)],
+            'string' => ['some-slug', new StringId('some-slug')],
+            'ramsey uuid' => [$uuid->value, $uuid],
+            'uuid object' => [$uuid, $uuid],
+            'string uuid' => [$uuid->toString(), $uuid],
+        ];
+    }
+
+    #[DataProvider('makeProvider')]
+    public function testItMakesGuid(int|string|Uuid|UuidInterface $value, Identifier $expected): void
+    {
+        $guid = Guid::make('SomeType', $value);
+        $this->assertObjectEquals($expected, $guid->id);
+    }
+
     public function testEmptyType(): void
     {
         $this->expectException(ContractException::class);
         Guid::fromString('', '123');
     }
 
-    /**
-     * @return void
-     */
     public function testEmptyStringId(): void
     {
         $this->expectException(ContractException::class);
         Guid::fromString('SomeType', '');
     }
 
-    /**
-     * @return void
-     */
     public function testNegativeIntegerId(): void
     {
         $this->expectException(ContractException::class);
         Guid::fromInteger('SomeType', -1);
     }
 
-    /**
-     * @return void
-     */
     public function testFromInteger(): void
     {
         $guid = Guid::fromInteger('SomeType', 1);
         $this->assertObjectEquals(new IntegerId(1), $guid->id);
     }
 
-    /**
-     * @return void
-     */
     public function testFromString(): void
     {
         $guid = Guid::fromString('SomeType', '1');
         $this->assertObjectEquals(new StringId('1'), $guid->id);
     }
 
-    /**
-     * @param UnitEnum|string $type
-     * @param string $value
-     * @param UnitEnum|string $other
-     * @return void
-     * @dataProvider typeProvider
-     */
-    public function testIsTypeWithMultipleTypes(UnitEnum|string $type, string $value, UnitEnum|string $other): void
+    #[DataProvider('typeProvider')]
+    public function testIsTypeWithMultipleTypes(string|UnitEnum $type, string $value, string|UnitEnum $other): void
     {
         $guid = Guid::fromInteger($type, 1);
 
@@ -195,12 +185,8 @@ class GuidTest extends TestCase
         $this->assertFalse($guid->isType());
     }
 
-    /**
-     * @param UnitEnum|string $type
-     * @return void
-     * @dataProvider typeProvider
-     */
-    public function testAssertTypeDoesNotThrowForExpectedType(UnitEnum|string $type): void
+    #[DataProvider('typeProvider')]
+    public function testAssertTypeDoesNotThrowForExpectedType(string|UnitEnum $type): void
     {
         $guid = Guid::fromInteger($type, 1);
 
@@ -208,18 +194,11 @@ class GuidTest extends TestCase
         $this->assertSame($guid, $actual);
     }
 
-    /**
-     * @param UnitEnum|string $type
-     * @param string $value
-     * @param UnitEnum|string $other
-     * @param string $otherValue
-     * @return void
-     * @dataProvider typeProvider
-     */
+    #[DataProvider('typeProvider')]
     public function testAssertTypeDoesThrowForUnexpectedType(
-        UnitEnum|string $type,
+        string|UnitEnum $type,
         string $value,
-        UnitEnum|string $other,
+        string|UnitEnum $other,
         string $otherValue,
     ): void {
         $this->expectException(ContractException::class);

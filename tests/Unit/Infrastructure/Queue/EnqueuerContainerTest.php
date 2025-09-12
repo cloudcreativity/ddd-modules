@@ -20,9 +20,6 @@ use PHPUnit\Framework\TestCase;
 
 class EnqueuerContainerTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test(): void
     {
         $command1 = new class () implements Command {};

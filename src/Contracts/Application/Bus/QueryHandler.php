@@ -21,7 +21,6 @@ interface QueryHandler extends DispatchThroughMiddleware
     /**
      * Execute the query.
      *
-     * @param Query $query
      * @return Result<mixed>
      */
     public function __invoke(Query $query): Result;

@@ -20,7 +20,7 @@ class InterruptibleProcessorTest extends TestCase
     public function test(): void
     {
         $processor = new InterruptibleProcessor(
-            static fn (int|float $value): bool => 0 === (intval($value) % 10),
+            static fn (float|int $value): bool => 0 === (intval($value) % 10),
         );
 
         $a = static fn (int $value): int => $value * 10;

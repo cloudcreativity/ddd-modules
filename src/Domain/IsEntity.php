@@ -17,30 +17,18 @@ use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 
 trait IsEntity
 {
-    /**
-     * @var Identifier
-     */
     private readonly Identifier $id;
 
-    /**
-     * @inheritDoc
-     */
     public function getId(): Identifier
     {
         return $this->id;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getIdOrFail(): Identifier
     {
         return $this->id;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function is(?Entity $other): bool
     {
         if ($other instanceof $this) {
@@ -52,9 +40,6 @@ trait IsEntity
         return false;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function isNot(?Entity $other): bool
     {
         return !$this->is($other);

@@ -13,31 +13,28 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\Bus;
 
 use Closure;
+use CloudCreativity\Modules\Application\ApplicationException;
 use CloudCreativity\Modules\Contracts\Application\Bus\CommandHandlerContainer as ICommandHandlerContainer;
-use RuntimeException;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
 
 final class CommandHandlerContainer implements ICommandHandlerContainer
 {
     /**
-     * @var array<string, Closure>
+     * @var array<class-string<Command>, Closure>
      */
     private array $bindings = [];
 
     /**
      * Bind a command handler into the container.
      *
-     * @param string $commandClass
-     * @param Closure $binding
-     * @return void
+     * @param class-string<Command> $commandClass
+     * @param Closure(): object $binding
      */
     public function bind(string $commandClass, Closure $binding): void
     {
         $this->bindings[$commandClass] = $binding;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function get(string $commandClass): CommandHandler
     {
         $factory = $this->bindings[$commandClass] ?? null;
@@ -48,6 +45,6 @@ final class CommandHandlerContainer implements ICommandHandlerContainer
             return new CommandHandler($innerHandler);
         }
 
-        throw new RuntimeException('No command handler bound for command class: ' . $commandClass);
+        throw new ApplicationException('No command handler bound for command class: ' . $commandClass);
     }
 }

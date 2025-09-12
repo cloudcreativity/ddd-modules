@@ -17,13 +17,7 @@ use DateTimeImmutable;
 
 interface IntegrationEvent extends Message
 {
-    /**
-     * @return Uuid
-     */
     public function getUuid(): Uuid;
 
-    /**
-     * @return DateTimeImmutable
-     */
     public function getOccurredAt(): DateTimeImmutable;
 }

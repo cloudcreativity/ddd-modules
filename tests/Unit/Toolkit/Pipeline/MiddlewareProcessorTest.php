@@ -71,10 +71,6 @@ class MiddlewareProcessorTest extends TestCase
         $this->assertSame('FOO', $result);
     }
 
-    /**
-     * @param string $step
-     * @return Closure
-     */
     private function createMiddleware(string $step): Closure
     {
         return static function (array $values, Closure $next) use ($step) {

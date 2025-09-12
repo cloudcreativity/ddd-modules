@@ -13,31 +13,28 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\Bus;
 
 use Closure;
+use CloudCreativity\Modules\Application\ApplicationException;
 use CloudCreativity\Modules\Contracts\Application\Bus\QueryHandlerContainer as IQueryHandlerContainer;
-use RuntimeException;
+use CloudCreativity\Modules\Contracts\Toolkit\Messages\Query;
 
 final class QueryHandlerContainer implements IQueryHandlerContainer
 {
     /**
-     * @var array<string,Closure>
+     * @var array<class-string<Query>,Closure>
      */
     private array $bindings = [];
 
     /**
      * Bind a query handler into the container.
      *
-     * @param string $queryClass
-     * @param Closure $binding
-     * @return void
+     * @param class-string<Query> $queryClass
+     * @param Closure(): object $binding
      */
     public function bind(string $queryClass, Closure $binding): void
     {
         $this->bindings[$queryClass] = $binding;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function get(string $queryClass): QueryHandler
     {
         $factory = $this->bindings[$queryClass] ?? null;
@@ -48,6 +45,6 @@ final class QueryHandlerContainer implements IQueryHandlerContainer
             return new QueryHandler($innerHandler);
         }
 
-        throw new RuntimeException('No query handler bound for query class: ' . $queryClass);
+        throw new ApplicationException('No query handler bound for query class: ' . $queryClass);
     }
 }

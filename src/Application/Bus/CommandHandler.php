@@ -17,20 +17,12 @@ use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddle
 use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
-final class CommandHandler implements ICommandHandler
+final readonly class CommandHandler implements ICommandHandler
 {
-    /**
-     * CommandHandler constructor.
-     *
-     * @param object $handler
-     */
-    public function __construct(private readonly object $handler)
+    public function __construct(private object $handler)
     {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function __invoke(Command $command): Result
     {
         assert(method_exists($this->handler, 'execute'), sprintf(
@@ -46,9 +38,6 @@ final class CommandHandler implements ICommandHandler
         return $result;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function middleware(): array
     {
         if ($this->handler instanceof DispatchThroughMiddleware) {

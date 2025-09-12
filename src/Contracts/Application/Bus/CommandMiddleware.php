@@ -21,7 +21,6 @@ interface CommandMiddleware
     /**
      * Handle the command.
      *
-     * @param Command $command
      * @param Closure(Command): Result<mixed> $next
      * @return Result<mixed>
      */
