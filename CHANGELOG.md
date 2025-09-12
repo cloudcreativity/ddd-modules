@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [4.0.0] - 2025-09-12
+
 ### Added
 
 - **BREAKING**: Added `code()` method to the `ListOfErrors` interface. This returns the first error code in the list, or
@@ -479,6 +481,12 @@ All notable changes to this project will be documented in this file. This projec
 ## [0.1.0] - 2023-11-18
 
 Initial release.
+
+[4.0.0]: https://github.com/cloudcreativity/ddd-modules/compare/v3.4.0...v4.0.0
+
+[3.4.0]: https://github.com/cloudcreativity/ddd-modules/compare/v3.3.1...v3.4.0
+
+[3.3.1]: https://github.com/cloudcreativity/ddd-modules/compare/v3.3.0...v3.3.1
 
 [3.3.0]: https://github.com/cloudcreativity/ddd-modules/compare/v3.2.0...v3.3.0
 
