@@ -19,6 +19,8 @@ use JsonSerializable;
 
 final readonly class IntegerId implements Identifier, JsonSerializable
 {
+    use IsIdentifier;
+
     public static function from(Identifier|int $value): self
     {
         return match(true) {

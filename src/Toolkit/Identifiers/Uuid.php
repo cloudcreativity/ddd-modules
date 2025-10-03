@@ -20,6 +20,7 @@ use Ramsey\Uuid\UuidInterface as IBaseUuid;
 
 final class Uuid implements Identifier, JsonSerializable
 {
+    use IsIdentifier;
     private static ?IUuidFactory $factory = null;
 
     public static function setFactory(?IUuidFactory $factory): void

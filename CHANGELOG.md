@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/) and [this changelog format](http://keepachangelog.com/).
 
+## Next Major Release
+
+### Added
+
+- **BREAKING**: The `Identifier` interface now has an `any()` method that returns `true` if any of the given identifiers
+  match the identifier. If you have implemented any custom identifiers, you can add the `IsIdentifier` trait to
+  implement this new method.
+
 ## Unreleased
 
 ## [4.1.0] - 2025-10-03
