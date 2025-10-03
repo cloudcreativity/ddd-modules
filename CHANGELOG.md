@@ -489,6 +489,8 @@ All notable changes to this project will be documented in this file. This projec
 
 Initial release.
 
+[4.1.0]: https://github.com/cloudcreativity/ddd-modules/compare/v4.0.0...v4.1.0
+
 [4.0.0]: https://github.com/cloudcreativity/ddd-modules/compare/v3.4.0...v4.0.0
 
 [3.4.0]: https://github.com/cloudcreativity/ddd-modules/compare/v3.3.1...v3.4.0
