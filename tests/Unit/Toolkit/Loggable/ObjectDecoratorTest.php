@@ -20,6 +20,8 @@ use CloudCreativity\Modules\Tests\TestUnitEnum;
 use CloudCreativity\Modules\Toolkit\Loggable\ObjectDecorator;
 use CloudCreativity\Modules\Toolkit\Loggable\Sensitive;
 use CloudCreativity\Modules\Toolkit\Loggable\SimpleContextFactory;
+use DateTimeImmutable;
+use DateTimeInterface;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -44,8 +46,10 @@ class ObjectDecoratorTest extends TestCase
     public function testItUsesObjectProperties(): void
     {
         $uuid = Uuid::uuid4();
+        $date1 = new \DateTimeImmutable();
+        $date2 = new \DateTime('2025-01-01 12:34:56', new \DateTimeZone('Australia/Sydney'));
 
-        $source = new class ($uuid) implements Message {
+        $source = new class ($uuid, $date1, $date2, $date2->getTimezone()) implements Message {
             public string $foo = 'bar';
             public string $baz = 'bat';
             public ?string $blah = null;
@@ -54,8 +58,12 @@ class ObjectDecoratorTest extends TestCase
             public UnitEnum $enum3 = TestUnitEnum::Baz;
             protected string $foobar = 'foobar';
 
-            public function __construct(public UuidInterface $uuid)
-            {
+            public function __construct(
+                public UuidInterface $uuid,
+                public DateTimeInterface $date1,
+                public DateTimeInterface $date2,
+                public \DateTimeZone $timeZone,
+            ) {
             }
         };
 
@@ -67,16 +75,57 @@ class ObjectDecoratorTest extends TestCase
             'enum2' => TestBackedIntEnum::FooBar->name,
             'enum3' => TestUnitEnum::Baz->name,
             'uuid' => $uuid->toString(),
+            'date1' => $date1->format('Y-m-d\TH:i:s.uP'),
+            'date2' => $date2->format('Y-m-d\TH:i:s.uP'),
+            'timeZone' => 'Australia/Sydney',
         ];
 
         $decorator = new ObjectDecorator($source);
 
         $this->assertInstanceOf(ContextProvider::class, $decorator);
-        $this->assertSame(array_keys($expected), $decorator->keys());
         $this->assertSame($expected, iterator_to_array($decorator));
         $this->assertSame($expected, $decorator->all());
         $this->assertSame($expected, $decorator->context());
         $this->assertSame($expected, $this->factory->make($source));
+        $this->assertSame(array_keys($expected), $decorator->keys());
+    }
+
+    public function testItCanCustomiseDateFormat(): void
+    {
+        $date = new DateTimeImmutable('2025-01-01 12:34:56', new \DateTimeZone('Australia/Sydney'));
+
+        $source = new class ($date) implements Message {
+            public function __construct(public DateTimeInterface $date)
+            {
+            }
+        };
+
+        $expected = [
+            'date' => $date->format('Y-m-d H:i:s'),
+        ];
+
+        $decorator = new ObjectDecorator($source, dateFormat: 'Y-m-d H:i:s');
+
+        $this->assertSame($expected, $decorator->context());
+    }
+
+    public function testItCanTurnOffDateFormatting(): void
+    {
+        $date = new DateTimeImmutable('2025-01-01 12:34:56', new \DateTimeZone('Australia/Sydney'));
+
+        $source = new class ($date) implements Message {
+            public function __construct(public DateTimeInterface $date)
+            {
+            }
+        };
+
+        $expected = [
+            'date' => $date,
+        ];
+
+        $decorator = new ObjectDecorator($source, dateFormat: null);
+
+        $this->assertSame($expected, $decorator->context());
     }
 
     public function testItExcludesSensitiveProperties(): void

@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [4.1.0] - 2025-10-03
+
+### Added
+
+- Log context for objects that have date time properties will now convert those properties to strings.
+- Log context for objects that have date time zones will now convert the time zone to its name.
+
 ## [4.0.0] - 2025-09-12
 
 ### Added

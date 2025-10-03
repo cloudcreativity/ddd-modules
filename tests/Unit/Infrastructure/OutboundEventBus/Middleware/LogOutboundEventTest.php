@@ -15,6 +15,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\OutboundEventBus\Mid
 use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
 use CloudCreativity\Modules\Infrastructure\OutboundEventBus\Middleware\LogOutboundEvent;
 use CloudCreativity\Modules\Tests\Unit\Infrastructure\OutboundEventBus\TestOutboundEvent;
+use CloudCreativity\Modules\Toolkit\Loggable\ObjectDecorator;
 use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -56,10 +57,7 @@ class LogOutboundEventTest extends TestCase
             $this->assertSame($this->event, $received);
         });
 
-        $context = [
-            'uuid' => $this->event->uuid->context(),
-            'occurredAt' => $this->event->occurredAt,
-        ];
+        $context = (new ObjectDecorator($this->event))->context();
 
         $this->assertSame([
             [LogLevel::DEBUG, "Publishing integration event {$eventName}.", ['event' => $context]],
@@ -85,10 +83,7 @@ class LogOutboundEventTest extends TestCase
             $this->assertSame($this->event, $received);
         });
 
-        $context = [
-            'uuid' => $this->event->uuid->context(),
-            'occurredAt' => $this->event->occurredAt,
-        ];
+        $context = (new ObjectDecorator($this->event))->context();
 
         $this->assertSame([
             [LogLevel::NOTICE, "Publishing integration event {$eventName}.", ['event' => $context]],
@@ -101,10 +96,7 @@ class LogOutboundEventTest extends TestCase
         $expected = new LogicException();
         $eventName = ModuleBasename::from($this->event);
 
-        $context = [
-            'uuid' => $this->event->uuid->context(),
-            'occurredAt' => $this->event->occurredAt,
-        ];
+        $context = (new ObjectDecorator($this->event))->context();
 
         $this->logger
             ->expects($this->once())

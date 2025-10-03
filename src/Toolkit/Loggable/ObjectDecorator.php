@@ -14,6 +14,8 @@ namespace CloudCreativity\Modules\Toolkit\Loggable;
 
 use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextProvider;
 use CloudCreativity\Modules\Contracts\Toolkit\Loggable\Contextual;
+use DateTimeInterface;
+use DateTimeZone;
 use Generator;
 use IteratorAggregate;
 use Ramsey\Uuid\UuidInterface;
@@ -28,8 +30,12 @@ use function CloudCreativity\Modules\Toolkit\enum_string;
  */
 final readonly class ObjectDecorator implements IteratorAggregate, ContextProvider
 {
-    public function __construct(private object $source)
-    {
+    private const DATE_FORMAT = 'Y-m-d\TH:i:s.uP';
+
+    public function __construct(
+        private object $source,
+        private ?string $dateFormat = self::DATE_FORMAT,
+    ) {
     }
 
     /**
@@ -44,6 +50,8 @@ final readonly class ObjectDecorator implements IteratorAggregate, ContextProvid
                 $value instanceof Contextual => $value->context(),
                 $value instanceof UuidInterface => $value->toString(),
                 $value instanceof UnitEnum => enum_string($value),
+                $value instanceof DateTimeInterface && $this->dateFormat !== null => $value->format($this->dateFormat),
+                $value instanceof DateTimeZone => $value->getName(),
                 default => $value,
             };
         }
