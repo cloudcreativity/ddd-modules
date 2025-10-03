@@ -50,6 +50,7 @@ class IntegerIdTest extends TestCase
         $this->assertObjectEquals($id = new IntegerId(99), $other = IntegerId::from(99));
         $this->assertSame($id, IntegerId::from($id));
         $this->assertTrue($id->is($other));
+        $this->assertTrue($id->any(new IntegerId(1), new IntegerId(2), $other));
     }
 
     public function testItIsNotEqual(): void
@@ -57,6 +58,8 @@ class IntegerIdTest extends TestCase
         $id = new IntegerId(99);
         $this->assertFalse($id->equals($other = new IntegerId(100)));
         $this->assertFalse($id->is($other));
+        $this->assertFalse($id->any($other, new IntegerId(200), new IntegerId(300)));
+        $this->assertFalse($id->any());
     }
 
     /**
@@ -77,6 +80,7 @@ class IntegerIdTest extends TestCase
         $id = new IntegerId(1);
 
         $this->assertFalse($id->is($other));
+        $this->assertFalse($id->any(new IntegerId(2), null, $other));
     }
 
     public function testIsWithNull(): void
