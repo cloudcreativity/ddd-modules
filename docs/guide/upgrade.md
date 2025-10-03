@@ -1,5 +1,17 @@
 # Upgrade Guide
 
+## 3.x to 4.x
+
+Upgrade using Composer:
+
+```bash
+composer require cloudcreativity/ddd-modules:^4.0
+```
+
+Although this release contains breaking changes, most implementations can upgrade without making any changes. This is because the majority of changes affect classes that are implemented by this package - and it is unlikely you are implementing these yourself.
+
+Refer to the changelog for a full list of changes.
+
 ## 2.x to 3.x
 
 Upgrade using Composer:
