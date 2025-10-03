@@ -38,7 +38,7 @@ interface ListOfErrors extends ListIterator
     /**
      * Get all the unique error codes in the list.
      *
-     * @return array<UnitEnum>
+     * @return list<UnitEnum>
      */
     public function codes(): array;
 
@@ -46,6 +46,20 @@ interface ListOfErrors extends ListIterator
      * Get the first error code in the list.
      */
     public function code(): ?UnitEnum;
+
+    /**
+     * Get all the unique error messages in the list.
+     *
+     * @return list<non-empty-string>
+     */
+    public function messages(): array;
+
+    /**
+     * Get the first error message in the list.
+     *
+     * @return non-empty-string|null
+     */
+    public function message(): ?string;
 
     /**
      * Return a new instance with the provided error pushed on to the end of the list.

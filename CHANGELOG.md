@@ -10,6 +10,9 @@ All notable changes to this project will be documented in this file. This projec
 - **BREAKING**: The `Identifier` interface now has an `any()` method that returns `true` if any of the given identifiers
   match the identifier. If you have implemented any custom identifiers, you can add the `IsIdentifier` trait to
   implement this new method.
+- **BREAKING**: Add `message()` and `messages()` helper methods to the `ErrorList` interface. Although technically
+  breaking, this will not affect most implementations as the concrete error list class provided this package has been
+  updated.
 
 ## Unreleased
 
