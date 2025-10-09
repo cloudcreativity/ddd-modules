@@ -1,5 +1,27 @@
 # Upgrade Guide
 
+## 4.x to 5.x
+
+Upgrade using Composer:
+
+```bash
+composer config minimum-stability rc
+composer require cloudcreativity/ddd-modules:^5.0
+```
+
+### Identifiers
+
+A new `any()` method has been added to the `Identifier` interface. This will only affect your implementation if you have
+implemented any custom identifier classes. To solve, add the `IsIdentifier` trait to your class.
+
+### Other Changes
+
+Although this release contains other breaking changes, most implementations can upgrade without making any changes. This
+is because the majority of changes affect classes that are implemented by this package - and it is unlikely you are
+implementing these yourself.
+
+Refer to the changelog for a full list of changes.
+
 ## 3.x to 4.x
 
 Upgrade using Composer:
@@ -8,7 +30,9 @@ Upgrade using Composer:
 composer require cloudcreativity/ddd-modules:^4.0
 ```
 
-Although this release contains breaking changes, most implementations can upgrade without making any changes. This is because the majority of changes affect classes that are implemented by this package - and it is unlikely you are implementing these yourself.
+Although this release contains breaking changes, most implementations can upgrade without making any changes. This is
+because the majority of changes affect classes that are implemented by this package - and it is unlikely you are
+implementing these yourself.
 
 Refer to the changelog for a full list of changes.
 

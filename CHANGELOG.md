@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [5.0.0-rc.1] - 2025-10-09
+
+### Added
+
+- **BREAKING**: The `Identifier` interface now has an `any()` method that returns `true` if any of the given identifiers
+  match the identifier. If you have implemented any custom identifiers, you can add the `IsIdentifier` trait to
+  implement this new method.
+- **BREAKING**: Add `message()` and `messages()` helper methods to the `ErrorList` interface. Although technically
+  breaking, this will not affect most implementations as the concrete error list class provided this package has been
+  updated.
+
 ## [4.1.0] - 2025-10-03
 
 ### Added
@@ -488,6 +499,10 @@ All notable changes to this project will be documented in this file. This projec
 ## [0.1.0] - 2023-11-18
 
 Initial release.
+
+[5.0.0-rc.1]: https://github.com/cloudcreativity/ddd-modules/compare/v4.1.0...v5.0.0-rc.1
+
+[4.1.0]: https://github.com/cloudcreativity/ddd-modules/compare/v4.0.0...v4.1.0
 
 [4.0.0]: https://github.com/cloudcreativity/ddd-modules/compare/v3.4.0...v4.0.0
 

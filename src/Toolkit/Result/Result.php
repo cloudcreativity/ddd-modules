@@ -115,13 +115,7 @@ final readonly class Result implements IResult
 
     public function error(): ?string
     {
-        foreach ($this->errors as $error) {
-            if ($message = $error->message()) {
-                return $message;
-            }
-        }
-
-        return null;
+        return $this->errors->message();
     }
 
     public function meta(): Meta

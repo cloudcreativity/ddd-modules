@@ -59,6 +59,12 @@ class GuidTest extends TestCase
     {
         $guid = Guid::fromString($type, '123');
 
+        $others = [
+            Guid::fromInteger($type, 123),
+            Guid::fromString($type, '234'),
+            Guid::fromString($other, '123'),
+        ];
+
         $this->assertInstanceOf(\Stringable::class, $guid);
         $this->assertSame($type, $guid->type);
         $this->assertObjectEquals(new StringId('123'), $guid->id);
@@ -67,10 +73,13 @@ class GuidTest extends TestCase
         $this->assertTrue($guid->isType($type));
         $this->assertTrue($guid->is($guid));
         $this->assertTrue($guid->is(clone $guid));
-        $this->assertFalse($guid->is(Guid::fromInteger($type, 123)));
-        $this->assertFalse($guid->is(Guid::fromString($type, '234')));
-        $this->assertFalse($guid->is(Guid::fromString($other, '123')));
+        $this->assertTrue($guid->any($others[0], $others[1], clone $guid));
+        $this->assertFalse($guid->is($others[0]));
+        $this->assertFalse($guid->is($others[1]));
+        $this->assertFalse($guid->is($others[2]));
         $this->assertFalse($guid->is(null));
+        $this->assertFalse($guid->any(...$others));
+        $this->assertFalse($guid->any(null, ...$others));
         $this->assertSame(['type' => $value, 'id' => '123'], $guid->context());
         $this->assertEquals($guid, Guid::fromString($type, '123'));
         $this->assertObjectEquals($guid, Guid::fromString($type, '123'));

@@ -102,6 +102,34 @@ final class ListOfErrors implements IListOfErrors
         return null;
     }
 
+    public function messages(): array
+    {
+        $messages = [];
+
+        foreach ($this->stack as $error) {
+            $message = $error->message();
+
+            if (strlen($message) > 0) {
+                $messages[$message] = $message;
+            }
+        }
+
+        return array_values($messages);
+    }
+
+    public function message(): ?string
+    {
+        foreach ($this->stack as $error) {
+            $message = $error->message();
+
+            if (strlen($message) > 0) {
+                return $message;
+            }
+        }
+
+        return null;
+    }
+
     public function push(IError $error): self
     {
         $copy = clone $this;

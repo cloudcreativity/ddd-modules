@@ -23,6 +23,8 @@ use function CloudCreativity\Modules\Toolkit\enum_string;
 
 final readonly class Guid implements Identifier
 {
+    use IsIdentifier;
+
     public static function from(Identifier $value): self
     {
         if ($value instanceof self) {

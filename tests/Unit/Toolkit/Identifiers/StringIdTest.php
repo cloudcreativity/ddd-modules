@@ -56,6 +56,7 @@ class StringIdTest extends TestCase
         $this->assertObjectEquals($id = new StringId('99'), $other = StringId::from('99'));
         $this->assertSame($id, StringId::from($id));
         $this->assertTrue($id->is($other));
+        $this->assertTrue($id->any(new StringId('foo'), new StringId('bar'), null, $other));
     }
 
     public function testItIsNotEqual(): void
@@ -63,6 +64,8 @@ class StringIdTest extends TestCase
         $id = new StringId('99');
         $this->assertFalse($id->equals($other = new StringId('100')));
         $this->assertFalse($id->is($other));
+        $this->assertFalse($id->any(new StringId('foo'), new StringId('bar'), null, $other));
+        $this->assertFalse($id->any());
     }
 
     /**
@@ -83,6 +86,7 @@ class StringIdTest extends TestCase
         $id = new StringId('1');
 
         $this->assertFalse($id->is($other));
+        $this->assertFalse($id->any($other, new StringId('foo'), null));
     }
 
     public function testIsWithNull(): void

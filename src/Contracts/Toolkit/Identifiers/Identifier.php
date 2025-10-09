@@ -23,6 +23,11 @@ interface Identifier extends Stringable, Contextual
     public function is(?self $other): bool;
 
     /**
+     * Is the identifier any of the provided identifiers?
+     */
+    public function any(?self ...$others): bool;
+
+    /**
      * Fluent to-string method.
      */
     public function toString(): string;

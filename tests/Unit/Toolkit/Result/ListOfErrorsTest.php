@@ -152,4 +152,36 @@ class ListOfErrorsTest extends TestCase
         $this->assertSame(TestBackedEnum::Foo, $errors1->code());
         $this->assertNull($errors2->code());
     }
+
+    public function testMessages(): void
+    {
+        $errors = new ListOfErrors(
+            new Error(message: 'Message A'),
+            new Error(message: 'Message B'),
+            new Error(code: TestUnitEnum::Baz),
+            new Error(message: 'Message A'),
+            new Error(message: 'Message C'),
+        );
+
+        $this->assertSame(['Message A', 'Message B', 'Message C'], $errors->messages());
+    }
+
+    public function testMessage(): void
+    {
+        $errors1 = new ListOfErrors(
+            new Error(message: 'Message A'),
+            new Error(message: 'Message B'),
+            new Error(code: TestUnitEnum::Baz),
+            new Error(message: 'Message A'),
+            new Error(message: 'Message C'),
+        );
+
+        $errors2 = new ListOfErrors(
+            new Error(code: TestUnitEnum::Baz),
+            new Error(code: TestBackedEnum::Foo),
+        );
+
+        $this->assertSame('Message A', $errors1->message());
+        $this->assertNull($errors2->message());
+    }
 }
