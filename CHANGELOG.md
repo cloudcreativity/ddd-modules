@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/) and [this changelog format](http://keepachangelog.com/).
 
-## Next Major Release
+## Unreleased
 
 ### Added
 
@@ -13,8 +13,6 @@ All notable changes to this project will be documented in this file. This projec
 - **BREAKING**: Add `message()` and `messages()` helper methods to the `ErrorList` interface. Although technically
   breaking, this will not affect most implementations as the concrete error list class provided this package has been
   updated.
-
-## Unreleased
 
 ## [4.1.0] - 2025-10-03
 

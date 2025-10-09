@@ -5,7 +5,7 @@
 Upgrade using Composer:
 
 ```bash
-composer config minimum-stability dev
+composer config minimum-stability rc
 composer require cloudcreativity/ddd-modules:^5.0
 ```
 
