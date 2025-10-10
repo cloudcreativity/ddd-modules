@@ -21,7 +21,7 @@ interface ContextFactory
      * Make log context for the provided object.
      *
      * @param Message|Result<mixed> $object
-     * @return array<array-key, mixed>
+     * @return array<string, mixed>
      */
     public function make(Message|Result $object): array;
 }

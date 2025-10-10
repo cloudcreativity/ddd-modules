@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file. This projec
     - `any()` to determine if any of the errors match.
     - `every()` to determine if every error matches.
     - `filter()` to get a new list containing only matching errors.
+- The `FailedResultException` now has a message when the result has an error code but no error message.
 
 ### Deprecated
 
