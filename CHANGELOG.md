@@ -14,6 +14,8 @@ All notable changes to this project will be documented in this file. This projec
     - `every()` to determine if every error matches.
     - `filter()` to get a new list containing only matching errors.
 - The `FailedResultException` now has a message when the result has an error code but no error message.
+- The `FakeExceptionReporter` now has `none()` and `expect()` helper methods, to prevent exceptions from being swallowed
+  in tests.
 
 ### Deprecated
 
