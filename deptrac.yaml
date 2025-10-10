@@ -38,14 +38,18 @@ deptrac:
           value: ^Deprecated$
   ruleset:
     Toolkit:
+      - Attributes
     Domain:
       - Toolkit
+      - Attributes
     Application:
       - Toolkit
       - Domain
       - PSR Log
+      - Attributes
     Infrastructure:
       - Toolkit
       - Domain
       - Application
       - PSR Log
+      - Attributes

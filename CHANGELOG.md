@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+### Added
+
+- New methods on the `ListOfErrors` interface:
+    - `find()` to find the first matching error.
+    - `sole()` to get the first error, but only if exactly one error exists.
+    - `any()` to determine if any of the errors match.
+    - `every()` to determine if every error matches.
+    - `filter()` to get a new list containing only matching errors.
+
+### Deprecated
+
+- The `ListOfErrors::contains()` method is deprecated and will be removed in 6.0. Use the new `any()` method instead.
+- Calling the `ListOfErrors::first()` method with arguments is deprecated and will be removed in 6.0. Use the new
+  `find()` method instead.
+
 ## [5.0.0-rc.1] - 2025-10-09
 
 ### Added

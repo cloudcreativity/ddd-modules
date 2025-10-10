@@ -16,7 +16,11 @@ use Closure;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Error as IError;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\ListOfErrors as IListOfErrors;
 use CloudCreativity\Modules\Toolkit\Iterables\IsList;
+use Deprecated;
+use LogicException;
 use UnitEnum;
+
+use function CloudCreativity\Modules\Toolkit\enum_string;
 
 final class ListOfErrors implements IListOfErrors
 {
@@ -48,33 +52,62 @@ final class ListOfErrors implements IListOfErrors
             return $this->stack[0] ?? null;
         }
 
-        if ($matcher instanceof UnitEnum) {
-            $matcher = static fn (IError $error): bool => $error->is($matcher);
-        }
+        trigger_error(
+            'Calling first() with a matcher is deprecated and will be removed in 6.0; use find() instead.',
+            E_USER_DEPRECATED,
+        );
 
-        foreach ($this->stack as $error) {
-            if ($matcher($error)) {
-                return $error;
-            }
-        }
-
-        return null;
+        return $this->find($matcher);
     }
 
+    public function find(Closure|UnitEnum $matcher): ?IError
+    {
+        return array_find($this->stack, $this->where($matcher));
+    }
+
+
+    public function sole(Closure|UnitEnum|null $matcher = null): IError
+    {
+        $errors = $matcher ? $this->filter($matcher) : $this;
+
+        if (count($errors->stack) === 1) {
+            return $errors->stack[0];
+        }
+
+        throw new LogicException(sprintf(
+            'Expected exactly one %s but there are %d.',
+            match (true) {
+                $matcher instanceof UnitEnum => sprintf('error with code "%s"', enum_string($matcher)),
+                $matcher instanceof Closure => 'error matching the criteria',
+                default => 'error',
+            },
+            count($errors->stack),
+        ));
+    }
+
+    #[Deprecated(message: 'use any() instead', since: '5.0.0-rc.2')]
     public function contains(Closure|UnitEnum $matcher): bool
     {
-        if ($matcher instanceof UnitEnum) {
-            $matcher = static fn (IError $error): bool => $error->is($matcher);
-        }
-
-        foreach ($this->stack as $error) {
-            if ($matcher($error)) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->any($matcher);
     }
+
+    public function any(Closure|UnitEnum $matcher): bool
+    {
+        return array_any($this->stack, $this->where($matcher));
+    }
+
+    public function every(Closure|UnitEnum $matcher): bool
+    {
+        return array_all($this->stack, $this->where($matcher));
+    }
+
+    public function filter(Closure|UnitEnum $matcher): self
+    {
+        return new self(...array_values(
+            array_filter($this->stack, $this->where($matcher)),
+        ));
+    }
+
 
     public function codes(): array
     {
@@ -152,5 +185,18 @@ final class ListOfErrors implements IListOfErrors
     public function toKeyedSet(): KeyedSetOfErrors
     {
         return new KeyedSetOfErrors(...$this->stack);
+    }
+
+    /**
+     * @param (Closure(IError): bool)|UnitEnum $matcher
+     * @return Closure(IError): bool
+     */
+    private function where(Closure|UnitEnum $matcher): Closure
+    {
+        if ($matcher instanceof UnitEnum) {
+            return static fn (IError $error): bool => $error->is($matcher);
+        }
+
+        return $matcher;
     }
 }

@@ -19,7 +19,7 @@ final class Contracts
     /**
      * Assert that the provided precondition is true.
      *
-     * @param Closure(): string|string $message
+     * @param (Closure(): string)|string $message
      * @phpstan-assert true $precondition
      */
     public static function assert(bool $precondition, Closure|string $message = ''): void

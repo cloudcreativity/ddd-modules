@@ -21,8 +21,14 @@ use CloudCreativity\Modules\Toolkit\Result\Meta;
  */
 interface Result
 {
+    /**
+     * Is the result a success?
+     */
     public function didSucceed(): bool;
 
+    /**
+     * Is the result a failure?
+     */
     public function didFail(): bool;
 
     /**
