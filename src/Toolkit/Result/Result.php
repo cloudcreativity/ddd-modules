@@ -12,9 +12,11 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Result;
 
+use Closure;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Error as IError;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\ListOfErrors as IListOfErrors;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result as IResult;
+use LogicException;
 use UnitEnum;
 
 /**
@@ -113,9 +115,28 @@ final readonly class Result implements IResult
         return $this->errors;
     }
 
-    public function error(): ?string
+    public function error(Closure|string|null $default = null): ?string
     {
-        return $this->errors->message();
+        if ($this->didSucceed()) {
+            return null;
+        }
+
+        $message = $this->errors->message() ?? '';
+
+        if (strlen($message) > 0) {
+            return $message;
+        }
+
+        return match (true) {
+            $default instanceof Closure => $default($this->code() ?? throw new LogicException('Expecting errors to have a code if there is no message.')),
+            is_string($default) => $default,
+            default => null,
+        };
+    }
+
+    public function code(): ?UnitEnum
+    {
+        return $this->errors->code();
     }
 
     public function meta(): Meta

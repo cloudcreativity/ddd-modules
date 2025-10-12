@@ -23,6 +23,9 @@ use CloudCreativity\Modules\Toolkit\Result\Meta;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
+use UnitEnum;
+
+use function CloudCreativity\Modules\Toolkit\enum_string;
 
 class ResultTest extends TestCase
 {
@@ -39,6 +42,9 @@ class ResultTest extends TestCase
         $this->assertTrue($result->errors()->isEmpty());
         $this->assertTrue($result->meta()->isEmpty());
         $this->assertNull($result->error());
+        $this->assertNull($result->error('There is no error!'));
+        $this->assertNull($result->error(fn (): never => $this->fail('Should not be called.')));
+        $this->assertNull($result->code());
     }
 
     public function testOkWithValue(): void
@@ -52,6 +58,7 @@ class ResultTest extends TestCase
         $this->assertTrue($result->errors()->isEmpty());
         $this->assertTrue($result->meta()->isEmpty());
         $this->assertNull($result->error());
+        $this->assertNull($result->code());
     }
 
     /**
@@ -68,6 +75,11 @@ class ResultTest extends TestCase
         $this->assertSame($errors, $result->errors());
         $this->assertTrue($result->meta()->isEmpty());
         $this->assertSame('Something went wrong.', $result->error());
+        $this->assertSame('Something went wrong.', $result->error('Blah!'));
+        $this->assertSame('Something went wrong.', $result->error(
+            fn (): never => $this->fail('Should not be called.'),
+        ));
+        $this->assertNull($result->code());
         $this->assertEquals($result, Result::fail($errors));
 
         return $result;
@@ -99,6 +111,30 @@ class ResultTest extends TestCase
         $result = Result::failed($errors);
 
         $this->assertSame('Message A', $result->error());
+        $this->assertSame('Message A', $result->error(fn (): never => $this->fail('Should not be called.')));
+        $this->assertSame(TestBackedEnum::Foo, $result->code());
+    }
+
+    public function testErrorWithMultipleCodedErrors(): void
+    {
+        $errors = new ListOfErrors(
+            new Error(code: TestBackedEnum::Foo),
+            new Error(code: TestUnitEnum::Baz),
+        );
+
+        $result = Result::failed($errors);
+
+        $this->assertSame(TestBackedEnum::Foo, $result->code());
+        $this->assertNull($result->error());
+        $this->assertSame('Unknown error!', $result->error('Unknown error!'));
+        $this->assertSame(
+            enum_string(TestBackedEnum::Foo),
+            $result->error(function (UnitEnum $code): string {
+                $this->assertSame(TestBackedEnum::Foo, $code);
+                return enum_string($code);
+            }),
+        );
+        $this->assertSame(TestBackedEnum::Foo, $result->code());
     }
 
     /**

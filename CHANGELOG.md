@@ -16,6 +16,12 @@ All notable changes to this project will be documented in this file. This projec
 - The `FailedResultException` now has a message when the result has an error code but no error message.
 - The `FakeExceptionReporter` now has `none()` and `expect()` helper methods, to prevent exceptions from being swallowed
   in tests.
+- **BREAKING**: Changes to the result interface to support the following features. Although technically breaking, this
+  will not affect the majority of implementations are the concrete result class provided by this package has been
+  updated.
+    - Can now pass a default value to the `Result::error()` method. This default value can either be a string or a
+      closure that receives the error code. (Errors always have codes if they do not have messages.)
+    - Added `Result::code()` method to get the first error code in the result's errors.
 
 ### Deprecated
 
