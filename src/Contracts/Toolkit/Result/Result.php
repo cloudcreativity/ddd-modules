@@ -63,7 +63,8 @@ interface Result
     /**
      * Get the first error message, if there is one.
      *
-     * @param (Closure(UnitEnum): string)|string|null $default the default value to use if there is no error message.
+     * @param (Closure(UnitEnum): non-empty-string)|non-empty-string|null $default the default value to use if there is no error message.
+     * @return ($default is Closure|string ? non-empty-string : null)
      */
     public function error(Closure|string|null $default = null): ?string;
 

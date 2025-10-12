@@ -32,6 +32,8 @@ if (!function_exists(__NAMESPACE__ . '\enum_value')) {
 if (!function_exists(__NAMESPACE__ . '\enum_string')) {
     /**
      * Return a string value for an enum.
+     *
+     * @return ($value is non-empty-string|UnitEnum ? non-empty-string : string)
      */
     function enum_string(string|UnitEnum $value): string
     {
