@@ -56,6 +56,8 @@ class UuidTest extends TestCase
         $this->assertSame($id, Uuid::from($id));
         $this->assertTrue($id->is($other));
         $this->assertTrue($id->any(null, Uuid::random(), $other));
+        $this->assertEquals($id, Uuid::tryFrom($base));
+        $this->assertSame($id, Uuid::tryFrom($id));
     }
 
     public function testItIsNotEqual(): void
@@ -69,11 +71,12 @@ class UuidTest extends TestCase
     }
 
     /**
-     * @return array<int, array<Identifier>>
+     * @return array<int, array<Identifier|null>>
      */
     public static function notUuidProvider(): array
     {
         return [
+            [null],
             [new IntegerId(1)],
             [new StringId('foo')],
             [new Guid('SomeType', new Uuid(RamseyUuid::fromString('6dcbad65-ed92-4e60-973b-9ba58a022816')))],
@@ -81,7 +84,7 @@ class UuidTest extends TestCase
     }
 
     #[DataProvider('notUuidProvider')]
-    public function testIsWithOtherIdentifiers(Identifier $other): void
+    public function testIsWithOtherIdentifiers(?Identifier $other): void
     {
         $id = new Uuid(RamseyUuid::fromString('6dcbad65-ed92-4e60-973b-9ba58a022816'));
 
@@ -90,15 +93,8 @@ class UuidTest extends TestCase
         $this->assertFalse($id->any());
     }
 
-    public function testIsWithNull(): void
-    {
-        $id = new Uuid(RamseyUuid::uuid4());
-
-        $this->assertFalse($id->is(null));
-    }
-
     #[DataProvider('notUuidProvider')]
-    public function testFromWithOtherIdentifiers(Identifier $other): void
+    public function testFromWithOtherIdentifiers(?Identifier $other): void
     {
         $this->expectException(ContractException::class);
         $this->expectExceptionMessage('Unexpected identifier type, received: ' . get_debug_type($other));
@@ -106,7 +102,7 @@ class UuidTest extends TestCase
     }
 
     #[DataProvider('notUuidProvider')]
-    public function testTryFromWithOtherIdentifiers(Identifier $other): void
+    public function testTryFromWithOtherIdentifiers(?Identifier $other): void
     {
         $this->assertNull(Uuid::tryFrom($other));
     }

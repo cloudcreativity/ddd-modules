@@ -14,6 +14,7 @@ namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\UuidFactory as IUuidFactory;
+use CloudCreativity\Modules\Toolkit\ContractException;
 use JsonSerializable;
 use Ramsey\Uuid\Uuid as BaseUuid;
 use Ramsey\Uuid\UuidInterface as IBaseUuid;
@@ -38,24 +39,23 @@ final class Uuid implements Identifier, JsonSerializable
         return self::$factory = new UuidFactory();
     }
 
-    public static function from(IBaseUuid|Identifier|string $value): self
+    public static function from(IBaseUuid|Identifier|string|null $value): self
     {
         $factory = self::getFactory();
 
         return match(true) {
             $value instanceof Identifier, $value instanceof IBaseUuid => $factory->from($value),
             is_string($value) => $factory->fromString($value),
+            $value === null => throw new ContractException('Unexpected identifier type, received: null'),
         };
     }
 
     public static function tryFrom(IBaseUuid|Identifier|string|null $value): ?self
     {
-        $factory = self::getFactory();
-
         return match(true) {
             $value instanceof self => $value,
-            $value instanceof IBaseUuid => $factory->from($value),
-            is_string($value) && BaseUuid::isValid($value) => $factory->fromString($value),
+            $value instanceof IBaseUuid => self::getFactory()->from($value),
+            is_string($value) && BaseUuid::isValid($value) => self::getFactory()->fromString($value),
             default => null,
         };
     }

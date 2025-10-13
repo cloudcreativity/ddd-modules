@@ -57,6 +57,8 @@ class StringIdTest extends TestCase
         $this->assertSame($id, StringId::from($id));
         $this->assertTrue($id->is($other));
         $this->assertTrue($id->any(new StringId('foo'), new StringId('bar'), null, $other));
+        $this->assertEquals($id, StringId::tryFrom('99'));
+        $this->assertSame($id, StringId::tryFrom($id));
     }
 
     public function testItIsNotEqual(): void
@@ -69,11 +71,12 @@ class StringIdTest extends TestCase
     }
 
     /**
-     * @return array<int, array<Identifier>>
+     * @return array<int, array<Identifier|null>>
      */
     public static function notStringIdProvider(): array
     {
         return [
+            [null],
             [new IntegerId(1)],
             [new Guid('SomeType', new StringId('1'))],
             [new Uuid(\Ramsey\Uuid\Uuid::uuid4())],
@@ -81,7 +84,7 @@ class StringIdTest extends TestCase
     }
 
     #[DataProvider('notStringIdProvider')]
-    public function testIsWithOtherIdentifiers(Identifier $other): void
+    public function testIsWithOtherIdentifiers(?Identifier $other): void
     {
         $id = new StringId('1');
 
@@ -89,15 +92,14 @@ class StringIdTest extends TestCase
         $this->assertFalse($id->any($other, new StringId('foo'), null));
     }
 
-    public function testIsWithNull(): void
+    #[DataProvider('notStringIdProvider')]
+    public function testTryFromWithInvalid(?Identifier $other): void
     {
-        $id = new StringId('1');
-
-        $this->assertFalse($id->is(null));
+        $this->assertNull(StringId::tryFrom($other));
     }
 
     #[DataProvider('notStringIdProvider')]
-    public function testFromWithOtherIdentifiers(Identifier $other): void
+    public function testFromWithOtherIdentifiers(?Identifier $other): void
     {
         $this->expectException(ContractException::class);
         $this->expectExceptionMessage('Unexpected identifier type, received: ' . get_debug_type($other));

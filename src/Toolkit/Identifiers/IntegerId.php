@@ -21,7 +21,7 @@ final readonly class IntegerId implements Identifier, JsonSerializable
 {
     use IsIdentifier;
 
-    public static function from(Identifier|int $value): self
+    public static function from(Identifier|int|null $value): self
     {
         return match(true) {
             $value instanceof self => $value,
@@ -29,6 +29,15 @@ final readonly class IntegerId implements Identifier, JsonSerializable
             default => throw new ContractException(
                 'Unexpected identifier type, received: ' . get_debug_type($value),
             ),
+        };
+    }
+
+    public static function tryFrom(Identifier|int|null $value): ?self
+    {
+        return match(true) {
+            $value instanceof self => $value,
+            is_int($value) => new self($value),
+            default => null,
         };
     }
 

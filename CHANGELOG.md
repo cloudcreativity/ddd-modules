@@ -7,6 +7,10 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Added
 
+- Added a static `tryFrom()` method to the `IntegerId`, `StringId` and `Uuid` identifier classes. This method
+  returns `null` if the value provided cannot be cast to the identifier type.
+- The static `from()` method on all the identifier classes now accepts `null` but throws in this scenario. This allows
+  it to be used where the value you are casting is possibly null.
 - New methods on the `ListOfErrors` interface:
     - `find()` to find the first matching error.
     - `sole()` to get the first error, but only if exactly one error exists.
