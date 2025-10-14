@@ -18,6 +18,7 @@ use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
 use CloudCreativity\Modules\Toolkit\Identifiers\StringId;
 use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
+use LogicException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -51,6 +52,8 @@ class IntegerIdTest extends TestCase
         $this->assertSame($id, IntegerId::from($id));
         $this->assertTrue($id->is($other));
         $this->assertTrue($id->any(new IntegerId(1), new IntegerId(2), $other));
+        $this->assertEquals($id, IntegerId::tryFrom(99) ?? throw new LogicException());
+        $this->assertSame($id, IntegerId::tryFrom($id));
     }
 
     public function testItIsNotEqual(): void
@@ -63,11 +66,12 @@ class IntegerIdTest extends TestCase
     }
 
     /**
-     * @return array<int, array<Identifier>>
+     * @return array<int, array<Identifier|null>>
      */
     public static function notIntegerIdProvider(): array
     {
         return [
+            [null],
             [new StringId('1')],
             [new Guid('SomeType', new IntegerId(1))],
             [new Uuid(\Ramsey\Uuid\Uuid::uuid4())],
@@ -75,12 +79,18 @@ class IntegerIdTest extends TestCase
     }
 
     #[DataProvider('notIntegerIdProvider')]
-    public function testIsWithOtherIdentifiers(Identifier $other): void
+    public function testIsWithOtherIdentifiers(?Identifier $other): void
     {
         $id = new IntegerId(1);
 
         $this->assertFalse($id->is($other));
         $this->assertFalse($id->any(new IntegerId(2), null, $other));
+    }
+
+    #[DataProvider('notIntegerIdProvider')]
+    public function testTryFromWithInvalidValue(?Identifier $other): void
+    {
+        $this->assertNull(IntegerId::tryFrom($other));
     }
 
     public function testIsWithNull(): void
@@ -91,7 +101,7 @@ class IntegerIdTest extends TestCase
     }
 
     #[DataProvider('notIntegerIdProvider')]
-    public function testFromWithOtherIdentifiers(Identifier $other): void
+    public function testFromWithOtherIdentifiers(?Identifier $other): void
     {
         $this->expectException(ContractException::class);
         $this->expectExceptionMessage('Unexpected identifier type, received: ' . get_debug_type($other));

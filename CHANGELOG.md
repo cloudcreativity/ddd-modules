@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [5.0.0-rc.2] - 2025-10-14
+
+### Added
+
+- Added a static `tryFrom()` method to the `IntegerId`, `StringId` and `Uuid` identifier classes. This method
+  returns `null` if the value provided cannot be cast to the identifier type.
+- The static `from()` method on all the identifier classes now accepts `null` but throws in this scenario. This allows
+  it to be used where the value you are casting is possibly null.
+- New methods on the `ListOfErrors` interface:
+    - `find()` to find the first matching error.
+    - `sole()` to get the first error, but only if exactly one error exists.
+    - `any()` to determine if any of the errors match.
+    - `every()` to determine if every error matches.
+    - `filter()` to get a new list containing only matching errors.
+- The `FailedResultException` now has a message when the result has an error code but no error message.
+- The `FakeExceptionReporter` now has `none()` and `expect()` helper methods, to prevent exceptions from being swallowed
+  in tests.
+- **BREAKING**: Changes to the result interface to support the following features. Although technically breaking, this
+  will not affect the majority of implementations are the concrete result class provided by this package has been
+  updated.
+    - Can now pass a default value to the `Result::error()` method. This default value can either be a string or a
+      closure that receives the error code. (Errors always have codes if they do not have messages.)
+    - Added `Result::code()` method to get the first error code in the result's errors.
+
+### Deprecated
+
+- The `ListOfErrors::contains()` method is deprecated and will be removed in 6.0. Use the new `any()` method instead.
+- Calling the `ListOfErrors::first()` method with arguments is deprecated and will be removed in 6.0. Use the new
+  `find()` method instead.
+
 ## [5.0.0-rc.1] - 2025-10-09
 
 ### Added
@@ -499,6 +529,8 @@ All notable changes to this project will be documented in this file. This projec
 ## [0.1.0] - 2023-11-18
 
 Initial release.
+
+[5.0.0-rc.2]: https://github.com/cloudcreativity/ddd-modules/compare/v5.0.0-rc.1...v5.0.0-rc.2
 
 [5.0.0-rc.1]: https://github.com/cloudcreativity/ddd-modules/compare/v4.1.0...v5.0.0-rc.1
 

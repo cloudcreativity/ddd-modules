@@ -25,13 +25,22 @@ final readonly class Guid implements Identifier
 {
     use IsIdentifier;
 
-    public static function from(Identifier $value): self
+    public static function from(?Identifier $value): self
     {
         if ($value instanceof self) {
             return $value;
         }
 
         throw new ContractException('Unexpected identifier type, received: ' . get_debug_type($value));
+    }
+
+    public static function tryFrom(?Identifier $value): ?self
+    {
+        if ($value instanceof self) {
+            return $value;
+        }
+
+        return null;
     }
 
     /**

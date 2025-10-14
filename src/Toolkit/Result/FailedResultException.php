@@ -14,9 +14,11 @@ namespace CloudCreativity\Modules\Toolkit\Result;
 
 use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextProvider;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
-use CloudCreativity\Modules\Toolkit\Loggable\ResultDecorator;
+use CloudCreativity\Modules\Toolkit\Loggable\SimpleContextFactory;
 use RuntimeException;
 use Throwable;
+
+use function CloudCreativity\Modules\Toolkit\enum_string;
 
 class FailedResultException extends RuntimeException implements ContextProvider
 {
@@ -29,7 +31,14 @@ class FailedResultException extends RuntimeException implements ContextProvider
         ?Throwable $previous = null,
     ) {
         assert($result->didFail(), 'Expecting a failed result.');
-        parent::__construct($result->error() ?? '', $code, $previous);
+
+        $message = match (true) {
+            $result->error() !== null => $result->error(),
+            $result->errors()->code() !== null => 'Failed with error code: ' . enum_string($result->errors()->code()),
+            default => '',
+        };
+
+        parent::__construct(message: $message, code: $code, previous: $previous);
     }
 
     /**
@@ -40,11 +49,8 @@ class FailedResultException extends RuntimeException implements ContextProvider
         return $this->result;
     }
 
-    /**
-     * @return array<string, mixed>
-     */
     public function context(): array
     {
-        return (new ResultDecorator($this->result))->context();
+        return (new SimpleContextFactory())->make($this->result);
     }
 }

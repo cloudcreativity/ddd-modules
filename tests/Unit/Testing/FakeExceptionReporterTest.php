@@ -31,6 +31,34 @@ class FakeExceptionReporterTest extends TestCase
         $this->assertSame([$ex1, $ex2], $reporter->reported);
     }
 
+    public function testItDoesNotExpectExceptions(): void
+    {
+        $expected = new RuntimeException('Boom! That was a surprise.');
+
+        $reporter = new FakeExceptionReporter();
+        $reporter->none();
+
+        $this->expectExceptionObject($expected);
+        $reporter->report($expected);
+    }
+
+    public function testItExpectsExceptions(): void
+    {
+        $expected = new RuntimeException('Boom! That was a surprise.');
+
+        $this->expectExceptionObject($expected);
+
+        $reporter = new FakeExceptionReporter();
+        $reporter->expect(3);
+
+        for ($i = 0; $i < 3; $i++) {
+            $reporter->report(new LogicException("Whoops {$i}!"));
+        }
+
+        $this->assertCount(3, $reporter);
+        $reporter->report($expected);
+    }
+
     public function testItHasSoleException(): void
     {
         $reporter = new FakeExceptionReporter();

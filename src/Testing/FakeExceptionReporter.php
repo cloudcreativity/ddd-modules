@@ -24,9 +24,44 @@ final class FakeExceptionReporter implements ExceptionReporter, Countable
      */
     public array $reported = [];
 
+    private ?int $expected = null;
+
     public function report(Throwable $ex): void
     {
+        if ($this->expected === count($this->reported)) {
+            throw $ex;
+        }
+
         $this->reported[] = $ex;
+    }
+
+    /**
+     * Expect no exceptions to be reported.
+     *
+     * Useful in tests where you do not expect any exceptions to be reported.
+     * This will cause the fake reporter to re-throw any exceptions rather
+     * than swallowing them.
+     */
+    public function none(): void
+    {
+        $this->expect(0);
+    }
+
+    /**
+     * Set the amount of exceptions expected.
+     *
+     * This will cause the fake reporter to re-throw any exceptions
+     * once the expected amount has been reported. This is primarily
+     * useful for debugging, because if your test causes too many
+     * exceptions, you will see the first unexpected exception.
+     *
+     * Note that this does not help if the reporter receives less
+     * exceptions than expected. You should use assertions
+     * in your test to verify the count of reported exceptions.
+     */
+    public function expect(int $count): void
+    {
+        $this->expected = $count;
     }
 
     public function count(): int

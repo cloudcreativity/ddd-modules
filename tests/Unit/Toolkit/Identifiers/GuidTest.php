@@ -152,6 +152,16 @@ class GuidTest extends TestCase
     {
         $guid = Guid::make('SomeType', $value);
         $this->assertObjectEquals($expected, $guid->id);
+        $this->assertSame($guid, Guid::from($guid));
+        $this->assertSame($guid, Guid::tryFrom($guid));
+    }
+
+    public function testFromWithNull(): void
+    {
+        $this->assertNull(Guid::tryFrom(null));
+
+        $this->expectException(ContractException::class);
+        Guid::from(null);
     }
 
     public function testEmptyType(): void

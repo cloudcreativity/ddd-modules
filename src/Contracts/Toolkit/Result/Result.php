@@ -12,17 +12,25 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Contracts\Toolkit\Result;
 
+use Closure;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\ListOfErrors as IListOfErrors;
 use CloudCreativity\Modules\Toolkit\Result\FailedResultException;
 use CloudCreativity\Modules\Toolkit\Result\Meta;
+use UnitEnum;
 
 /**
  * @template-covariant TValue
  */
 interface Result
 {
+    /**
+     * Is the result a success?
+     */
     public function didSucceed(): bool;
 
+    /**
+     * Is the result a failure?
+     */
     public function didFail(): bool;
 
     /**
@@ -53,9 +61,17 @@ interface Result
     public function errors(): IListOfErrors;
 
     /**
-     * Get an error message string.
+     * Get the first error message, if there is one.
+     *
+     * @param (Closure(UnitEnum): non-empty-string)|non-empty-string|null $default the default value to use if there is no error message.
+     * @return ($default is Closure|string ? non-empty-string : null)
      */
-    public function error(): ?string;
+    public function error(Closure|string|null $default = null): ?string;
+
+    /**
+     * Get the first error code, if there is one.
+     */
+    public function code(): ?UnitEnum;
 
     /**
      * Get the result meta.
