@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Application\Bus\Middleware;
 
 use CloudCreativity\Modules\Application\Bus\Middleware\ValidateCommand;
+use CloudCreativity\Modules\Contracts\Application\Bus\Bail;
 use CloudCreativity\Modules\Contracts\Application\Bus\Validator;
 use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
@@ -64,6 +65,11 @@ class ValidateCommandTest extends TestCase
 
         $this->validator
             ->expects($this->once())
+            ->method('stopOnFirstFailure')
+            ->willReturnSelf();
+
+        $this->validator
+            ->expects($this->once())
             ->method('validate')
             ->with($this->callback(function (Command $actual) use ($command, &$rules): bool {
                 $this->assertSame(['foo', 'bar'], $rules);
@@ -85,7 +91,53 @@ class ValidateCommandTest extends TestCase
     public function testItFails(): void
     {
         $this->validator
+            ->expects($this->once())
             ->method('using')
+            ->willReturnSelf();
+
+        $this->validator
+            ->expects($this->once())
+            ->method('stopOnFirstFailure')
+            ->with(false)
+            ->willReturnSelf();
+
+        $this->validator
+            ->expects($this->once())
+            ->method('validate')
+            ->with($command = $this->createMock(Command::class))
+            ->willReturn($errors = new ListOfErrors(new Error(null, 'Something went wrong.')));
+
+        $next = function () {
+            throw new \LogicException('Not expecting next closure to be called.');
+        };
+
+        $result = ($this->middleware)($command, $next);
+
+        $this->assertTrue($result->didFail());
+        $this->assertSame($errors, $result->errors());
+    }
+
+    public function testItStopsOnFirstFailure(): void
+    {
+        $this->middleware = new class ($this->validator) extends ValidateCommand implements Bail {
+            /**
+             * @return iterable<string>
+             */
+            protected function rules(): iterable
+            {
+                return ['foo', 'bar'];
+            }
+        };
+
+        $this->validator
+            ->expects($this->once())
+            ->method('using')
+            ->willReturnSelf();
+
+        $this->validator
+            ->expects($this->once())
+            ->method('stopOnFirstFailure')
+            ->with(true)
             ->willReturnSelf();
 
         $this->validator

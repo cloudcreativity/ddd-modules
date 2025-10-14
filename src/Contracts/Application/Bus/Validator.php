@@ -27,6 +27,13 @@ interface Validator
     public function using(iterable $rules): static;
 
     /**
+     * Stop validating as soon as the first rule fails.
+     *
+     * @return $this
+     */
+    public function stopOnFirstFailure(bool $stop = true): static;
+
+    /**
      * Validate the provided message.
      */
     public function validate(Command|Query $message): ListOfErrors;

@@ -39,7 +39,7 @@ class ValidatorTest extends TestCase
      * @param class-string<Command|Query> $message
      */
     #[DataProvider('messageProvider')]
-    public function test(string $message): void
+    public function testItValidatesMessage(string $message): void
     {
         /** @var (Command&MockObject)|(MockObject&Query) $query */
         $query = $this->createMock($message);
@@ -81,7 +81,41 @@ class ValidatorTest extends TestCase
         $this->assertSame([$error1, $error2, $error3], $actual->all());
     }
 
-    public function testNoRules(): void
+    /**
+     * @param class-string<Command|Query> $message
+     */
+    #[DataProvider('messageProvider')]
+    public function testItStopsOnFirstFailure(string $message): void
+    {
+        /** @var (Command&MockObject)|(MockObject&Query) $query */
+        $query = $this->createMock($message);
+        $error = new Error(null, 'Message 1');
+
+        $a = function ($actual) use ($query): null {
+            $this->assertSame($query, $actual);
+            return null;
+        };
+
+        $b = function ($actual) use ($query, $error): ListOfErrors {
+            $this->assertSame($query, $actual);
+            return new ListOfErrors($error);
+        };
+
+        $c = function (): never {
+            $this->fail('Not expecting to be called.');
+        };
+
+        $validator = new Validator();
+        $actual = $validator
+            ->using([$a, $b, $c])
+            ->stopOnFirstFailure()
+            ->validate($query);
+
+        $this->assertInstanceOf(ListOfErrors::class, $actual);
+        $this->assertSame([$error], $actual->all());
+    }
+
+    public function testItHasNoRules(): void
     {
         $query = $this->createMock(Query::class);
         $validator = new Validator();

@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+### Added
+
+- **BREAKING** Command and query validators can now return early on the first validation failure, by marking the
+  validator with the `stopOnFirstFailure()` method. This is technically a breaking change as the method was added to the
+  validator interface; however, if you are using the `Validator` class provided by this package, it now implements this
+  method.
+- Middleware that extend `ValidateCommand` and `ValidateQuery` can mark themselves as stopping on the first failure by
+  implementing the `Bail` interface.
+
 ## [5.0.0-rc.2] - 2025-10-14
 
 ### Added
