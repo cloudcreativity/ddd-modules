@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [5.0.0-rc.3] - 2025-10-14
+
 ### Added
 
 - **BREAKING** Command and query validators can now return early on the first validation failure, by marking the
