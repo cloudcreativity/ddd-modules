@@ -37,7 +37,7 @@ abstract class ValidateQuery implements QueryMiddleware
     {
         $errors = $this->validator
             ->using($this->rules())
-            ->stopOnFirstFailure($this instanceof Bail)
+            ->stopOnFirstFailure($this->stopOnFirstFailure($query))
             ->validate($query);
 
         if ($errors->isNotEmpty()) {
@@ -45,5 +45,10 @@ abstract class ValidateQuery implements QueryMiddleware
         }
 
         return $next($query);
+    }
+
+    protected function stopOnFirstFailure(Query $query): bool
+    {
+        return $this instanceof Bail;
     }
 }

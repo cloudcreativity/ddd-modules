@@ -118,7 +118,7 @@ class ValidateQueryTest extends TestCase
         $this->assertSame($errors, $result->errors());
     }
 
-    public function testItStopsOnFirstFailure(): void
+    public function testItStopsOnFirstFailureViaBail(): void
     {
         $this->middleware = new class ($this->validator) extends ValidateQuery implements Bail {
             /**
@@ -145,6 +145,57 @@ class ValidateQueryTest extends TestCase
             ->expects($this->once())
             ->method('validate')
             ->with($query = $this->createMock(Query::class))
+            ->willReturn($errors = new ListOfErrors(new Error(null, 'Something went wrong.')));
+
+        $next = function () {
+            throw new \LogicException('Not expecting next closure to be called.');
+        };
+
+        $result = ($this->middleware)($query, $next);
+
+        $this->assertTrue($result->didFail());
+        $this->assertSame($errors, $result->errors());
+    }
+
+    public function testItStopsOnFirstFailure(): void
+    {
+        $query = $this->createMock(Query::class);
+
+        $this->middleware = new class ($query, $this->validator) extends ValidateQuery {
+            public function __construct(private Query $query, Validator $validator)
+            {
+                parent::__construct($validator);
+            }
+
+            /**
+             * @return iterable<string>
+             */
+            protected function rules(): iterable
+            {
+                return ['foobar', 'bazbat'];
+            }
+
+            protected function stopOnFirstFailure(Query $query): bool
+            {
+                return $this->query === $query;
+            }
+        };
+
+        $this->validator
+            ->expects($this->once())
+            ->method('using')
+            ->willReturnSelf();
+
+        $this->validator
+            ->expects($this->once())
+            ->method('stopOnFirstFailure')
+            ->with(true)
+            ->willReturnSelf();
+
+        $this->validator
+            ->expects($this->once())
+            ->method('validate')
+            ->with($query)
             ->willReturn($errors = new ListOfErrors(new Error(null, 'Something went wrong.')));
 
         $next = function () {

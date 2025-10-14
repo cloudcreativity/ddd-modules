@@ -117,7 +117,7 @@ class ValidateCommandTest extends TestCase
         $this->assertSame($errors, $result->errors());
     }
 
-    public function testItStopsOnFirstFailure(): void
+    public function testItStopsOnFirstFailureViaBail(): void
     {
         $this->middleware = new class ($this->validator) extends ValidateCommand implements Bail {
             /**
@@ -144,6 +144,57 @@ class ValidateCommandTest extends TestCase
             ->expects($this->once())
             ->method('validate')
             ->with($command = $this->createMock(Command::class))
+            ->willReturn($errors = new ListOfErrors(new Error(null, 'Something went wrong.')));
+
+        $next = function () {
+            throw new \LogicException('Not expecting next closure to be called.');
+        };
+
+        $result = ($this->middleware)($command, $next);
+
+        $this->assertTrue($result->didFail());
+        $this->assertSame($errors, $result->errors());
+    }
+
+    public function testItStopsOnFirstFailure(): void
+    {
+        $command = $this->createMock(Command::class);
+
+        $this->middleware = new class ($command, $this->validator) extends ValidateCommand {
+            public function __construct(private Command $command, Validator $validator)
+            {
+                parent::__construct($validator);
+            }
+
+            /**
+             * @return iterable<string>
+             */
+            protected function rules(): iterable
+            {
+                return ['foo', 'bar'];
+            }
+
+            protected function stopOnFirstFailure(Command $command): bool
+            {
+                return $this->command === $command;
+            }
+        };
+
+        $this->validator
+            ->expects($this->once())
+            ->method('using')
+            ->willReturnSelf();
+
+        $this->validator
+            ->expects($this->once())
+            ->method('stopOnFirstFailure')
+            ->with(true)
+            ->willReturnSelf();
+
+        $this->validator
+            ->expects($this->once())
+            ->method('validate')
+            ->with($command)
             ->willReturn($errors = new ListOfErrors(new Error(null, 'Something went wrong.')));
 
         $next = function () {
