@@ -18,7 +18,6 @@ use CloudCreativity\Modules\Contracts\Toolkit\Messages\Query;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\Pipeline;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\ListOfErrors as IListOfErrors;
-use CloudCreativity\Modules\Toolkit\Pipeline\AccumulationProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
 
@@ -29,17 +28,22 @@ final class Validator implements IValidator
      */
     private iterable $using = [];
 
+    private bool $stopOnFirstFailure = false;
+
     public function __construct(private readonly ?PipeContainer $rules = null)
     {
     }
 
-    /**
-     * @param iterable<callable|string> $rules
-     * @return $this
-     */
     public function using(iterable $rules): static
     {
         $this->using = $rules;
+
+        return $this;
+    }
+
+    public function stopOnFirstFailure(bool $stop = true): static
+    {
+        $this->stopOnFirstFailure = $stop;
 
         return $this;
     }
@@ -59,16 +63,6 @@ final class Validator implements IValidator
     {
         return PipelineBuilder::make($this->rules)
             ->through($this->using)
-            ->build($this->processor());
-    }
-
-    private function processor(): AccumulationProcessor
-    {
-        return new AccumulationProcessor(
-            static function (?IListOfErrors $carry, ?IListOfErrors $errors): IListOfErrors {
-                $errors ??= new ListOfErrors();
-                return $carry ? $carry->merge($errors) : $errors;
-            },
-        );
+            ->build(new ValidationProcessor($this->stopOnFirstFailure));
     }
 }

@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\Bus\Middleware;
 
 use Closure;
+use CloudCreativity\Modules\Contracts\Application\Bus\Bail;
 use CloudCreativity\Modules\Contracts\Application\Bus\QueryMiddleware;
 use CloudCreativity\Modules\Contracts\Application\Bus\Validator;
 use CloudCreativity\Modules\Contracts\Toolkit\Messages\Query;
@@ -36,6 +37,7 @@ abstract class ValidateQuery implements QueryMiddleware
     {
         $errors = $this->validator
             ->using($this->rules())
+            ->stopOnFirstFailure($this->stopOnFirstFailure($query))
             ->validate($query);
 
         if ($errors->isNotEmpty()) {
@@ -43,5 +45,10 @@ abstract class ValidateQuery implements QueryMiddleware
         }
 
         return $next($query);
+    }
+
+    protected function stopOnFirstFailure(Query $query): bool
+    {
+        return $this instanceof Bail;
     }
 }

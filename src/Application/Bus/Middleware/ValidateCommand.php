@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\Bus\Middleware;
 
 use Closure;
+use CloudCreativity\Modules\Contracts\Application\Bus\Bail;
 use CloudCreativity\Modules\Contracts\Application\Bus\CommandMiddleware;
 use CloudCreativity\Modules\Contracts\Application\Bus\Validator;
 use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
@@ -36,6 +37,7 @@ abstract class ValidateCommand implements CommandMiddleware
     {
         $errors = $this->validator
             ->using($this->rules())
+            ->stopOnFirstFailure($this->stopOnFirstFailure($command))
             ->validate($command);
 
         if ($errors->isNotEmpty()) {
@@ -43,5 +45,10 @@ abstract class ValidateCommand implements CommandMiddleware
         }
 
         return $next($command);
+    }
+
+    protected function stopOnFirstFailure(Command $command): bool
+    {
+        return $this instanceof Bail;
     }
 }
