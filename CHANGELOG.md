@@ -12,7 +12,7 @@ All notable changes to this project will be documented in this file. This projec
   validator interface; however, if you are using the `Validator` class provided by this package, it now implements this
   method.
 - Middleware that extend `ValidateCommand` and `ValidateQuery` can mark themselves as stopping on the first failure by
-  implementing the `Bail` interface.
+  implementing the `Bail` interface, or overloading the `stopOnFirstFailure()` method to return `true`.
 
 ## [5.0.0-rc.2] - 2025-10-14
 

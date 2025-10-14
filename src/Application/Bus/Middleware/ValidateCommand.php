@@ -37,7 +37,7 @@ abstract class ValidateCommand implements CommandMiddleware
     {
         $errors = $this->validator
             ->using($this->rules())
-            ->stopOnFirstFailure($this instanceof Bail)
+            ->stopOnFirstFailure($this->stopOnFirstFailure($command))
             ->validate($command);
 
         if ($errors->isNotEmpty()) {
@@ -45,5 +45,10 @@ abstract class ValidateCommand implements CommandMiddleware
         }
 
         return $next($command);
+    }
+
+    protected function stopOnFirstFailure(Command $command): bool
+    {
+        return $this instanceof Bail;
     }
 }
