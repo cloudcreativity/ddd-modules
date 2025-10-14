@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [5.0.0-rc.2] - 2025-10-14
+
 ### Added
 
 - Added a static `tryFrom()` method to the `IntegerId`, `StringId` and `Uuid` identifier classes. This method
@@ -527,6 +529,8 @@ All notable changes to this project will be documented in this file. This projec
 ## [0.1.0] - 2023-11-18
 
 Initial release.
+
+[5.0.0-rc.2]: https://github.com/cloudcreativity/ddd-modules/compare/v5.0.0-rc.1...v5.0.0-rc.2
 
 [5.0.0-rc.1]: https://github.com/cloudcreativity/ddd-modules/compare/v4.1.0...v5.0.0-rc.1
 
