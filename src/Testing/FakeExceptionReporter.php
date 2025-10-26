@@ -12,12 +12,19 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Testing;
 
+use ArrayAccess;
 use CloudCreativity\Modules\Contracts\Application\Ports\Driven\ExceptionReporter;
 use Countable;
+use Generator;
+use IteratorAggregate;
 use LogicException;
 use Throwable;
 
-final class FakeExceptionReporter implements ExceptionReporter, Countable
+/**
+ * @implements ArrayAccess<int, Throwable>
+ * @implements IteratorAggregate<int, Throwable>
+ */
+final class FakeExceptionReporter implements ExceptionReporter, Countable, ArrayAccess, IteratorAggregate
 {
     /**
      * @var list<Throwable>
@@ -33,6 +40,34 @@ final class FakeExceptionReporter implements ExceptionReporter, Countable
         }
 
         $this->reported[] = $ex;
+    }
+
+    public function offsetExists(mixed $offset): bool
+    {
+        return isset($this->reported[$offset]);
+    }
+
+    public function offsetGet(mixed $offset): Throwable
+    {
+        return $this->reported[$offset];
+    }
+
+    public function offsetSet(mixed $offset, mixed $value): void
+    {
+        throw new LogicException('Cannot set reported exceptions.');
+    }
+
+    public function offsetUnset(mixed $offset): void
+    {
+        throw new LogicException('Cannot unset reported exceptions.');
+    }
+
+    /**
+     * @return Generator<int, Throwable>
+     */
+    public function getIterator(): Generator
+    {
+        yield from $this->reported;
     }
 
     /**

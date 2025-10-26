@@ -29,6 +29,9 @@ class FakeExceptionReporterTest extends TestCase
         $this->assertInstanceOf(ExceptionReporter::class, $reporter);
         $this->assertCount(2, $reporter);
         $this->assertSame([$ex1, $ex2], $reporter->reported);
+        $this->assertSame([$ex1, $ex2], iterator_to_array($reporter));
+        $this->assertSame($ex1, $reporter[0]);
+        $this->assertSame($ex2, $reporter[1]);
     }
 
     public function testItDoesNotExpectExceptions(): void

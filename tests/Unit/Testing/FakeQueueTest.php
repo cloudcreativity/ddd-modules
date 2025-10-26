@@ -29,6 +29,9 @@ class FakeQueueTest extends TestCase
         $this->assertInstanceOf(Queue::class, $queue);
         $this->assertCount(2, $queue);
         $this->assertSame([$command1, $command2], $queue->commands);
+        $this->assertSame([$command1, $command2], iterator_to_array($queue));
+        $this->assertSame($command1, $queue[0]);
+        $this->assertSame($command2, $queue[1]);
     }
 
     public function testItHasSoleCommand(): void
