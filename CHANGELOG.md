@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [5.0.0-rc.4] - 2025-10-29
+
+### Added
+
+- The following fake classes now all implement array access to access captured items by index, plus can now be iterated
+  over:
+    - `Testing\FakeDomainEventDispatcher`
+    - `Testing\FakeExceptionReporter`
+    - `Testing\FakeOutboundEventPublisher`
+    - `Testing\FakeQueue`
+
 ## [5.0.0-rc.3] - 2025-10-14
 
 ### Added
@@ -540,6 +551,10 @@ All notable changes to this project will be documented in this file. This projec
 ## [0.1.0] - 2023-11-18
 
 Initial release.
+
+[5.0.0-rc.4]: https://github.com/cloudcreativity/ddd-modules/compare/v5.0.0-rc.3...v5.0.0-rc.4
+
+[5.0.0-rc.3]: https://github.com/cloudcreativity/ddd-modules/compare/v5.0.0-rc.2...v5.0.0-rc.3
 
 [5.0.0-rc.2]: https://github.com/cloudcreativity/ddd-modules/compare/v5.0.0-rc.1...v5.0.0-rc.2
 
