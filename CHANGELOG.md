@@ -558,6 +558,8 @@ All notable changes to this project will be documented in this file. This projec
 
 Initial release.
 
+[5.0.0]: https://github.com/cloudcreativity/ddd-modules/compare/v5.0.0-rc.4...v5.0.0
+
 [5.0.0-rc.4]: https://github.com/cloudcreativity/ddd-modules/compare/v5.0.0-rc.3...v5.0.0-rc.4
 
 [5.0.0-rc.3]: https://github.com/cloudcreativity/ddd-modules/compare/v5.0.0-rc.2...v5.0.0-rc.3
