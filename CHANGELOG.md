@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [5.0.0] - 2025-12-09
+
+### Added
+
+- PHP 8.5 is now supported, without any changes required.
+
 ## [5.0.0-rc.4] - 2025-10-29
 
 ### Added
