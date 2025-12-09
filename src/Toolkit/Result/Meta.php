@@ -89,8 +89,6 @@ final class Meta implements ArrayAccess, KeyedSet
 
     /**
      * Put a value into the meta.
-     *
-     * @return $this
      */
     public function put(string $key, mixed $value): self
     {
@@ -104,7 +102,6 @@ final class Meta implements ArrayAccess, KeyedSet
      * Merge values into the meta.
      *
      * @param array<string, mixed>|self $values
-     * @return $this
      */
     public function merge(array|self $values): self
     {
