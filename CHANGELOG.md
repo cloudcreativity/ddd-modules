@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Next Major
 
+### Added
+
+- The `Uuid` interface now has a `compareTo()` method for sorting UUIDs.
+
 ### Removed
 
 - Removed the deprecated `contains()` method from the `ListOfErrors` interface. Use `any()` instead.

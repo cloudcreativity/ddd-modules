@@ -17,5 +17,7 @@ use Ramsey\Uuid\UuidInterface;
 
 interface Uuid extends Identifier, JsonSerializable
 {
+    public function compareTo(self $other): int;
+
     public function toBase(): UuidInterface;
 }

@@ -44,6 +44,11 @@ trait IsUuid
         return false;
     }
 
+    public function compareTo(IUuid $other): int
+    {
+        return $this->value->compareTo($other->toBase());
+    }
+
     public function equals(self $other): bool
     {
         return $this->value->equals($other->value);

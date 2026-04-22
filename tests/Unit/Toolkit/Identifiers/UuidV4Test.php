@@ -125,4 +125,20 @@ class UuidV4Test extends TestCase
     {
         $this->assertNull(Uuid::tryFrom(null));
     }
+
+    public function testCompareTo(): void
+    {
+        $uuid1 = UuidV4::make();
+        $uuid2 = UuidV4::make();
+        $uuid3 = UuidV4::make();
+
+        $expected = [$uuid3->value, $uuid1->value, $uuid2->value];
+        usort($expected, fn ($a, $b) => $a->compareTo($b));
+
+        $actual = [$uuid2, $uuid1, $uuid3];
+        usort($actual, fn ($a, $b) => $a->compareTo($b));
+        $actual = array_map(fn ($id) => $id->value, $actual);
+
+        $this->assertSame($expected, $actual);
+    }
 }
