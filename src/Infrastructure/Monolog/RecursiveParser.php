@@ -29,7 +29,7 @@ final readonly class RecursiveParser implements ValueParser
         }
 
         if (!is_iterable($value)) {
-            return $this->innerParser ? $this->innerParser->parse($value) : null;
+            return $this->innerParser ? $this->innerParser->parse($value) : $value;
         }
 
         $parsed = [];
