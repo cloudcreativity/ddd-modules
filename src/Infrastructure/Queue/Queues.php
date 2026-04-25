@@ -19,10 +19,10 @@ use CloudCreativity\Modules\Contracts\Messaging\Command;
 final readonly class Queues
 {
     /**
-     * @param class-string<Command> $command
+     * @param array<class-string<Command>>|class-string<Command> $command
      * @param class-string $enqueuer
      */
-    public function __construct(public string $command, public string $enqueuer)
+    public function __construct(public array|string $command, public string $enqueuer)
     {
     }
 }

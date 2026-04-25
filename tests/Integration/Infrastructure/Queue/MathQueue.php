@@ -22,7 +22,7 @@ use CloudCreativity\Modules\Toolkit\Pipeline\Through;
 
 #[DefaultEnqueuer(TestDefaultEnqueuer::class)]
 #[Queues(AddCommand::class, AddCommandEnqueuer::class)]
-#[Queues(MultiplyCommand::class, MultiplyCommandEnqueuer::class)]
+#[Queues([MultiplyCommand::class], MultiplyCommandEnqueuer::class)]
 #[Through(LogPushedToQueue::class)]
 final class MathQueue extends ComponentQueue
 {
