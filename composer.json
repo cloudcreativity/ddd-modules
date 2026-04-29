@@ -17,16 +17,15 @@
         },
         {
             "name": "Christopher Gammie",
-            "email": "contact@gammie.co.uk"
+            "email": "chris@cloudcreativity.co.uk"
         }
     ],
     "require": {
-        "php": "^8.2",
+        "php": "^8.4",
         "ext-json": "*",
         "psr/container": "^2.0",
         "psr/log": "^2.0 || ^3.0",
         "ramsey/uuid": "^4.7",
-        "symfony/polyfill-php84": "^1.33",
         "symfony/polyfill-php85": "^1.33"
     },
     "require-dev": {

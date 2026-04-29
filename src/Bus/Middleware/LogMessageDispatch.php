@@ -46,7 +46,7 @@ final readonly class LogMessageDispatch implements BusMiddleware
         $this->logger->log(
             $this->dispatchLevel,
             "Bus dispatching {$name}.",
-            [$key => (new SanitizedMessage($message))->context()],
+            [$key => new SanitizedMessage($message)->context()],
         );
 
         $result = $next($message);
