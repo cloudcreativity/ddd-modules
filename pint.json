@@ -1,11 +1,14 @@
 {
     "preset": "psr12",
     "rules": {
+        "array_indentation": true,
         "array_syntax": true,
         "assign_null_coalescing_to_coalesce_equal": true,
+        "binary_operator_spaces": true,
         "clean_namespace": true,
         "declare_strict_types": true,
         "list_syntax": true,
+        "new_expression_parentheses": true,
         "no_empty_phpdoc": true,
         "no_superfluous_elseif": true,
         "no_superfluous_phpdoc_tags": {

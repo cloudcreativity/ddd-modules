@@ -69,7 +69,7 @@ class LogMessageDispatchTest extends TestCase
 
         $this->assertSame($expected, $actual);
         $this->assertEquals([
-            [LogLevel::DEBUG, "Bus dispatching {$name}.", ['command' => (new SanitizedMessage($this->message))->context()]],
+            [LogLevel::DEBUG, "Bus dispatching {$name}.", ['command' => new SanitizedMessage($this->message)->context()]],
             [LogLevel::INFO, "Bus dispatched {$name}.", ['result' => $expected->context()]],
         ], $this->logs);
     }
@@ -87,7 +87,7 @@ class LogMessageDispatchTest extends TestCase
 
         $this->assertSame($expected, $actual);
         $this->assertEquals([
-            [LogLevel::NOTICE, "Bus dispatching {$name}.", ['command' => (new SanitizedMessage($this->message))->context()]],
+            [LogLevel::NOTICE, "Bus dispatching {$name}.", ['command' => new SanitizedMessage($this->message)->context()]],
             [LogLevel::WARNING, "Bus dispatched {$name}.", ['result' => $expected->context()]],
         ], $this->logs);
     }
@@ -107,7 +107,7 @@ class LogMessageDispatchTest extends TestCase
         } catch (LogicException $ex) {
             $this->assertSame($expected, $ex);
             $this->assertEquals([
-                [LogLevel::DEBUG, "Bus dispatching {$name}.", ['query' => (new SanitizedMessage($message))->context()]],
+                [LogLevel::DEBUG, "Bus dispatching {$name}.", ['query' => new SanitizedMessage($message)->context()]],
             ], $this->logs);
         }
     }

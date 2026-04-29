@@ -36,7 +36,7 @@ final readonly class LogOutboundEvent implements IntegrationEventMiddleware
         $this->log->log(
             $this->publishLevel,
             "Publishing integration event {$name}.",
-            $context = ['event' => (new SanitizedMessage($event))->context()],
+            $context = ['event' => new SanitizedMessage($event)->context()],
         );
 
         $next($event);

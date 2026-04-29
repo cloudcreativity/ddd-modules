@@ -36,7 +36,7 @@ final readonly class LogPushedToQueue implements CommandMiddleware
         $this->log->log(
             $this->queueLevel,
             "Queuing command {$name}.",
-            $context = ['command' => (new SanitizedMessage($command))->context()],
+            $context = ['command' => new SanitizedMessage($command)->context()],
         );
 
         $next($command);

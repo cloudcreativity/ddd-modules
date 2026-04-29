@@ -163,6 +163,6 @@ final readonly class Result implements IResult
      */
     public function context(): array
     {
-        return (new ContextualResult($this))->context();
+        return new ContextualResult($this)->context();
     }
 }

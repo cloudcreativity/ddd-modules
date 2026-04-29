@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Removed
 
+- Dropped support for PHP 8.2 and 8.3. The minimum supported version is now PHP 8.4.
 - Removed the deprecated `contains()` method from the `ListOfErrors` interface. Use `any()` instead.
 - The `first()` method on the `ListOfErrors` interface no longer accepts arguments. Use `find()` instead.
 
