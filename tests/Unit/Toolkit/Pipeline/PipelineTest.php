@@ -16,7 +16,7 @@ use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\Processor;
 use CloudCreativity\Modules\Toolkit\Pipeline\Pipeline;
 use PHPUnit\Framework\TestCase;
 
-class PipelineTest extends TestCase
+final class PipelineTest extends TestCase
 {
     public function testProcess(): void
     {

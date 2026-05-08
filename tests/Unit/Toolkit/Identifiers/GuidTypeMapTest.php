@@ -22,7 +22,7 @@ use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
 use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
 
-class GuidTypeMapTest extends TestCase
+final class GuidTypeMapTest extends TestCase
 {
     public function testItReturnsExpectedType(): GuidTypeMap
     {

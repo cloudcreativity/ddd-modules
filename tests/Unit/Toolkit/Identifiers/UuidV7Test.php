@@ -24,7 +24,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid as RamseyUuid;
 
-class UuidV7Test extends TestCase
+final class UuidV7Test extends TestCase
 {
     public function test(): void
     {

@@ -26,7 +26,7 @@ use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 
-class Dispatcher implements DomainEventDispatcher
+abstract class Dispatcher implements DomainEventDispatcher
 {
     private readonly IListenerContainer $listeners;
 

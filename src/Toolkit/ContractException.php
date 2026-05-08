@@ -14,6 +14,6 @@ namespace CloudCreativity\Modules\Toolkit;
 
 use LogicException;
 
-class ContractException extends LogicException
+final class ContractException extends LogicException
 {
 }

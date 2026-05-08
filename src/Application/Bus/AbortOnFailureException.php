@@ -12,8 +12,25 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Application\Bus;
 
-use CloudCreativity\Modules\Toolkit\Result\FailedResultException;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\FailedResultException;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
+use RuntimeException;
 
-final class AbortOnFailureException extends FailedResultException
+/**
+ * @internal
+ */
+final class AbortOnFailureException extends RuntimeException implements FailedResultException
 {
+    /**
+     * @param Result<mixed> $result
+     */
+    public function __construct(private readonly Result $result)
+    {
+        parent::__construct();
+    }
+
+    public function getResult(): Result
+    {
+        return $this->result;
+    }
 }

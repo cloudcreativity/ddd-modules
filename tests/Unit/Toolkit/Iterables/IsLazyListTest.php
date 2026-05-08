@@ -16,7 +16,7 @@ use CloudCreativity\Modules\Contracts\Toolkit\Iterables\LazyList;
 use CloudCreativity\Modules\Toolkit\Iterables\IsLazyList;
 use PHPUnit\Framework\TestCase;
 
-class IsLazyListTest extends TestCase
+final class IsLazyListTest extends TestCase
 {
     public function testItIteratesOverList(): void
     {

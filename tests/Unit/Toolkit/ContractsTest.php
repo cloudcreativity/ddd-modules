@@ -16,7 +16,7 @@ use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Contracts;
 use PHPUnit\Framework\TestCase;
 
-class ContractsTest extends TestCase
+final class ContractsTest extends TestCase
 {
     public function testItDoesNotThrowWhenPreconditionIsTrue(): void
     {

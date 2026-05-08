@@ -19,7 +19,7 @@ use CloudCreativity\Modules\Toolkit\Pipeline\Pipeline;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 use PHPUnit\Framework\TestCase;
 
-class PipelineBuilderTest extends TestCase
+final class PipelineBuilderTest extends TestCase
 {
     public function test(): void
     {

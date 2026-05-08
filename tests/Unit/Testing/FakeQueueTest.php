@@ -18,11 +18,11 @@ use CloudCreativity\Modules\Testing\FakeQueue;
 use LogicException;
 use PHPUnit\Framework\TestCase;
 
-class FakeQueueTest extends TestCase
+final class FakeQueueTest extends TestCase
 {
     public function testItQueuesCommands(): void
     {
-        $queue = new FakeQueue();
+        $queue = new class () extends FakeQueue {};
         $queue->push($command1 = $this->createMock(Command::class));
         $queue->push($command2 = $this->createMock(Command::class));
 
@@ -36,7 +36,7 @@ class FakeQueueTest extends TestCase
 
     public function testItHasSoleCommand(): void
     {
-        $queue = new FakeQueue();
+        $queue = new class () extends FakeQueue {};
         $queue->push($command = $this->createMock(Command::class));
 
         $this->assertSame($command, $queue->sole());
@@ -47,7 +47,7 @@ class FakeQueueTest extends TestCase
         $this->expectExceptionMessage('Expected one command in the queue but there are 0 commands.');
         $this->expectException(LogicException::class);
 
-        $queue = new FakeQueue();
+        $queue = new class () extends FakeQueue {};
         $queue->sole();
     }
 
@@ -56,17 +56,9 @@ class FakeQueueTest extends TestCase
         $this->expectExceptionMessage('Expected one command in the queue but there are 2 commands.');
         $this->expectException(LogicException::class);
 
-        $queue = new FakeQueue();
+        $queue = new class () extends FakeQueue {};
         $queue->push($this->createMock(Command::class));
         $queue->push($this->createMock(Command::class));
         $queue->sole();
-    }
-
-    public function testItCanBeExtended(): void
-    {
-        $queue = new class () extends FakeQueue {};
-
-        $queue->push($command = $this->createMock(Command::class));
-        $this->assertSame([$command], $queue->commands);
     }
 }

@@ -28,7 +28,7 @@ use Ramsey\Uuid\Uuid as BaseUuid;
 use Ramsey\Uuid\UuidInterface;
 use UnitEnum;
 
-class GuidTest extends TestCase
+final class GuidTest extends TestCase
 {
     /**
      * @return array<string, array<int, mixed>>

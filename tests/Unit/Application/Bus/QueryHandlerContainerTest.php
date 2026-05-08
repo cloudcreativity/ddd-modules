@@ -19,11 +19,11 @@ use CloudCreativity\Modules\Contracts\Messaging\Query;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
-class QueryHandlerContainerTest extends TestCase
+final class QueryHandlerContainerTest extends TestCase
 {
     public function testItResolvesClosureBindings(): void
     {
-        $a = new TestQueryHandler();
+        $a = new class () extends TestQueryHandler {};
         $b = $this->createStub(TestQueryHandler::class);
 
         $query1 = new class () implements Query {};
@@ -45,7 +45,7 @@ class QueryHandlerContainerTest extends TestCase
 
     public function testItResolvesViaPsrContainer(): void
     {
-        $a = new TestQueryHandler();
+        $a = new class () extends TestQueryHandler {};
         $b = $this->createStub(TestQueryHandler::class);
 
         $query1 = new class () implements Query {};

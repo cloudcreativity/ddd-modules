@@ -21,7 +21,7 @@ use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-class StringIdTest extends TestCase
+final class StringIdTest extends TestCase
 {
     public function test(): void
     {

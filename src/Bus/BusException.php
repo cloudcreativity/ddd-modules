@@ -14,6 +14,6 @@ namespace CloudCreativity\Modules\Bus;
 
 use RuntimeException;
 
-class BusException extends RuntimeException
+final class BusException extends RuntimeException
 {
 }

@@ -15,7 +15,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Application\DomainEventDispatching;
 use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 use DateTimeImmutable;
 
-class TestDomainEvent implements DomainEvent
+abstract class TestDomainEvent implements DomainEvent
 {
     public function getOccurredAt(): DateTimeImmutable
     {

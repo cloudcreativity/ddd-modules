@@ -23,7 +23,7 @@ use CloudCreativity\Modules\Toolkit\Pipeline\Through;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 
-class ComponentQueue implements Queue
+abstract class ComponentQueue implements Queue
 {
     private readonly IEnqueuerContainer $enqueuers;
 

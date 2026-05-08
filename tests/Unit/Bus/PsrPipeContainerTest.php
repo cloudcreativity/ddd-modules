@@ -16,7 +16,7 @@ use CloudCreativity\Modules\Bus\PsrPipeContainer;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
-class PsrPipeContainerTest extends TestCase
+final class PsrPipeContainerTest extends TestCase
 {
     public function testItResolvesBoundPipes(): void
     {

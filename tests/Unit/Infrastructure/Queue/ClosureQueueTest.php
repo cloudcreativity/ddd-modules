@@ -19,7 +19,7 @@ use CloudCreativity\Modules\Tests\Unit\Application\Bus\TestCommand;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class ClosureQueueTest extends TestCase
+final class ClosureQueueTest extends TestCase
 {
     private MockObject&PipeContainer $middleware;
 
@@ -34,12 +34,12 @@ class ClosureQueueTest extends TestCase
     {
         parent::setUp();
 
-        $this->queue = new ClosureQueue(
+        $this->queue = new class (
             function (Command $command): void {
                 $this->actual[] = $command;
             },
             $this->middleware = $this->createMock(PipeContainer::class),
-        );
+        ) extends ClosureQueue {};
     }
 
     protected function tearDown(): void

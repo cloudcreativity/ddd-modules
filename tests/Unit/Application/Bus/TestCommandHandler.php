@@ -17,7 +17,7 @@ use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 
-class TestCommandHandler implements DispatchThroughMiddleware
+abstract class TestCommandHandler implements DispatchThroughMiddleware
 {
     /**
      * Execute the command.

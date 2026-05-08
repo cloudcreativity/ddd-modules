@@ -23,7 +23,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
-class ValidatorTest extends TestCase
+final class ValidatorTest extends TestCase
 {
     /**
      * @return array<array<class-string>>

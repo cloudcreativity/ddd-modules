@@ -16,7 +16,7 @@ use CloudCreativity\Modules\Contracts\Messaging\IntegrationEvent;
 use CloudCreativity\Modules\Toolkit\Identifiers\UuidV4;
 use DateTimeImmutable;
 
-class TestOutboundEvent implements IntegrationEvent
+abstract class TestOutboundEvent implements IntegrationEvent
 {
     public readonly UuidV4 $uuid;
 

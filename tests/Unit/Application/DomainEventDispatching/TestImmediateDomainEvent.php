@@ -16,7 +16,7 @@ use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 use CloudCreativity\Modules\Contracts\Domain\Events\OccursImmediately;
 use DateTimeImmutable;
 
-class TestImmediateDomainEvent implements DomainEvent, OccursImmediately
+final class TestImmediateDomainEvent implements DomainEvent, OccursImmediately
 {
     public function getOccurredAt(): DateTimeImmutable
     {

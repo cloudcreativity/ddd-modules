@@ -21,7 +21,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-class UnitOfWorkManagerTest extends TestCase
+final class UnitOfWorkManagerTest extends TestCase
 {
     private MockObject&UnitOfWork $unitOfWork;
 

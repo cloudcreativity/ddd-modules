@@ -19,7 +19,7 @@ use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\TestCase;
 use Throwable;
 
-class ExecuteInUnitOfWorkTest extends TestCase
+final class ExecuteInUnitOfWorkTest extends TestCase
 {
     /**
      * @var array<string>

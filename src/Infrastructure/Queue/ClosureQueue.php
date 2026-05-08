@@ -23,7 +23,7 @@ use CloudCreativity\Modules\Toolkit\Pipeline\Through;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 
-class ClosureQueue implements Queue
+abstract class ClosureQueue implements Queue
 {
     private readonly ?IPipeContainer $middleware;
 

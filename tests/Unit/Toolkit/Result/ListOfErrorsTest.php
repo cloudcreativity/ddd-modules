@@ -21,7 +21,7 @@ use CloudCreativity\Modules\Toolkit\Result\KeyedSetOfErrors;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
 use PHPUnit\Framework\TestCase;
 
-class ListOfErrorsTest extends TestCase
+final class ListOfErrorsTest extends TestCase
 {
     public function test(): void
     {

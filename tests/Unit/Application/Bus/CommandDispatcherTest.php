@@ -21,7 +21,7 @@ use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class CommandDispatcherTest extends TestCase
+final class CommandDispatcherTest extends TestCase
 {
     private CommandHandlerContainer&MockObject $handlers;
 
@@ -38,10 +38,10 @@ class CommandDispatcherTest extends TestCase
     {
         parent::setUp();
 
-        $this->dispatcher = new CommandDispatcher(
+        $this->dispatcher = new class (
             handlers: $this->handlers = $this->createMock(CommandHandlerContainer::class),
             middleware: $this->middleware = $this->createMock(PipeContainer::class),
-        );
+        ) extends CommandDispatcher {};
     }
 
     protected function tearDown(): void

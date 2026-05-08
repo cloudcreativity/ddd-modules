@@ -15,7 +15,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Application\InboundEventBus;
 use CloudCreativity\Modules\Bus\EventHandler;
 use PHPUnit\Framework\TestCase;
 
-class EventHandlerTest extends TestCase
+final class EventHandlerTest extends TestCase
 {
     public function test(): void
     {

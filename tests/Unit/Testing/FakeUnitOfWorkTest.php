@@ -17,7 +17,7 @@ use CloudCreativity\Modules\Testing\FakeUnitOfWork;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-class FakeUnitOfWorkTest extends TestCase
+final class FakeUnitOfWorkTest extends TestCase
 {
     public function testItIsSuccessfulOnFirstAttempt(): void
     {

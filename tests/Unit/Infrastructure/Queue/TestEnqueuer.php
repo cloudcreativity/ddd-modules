@@ -14,7 +14,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue;
 
 use CloudCreativity\Modules\Contracts\Messaging\Command;
 
-class TestEnqueuer
+abstract class TestEnqueuer
 {
     public function push(Command $command): void
     {

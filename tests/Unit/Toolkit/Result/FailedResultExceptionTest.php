@@ -17,7 +17,7 @@ use CloudCreativity\Modules\Toolkit\Result\FailedResultException;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\TestCase;
 
-class FailedResultExceptionTest extends TestCase
+final class FailedResultExceptionTest extends TestCase
 {
     public function testItFailsWithMessage(): void
     {

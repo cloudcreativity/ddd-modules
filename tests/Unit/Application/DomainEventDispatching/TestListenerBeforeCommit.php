@@ -15,7 +15,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Application\DomainEventDispatching;
 use CloudCreativity\Modules\Contracts\Application\UnitOfWork\DispatchBeforeCommit;
 use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 
-class TestListenerBeforeCommit implements DispatchBeforeCommit
+abstract class TestListenerBeforeCommit implements DispatchBeforeCommit
 {
     /**
      * Handle the event.

@@ -21,7 +21,7 @@ use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class DispatcherTest extends TestCase
+final class DispatcherTest extends TestCase
 {
     private ListenerContainer&MockObject $listeners;
 
@@ -33,17 +33,18 @@ class DispatcherTest extends TestCase
     {
         parent::setUp();
 
-        $this->dispatcher = new Dispatcher(
+        $this->dispatcher = new class (
             listeners: $this->listeners = $this->createMock(ListenerContainer::class),
             middleware: $this->middleware = $this->createMock(PipeContainer::class),
-        );
+        ) extends Dispatcher {};
     }
 
     public function testItDispatchesImmediately(): void
     {
         $sequence = [];
         $event1 = new TestImmediateDomainEvent();
-        $event2 = new TestDomainEvent();
+        $event2 = new class () extends TestDomainEvent {};
+        ;
 
         $listener1 = $this->createMock(TestListener::class);
         $listener2 = $this->createMock(TestListener::class);
@@ -110,8 +111,10 @@ class DispatcherTest extends TestCase
 
     public function testItDispatchesThroughMiddleware(): void
     {
-        $event1 = new TestDomainEvent();
-        $event2 = new TestDomainEvent();
+        $event1 = new class () extends TestDomainEvent {};
+        ;
+        $event2 = new class () extends TestDomainEvent {};
+        ;
         $event3 = new TestImmediateDomainEvent();
 
         $a = function ($actual, Closure $next) use ($event1, $event2): DomainEvent {

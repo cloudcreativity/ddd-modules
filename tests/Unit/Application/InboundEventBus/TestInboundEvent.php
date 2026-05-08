@@ -16,7 +16,7 @@ use CloudCreativity\Modules\Contracts\Messaging\IntegrationEvent;
 use CloudCreativity\Modules\Toolkit\Identifiers\UuidV4;
 use DateTimeImmutable;
 
-class TestInboundEvent implements IntegrationEvent
+final class TestInboundEvent implements IntegrationEvent
 {
     public function getUuid(): UuidV4
     {

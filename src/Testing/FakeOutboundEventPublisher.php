@@ -24,7 +24,7 @@ use LogicException;
  * @implements ArrayAccess<int, IntegrationEvent>
  * @implements IteratorAggregate<int, IntegrationEvent>
  */
-class FakeOutboundEventPublisher implements OutboundEventPublisher, Countable, ArrayAccess, IteratorAggregate
+abstract class FakeOutboundEventPublisher implements OutboundEventPublisher, Countable, ArrayAccess, IteratorAggregate
 {
     /**
      * @var list<IntegrationEvent>

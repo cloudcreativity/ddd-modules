@@ -14,7 +14,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Application\DomainEventDispatching;
 
 use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 
-class TestListener
+abstract class TestListener
 {
     /**
      * Handle the event.

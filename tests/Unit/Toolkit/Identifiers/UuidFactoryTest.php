@@ -27,7 +27,7 @@ use Ramsey\Uuid\Uuid as BaseUuid;
 use Ramsey\Uuid\UuidFactory as BaseUuidFactory;
 use Ramsey\Uuid\UuidFactoryInterface as BaseUuidFactoryInterface;
 
-class UuidFactoryTest extends TestCase
+final class UuidFactoryTest extends TestCase
 {
     private BaseUuidFactory&MockObject $baseFactory;
 

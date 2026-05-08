@@ -20,7 +20,7 @@ use CloudCreativity\Modules\Infrastructure\OutboundEventBus\ComponentPublisher;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class ComponentPublisherTest extends TestCase
+final class ComponentPublisherTest extends TestCase
 {
     /**
      * @var MockObject&PublisherHandlerContainer
@@ -40,10 +40,10 @@ class ComponentPublisherTest extends TestCase
     {
         parent::setUp();
 
-        $this->publisher = new ComponentPublisher(
+        $this->publisher = new class (
             handlers: $this->handlers = $this->createMock(PublisherHandlerContainer::class),
             middleware: $this->middleware = $this->createMock(PipeContainer::class),
-        );
+        ) extends ComponentPublisher {};
     }
 
     protected function tearDown(): void
@@ -54,7 +54,7 @@ class ComponentPublisherTest extends TestCase
 
     public function testPublish(): void
     {
-        $event = new TestOutboundEvent();
+        $event = new class () extends TestOutboundEvent {};
 
         $this->handlers
             ->expects($this->once())
@@ -72,9 +72,9 @@ class ComponentPublisherTest extends TestCase
 
     public function testPublishWithMiddleware(): void
     {
-        $event1 = new TestOutboundEvent();
-        $event2 = new TestOutboundEvent();
-        $event3 = new TestOutboundEvent();
+        $event1 = new class () extends TestOutboundEvent {};
+        $event2 = new class () extends TestOutboundEvent {};
+        $event3 = new class () extends TestOutboundEvent {};
 
         $middleware1 = function ($actual, Closure $next) use ($event1, $event2): void {
             $this->assertSame($event1, $actual);
@@ -106,7 +106,7 @@ class ComponentPublisherTest extends TestCase
         $this->handlers
             ->expects($this->once())
             ->method('get')
-            ->with($event1::class)
+            ->with($event3::class)
             ->willReturnCallback(function () use ($handler) {
                 $this->assertSame(['before1', 'before2'], $this->sequence);
                 return $handler;

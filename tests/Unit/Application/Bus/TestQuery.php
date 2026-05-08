@@ -14,6 +14,6 @@ namespace CloudCreativity\Modules\Tests\Unit\Application\Bus;
 
 use CloudCreativity\Modules\Contracts\Messaging\Query;
 
-class TestQuery implements Query
+final class TestQuery implements Query
 {
 }

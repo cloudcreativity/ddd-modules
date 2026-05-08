@@ -16,7 +16,7 @@ use CloudCreativity\Modules\Contracts\Domain\Entity;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Domain\IsEntityWithNullableId;
 
-class TestEntityWithNullableId implements Entity
+final class TestEntityWithNullableId implements Entity
 {
     use IsEntityWithNullableId;
 

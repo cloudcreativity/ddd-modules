@@ -18,7 +18,7 @@ use LogicException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-class FakeExceptionReporterTest extends TestCase
+final class FakeExceptionReporterTest extends TestCase
 {
     public function testItReportsExceptions(): void
     {

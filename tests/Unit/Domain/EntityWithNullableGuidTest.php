@@ -19,7 +19,7 @@ use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
 use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
 
-class EntityWithNullableGuidTest extends TestCase
+final class EntityWithNullableGuidTest extends TestCase
 {
     public function test(): void
     {

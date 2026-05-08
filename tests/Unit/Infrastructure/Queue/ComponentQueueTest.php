@@ -20,7 +20,7 @@ use CloudCreativity\Modules\Infrastructure\Queue\ComponentQueue;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class ComponentQueueTest extends TestCase
+final class ComponentQueueTest extends TestCase
 {
     private EnqueuerContainer&MockObject $enqueuers;
 
@@ -37,10 +37,10 @@ class ComponentQueueTest extends TestCase
     {
         parent::setUp();
 
-        $this->queue = new ComponentQueue(
+        $this->queue = new class (
             enqueuers: $this->enqueuers = $this->createMock(EnqueuerContainer::class),
             middleware: $this->middleware = $this->createMock(PipeContainer::class),
-        );
+        ) extends ComponentQueue {};
     }
 
     protected function tearDown(): void

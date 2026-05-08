@@ -16,7 +16,7 @@ use CloudCreativity\Modules\Contracts\Toolkit\Contextual;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Error;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
-readonly class ContextualResult implements Contextual
+final readonly class ContextualResult implements Contextual
 {
     /**
      * @param Result<mixed> $result

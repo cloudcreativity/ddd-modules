@@ -19,7 +19,7 @@ use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-class SetupBeforeEventTest extends TestCase
+final class SetupBeforeEventTest extends TestCase
 {
     /**
      * @var array<string>
