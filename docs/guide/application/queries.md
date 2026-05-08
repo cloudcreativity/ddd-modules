@@ -16,9 +16,10 @@ I.e. it defines the data contract for the request.
 For example:
 
 ```php
-namespace App\Modules\EventManagement\Application\UseCases\Queries\GetAttendeeTickets;
+namespace App\Modules\EventManagement\Api\Input\GetAttendeeTickets;
 
-use CloudCreativity\Modules\Contracts\Messaging\Query;use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
+use CloudCreativity\Modules\Contracts\Messaging\Query;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 
 final readonly class GetAttendeeTicketsQuery implements Query
 {
@@ -38,16 +39,18 @@ the data collection, and returning the result.
 Your query handler defines the use case - by type-hinting the query input and the result output. For example:
 
 ```php
-namespace App\Modules\EventManagement\Application\UseCases\Queries\GetAttendeeTickets;
+namespace App\Modules\EventManagement\Application\UseCases;
 
-use App\Modules\EventManagement\Application\Ports\Driven\Persistence\ReadModels\V1\TicketModelRepository;
+use App\Modules\EventManagement\Api\Output\V1\Models\TicketModel;
+use App\Modules\EventManagement\Application\Ports\Persistence\ReadModels\V1\TicketModelRepository;
+use App\Modules\EventManagement\Application\Factories\ReadModels\V1\TicketModelFactory;
 use CloudCreativity\Modules\Toolkit\Results\Result;
-use VendorName\EventManagement\Shared\ReadModels\V1\TicketModel;
 
 final readonly class GetAttendeeTicketsHandler
 {
     public function __construct(
         private TicketModelRepository $repository,
+        private TicketModelFactory $factory,
     ) {
     }
 
@@ -59,11 +62,13 @@ final readonly class GetAttendeeTicketsHandler
      */
     public function handle(GetAttendeeTicketsQuery $query): Result
     {
-        $models = $this->repository->findByAttendeeId($query->attendeeId);
+        $state = $this->repository->findByAttendeeId($query->attendeeId);
 
-        if (count($models) === 0) {
+        if (count($state) === 0) {
             return Result::failed('The provided attendee does not exist.');
         }
+
+        $models = $this->factory->make($state);
 
         return Result::ok($models);
     }
@@ -79,12 +84,13 @@ that alter the state. A query is a request to _read_ the state, and a command sh
 
 :::tip
 You'll notice here that the example is very simple. The application layer hands off the request to the infrastructure
-layer via a driven port, and returns the result. This is a common pattern for queries, as the logic is often very
-simple.
+layer via a driven port, maps the values returned by persistence to read models, then returns these models as the
+result. This is a common pattern for queries where state can be read directly from persistence. An alternative pattern
+would be to load a domain aggregate or service, read domain state and map that back to read models that are returned as
+the result.
 
-There may be times when your query handlers need to do a lot more work. For instance, there is an example in the
-[domain services chapter](../domain/services#query-handlers) that shows a query handler executing business logic and
-returning a result representing the outcome of that logic.
+For instance, there is an example in the [domain services chapter](../domain/services#query-handlers) that shows a query
+handler executing business logic and returning a result representing the outcome of that logic.
 :::
 
 ### Results
@@ -93,7 +99,8 @@ Just like commands, queries handlers return a result object - which contains the
 See the [Results chapter for information on using this object.](../toolkit/results)
 
 Unlike command results, query results can contain complex data structures as their return value. It is best to define
-these data structures - which is why our recommended pattern is to return [read models.](#read-models)
+these data structures - which is why our recommended pattern is to return [read models.](#read-models) Values returned
+are placed in the `Api\Output` namespace to make it clear that these are values that can be returned by the module.
 
 ## Query Bus
 
@@ -103,7 +110,7 @@ Although there is a _generic_ query bus interface, our bounded context needs to 
 We do this by defining an interface in our application's driving ports:
 
 ```php
-namespace App\Modules\EventManagement\Application\Ports\Driving;
+namespace App\Modules\EventManagement\Api;
 
 use CloudCreativity\Modules\Contracts\Messaging\QueryDispatcher;
 
@@ -115,100 +122,47 @@ interface QueryBus extends QueryDispatcher
 And then our implementation is as follows:
 
 ```php
-namespace App\Modules\EventManagement\Application\Bus;
+namespace App\Modules\EventManagement\Application\Adapters;
 
-use App\Modules\EventManagement\Application\Ports\Driving\QueryBus as Port;use CloudCreativity\Modules\Bus\QueryDispatcher;
+use App\Modules\EventManagement\Api\QueryBus as Port;
+use App\Modules\EventManagement\Api\Input\GetAttendeeTicketsQuery;
+use App\Modules\EventManagement\Application\UseCases\GetAttendeeTicketsHandler;
+use CloudCreativity\Modules\Bus\QueryDispatcher;
+use CloudCreativity\Modules\Bus\Middleware\LogMessageDispatch;
+use CloudCreativity\Modules\Bus\WithQuery;
 
+#[Through(LogMessageDispatch::class)]
+#[WithQuery(GetAttendeeTicketsQuery::class, GetAttendeeTicketsHandler::class)]
 final class QueryBus extends QueryDispatcher implements Port
 {
 }
 ```
 
+Notice that the query dispatcher can have middleware - attached using the `Through` attribute. The `WithQuery`
+attribute is used to map a query from the `Api\Input` namespace to the handler in the `Application\UseCases`
+namespace.
+
 ### Creating a Query Bus
 
-The query dispatcher class that your implementation extends (in the above example) allows you to build a query bus
-specific to your domain. You do this by:
-
-1. Binding query handler factories into the query dispatcher; and
-2. Binding factories for any middleware used by your bounded context; and
-3. Optionally, attaching middleware that runs for all queries dispatched through the query bus.
-
-Factories must always be _lazy_, so that the cost of instantiating command handlers or middleware only occurs if the
-handler or middleware are actually being used.
-
-For example:
+The query dispatcher class that your implementation extends (in the above example) requires you to inject a PSR
+container. This container is then used to resolve any middleware and query handlers that you've attached to the
+dispatcher via the `Through` and `WithQuery` attributes.
 
 ```php
-namespace App\Modules\EventManagement\Application\Bus;
-
-use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;use App\Modules\EventManagement\Application\Ports\Driving\QueryBus as QueryBusPort;use App\Modules\EventManagement\Application\UseCases\Queries\{GetAttendeeTickets\GetAttendeeTicketsHandler,GetAttendeeTickets\GetAttendeeTicketsQuery,};use CloudCreativity\Modules\Bus\Middleware\LogMessageDispatch;use CloudCreativity\Modules\Bus\QueryHandlerContainer;use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
-
-final class QueryBusProvider
-{
-    public function __construct(
-        private readonly ExternalDependencies $dependencies,
-    ) {
-    }
-
-    public function getQueryBus(): QueryBusPort
-    {
-        $bus = new QueryBus(
-            handlers: $handlers = new QueryHandlerContainer(),
-            middleware: $middleware = new PipeContainer(),
-        );
-
-        /** Bind queries to handler factories */
-        $handlers->bind(
-            GetAttendeeTicketsQuery::class,
-            fn() => new GetAttendeeTicketsHandler(
-                $this->dependencies->getTicketModelRepository(),
-            ),
-        );
-
-        /** Bind middleware factories */
-        $middleware->bind(
-            LogMessageDispatch::class,
-            fn () => new LogMessageDispatch(
-                $this->dependencies->getLogger(),
-            ),
-        );
-
-        /** Attach middleware that runs for all queries */
-        $bus->through([
-            LogMessageDispatch::class,
-        ]);
-
-        return $bus;
-    }
-}
+$dispatcher = new QueryBus($psrContainer);
 ```
 
-Adapters in the presentation and delivery layer will use the driving ports. Typically this means we need to bind the
-port into a service container. For example, in Laravel:
+So, for example in a Laravel application, you would bind this to the interface as follows in your service provider:
 
 ```php
-namespace App\Providers;
+use App\Modules\EventManagement\Api\QueryBus;
+use App\Modules\EventManagement\Application\Adapters\QueryBusAdapter;
+use Illuminate\Contracts\Foundation\Application;
 
-use App\Modules\EventManagement\Application\{
-    Bus\QueryBusProvider,
-    Ports\Driving\QueryBus,
-};
-use Illuminate\Contracts\Container\Container;
-use Illuminate\Support\ServiceProvider;
-
-final class EventManagementServiceProvider extends ServiceProvider
-{
-    public function register(): void
-    {
-        $this->app->bind(
-            QueryBus::class,
-            static function (Container $app)  {
-                $provider = $app->make(QueryBusProvider::class);
-                return $provider->getQueryBus();
-            },
-        );
-    }
-}
+$this->app->bind(
+    QueryBus::class,
+    static fn (Application $app) => new QueryBusAdapter($app),
+);
 ```
 
 ### Dispatching Queries
@@ -219,15 +173,15 @@ a single action controller to handle a HTTP request in a Laravel application, we
 ```php
 namespace App\Http\Controllers\Api\Attendees;
 
-use App\Modules\EventManagement\Application\{
-    Ports\Driving\QueryBus\QueryBus,
-    UsesCases\Queries\GetAttendeeTickets\GetAttendeeTicketsQuery,
+use App\Modules\EventManagement\Api\{
+    QueryBus,
+    Input\GetAttendeeTicketsQuery,
+    Output\V1\Models\TicketModel,
 };
 use App\Http\Resources\Attendees\TicketsResource;
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 use Illuminate\Validation\Rule;
-use VendorName\EventManagement\Shared\ReadModels\V1\TicketModel;
 
 class TicketsController extends Controller
 {
@@ -262,7 +216,7 @@ represents some current state of the bounded context. They are _read-only_ i.e. 
 For example, our model returned by our "get attendee tickets" query might look like this:
 
 ```php
-namespace VendorName\EventManagement\Shared\ReadModels\V1;
+namespace App\Modules\EventManagement\Output\V1\Models;
 
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 
@@ -294,10 +248,9 @@ This is not unusual - and in fact, it is actually good design to have different 
 operations. This gives a clear separation of concerns.
 
 Aggregate roots and entities represent the data structure that is required to determine _if_ the state of the domain can
-be
-changed, and _what_ to change it to - plus what domain events should be emitted as a result. In our example domain, the
-attendee aggregate root controls changes to its tickets - therefore the tickets are always contained within the attendee
-aggregate root.
+be changed, and _what_ to change it to - plus what domain events should be emitted as a result. In our example domain,
+the attendee aggregate root controls changes to its tickets - therefore the tickets are always contained within the
+attendee aggregate root.
 
 Read models represent the answer to a question posed by a query, and are structured in a way that we can understand the
 state of the domain. In our example, it makes sense for tickets to be retrieved independently of the attendee - e.g. if
@@ -325,7 +278,7 @@ contract.
 
 In large systems, this can be a significant challenge. To mitigate this, you can version your read models. This
 allows you to introduce breaking changes to the data contract, while still supporting older versions. For
-example, our read models could be in `ReadModels\V1` and `ReadModels\V2` namespaces.
+example, our read models could be in `Api\Output\V1\Models` and `...\V2\Models` namespaces.
 
 This allows you to introduce a new version of the model, while retaining the model name. Retaining the model name is
 important because it is an expression of your domain, using the ubiquitous language of your bounded context. If you do
@@ -344,12 +297,13 @@ middleware. Middleware is a powerful way to add cross-cutting concerns to your c
 
 Middleware can be added either to the query bus (so it runs for every query) or to individual query handlers.
 
-To apply middleware to the query bus, you can use the `through()` method on the bus - as shown in the example above.
+To apply middleware to the query bus, you can use the `Through` attribute on the bus - as shown in the example above.
 Middleware is executed in the order it is added to the bus.
 
-To apply middleware to a specific query handler, the handler must implement the `DispatchThroughMiddleware` interface.
-The `middleware()` method should then return an array of middleware to run, in the order they should be executed.
-Handler middleware are always executed _after_ the bus middleware.
+To apply middleware to a specific query handler, use the `Through` attribute on the handler class. This allows you to
+add middleware that is only executed for a specific query. You can add as many middleware as you like to a handler, and
+they will be executed in the order they are added to the handler. Handler middleware are executed _after_ any bus
+middleware.
 
 This package provides several useful middleware, which are described below. Additionally, you can write your own
 middleware to suit your specific needs.
@@ -365,22 +319,11 @@ Their use is identical for queries.
 Use our `LogMessageDispatch` middleware to log the dispatch of a query, and the result. The middleware takes a
 [PSR Logger](https://php-fig.org/psr/psr-3/).
 
-```php
-use CloudCreativity\Modules\Bus\Middleware\LogMessageDispatch;
-
-$middleware->bind(
-    LogMessageDispatch::class,
-    fn (): LogMessageDispatch => new LogMessageDispatch(
-        $this->dependencies->getLogger(),
-    ),
-);
-```
-
 The use of this middleware is identical to that described in the [Commands chapter.](./commands#logging)
 See those instructions for more information, such as configuring the log levels.
 
 Additionally, you can customise the context that is logged for a query. To exclude properties, mark them with the
-`Sensitive` attribute. Alternatively, if you need full control over the context, implement the `ContextProvider`
+`Sensitive` attribute. Alternatively, if you need full control over the context, implement the `Contextual`
 interface on your query message. See the examples in the [Commands chapter.](./commands#logging)
 
 ### Writing Middleware
@@ -389,9 +332,12 @@ You can write your own middleware to suit your specific needs. Middleware is a s
 following signature:
 
 ```php
-namespace App\Modules\EventManagement\Application\Bus\Middleware;
+namespace App\Modules\EventManagement\Application\Adapters\Middleware;
 
-use Closure;use CloudCreativity\Modules\Contracts\Bus\Middleware\QueryMiddleware;use CloudCreativity\Modules\Contracts\Messaging\Query;use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
+use Closure;
+use CloudCreativity\Modules\Contracts\Bus\Middleware\QueryMiddleware;
+use CloudCreativity\Modules\Contracts\Messaging\Query;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 final class MyMiddleware implements QueryMiddleware
 {
@@ -428,9 +374,13 @@ If you want to write middleware that can be used with both commands and queries,
 instead:
 
 ```php
-namespace App\Modules\EventManagement\Application\Bus\Middleware;
+namespace App\Modules\EventManagement\Application\Adapters\Middleware;
 
-use Closure;use CloudCreativity\Modules\Contracts\Bus\Middleware\BusMiddleware;use CloudCreativity\Modules\Contracts\Messaging\Command;use CloudCreativity\Modules\Contracts\Messaging\Query;use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
+use Closure;
+use CloudCreativity\Modules\Contracts\Bus\Middleware\BusMiddleware;
+use CloudCreativity\Modules\Contracts\Messaging\Command;
+use CloudCreativity\Modules\Contracts\Messaging\Query;
+use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 class MyBusMiddleware implements BusMiddleware
 {

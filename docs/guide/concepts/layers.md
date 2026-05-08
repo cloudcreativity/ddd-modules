@@ -64,7 +64,7 @@ This means that there are three types of _messages_ that define the use cases of
 
 1. **Commands** - that mutate the state of the domain;
 2. **Queries** - that read the state of the domain; and
-3. **Integration Events** - that are emitted and consumed by other bounded contexts.
+3. **Integration Events** - that are emitted and consumed by other modules, and/or the presentation and delivery layer.
 
 ## Infrastructure Layer
 

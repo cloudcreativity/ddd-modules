@@ -46,29 +46,29 @@ The top-level namespace of the `Modules` namespace looks like this:
 ```
 - Modules
     - <ModuleName>
+        - Api
+            - Input
+            - Output
         - Application
         - Domain
         - Infrastructure
-        - Consumer
-        - Shared
     - <ModuleName>
+        - Api
         - Application
         - Domain
         - Infrastructure
-        - Consumer
-        - Shared
     - <etc>
 ```
 
 As a top-level summary, the namespaces in each module are:
 
 1. **Domain** - the domain business logic, expressed in aggregates, entities, value objects etc.
-2. **Application** - the use cases of the module, along with the driving and driven ports.
+2. **Application** - orchestrates coordination of the domain and infrastructure layers, as well as defining how the use
+   cases of the module are implemented (e.g. via command and query handlers).
 3. **Infrastructure** - the adapters that implement the application's driven ports.
-4. **Consumer** - the contracts that define the coupling between the module and others, in particular defining
-   the data contracts for information exchange.
-5. **Shared** - code that is shared between the module and the consumer. This should be limited to
-   shared data models - i.e. integration events and read models - and any value objects needed by these models.
+4. **Api** - the public interface for interacting with the module, i.e. by the presentation and delivery layer. This
+   holds the _input_ contracts and value objects that can be used externally (including the driving ports) and the _
+   output) values that are received as a result of interacting with the module.
 
 :::tip
 Note that there is no _presentation layer_ here. Presentation and delivery is _outside_ the `Modules` namespace. This is
@@ -81,53 +81,53 @@ outside `App\Modules` is a concern of the presentation and delivery layer.
 ## Microservices
 
 In a microservice, we would also have a `Modules` namespace. This would contain the one or more subdomains that
-the microservice represents.
+the microservice represents. This would use the same structure as described above.
 
-The structure here is as follows:
-
-```
-- Modules
-    - <ModuleName>
-        - Application
-        - Domain
-        - Infrastructure
-    - <ModuleName>
-        - Application
-        - Domain
-        - Infrastructure
-    - <etc>
-```
-
-So where have `Shared` and `Consumer` gone?
-
-The consumer namespace is not required by the microservice - as it cannot consume itself! Instead, this is a Composer
-package that is installed wherever another module needs to consume this one. For example, this could be in a module in
-another microservice, or in your modular monolith. Consumption is either loose via integration events, or direct via a
-client interface that internally calls the microservice.
-
-This means we also put the shared namespace in a separate Composer package. This is so that the shared data models can
-be required by both the microservice and the consumer package.
-
-For example, the microservice would publish an integration event defined in the shared package. As consumers subscribe
-to the integration event, they would also depend on the shared package.
-
-### Transitioning to Microservices
-
-This means there is a clear pathway from a modular monolith to a microservice, by _lifting and shifting_ the code for
-the module from the monolith.
-
-If the module has a **shared** namespace, it is moved to a Composer package. This means it can be required by both
-the microservice that contains the module and the consumer code.
-
-The **application, domain and infrastructure namespaces** would be _lifted and shifted_ to the `Modules` namespace in
-the microservice codebase. If there is a shared package, that can be installed into the microservice via Composer.
-
-The **consumer namespace** would be moved to a Composer package. This means any other module (including those split to
-other microservices) can require it as needed. This consumer package represents the allowed coupling to the
-microservice, and the client defines the interface for accessing the microservice directly. The consumer package would
-require the shared package.
+The use of the same structure means there is a clear pathway from a modular monolith to a microservice, by _lifting and
+shifting_ the code for the module from the monolith into the microservice. As the module is fully encapsulated and
+loosely coupled, this can be done with minimal changes to the code. Typically, the only changes would be to the
+infrastructure layer, as the module might need to use different implementations of the driven ports in the microservice
+than it did in the monolith.
 
 ## Layers
+
+### API Namespace
+
+The API namespace defines the public interface for interacting with the module. This is the point of interaction between
+the presentation and delivery layer and the module. It contains the data contracts for interacting with the module, as
+well as the driving ports that the presentation and delivery layer can call to interact with the module.
+
+Our structure for this namespace is to put the driving ports in the root of the namespace, then split other objects into
+either `Input` or `Output` namespaces. The `Input` namespace contains the data contracts for interacting with the
+module, e.g. the command and query messages that can be dispatched to the application layer. The `Output` namespace
+contains the data contracts for receiving data from the module, e.g. the read models that can be returned from queries.
+
+For example:
+
+```
+- Api
+    - Input
+        - Enums
+        - Values
+        FooCommand
+        BarCommand
+        BazQuery
+        BatQuery
+    - Output
+        - Enums
+        - Values
+        - Models
+    - CommandBus      <- driving port
+    - QueryBus        <- driving port
+    - InboundEventBus <- driving port
+```
+
+:::tip
+The `Api` namespace makes it extremely easy to enforce your architectural layers in the presentation and delivery layer.
+If you're using a tool like [Deptrac](https://github.com/deptrac/deptrac) you can specify that the presentation and
+delivery layer can only consume classes from the API namespace of the module. This ensures that there is no incorrect
+use of the application, domain and infrastrucute layers - enforcing encapsulation.
+:::
 
 ### Application Namespace
 
@@ -135,96 +135,53 @@ The application namespace can be structured as follows:
 
 ```
 - Application
-    - Ports
-        - Driving
-            - CommandBus
-            - QueryBus
-            - InboundEventBus
-        - Driven
-            - OutboundEvents
-            - Queue
-            - Persistence
-            - ...
-    - Bus
-        - CommandBus
-        - QueryBus
-        - InboundEventBus
-    - UseCases
-        - Commands
-        - Queries
-        - InboundEvents
-    - Internal
-        - Commands
-        - DomainEvents
-            - Listeners
+    - Ports                       <- driven ports
+        - OutboundEvents
+        - Queue
+        - Persistence
         - ...
+    - Adapters                    <- driving port adapters
+        - CommandBusAdapter
+        - QueryBusAdapter
+        - InboundEventBusAdapter
+    - UseCases
+        - Internal              <- internal use cases, e.g. for asynchronous processing
+            - ...
+        - FooCommandHandler     <- uses cases
+        - BarQueryHandler
+    - Orchestration             <- orchestration of domain and infrastructure layers
 ```
 
 The namespaces shown here are as follows:
 
-- **Ports** - the driving and driven ports of the application layer expressed as interfaces. The driving ports are
-  the interfaces that the application layer uses to interact with the outside world. The driven ports are the interfaces
+- **Ports** - the driven ports of the application layer expressed as interfaces. The driven ports are the interfaces
   that the application layer expects to be implemented by the infrastructure layer.
-- **Bus** - contains the implementations of the driving ports. The concrete implementations are the command bus,
+- **Adapter** - contains the implementations of the driving ports. The concrete implementations are the command bus,
   query bus, and inbound event bus. Each bus ensures a message is dispatched to the correct handler.
-- **Use Cases** - the implementation of the business logic of the application layer. Use cases are expressed as the
-  command and query messages that can enter the application, and the handlers that implement what happens when a
-  command, query or inbound integration event is dispatched.
-- **Internal** - contains any internal concerns of the application layer, that are not exposed as ports. For example,
-  domain event listeners, internal commands for asynchronous processing, etc.
+- **Use Cases** - the implementation of the business logic of the application layer, i.e. how the application layer
+  handles inbound commands, queries and integration events. Additionally we use an `Internal` namespace in here for
+  organising the use cases that are for internal use by the module only - i.e. asynchronous processing.
+- **Orchestration** - any classes required to help coordinate with the domain layer. For example, this is where the
+  concrete implementation of the domain event dispatcher will go, along with domain event listeners.
 
 ### Domain Namespace
 
-The domain namespace can be structured as follows:
-
-```
-- Domain
-    - Enums
-    - Events
-    - ValueObjects
-    . Aggregate1
-    . Aggregate2
-    . Entity1
-    . ...
-```
-
-We are however less prescriptive about the structure of the domain namespace, as each domain is unique.
-
-For example, the above structure places aggregate roots and entities at the top level. However, you may prefer to group
-them by aggregate root - particularly if your domain has a large number of aggregates and entities. That could result in
-a structure like this:
-
- ```
- - Domain
-    - <Aggregate1>
-        - Enums
-        - ValueObjects 
-        . AggrateRoot1
-        . ContainedEntity1
-        . ContainedEntity2
-    - <Aggregate2>
-        - Enums
-        - ValueObjects 
-        . AggrateRoot2
-        . ContainedEntity1
-        . ContainedEntity2
- ```
+The domain namespace can be structured as you wish. It's your domain, so only you know how best to organise it!
 
 ### Infrastructure Namespace
 
 The infrastructure namespace contains the adapters that implement the driven ports of the application layer. We would
-structure this according to the structure of the ports in the application namespace, so that it's easy to conceptually
-tie the two together.
+structure this according to the structure of the driven ports in the application namespace, so that it's easy to
+conceptually tie the two together.
 
 For example, if our application driven ports looked like this:
 
 ```
 - Application
     - Ports
-        - Driven
-            - OutboundEventBus
-            - Persistence
-            - Queue
+        - OutboundEventBus
+        - Persistence
+        - Queue
 ```
 
 Then our infrastructure namespace would look like this:
@@ -233,61 +190,5 @@ Then our infrastructure namespace would look like this:
 - Infrastructure
     - OutboundEventBus
     - Persistence
-    - Queue 
+    - Queue
 ```
-
-## Packages
-
-### Shared
-
-The shared namespace is optional, and is only required if the module is consumed by other modules. Where this is the
-case, the package contains data models that are shared between the module and its consumers.
-
-There are two types of shared data models:
-
-- **Integration events**: these are shared so that the module can publish them, while consumers can receive and react to
-  them. This is loose coupling via a data contract defined on the integration event. This contract is identical at the
-  point it is published by the module and when it is received by the consumer.
-- **Read models**: these share the current state of a module between the module and its consumers. In the module,
-  queries dispatched by the query bus can return read models representing the current state. The same read model might
-  need to be shared with a consumer. For example, if the client interface the consumer can call returns the same read
-  model - e.g. an HTTP JSON response containing a serialised read model.
-
-Your shared package may also contain enums and value objects, where these help to define and describe the data model on
-integration events and/or read models.
-
-One thing to note is that as these data models are shared between the module and the consumer, you cannot make
-breaking changes to the data contract without updating every single consumer. In large systems, this can be challenging.
-Therefore, it is sensible to version the integration events and read models - allowing you to incrementally update
-consumers to the new version.
-
-Therefore the shared namespace could look like this:
-
-```
-- Shared
-    - Enums
-    - IntegrationEvents
-        - V1
-        - V2
-    - ReadModels
-        - V1
-        - V2
-    - ValueObjects
-```
-
-### Consumer
-
-The consumer namespace is optional, and is only required if the module is consumed by others. Typically
-you should loosely couple modules by using integration events. However, there are scenarios where one module would
-need to call another module directly.
-
-:::info
-In a microservice architecture, this would be the point where one microservice representing a bounded context or
-subdomain calls another microservice representing a separate bounded context or subdomain, e.g. via HTTP or gRPC.
-:::
-
-The consumer namespace must not contain any business logic - therefore it must not depend on anything from the domain,
-application or infrastructure layers. Instead it contains the interfaces for the direct consumption of the module by
-other modules. I.e. it is the _client_ or Software Development Kit (SDK) for the module.
-
-

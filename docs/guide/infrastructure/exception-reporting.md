@@ -59,7 +59,7 @@ try {
 This package provides a driven port in the application layer that allows that layer to report exceptions:
 
 ```php
-namespace CloudCreativity\Modules\Application\Ports\Driven;
+namespace CloudCreativity\Modules\Contracts\Application\Ports;
 
 use Throwable;
 
@@ -67,9 +67,6 @@ interface ExceptionReporter
 {
     /**
      * Report the exception.
-     *
-     * @param Throwable $ex
-     * @return void
      */
     public function report(Throwable $ex): void;
 }
@@ -93,7 +90,9 @@ implementation looks like this:
 ```php
 namespace App\Modules\Shared\Infrastructure\Exceptions;
 
-use CloudCreativity\Modules\Contracts\Application\Ports\ExceptionReporter;use Illuminate\Contracts\Debug\ExceptionHandler;use Throwable;
+use CloudCreativity\Modules\Contracts\Application\Ports\ExceptionReporter;
+use Illuminate\Contracts\Debug\ExceptionHandler;
+use Throwable;
 
 final readonly class ExceptionReporterAdapter implements
     ExceptionReporter

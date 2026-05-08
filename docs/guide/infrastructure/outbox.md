@@ -60,7 +60,7 @@ bus.
 Our recommended approach is to first place these events into an outbox. This means we need a driven port for the outbox:
 
 ```php
-namespace App\Modules\EventManagement\Application\Ports\Driven\OutboundEvents;
+namespace App\Modules\EventManagement\Application\Ports\OutboundEvents;
 
 use CloudCreativity\Modules\Contracts\Messaging\IntegrationEvent;
 
@@ -79,12 +79,12 @@ interface Outbox
 Domain event listeners would then use this instead of publishing the event themselves. For example:
 
 ```php
-namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Listeners;
+namespace App\Modules\EventManagement\Application\Orchestration\Listeners;
 
-use App\Modules\EventManagement\Application\Ports\Driven\OutboundEvents\Outbox;
+use App\Modules\EventManagement\Application\Ports\OutboundEvents\Outbox;
 use App\Modules\EventManagement\Domain\Events\AttendeeTicketWasCancelled;
+use App\Modules\EventManagement\Api\Output\V1\Events as IntegrationEvents;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\UuidFactory;
-use VendorName\EventManagement\Shared\IntegrationEvents\V1 as IntegrationEvents;
 
 final readonly class PublishAttendeeTicketWasCancelled
 {
@@ -124,7 +124,7 @@ If you are doing this, it is a good idea to make this _explicit_ in your code. I
 port `Queue` - as suggested by the [Queues chapter](./queues) - call it `Outbox` for clarity:
 
 ```php
-namespace App\Modules\EventManagement\Application\Ports\Driven\Queue;
+namespace App\Modules\EventManagement\Application\Ports\Queue;
 
 use CloudCreativity\Modules\Contracts\Application\Ports\Queue;
 

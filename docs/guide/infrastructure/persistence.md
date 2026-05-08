@@ -75,31 +75,30 @@ The first port would need to be used by our "cancel ticket" command to retrieve 
 state back:
 
 ```php
-namespace App\Modules\EventManagement\Application\Posts\Driven\Persistence\AttendeeRepository;
+namespace App\Modules\EventManagement\Application\Ports\Persistence\AttendeeRepository;
 
 use App\Modules\EventManagement\Domain\Attendee;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 
 interface AttendeeRepository
 {
-    public function findOrFail(Identifier $attendeeId): Attendee;
-    public function update(Attendee $attendee): void;
+    public function findOrFail(Identifier $attendeeId): AttendeeState;
+    public function update(AttendeeUpdateState $state): void;
 }
 ```
 
 The second port would be used by our "get all tickets" query:
 
 ```php
-namespace App\Modules\EventManagement\Application\Posts\Driven\Persistence\ReadModels\V1\TicketModelRepository;
+namespace App\Modules\EventManagement\Application\Ports\Persistence\ReadModels\V1\TicketModelRepository;
 
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
-use VendorName\EventManagement\Shared\ReadModels\V1\TicketModel;
 
 interface TicketModelRepository
 {
     /**
      * @param Identifier $eventId
-     * @return list<TicketModel>
+     * @return list<TicketModelState>
      */
     public function getByEventId(Identifier $eventId): array;
 }
@@ -121,15 +120,15 @@ To return to our example of an attendee aggregate root that contains ticket enti
 store and retrieve the ticket entities. This means we only need one port:
 
 ```php
-namespace App\Modules\EventManagement\Application\Posts\Driven\Persistence\AttendeeRepository;
+namespace App\Modules\EventManagement\Application\Ports\Persistence\AttendeeRepository;
 
 use App\Modules\EventManagement\Domain\Attendee;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 
 interface AttendeeRepository
 {
-    public function findOrFail(Identifier $attendeeId): Attendee;
-    public function update(Attendee $attendee): void;
+    public function findOrFail(Identifier $attendeeId): AttendeeState;
+    public function update(AttendeeUpdateState $attendee): void;
 }
 ```
 
@@ -151,7 +150,7 @@ final class MySQLAttendeeRepository implements AttendeeRepository
 {
     public function __construct(private PDO $pdo) {}
 
-    public function findOrFail(Identifier $attendeeId): Attendee
+    public function findOrFail(Identifier $attendeeId): AttendeeState
     {
         // fetch the attendee from the attendees table
         // fetch the tickets from the tickets table
@@ -159,7 +158,7 @@ final class MySQLAttendeeRepository implements AttendeeRepository
         // create the attendee, injecting ticket entities
     }
 
-    public function update(Attendee $attendee): void
+    public function update(AttendeeUpdateState $attendee): void
     {
         // update the attendee in the attendees table
         // update the tickets in the tickets table
@@ -206,10 +205,9 @@ but then map these models to our attendee aggregate root and ticket entities.
 Here's an illustrative example:
 
 ```php
-use App\Modules\EventManagement\Domain\Attendee as AttendeeAggregate;
-use App\Modules\EventManagement\Domain\Enums\TicketStatusEnum;
-use App\Modules\EventManagement\Domain\Ticket as TicketEntity;
-use App\Modules\EventManagement\Domain\ListOfTickets;
+use App\Modules\EventManagement\Application\Ports\Persistence\AttendeeState;
+use App\Modules\EventManagement\Application\Ports\Persistence\AttendeeUpdateState;
+use App\Modules\EventManagement\Application\Ports\Persistence\TicketState;
 use App\Models\Attendee as AttendeeModel;
 use App\Models\Attendee as TicketModel;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
@@ -219,32 +217,32 @@ final class EloquentAttendeeRepository implements AttendeeRepository
 {
     private array $cache = [];
 
-    public function findOrFail(Identifier $attendeeId): AttendeeAggregate
+    public function findOrFail(Identifier $attendeeId): AttendeeState
     {
         $attendeeId = IntegerId::from($attendeeId);
         $model = AttendeeModel::with('tickets')->findOrFail($attendeeId->value);
         $this->cache[$attendeeId->value] = $model;
-        
+
         $tickets = $model->tickets->map(function (TicketModel $ticket) {
-            return new TicketEntity(
+            return new TicketState(
                 new IntegerId($ticket->getKey()),
-                TicketStatusEnum::from($ticket->status),
+                $ticket->status,
             );
         });
-        
-        return new AttendeeAggregate(
+
+        return new AttendeeState(
             $attendeeId,
-            new ListOfTickets(...$tickets),
+            $tickets,
         );
     }
 
-    public function update(Attendee $attendee): void
+    public function update(AttendeeUpdateState $attendee): void
     {
         $attendeeId = IntegerId::from($attendee->getId());
         $model = $this->cache[$attendeeId->value] ?? null;
-        
+
         assert($model instanceof AttendeeModel);
-        
+
         // update the attendee model
         // update the ticket models
     }
