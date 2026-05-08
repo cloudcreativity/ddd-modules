@@ -3,19 +3,23 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/) and [this changelog format](http://keepachangelog.com/).
 
-## Next Major
+## Unreleased - 6.0
 
 ### Added
 
 - The `Uuid` interface now has a `compareTo()` method for sorting UUIDs.
+
+### Changed
+
+- All classes are now either `final` or `abstract`. This should not impact implementations, as you should be extending
+  classes that are now `abstract` to implement your module interfaces. E.g. your specific command bus interface for a
+  module.
 
 ### Removed
 
 - Dropped support for PHP 8.2 and 8.3. The minimum supported version is now PHP 8.4.
 - Removed the deprecated `contains()` method from the `ListOfErrors` interface. Use `any()` instead.
 - The `first()` method on the `ListOfErrors` interface no longer accepts arguments. Use `find()` instead.
-
-## Unreleased
 
 ## [5.2.0] - 2026-01-05
 
