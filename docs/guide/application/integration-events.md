@@ -12,8 +12,7 @@ and any consuming bounded contexts.
 Integration events are bidirectional. They are both _published_ by a bounded context, and _consumed_ by other
 bounded contexts. This means we can refer to them in terms of their direction - specifically:
 
-- **Inbound** integration events, are those a bounded context _consumes_ via a driving port that is implemented by a
-  service in the application layer.
+- **Inbound** integration events, are those a bounded context _consumes_ via an inbound event bus driving port.
 - **Outbound** integration events, are those _published_ by a bounded context. Publishing occurs via a driven port, with
   the infrastructure layer implementing the adapter.
 
@@ -34,14 +33,14 @@ The integration event interface is light-weight and defines only two methods:
 For example:
 
 ```php
-namespace VendorName\EventManagement\Shared\IntegrationEvents\V1;
+namespace App\Modules\EventManagement\Output\V1\Events;
 
+use App\Modules\EventManagement\Output\V1\Enums\CancellationReasonEnum;
+use CloudCreativity\Modules\Contracts\Messaging\IntegrationEvent;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
 use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
-use VendorName\EventManagement\Shared\Enums\CancellationReasonEnum;
 
-final readonly class AttendeeTicketWasCancelled implements 
+final readonly class AttendeeTicketWasCancelled implements
     IntegrationEvent
 {
     public function __construct(
@@ -76,12 +75,10 @@ up to it.
 This means that the data contract for an integration event is _shared_ between the bounded contexts.
 
 :::tip
-The above example integration event places the message in a shared package. As the data contract is shared, when a
+The above example integration event places the message in the `Api\Output` namespace. This means other modules can
+receive it directly, because it is defined as API output for that module. This means the data contract is shared; when a
 bounded context publishes an event the expectation is that consuming bounded contexts will receive exactly the same
 information.
-
-Therefore, the integration event message must be defined in a shared package that is accessible to both the publishing
-and consuming bounded contexts.
 :::
 
 ### Symmetrical Serialization
@@ -95,9 +92,9 @@ deserialization, the result will always be an identical integration event messag
 This can be expressed via an interface. To illustrate the point, a JSON serializer might look like this:
 
 ```php
-namespace VendorName\Ordering\Shared\IntegrationEvents\V1\Serializers;
+namespace App\Modules\Ordering\Output\V1\Events\Serializers;
 
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Messaging\IntegrationEvent;
 
 interface JsonSerializer
 {
@@ -128,7 +125,7 @@ without updating every single consumer to use the new contract.
 
 In large systems, this can be a significant challenge. To mitigate this, you can version your integration events. This
 allows you to introduce breaking changes to the data contract, while still supporting older versions of the event. For
-example, our integration events could be in `IntegrationEvents\V1` and `IntegrationEvents\V2` namespaces.
+example, our integration events could be in `Api\Output\V1` and `Api\Output\V2` namespaces.
 
 This allows you to introduce a new version of the event, while retaining the event name. Retaining the event name is
 important because it is an expression of your domain, using the ubiquitous language of your bounded context. If you do
@@ -149,9 +146,9 @@ implementing the adapter.
 Your application layer should define the driven port:
 
 ```php
-namespace App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus;
+namespace App\Modules\EventManagement\Application\Ports\OutboundEventBus;
 
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\OutboundEventPublisher;
+use CloudCreativity\Modules\Contracts\Application\Ports\OutboundEventPublisher;
 
 interface OutboundEventBus extends OutboundEventPublisher
 {
@@ -170,12 +167,12 @@ event, you will need a domain event listener in your application layer that publ
 For example:
 
 ```php
-namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Listeners;
+namespace App\Modules\EventManagement\Application\Orchestration\Listeners;
 
-use App\Modules\EventManagement\Application\Ports\Driven\OutboundEvents\OutboundEventBus;
+use App\Modules\EventManagement\Application\Ports\OutboundEvents\OutboundEventBus;
 use App\Modules\EventManagement\Domain\Events\AttendeeTicketWasCancelled;
+use App\Modules\EventManagement\Api\Output\V1\Events as IntegrationEvents;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\UuidFactory;
-use VendorName\EventManagement\Shared\IntegrationEvents\V1 as IntegrationEvents;
 
 final readonly class PublishAttendeeTicketWasCancelled
 {
@@ -213,12 +210,12 @@ work is committed.
 In this scenario, the above listener would be changed to use the outbox instead:
 
 ```php
-namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Listeners;
+namespace App\Modules\EventManagement\Application\Orchestration\Listeners;
 
-use App\Modules\EventManagement\Application\Ports\Driven\OutboundEvents\Outbox;
+use App\Modules\EventManagement\Application\Ports\OutboundEvents\Outbox;
 use App\Modules\EventManagement\Domain\Events\AttendeeTicketWasCancelled;
+use App\Modules\EventManagement\Api\Output\V1\Events as IntegrationEvents;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\UuidFactory;
-use VendorName\EventManagement\Shared\IntegrationEvents\V1 as IntegrationEvents;
 
 final readonly class PublishAttendeeTicketWasCancelled
 {
@@ -280,13 +277,11 @@ There are example handlers for each of these strategies below.
 An inbound event handler that dispatches a command that is a use case in your application layer would look like this:
 
 ```php
-namespace App\Modules\EventManagement\Application\UseCases\InboundEvents;
+namespace App\Modules\EventManagement\Application\UseCases\Events;
 
-use App\Modules\EventManagement\Application\Ports\Driving\CommandBus\CommandBus;
-use App\Modules\EventManagement\Application\UseCases\Commands\{
-    RecalculateSalesAtEvent\RecalculateSalesAtEventCommand,
-};
-use VendorName\Ordering\Shared\IntegrationEvents\V1\OrderWasFulfilled;
+use App\Modules\EventManagement\Api\CommandBus\CommandBus;
+use App\Modules\EventManagement\Api\Input\RecalculateSalesAtEventCommand;
+use App\Modules\Ordering\Api\Output\V1\Events\OrderWasFulfilled;
 
 final readonly class OrderWasFulfilledHandler
 {
@@ -315,17 +310,15 @@ command handler to do this.
 This is almost identical to the previous example. However, in this case the command is internal to the bounded context.
 I.e. it is not intended to be exposed as a use case that the outside world can dispatch.
 
-This means the command message and command bus are in the application layer's internal namespace. Otherwise, the
+This means the command message and command bus are in the application layer's driven ports namespace. Otherwise, the
 approach is identical to the previous strategy.
 
 ```php
-namespace App\Modules\EventManagement\Application\UseCases\InboundEvents;
+namespace App\Modules\EventManagement\Application\UseCases\Events;
 
-use App\Modules\EventManagement\Application\Internal\Commands\{
-    RecalculateSalesAtEvent\RecalculateSalesAtEventCommand,
-};
-use App\Modules\EventManagement\Application\Ports\Driving\CommandBus\InternalCommandBus;
-use VendorName\Ordering\Shared\IntegrationEvents\V1\OrderWasFulfilled;
+use App\Modules\EventManagement\Application\Internal\RecalculateSalesAtEventCommand;
+use App\Modules\EventManagement\Application\Internal\InternalCommandBus;
+use App\Modules\Ordering\Api\Output\V1\Events\OrderWasFulfilled;
 
 final readonly class OrderWasFulfilledHandler
 {
@@ -336,7 +329,7 @@ final readonly class OrderWasFulfilledHandler
 
     public function handle(OrderWasFulfilled $event): void
     {
-        // alternatively we could use `queue()` to process the command asynchronously
+        // alternatively we could queue this to process it asynchronously
         $this->bus->dispatch(new RecalculateSalesAtEventCommand(
             eventId: $event->eventId,
         ));
@@ -354,16 +347,15 @@ that is already in use by your domain, e.g. emitted by an aggregate. Reusing the
 side effects are triggered.
 
 ```php
-namespace App\Modules\EventManagement\Application\UseCases\InboundEvents;
+namespace App\Modules\EventManagement\Application\UseCases\Events;
 
 use App\Modules\EventManagement\Domain\Events\DomainEventDispatcher;
 use App\Modules\EventManagement\Domain\Events\SalesAtEventDidChange;
-use CloudCreativity\Modules\Application\InboundEventBus\Middleware\HandleInUnitOfWork;
-use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
-use VendorName\Ordering\Shared\IntegrationEvents\V1\OrderWasFulfilled;
+use App\Modules\Ordering\Output\V1\Events\OrderWasFulfilled;
+use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;
 
-final readonly class OrderWasFulfilledHandler implements
-    DispatchThroughMiddleware
+#[Through(ExecuteInUnitOfWork::class)]
+final readonly class OrderWasFulfilledHandler
 {
     public function __construct(
         private DomainEventDispatcher $domainEvents,
@@ -375,13 +367,6 @@ final readonly class OrderWasFulfilledHandler implements
         $this->domainEvents->dispatch(new SalesAtEventDidChange(
             eventId: $event->eventId,
         ));
-    }
-
-    public function middleware(): array
-    {
-        return [
-            HandleInUnitOfWork::class,
-        ];
     }
 }
 ```
@@ -401,9 +386,9 @@ needs to expose its _specific_ inbound event bus.
 We do this by defining an interface in our application's driving ports:
 
 ```php
-namespace App\Modules\EventManagement\Application\Ports\Driving;
+namespace App\Modules\EventManagement\Api;
 
-use CloudCreativity\Modules\Contracts\Application\Ports\Driving\InboundEventDispatcher;
+use CloudCreativity\Modules\Contracts\Messaging\InboundEventDispatcher;
 
 interface InboundEventBus extends InboundEventDispatcher
 {
@@ -413,116 +398,51 @@ interface InboundEventBus extends InboundEventDispatcher
 And then our implementation is as follows:
 
 ```php
-namespace App\Modules\EventManagement\Application\Bus;
+namespace App\Modules\EventManagement\Application\Adapters;
 
-use App\Modules\EventManagement\Application\Ports\Driving\InboundEventBus as Port;
-use CloudCreativity\Modules\Application\InboundEventBus\InboundEventDispatcher;
+use App\Modules\EventManagement\Api\InboundEventBus as Port;
+use App\Modules\EventManagement\Application\UseCases\Events\DefaultEventHandler;
+use App\Modules\EventManagement\Application\UseCases\Events\OrderWasFulfilledHandler;
+use App\Modules\Ordering\Output\V1\Events\OrderWasFulfilled;
+use CloudCreativity\Modules\Bus\InboundEventDispatcher;
+use CloudCreativity\Modules\Bus\WithDefault;
+use CloudCreativity\Modules\Bus\WithEvent;
+use CloudCreativity\Modules\Bus\Middleware\LogMessageDispatch;
 
-final class InboundEventBus extends InboundEventDispatcher implements Port
+#[Through(LogMessageDispatch::class)]
+#[WithDefault(DefaultEventHandler::class)]
+#[WithEvent(OrderWasFulfilled::class, OrderWasFulfilledHandler::class)]
+final class InboundEventBusAdapter extends InboundEventDispatcher implements Port
 {
 }
 ```
+
+Notice that the inbound event dispatcher can have middleware - attached using the `Through` attribute. The `WithEvent`
+attribute is used to map an integration event from an `Api\Output` namespace to the handler in the
+`Application\UseCases\Events` namespace. The `WithDefault` attribute does exactly as it describes - any events that do
+not have a specific mapping via `WithEvent` will use the specified default handler.
 
 ### Creating a Bus
 
-The event dispatcher class that your implementation extends (in the above example) allows you to build an inbound event
-bus specific to your domain. You do this by:
-
-1. Binding event handler factories into the event dispatcher; and
-2. Binding factories for any middleware used by your bounded context; and
-3. Optionally, attaching middleware that runs for all inbound events dispatched through the event bus.
-
-Factories must always be lazy, so that the cost of instantiating event handlers or middleware only occurs if the handler
-or middleware are actually being used.
-
-For example:
+The inbound event bus dispatcher class that your implementation extends (in the above example) requires you to inject a
+PSR container. This container is then used to resolve any middleware and event handlers that you've attached to the
+dispatcher via the `Through`, `WithDefault` and `WithEvent` attributes.
 
 ```php
-namespace App\Modules\EventManagement\Application\Bus;
-
-use App\Modules\EventManagement\Application\Bus\CommandBusProvider;
-use App\Modules\EventManagement\Application\UsesCases\InboundEvents\OrderWasFulfilledHandler;
-use App\Modules\EventManagement\Application\Ports\Driving\InboundEventBus as InboundEventBusPort;
-use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;
-use CloudCreativity\Modules\Application\InboundEventBus\EventHandlerContainer;
-use CloudCreativity\Modules\Application\InboundEventBus\Middleware\HandleInUnitOfWork;
-use CloudCreativity\Modules\Application\InboundEventBus\Middleware\LogInboundEvent;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
-use VendorName\Ordering\Shared\IntegrationEvents\V1\OrderWasFulfilled;
-
-final class InboundEventBusProvider
-{
-    public function __construct(
-        private readonly CommandBusProvider $commandBusProvider,
-        private readonly ExternalDependencies $dependencies,
-    ) {
-    }
-
-    public function getEventBus(): InboundEventBusPort
-    {
-        $bus = new InboundEventBus(
-            handlers: $handlers = new EventHandlerContainer(),
-            middleware: $middleware = new PipeContainer(),
-        );
-
-        /** Bind integration events to handler factories */
-        $handlers->bind(
-            OrderWasFulfilled::class,
-            fn() => new OrderWasFulfilledHandler(
-                $this->commandBusProvider->getCommandBus(),
-            ),
-        );
-
-        /** Bind middleware factories */
-        $middleware->bind(
-            HandleInUnitOfWork::class,
-            fn () => new HandleInUnitOfWork($this->dependencies->getUnitOfWorkManager()),
-        );
-
-        $middleware->bind(
-            LogInboundEvent::class,
-            fn () => new LogInboundEvent(
-                $this->dependencies->getLogger(),
-            ),
-        );
-
-        /** Attach middleware that runs for all events */
-        $bus->through([
-            LogInboundEvent::class,
-        ]);
-
-        return $bus;
-    }
-}
+$dispatcher = new InboundEventBus($psrContainer);
 ```
 
-Inbound events are received by the presentation and delivery layer of your application. For example, a controller that
-receives a push message from Google Cloud Pub/Sub. Typically this means we need to bind the driving port into a
-service container. For example, in Laravel:
+So, for example in a Laravel application, you would bind this to the interface as follows in your service provider:
 
 ```php
-namespace App\Providers;
+use App\Modules\EventManagement\Api\InboundEventBus;
+use App\Modules\EventManagement\Application\Adapters\InboundEventBusAdapter;
+use Illuminate\Contracts\Foundation\Application;
 
-use App\Modules\EventManagement\Application\{
-    Bus\InboundEventBusProvider,
-    Ports\Driving\InboundEventBus,
-};
-use Illuminate\Contracts\Container\Container;
-use Illuminate\Support\ServiceProvider;
-
-final class EventManagementServiceProvider extends ServiceProvider
-{
-    public function register()
-    {
-        $this->app->bind(
-            InboundEventBus::class,
-            static function (Container $app)  {
-                $provider = $app->make(InboundEventBusProvider::class);
-                return $provider->getEventBus();
-            },
-        );
-    }
-}
+$this->app->bind(
+    InboundEventBus::class,
+    static fn (Application $app) => new InboundEventBusAdapter($app),
+);
 ```
 
 ### Consuming Events
@@ -539,9 +459,9 @@ Here is an example controller from a Laravel application to demonstrate the patt
 ```php
 namespace App\Http\Controllers\Api\PubSub;
 
-use App\Modules\EventManagement\Application\Ports\Driving\InboundEventBus;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
-use VendorName\Ordering\Shared\IntegrationEvents\V1\Serializers\JsonSerializer;
+use App\Modules\EventManagement\Api\InboundEventBus;
+use CloudCreativity\Modules\Contracts\Messaging\IntegrationEvent;
+use App\Modules\Ordering\Api\Output\V1\Events\Serializers\JsonSerializer;
 
 class InboundEventController extends Controller
 {
@@ -586,38 +506,31 @@ _opportunity_ to consume the event.
 In this scenario, we need to configure the inbound event bus to _swallow_ events that it does not have a handler for.
 This is because the event bus will throw an exception if it does not have a handler for an event.
 
-To do this, we configure a default handler on the handler container that is given to the event bus. Use
-the `SwallowInboundEvent` handler for this purpose:
+To do this, we configure a default handler via the `WithDefault` attribute on the inbound event bus instance - use the
+`SwallowInboundEvent` handler for this purpose.
 
 ```php
-use CloudCreativity\Modules\Application\InboundEventBus\EventHandlerContainer;
-use CloudCreativity\Modules\Application\InboundEventBus\SwallowInboundEvent;
+namespace App\Modules\EventManagement\Application\Adapters;
 
-$bus = new InboundEventBus(
-    handlers: $handlers = new EventHandlerContainer(
-        default: fn() => new SwallowInboundEvent(),
-    ),
-);
+use App\Modules\EventManagement\Api\InboundEventBus as Port;
+use App\Modules\EventManagement\Application\UseCases\Events\OrderWasFulfilledHandler;
+use App\Modules\Ordering\Output\V1\Events\OrderWasFulfilled;
+use CloudCreativity\Modules\Bus\InboundEventDispatcher;
+use CloudCreativity\Modules\Bus\WithDefault;
+use CloudCreativity\Modules\Bus\WithEvent;
+use CloudCreativity\Modules\Bus\Middleware\LogMessageDispatch;
+use CloudCreativity\Modules\Bus\SwallowInboundEvent;
+
+#[Through(LogMessageDispatch::class)]
+#[WithDefault(SwallowInboundEvent::class)]
+#[WithEvent(OrderWasFulfilled::class, OrderWasFulfilledHandler::class)]
+final class InboundEventBusAdapter extends InboundEventDispatcher implements Port
+{
+}
 ```
 
-Notice we provide the event handler container with a factory that creates a default handler. In this case,
-the `SwallowInboundEvent` handler will do nothing with the event. You can also provide a logger and log level to
-the `SwallowInboundEvent` handler, so that it logs that the event was swallowed:
-
-```php
-use CloudCreativity\Modules\Application\InboundEventBus\EventHandlerContainer;
-use CloudCreativity\Modules\Application\InboundEventBus\SwallowInboundEvent;
-use Psr\Log\LogLevel;
-
-$bus = new InboundEventBus(
-    handlers: $handlers = new EventHandlerContainer(
-        default: fn() => new SwallowInboundEvent(
-            logger: $this->dependencies->getLogger(),
-            level: LogLevel::INFO, // optional, defaults to debug
-        ),
-    ),
-);
-```
+The `SwallowInboundEvent` handler can be injected with a PSR logger, so that it logs any inbound events that are
+swallowed.
 
 Alternatively, you can write your own default handler if desired.
 
@@ -646,11 +559,11 @@ Firstly, our application layer will need an inbox driving port. This will allow 
 example:
 
 ```php
-namespace App\Modules\EventManagement\Application\Ports\Driving;
+namespace App\Modules\EventManagement\Api;
 
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Messaging\IntegrationEvent;
 
-interface Inbox
+interface InboundEventInbox
 {
     public function push(IntegrationEvent $event): void;
 }
@@ -661,14 +574,14 @@ inbox. For both these actions - checking whether it exists, and storing - the ad
 might look like this:
 
 ```php
-namespace App\Modules\EventManagement\Application\Ports\Driven\Inbox;
+namespace App\Modules\EventManagement\Api\Ports\Inbox;
 
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Messaging\IntegrationEvent;
 
 interface InboxRepository
 {
     public function exists(IntegrationEvent $event): bool;
-    
+
     public function store(IntegrationEvent $event): void;
 }
 ```
@@ -682,9 +595,9 @@ This means we can now update the previous controller example to use the inbox in
 ```php
 namespace App\Http\Controllers\Api\PubSub;
 
-use App\Modules\EventManagement\Application\Ports\Driving\InboundEvents\Inbox;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
-use VendorName\Ordering\Shared\IntegrationEvents\V1\Serializers\JsonSerializer;
+use App\Modules\EventManagement\Api\InboundEventInbox;
+use CloudCreativity\Modules\Contracts\Messaging\IntegrationEvent;
+use App\Modules\Ordering\Api\Output\V1\Events\Serializers\JsonSerializer;
 
 class InboundEventController extends Controller
 {
@@ -732,12 +645,13 @@ via middleware. Middleware is a powerful way to add cross-cutting concerns to yo
 
 Middleware can be added either to the inbound event bus (so it runs for every event) or to individual event handlers.
 
-To apply middleware to the inbound event bus, use the `through()` method - as shown in the earlier examples.
+To apply middleware to the inbound event bus, use the `Through` attribute - as shown in the earlier examples.
 Middleware is executed in the order it is added.
 
-Additionally, you can add middleware to individual handler classes. To do this, implement the
-`DispatchThroughMiddleware` interface. The `middleware()` method should then return an array of middleware to run, in
-the order they should be executed. Handler middleware are always executed _after_ the event bus middleware.
+Additionally, you can add middleware to individual handler classes. To do this, use the `Through` attribute on the
+handler class. This allows you to apply middleware to specific handlers, rather than all handlers that are registered
+with the inbound event bus. Middleware is executed in the order it is added; additionally, handler middleware is
+executed _after_ inbound event bus middleware.
 
 This package provides several useful middleware, which are described below. Additionally, you can write your own
 middleware to suit your specific needs.
@@ -753,10 +667,10 @@ whether the notifying or publishing completes or throws an exception.
 For example:
 
 ```php
-use CloudCreativity\Modules\Application\InboundEventBus\Middleware\SetupBeforeEvent;
+use CloudCreativity\Modules\Bus\Middleware\SetupBeforeEvent;
 
-$middleware->bind(
-    SetupBeforeEvent::class,
+$container->bind(
+    'event-management:setup-events',
     fn () => new SetupBeforeEvent(function (): Closure {
         // setup singletons, dependencies etc here.
         return function (): void {
@@ -765,11 +679,6 @@ $middleware->bind(
         };
     }),
 );
-
-$bus->through([
-    LogInboundEvent::class,
-    SetupBeforeEvent::class,
-]);
 ```
 
 Here our setup middleware takes a setup closure as its only constructor argument. This setup closure can optionally
@@ -780,19 +689,14 @@ If you only need to do any teardown work, use the `TeardownAfterEvent` middlewar
 closure as its only constructor argument:
 
 ```php
-use CloudCreativity\Modules\Application\InboundEventBus\Middleware\TearDownAfterEvent;
+use CloudCreativity\Modules\Bus\Middleware\TearDownAfterEvent;
 
-$middleware->bind(
-    TearDownAfterEvent::class,
+$container->bind(
+    'event-management:teardown-events',
     fn () => new TearDownAfterEvent(function (): Closure {
         // teardown here
     }),
 );
-
-$bus->through([
-    LogInboundEvent::class,
-    TearDownAfterEvent::class,
-]);
 ```
 
 ### Unit of Work
@@ -805,21 +709,10 @@ If your consumer only dispatches a command, then it will not need to be wrapped 
 command itself should use a unit of work.
 :::
 
-To consume an event in a unit of work, you will need to use our `HandleInUnitOfWork` middleware. You should always
+To consume an event in a unit of work, you will need to use our `ExecuteInUnitOfWork` middleware. You should always
 implement this as handler middleware - because typically you need it to be the final middleware that runs before a
 handler is invoked. It also makes it clear to developers looking at the handler that it is expected to run
 in a unit of work. The example `OrderWasFulfilledHandler` above demonstrates this.
-
-An example binding for this middleware is:
-
-```php
-use CloudCreativity\Modules\Application\InboundEventBus\Middleware\HandleInUnitOfWork;
-
-$middleware->bind(
-    HandleInUnitOfWork::class,
-    fn () => new HandleInUnitOfWork($this->dependencies->getUnitOfWorkManager()),
-);
-```
 
 :::warning
 If you're using a unit of work, you should be combining this with our "unit of work domain event dispatcher".
@@ -839,19 +732,6 @@ When using this dispatcher, you will need to use our `FlushDeferredEvents` middl
 implement this as handler middleware - because typically you need it to be the final middleware that runs before a
 handler is invoked. I.e. this is an equivalent middleware to the unit of work middleware.
 
-An example binding for this middleware is:
-
-```php
-use CloudCreativity\Modules\Application\InboundEventBus\Middleware\FlushDeferredEvents;
-
-$middleware->bind(
-    FlushDeferredEvents::class,
-    fn () => new FlushDeferredEvents(
-        $this->eventDispatcher,
-    ),
-);
-```
-
 :::warning
 When using this middleware, it is important that you inject it with a singleton instance of the deferred event
 dispatcher. This must be the same instance that is exposed to your domain layer as a service.
@@ -859,26 +739,15 @@ dispatcher. This must be the same instance that is exposed to your domain layer 
 
 ### Logging
 
-Use our `LogInboundEvent` middleware to log when an integration event is consumed. It takes
-a [PSR Logger](https://php-fig.org/psr/psr-3/).
-
-```php
-use CloudCreativity\Modules\Application\InboundEventBus\Middleware\LogInboundEvent;
-
-$middleware->bind(
-    LogInboundEvent::class,
-    fn () => new LogInboundEvent(
-        $this->dependencies->getLogger(),
-    ),
-);
-```
+Use our `LogMessageDispatch` middleware to log the dispatch of an inbound event. The middleware takes a
+[PSR Logger](https://php-fig.org/psr/psr-3/).
 
 The use of this middleware is identical to that described in the [Commands chapter.](./commands#logging)
 See those instructions for more information, such as configuring the log levels.
 
 Additionally, you can customise the context that is logged for an event. To exclude properties, mark them with the
-`Sensitive` attribute. Alternatively, if you need full control over the context, implement the `ContextProvider`
-interface on your integration event. See the examples in the [Commands chapter.](./commands#logging)
+`Sensitive` attribute. Alternatively, if you need full control over the context, implement the `Contextual`
+interface on your integration event message. See the examples in the [Commands chapter.](./commands#logging)
 
 ### Writing Middleware
 
@@ -889,10 +758,10 @@ following signature:
 namespace App\Modules\EventManagement\Application\Bus\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Contracts\Application\InboundEventBus\InboundEventMiddleware;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Bus\Middleware\IntegrationEventMiddleware;
+use CloudCreativity\Modules\Contracts\Messaging\IntegrationEvent;
 
-final class MyMiddleware implements InboundEventMiddleware
+final class MyMiddleware implements IntegrationEventMiddleware
 {
     /**
      * Execute the middleware.

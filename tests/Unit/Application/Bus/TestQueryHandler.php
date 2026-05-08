@@ -12,10 +12,10 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Application\Bus;
 
-use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
+use CloudCreativity\Modules\Contracts\Bus\DispatchThroughMiddleware;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 
-class TestQueryHandler implements DispatchThroughMiddleware
+abstract class TestQueryHandler implements DispatchThroughMiddleware
 {
     /**
      * Execute the query.

@@ -16,6 +16,8 @@ use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
 use CloudCreativity\Modules\Toolkit\Identifiers\UuidFactory;
+use CloudCreativity\Modules\Toolkit\Identifiers\UuidV4;
+use CloudCreativity\Modules\Toolkit\Identifiers\UuidV7;
 use DateTimeImmutable;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -25,7 +27,7 @@ use Ramsey\Uuid\Uuid as BaseUuid;
 use Ramsey\Uuid\UuidFactory as BaseUuidFactory;
 use Ramsey\Uuid\UuidFactoryInterface as BaseUuidFactoryInterface;
 
-class UuidFactoryTest extends TestCase
+final class UuidFactoryTest extends TestCase
 {
     private BaseUuidFactory&MockObject $baseFactory;
 
@@ -198,7 +200,7 @@ class UuidFactoryTest extends TestCase
 
         $uuid = $this->factory->uuid4();
 
-        $this->assertInstanceOf(Uuid::class, $uuid);
+        $this->assertInstanceOf(UuidV4::class, $uuid);
         $this->assertSame($uuid->value, $base);
     }
 
@@ -244,11 +246,11 @@ class UuidFactoryTest extends TestCase
             ->expects($this->once())
             ->method('uuid7')
             ->with($this->identicalTo($date))
-            ->willReturn($base = BaseUuid::uuid4());
+            ->willReturn($base = BaseUuid::uuid7());
 
         $uuid = $this->factory->uuid7($date);
 
-        $this->assertInstanceOf(Uuid::class, $uuid);
+        $this->assertInstanceOf(UuidV7::class, $uuid);
         $this->assertSame($uuid->value, $base);
     }
 

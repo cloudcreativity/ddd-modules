@@ -12,8 +12,9 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure;
 
+use CloudCreativity\Modules\Contracts\Infrastructure\InfrastructureException as IInfrastructureException;
 use RuntimeException;
 
-class InfrastructureException extends RuntimeException
+final class InfrastructureException extends RuntimeException implements IInfrastructureException
 {
 }

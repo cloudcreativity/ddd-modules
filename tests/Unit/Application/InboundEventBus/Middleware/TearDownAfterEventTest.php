@@ -12,12 +12,12 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Application\InboundEventBus\Middleware;
 
-use CloudCreativity\Modules\Application\InboundEventBus\Middleware\TearDownAfterEvent;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Bus\Middleware\TearDownAfterEvent;
+use CloudCreativity\Modules\Contracts\Messaging\IntegrationEvent;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-class TearDownAfterEventTest extends TestCase
+final class TearDownAfterEventTest extends TestCase
 {
     public function testItInvokesCallbackAfterSuccess(): void
     {

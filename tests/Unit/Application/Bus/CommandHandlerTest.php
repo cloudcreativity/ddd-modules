@@ -12,11 +12,11 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Application\Bus;
 
-use CloudCreativity\Modules\Application\Bus\CommandHandler;
+use CloudCreativity\Modules\Bus\CommandHandler;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\TestCase;
 
-class CommandHandlerTest extends TestCase
+final class CommandHandlerTest extends TestCase
 {
     public function test(): void
     {

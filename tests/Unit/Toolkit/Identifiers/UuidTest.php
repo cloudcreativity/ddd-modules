@@ -23,7 +23,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid as RamseyUuid;
 
-class UuidTest extends TestCase
+final class UuidTest extends TestCase
 {
     protected function tearDown(): void
     {
@@ -51,8 +51,9 @@ class UuidTest extends TestCase
     public function testItIsEquals(): void
     {
         $base = RamseyUuid::uuid4();
+        $id = new Uuid($base);
 
-        $this->assertObjectEquals($id = new Uuid($base), $other = Uuid::from($base));
+        $this->assertTrue($id->is($other = Uuid::from($base)));
         $this->assertSame($id, Uuid::from($id));
         $this->assertTrue($id->is($other));
         $this->assertTrue($id->any(null, Uuid::random(), $other));
@@ -63,7 +64,7 @@ class UuidTest extends TestCase
     public function testItIsNotEqual(): void
     {
         $id = new Uuid(RamseyUuid::fromString('6dcbad65-ed92-4e60-973b-9ba58a022816'));
-        $this->assertFalse($id->equals($other = new Uuid(
+        $this->assertFalse($id->is($other = new Uuid(
             RamseyUuid::fromString('38c7be26-6887-4742-8b6b-7d07b30ca596'),
         )));
         $this->assertFalse($id->is($other));
@@ -164,6 +165,22 @@ class UuidTest extends TestCase
         $base = RamseyUuid::fromString(RamseyUuid::NIL);
         $actual = Uuid::nil();
 
-        $this->assertTrue($actual->value->equals($base));
+        $this->assertTrue($actual->toBase()->equals($base));
+    }
+
+    public function testCompareTo(): void
+    {
+        $uuid1 = Uuid::random();
+        $uuid2 = Uuid::random();
+        $uuid3 = Uuid::random();
+
+        $expected = [$uuid3->value, $uuid1->value, $uuid2->value];
+        usort($expected, fn ($a, $b) => $a->compareTo($b));
+
+        $actual = [$uuid2, $uuid1, $uuid3];
+        usort($actual, fn ($a, $b) => $a->compareTo($b));
+        $actual = array_map(fn ($id) => $id->value, $actual);
+
+        $this->assertSame($expected, $actual);
     }
 }

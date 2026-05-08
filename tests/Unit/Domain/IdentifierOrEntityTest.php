@@ -17,7 +17,7 @@ use CloudCreativity\Modules\Domain\IdentifierOrEntity;
 use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
 use PHPUnit\Framework\TestCase;
 
-class IdentifierOrEntityTest extends TestCase
+final class IdentifierOrEntityTest extends TestCase
 {
     public function testItIsAGuid(): void
     {

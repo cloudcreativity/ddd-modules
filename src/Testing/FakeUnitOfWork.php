@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Testing;
 
 use Closure;
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\UnitOfWork;
+use CloudCreativity\Modules\Contracts\Application\Ports\UnitOfWork;
 use InvalidArgumentException;
 use RuntimeException;
 use Throwable;

@@ -23,10 +23,8 @@ interface ListOfErrors extends ListIterator
 {
     /**
      * Get the first error in the list, or the first matching error.
-     *
-     * @param (Closure(Error): bool)|UnitEnum|null $matcher
      */
-    public function first(Closure|UnitEnum|null $matcher = null): ?Error;
+    public function first(): ?Error;
 
     /**
      * Find the first matching error in the list.
@@ -41,14 +39,6 @@ interface ListOfErrors extends ListIterator
      * @param (Closure(Error): bool)|UnitEnum|null $matcher
      */
     public function sole(Closure|UnitEnum|null $matcher = null): Error;
-
-    /**
-     * Does the list contain a matching error?
-     *
-     * @param (Closure(Error): bool)|UnitEnum $matcher
-     * @deprecated 6.0 use any() instead.
-     */
-    public function contains(Closure|UnitEnum $matcher): bool;
 
     /**
      * Does the list contain at least one matching error?

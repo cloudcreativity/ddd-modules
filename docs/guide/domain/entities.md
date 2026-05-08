@@ -25,15 +25,15 @@ use CloudCreativity\Modules\Contracts\Domain\Entity;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Domain\IsEntity;
 
-class BookableEvent implements Entity
+final class BookableEvent implements Entity
 {
     use IsEntity;
 
     public function __construct(
         Identifier $id,
-        private readonly \DateTimeImmutable $startsAt,
-        private readonly \DateTimeImmutable $endsAt,
-        private bool $isCancelled = false,
+        public readonly \DateTimeImmutable $startsAt,
+        public readonly \DateTimeImmutable $endsAt,
+        private(set) bool $isCancelled = false,
     ) {
         $this->id = $id;
     }
@@ -56,15 +56,15 @@ use CloudCreativity\Modules\Contracts\Domain\Entity;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Domain\IsEntityWithNullableId;
 
-class BookableEvent implements Entity
+final class BookableEvent implements Entity
 {
     use IsEntityWithNullableId;
 
     public function __construct(
-        private readonly ?Identifier $id,
-        private readonly \DateTimeImmutable $startsAt,
-        private readonly \DateTimeImmutable $endsAt,
-        private bool $isCancelled = false,
+        ?Identifier $id,
+        public readonly \DateTimeImmutable $startsAt,
+        public readonly \DateTimeImmutable $endsAt,
+        private(set) bool $isCancelled = false,
     ) {
         $this->id = $id;
     }
@@ -87,14 +87,14 @@ use CloudCreativity\Modules\Contracts\Domain\AggregateRoot;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Domain\IsEntity;
 
-class Attendee implements AggregateRoot
+final class Attendee implements AggregateRoot
 {
     use IsEntity;
 
     public function __construct(
-        private readonly Identifier $id,
-        private readonly Customer $customer,
-        private readonly ListOfTickets $tickets,
+        Identifier $id,
+        public readonly Customer $customer,
+        private(set) readonly ListOfTickets $tickets,
     ) {
         $this->id = $id;
     }
@@ -113,28 +113,21 @@ list of `Ticket` entities.
 
 ## Identifiers
 
-In both the entity and the aggregate root, the identifier is type-hinted as the `Identifier` interface. This is
-intentional, as it prevents a concern of the infrastructure layer's persistence implementation from leaking into your
-domain.
+In both the entity and the aggregate root examples above, the identifier is type-hinted as the `Identifier` interface.
+There are two different schools of thought on how to implement entity identifiers:
 
-For example, it can be tempting to type-hint the identifier as `int` if your persistence implementation uses an
-auto-incrementing integer as the primary key. However, this is a leaky abstraction. It means that the domain layer is
-now coupled to the persistence implementation as it knows how identifiers are issued and persisted. This coupling is the
-wrong way around: the domain layer should not be coupled to any other layer.
+1. Type-hint the `Identifier` interface. This leaves the identifier type open to the persistence implementation, and
+   prevents coupling between the domain layer and the persistence implementation.
+2. Type-hint the expected identifier type, e.g. `Uuid` or even more specific like `UuidV7`. This is more explicit, and
+   can be useful where you want to constrain the identifier type.
 
-To prevent this coupling, this package provides an `Identifier` interface that can be used in the domain layer. It then
-provides tools for working with identifiers in other layers, where you need to work with _expected identifier types_,
-e.g. an integer where we know the persistence implementation uses an auto-incrementing integer as the primary key.
+Both approaches work. However, we'd generally recommend that if using the second approach, you use globally unique
+identifiers rather than something like an auto-incrementing integer. This is because globally unique identifiers are
+more flexible, and can be used across different persistence implementations without coupling the domain layer to a
+specific implementation, such as a MySQL auto-incrementing key.
 
-See the [Identifiers chapter](../toolkit/identifiers) for more details.
-
-:::info
-This is our recommended approach for handling identifiers in the domain layer. However, you may have a good reason to
-take a different approach.
-
-For example, if your implementation used UUIDs _everywhere_, you may prefer to just type-hint the `Uuid` class instead.
-This particularly makes sense with UUIDs, which are globally unique.
-:::
+If you want to use the generic identifier interface, see the [Identifiers chapter](../toolkit/identifiers) for more
+details on how to handle identifiers.
 
 ## Invariants
 
@@ -156,14 +149,14 @@ use CloudCreativity\Modules\Contracts\Domain\AggregateRoot;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Domain\IsEntity;
 
-class Attendee implements AggregateRoot
+final class Attendee implements AggregateRoot
 {
     use IsEntity;
 
     public function __construct(
-        private readonly Identifier $id,
-        private readonly Customer $customer,
-        private readonly ListOfTickets $tickets,
+        Identifier $id,
+        public readonly Customer $customer,
+        private(set) ListOfTickets $tickets,
     ) {
         Contracts::assert(
             $this->tickets->isNotEmpty(),
@@ -207,7 +200,7 @@ public function cancelTicket(
 {
     $ticket = $this->tickets->findOrFail($ticketId);
 
-    if ($ticket->isNotCancelled()) {
+    if ($ticket->cancelled === false) {
         $ticket->markAsCancelled($reason);
 
         Services::getEvents()->dispatch(new AttendeeTicketWasCancelled(

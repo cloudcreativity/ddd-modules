@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Uuid as IUuid;
 use Ramsey\Uuid\UuidInterface;
 use UnitEnum;
 
@@ -39,7 +40,7 @@ final class GuidTypeMap
     /**
      * Get the GUID for the specified alias and id.
      */
-    public function guidFor(string|UnitEnum $alias, int|string|Uuid|UuidInterface $id): Guid
+    public function guidFor(string|UnitEnum $alias, int|IUuid|string|UuidInterface $id): Guid
     {
         return Guid::make($this->typeFor($alias), $id);
     }

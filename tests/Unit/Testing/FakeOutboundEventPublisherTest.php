@@ -12,17 +12,17 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Testing;
 
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\OutboundEventPublisher;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Application\Ports\OutboundEventPublisher;
+use CloudCreativity\Modules\Contracts\Messaging\IntegrationEvent;
 use CloudCreativity\Modules\Testing\FakeOutboundEventPublisher;
 use LogicException;
 use PHPUnit\Framework\TestCase;
 
-class FakeOutboundEventPublisherTest extends TestCase
+final class FakeOutboundEventPublisherTest extends TestCase
 {
     public function testItPublishesEvents(): void
     {
-        $publisher = new FakeOutboundEventPublisher();
+        $publisher = new class () extends FakeOutboundEventPublisher {};
 
         $event1 = $this->createMock(IntegrationEvent::class);
         $event2 = $this->createMock(IntegrationEvent::class);
@@ -40,7 +40,7 @@ class FakeOutboundEventPublisherTest extends TestCase
 
     public function testItReturnsSoleEvent(): void
     {
-        $publisher = new FakeOutboundEventPublisher();
+        $publisher = new class () extends FakeOutboundEventPublisher {};
         $event = $this->createMock(IntegrationEvent::class);
 
         $publisher->publish($event);
@@ -50,7 +50,7 @@ class FakeOutboundEventPublisherTest extends TestCase
 
     public function testItThrowsExceptionIfNoEvents(): void
     {
-        $publisher = new FakeOutboundEventPublisher();
+        $publisher = new class () extends FakeOutboundEventPublisher {};
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Expected one event to be published but there are 0 events.');
@@ -60,7 +60,7 @@ class FakeOutboundEventPublisherTest extends TestCase
 
     public function testItThrowsExceptionIfMultipleEvents(): void
     {
-        $publisher = new FakeOutboundEventPublisher();
+        $publisher = new class () extends FakeOutboundEventPublisher {};
         $event1 = $this->createMock(IntegrationEvent::class);
         $event2 = $this->createMock(IntegrationEvent::class);
 
@@ -71,12 +71,5 @@ class FakeOutboundEventPublisherTest extends TestCase
         $this->expectExceptionMessage('Expected one event to be published but there are 2 events.');
 
         $publisher->sole();
-    }
-
-    public function testItCanBeExtended(): void
-    {
-        $publisher = new class () extends FakeOutboundEventPublisher {};
-        $publisher->publish($this->createMock(IntegrationEvent::class));
-        $this->assertCount(1, $publisher->events);
     }
 }

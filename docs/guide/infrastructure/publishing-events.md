@@ -14,9 +14,9 @@ the application layer and implemented in the infrastructure layer as an adapter.
 The following is an example port:
 
 ```php
-namespace App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus;
+namespace App\Modules\EventManagement\Application\Ports\OutboundEventBus;
 
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\OutboundEventPublisher;
+use CloudCreativity\Modules\Contracts\Application\Ports\OutboundEventPublisher;
 
 interface OutboundEventBus extends OutboundEventPublisher
 {
@@ -46,7 +46,7 @@ Define an adapter by extending this class:
 ```php
 namespace App\Modules\EventManagement\Infrastructure\OutboundEventBus;
 
-use App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus\OutboundEventBus;
+use App\Modules\EventManagement\Application\Ports\OutboundEventBus\OutboundEventBus;
 use CloudCreativity\Modules\Infrastructure\OutboundEventBus\ClosurePublisher;
 
 final class OutboundEventBusAdapter extends ClosurePublisher
@@ -61,10 +61,10 @@ specific closures to specific events, and add middleware to the publisher. Here'
 ```php
 namespace App\Modules\EventManagement\Infrastructure\OutboundEventBus;
 
-use App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus\OutboundEventBus;
+use App\Modules\EventManagement\Application\Ports\OutboundEventBus\OutboundEventBus;
 use App\Modules\EventManagement\Infrastructure\GooglePubSub\EventSerializer;
 use App\Modules\EventManagement\Infrastructure\GooglePubSub\SecureTopicFactory;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Messaging\IntegrationEvent;
 use CloudCreativity\Modules\Infrastructure\OutboundEventBus\Middleware\LogOutboundEvent;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 use Psr\Log\LoggerInterface;
@@ -90,7 +90,7 @@ final readonly class OutboundEventBusAdapterProvider
             },
             middleware: $middleware = new PipeContainer(),
         );
-        
+
         /** Bind handlers for specific events (if needed) */
         $publisher->bind(
             AttendeeTicketWasCancelled::class,
@@ -129,22 +129,34 @@ Define an adapter by extending this class:
 ```php
 namespace App\Modules\EventManagement\Infrastructure\OutboundEventBus;
 
-use App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus\OutboundEventBus;
+use App\Modules\EventManagement\Application\Ports\OutboundEventBus\OutboundEventBus;
 use CloudCreativity\Modules\Infrastructure\OutboundEventBus\ComponentPublisher;
+use CloudCreativity\Modules\Infrastructure\OutboundEventBus\DefaultPublisher;
+use CloudCreativity\Modules\Infrastructure\OutboundEventBus\Publishes;
+use CloudCreativity\Modules\Toolkit\Pipeline\Through;
+use CloudCreativity\Modules\Infrastructure\OutboundEventBus\Middleware\LogOutboundEvent;
 
+#[DefaultPublisher(MyDefaultPublisher::class)]
+#[Publishes(FooIntegrationEvent::class, FoobarPublisher::class)]
+#[Publishes(BarIntegrationEvent::class, BazbatPublisher::class)]
+#[Through(LogOutboundEvent::class)]
 final class OutboundEventBusAdapter extends ComponentPublisher
     implements OutboundEventBus
 {
 }
 ```
 
-### Event Handlers
+As with our other dispatcher classes, you use PHP attributes to customise the class. In this example, we define a
+default publisher via the `DefaultPublisher` attribute, publishers for specific events via the `Publishes` attribute,
+and middleware that runs for all events via the `Through` attribute.
 
-Event handlers are classes that implement a `publish()` method. For example, we could define a default handler as
+### Event Publishers
+
+Event publishers are classes that implement a `publish()` method. For example, we could define a default publisher as
 follows:
 
 ```php
-namespace App\Modules\EventManagement\Infrastructure\OutboundEventBus\Publishers;
+namespace App\Modules\EventManagement\Infrastructure\OutboundEventBus;
 
 final class DefaultPublisher
 {
@@ -166,9 +178,9 @@ final class DefaultPublisher
 And then we could also define a handler for a specific event:
 
 ```php
-namespace App\Modules\EventManagement\Infrastructure\OutboundEventBus\Publishers;
+namespace App\Modules\EventManagement\Infrastructure\OutboundEventBus;
 
-use VendorName\EventManagement\Shared\IntegrationEvents\V1\AttendeeTicketWasCancelled;
+use App\Modules\EventManagement\Api\Output\V1\Events\AttendeeTicketWasCancelled;
 
 final class AttendeeTicketWasCancelledPublisher
 {
@@ -189,69 +201,13 @@ final class AttendeeTicketWasCancelledPublisher
 
 ### Creating the Adapter
 
-We can now create our adapter. This is injected with a handler container that knows how to construct each of your
-handler classes. This container allows you to define a default handler to be used when no specific handler is bound to
-an event. You can then bind specific handlers to specific events, and add middleware to the publisher.
+Creating the adapter is easy - the `ComponentPublisher` class that was extended above only requires a PSR container.
+This allows it to resolve any publishers and middleware via the container.
+
+For example:
 
 ```php
-namespace App\Modules\EventManagement\Infrastructure\OutboundEventBus;
-
-use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;
-use App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus\OutboundEventBus;
-use App\Modules\EventManagement\Infrastructure\GooglePubSub\EventSerializer;
-use App\Modules\EventManagement\Infrastructure\GooglePubSub\SecureTopicFactory;
-use CloudCreativity\Modules\Infrastructure\OutboundEventBus\Middleware\LogOutboundEvent;
-use CloudCreativity\Modules\Infrastructure\OutboundEventBus\PublisherHandlerContainer;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
-use Psr\Log\LoggerInterface;
-use VendorName\EventManagement\Shared\IntegrationEvents\V1\AttendeeTicketWasCancelled;
-
-final readonly class OutboundEventBusAdapterProvider
-{
-    public function __construct(
-        private SecureTopicFactory $topicFactory,
-        private EventSerializer $serializer,
-        private Logger $logger,
-    ) {
-    }
-
-    public function getEventBus(): OutboundEventBus
-    {
-        $publisher = new OutboundEventBusAdapter(
-            handlers: $handlers = new PublisherHandlerContainer(
-                default: fn () => new Publishers\DefaultPublisher(
-                    $this->topicFactory,
-                    $this->serializer,
-                ),
-            ),
-            middleware: $middleware = new PipeContainer(),
-        );
-        
-        /** Bind handlers for specific events (if needed) */
-        $handlers->bind(
-            AttendeeTicketWasCancelled::class,
-            fn () => new Publishers\AttendeeTicketWasCancelledPublisher(
-                $this->topicFactory,
-                $this->serializer,
-            ),
-        );
-
-        /** Bind middleware factories */
-        $middleware->bind(
-            LogOutboundEvent::class,
-            fn () => new LogOutboundEvent(
-                $this->logger,
-            ),
-        );
-
-        /** Attach middleware that runs for all events */
-        $bus->through([
-            LogOutboundEvent::class,
-        ]);
-
-        return $publisher;
-    }
-}
+$publisher = new OutboundEventBusAdapter($psrContainer);
 ```
 
 ## Writing an Event Bus
@@ -260,17 +216,14 @@ If you do not want to use either of these implementations, you can write your ow
 implement the following interface that was extended by the driven port:
 
 ```php
-namespace CloudCreativity\Modules\Application\Ports\Driven\OutboundEventBus;
+namespace CloudCreativity\Modules\Contracts\Application\Ports;
 
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Messaging\IntegrationEvent;
 
-interface EventPublisher
+interface OutboundEventPublisher
 {
     /**
      * Publish an outbound integration event.
-     *
-     * @param IntegrationEvent $event
-     * @return void
      */
     public function publish(IntegrationEvent $event): void;
 }
@@ -294,22 +247,11 @@ Middleware is executed in the order it is added.
 Use our `LogOutboundEvent` middleware to log when an integration event is published. It takes
 a [PSR Logger](https://php-fig.org/psr/psr-3/).
 
-```php
-use CloudCreativity\Modules\Infrastructure\OutboundEventBus\Middleware\LogOutboundEvent;
-
-$middleware->bind(
-    LogOutboundEvent::class,
-    fn () => new LogOutboundEvent(
-        $this->dependencies->getLogger(),
-    ),
-);
-```
-
 The use of this middleware is identical to that described in the [Commands chapter.](../application/commands#logging)
 See those instructions for more information, such as configuring the log levels.
 
 Additionally, if you need to customise the context that is logged for an integration event then implement the
-`ContextProvider` interface on your integration event message. See the example in the
+`Contextual` interface on your integration event message. See the example in the
 [Commands chapter.](../application/commands#logging)
 
 ### Writing Middleware
@@ -321,10 +263,10 @@ following signature:
 namespace App\Modules\EventManagement\Application\Adapters\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Contracts\Infrastructure\OutboundEventBus\OutboundEventMiddleware;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Bus\Middleware\IntegrationEventMiddleware;
+use CloudCreativity\Modules\Contracts\Messaging\IntegrationEvent;
 
-final class MyMiddleware implements OutboundEventMiddleware
+final class MyMiddleware implements IntegrationEventMiddleware
 {
     /**
      * Execute the middleware.
@@ -349,7 +291,8 @@ final class MyMiddleware implements OutboundEventMiddleware
 
 :::tip
 If you're writing middleware that is only meant to be used for a specific integration event, do not use the
-`OutboundEventMiddleware` interface. Instead, use the same signature but change the event type-hint to the event class
+`IntegrationEventMiddleware` interface. Instead, use the same signature but change the event type-hint to the event
+class
 your middleware is designed to be used with.
 :::
 
@@ -361,9 +304,10 @@ We provide a fake outbound event publisher that you can use in tests. This is th
 You can access any published events via the `$events` property:
 
 ```php
+use App\Modules\EventManagement\Application\Ports\OutboundEventBus\OutboundEventBus;
 use CloudCreativity\Modules\Testing\FakeOutboundEventPublisher;
 
-$publisher = new FakeOutboundEventPublisher();
+$publisher = new class () extends FakeOutboundEventPublisher implements OutboundEventBus {};
 
 // do work that might publish an event
 

@@ -12,16 +12,16 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Application\Bus;
 
-use CloudCreativity\Modules\Application\Bus\QueryDispatcher;
-use CloudCreativity\Modules\Contracts\Application\Bus\QueryHandler;
-use CloudCreativity\Modules\Contracts\Application\Bus\QueryHandlerContainer;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Query;
+use CloudCreativity\Modules\Bus\QueryDispatcher;
+use CloudCreativity\Modules\Contracts\Bus\QueryHandler;
+use CloudCreativity\Modules\Contracts\Bus\QueryHandlerContainer;
+use CloudCreativity\Modules\Contracts\Messaging\Query;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class QueryDispatcherTest extends TestCase
+final class QueryDispatcherTest extends TestCase
 {
     /**
      * @var MockObject&QueryHandlerContainer
@@ -44,10 +44,10 @@ class QueryDispatcherTest extends TestCase
     {
         parent::setUp();
 
-        $this->dispatcher = new QueryDispatcher(
+        $this->dispatcher = new class (
             handlers: $this->handlers = $this->createMock(QueryHandlerContainer::class),
             middleware: $this->middleware = $this->createMock(PipeContainer::class),
-        );
+        ) extends QueryDispatcher {};
     }
 
     protected function tearDown(): void

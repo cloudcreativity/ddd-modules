@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Integration\Infrastructure\Queue;
 
-use CloudCreativity\Modules\Tests\Integration\Application\Bus\AddCommand;
+use CloudCreativity\Modules\Tests\Integration\Bus\AddCommand;
 
 final class AddCommandEnqueuer
 {

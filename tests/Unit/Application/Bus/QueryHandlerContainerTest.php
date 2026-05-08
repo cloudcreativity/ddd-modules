@@ -12,18 +12,18 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Application\Bus;
 
-use CloudCreativity\Modules\Application\ApplicationException;
-use CloudCreativity\Modules\Application\Bus\QueryHandler;
-use CloudCreativity\Modules\Application\Bus\QueryHandlerContainer;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Query;
+use CloudCreativity\Modules\Bus\BusException;
+use CloudCreativity\Modules\Bus\QueryHandler;
+use CloudCreativity\Modules\Bus\QueryHandlerContainer;
+use CloudCreativity\Modules\Contracts\Messaging\Query;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
-class QueryHandlerContainerTest extends TestCase
+final class QueryHandlerContainerTest extends TestCase
 {
     public function testItResolvesClosureBindings(): void
     {
-        $a = new TestQueryHandler();
+        $a = new class () extends TestQueryHandler {};
         $b = $this->createStub(TestQueryHandler::class);
 
         $query1 = new class () implements Query {};
@@ -37,7 +37,7 @@ class QueryHandlerContainerTest extends TestCase
         $this->assertEquals(new QueryHandler($a), $container->get($query1::class));
         $this->assertEquals(new QueryHandler($b), $container->get($query2::class));
 
-        $this->expectException(ApplicationException::class);
+        $this->expectException(BusException::class);
         $this->expectExceptionMessage('No query handler bound for query class: ' . $query3::class);
 
         $container->get($query3::class);
@@ -45,7 +45,7 @@ class QueryHandlerContainerTest extends TestCase
 
     public function testItResolvesViaPsrContainer(): void
     {
-        $a = new TestQueryHandler();
+        $a = new class () extends TestQueryHandler {};
         $b = $this->createStub(TestQueryHandler::class);
 
         $query1 = new class () implements Query {};
@@ -69,7 +69,7 @@ class QueryHandlerContainerTest extends TestCase
         $this->assertEquals(new QueryHandler($a), $container->get($query1::class));
         $this->assertEquals(new QueryHandler($b), $container->get($query2::class));
 
-        $this->expectException(ApplicationException::class);
+        $this->expectException(BusException::class);
         $this->expectExceptionMessage('No query handler bound for query class: ' . $query3::class);
 
         $container->get($query3::class);

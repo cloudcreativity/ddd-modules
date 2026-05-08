@@ -20,7 +20,7 @@ use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
-class UnitOfWorkAwareDispatcher extends Dispatcher
+abstract class UnitOfWorkAwareDispatcher extends Dispatcher
 {
     public function __construct(
         private readonly UnitOfWorkManager $unitOfWorkManager,

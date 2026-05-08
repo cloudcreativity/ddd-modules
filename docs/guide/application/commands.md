@@ -16,11 +16,11 @@ action. I.e. it defines the data contract for the action. Commands must be immut
 For example:
 
 ```php
-namespace App\Modules\EventManagement\Application\UseCases\Commands\CancelAttendeeTicket;
+namespace App\Modules\EventManagement\Api\Input;
 
+use App\Modules\EventManagement\Api\Input\Enums\CancellationReasonEnum;
+use CloudCreativity\Modules\Contracts\Messaging\Command;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
-use VendorName\EventManagement\Shared\Enums\CancellationReasonEnum;
 
 final readonly class CancelAttendeeTicketCommand implements Command
 {
@@ -32,6 +32,11 @@ final readonly class CancelAttendeeTicketCommand implements Command
     }
 }
 ```
+
+Whether you use enums or any value objects on your commands is up to you. We prefer to properly define the data contract
+for a command, as our view is that the presentation and delivery layer should not be able to dispatch a command unless
+it is properly formed. Defining values and enums to describe the data contract for a command is a good way to achieve
+this. However, we are aware of other teams who prefer to only use internal PHP types on commands.
 
 :::tip
 Some commands will only need to hold a few values to perform the action - such as in the example above, where the
@@ -50,15 +55,15 @@ the action, and updating the state of the bounded context.
 For example:
 
 ```php
-namespace App\Modules\EventManagement\Application\UseCases\Commands\CancelAttendeeTicket;
+namespace App\Modules\EventManagement\Application\UseCases;
 
-use App\Modules\EventManagement\Application\Ports\Driven\Persistence\AttendeeRepository;
+use App\Modules\EventManagement\Application\Ports\Persistence\AttendeeRepository;
 use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;
-use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
+use CloudCreativity\Modules\Toolkit\Pipeline\Through;
 use CloudCreativity\Modules\Toolkit\Results\Result;
 
-final readonly class CancelAttendeeTicketHandler implements
-    DispatchThroughMiddleware
+#[Through(ExecuteInUnitOfWork::class)]
+final readonly class CancelAttendeeTicketHandler
 {
     public function __construct(
         private AttendeeRepository $attendees,
@@ -82,23 +87,15 @@ final readonly class CancelAttendeeTicketHandler implements
 
         return Result::ok();
     }
-
-    public function middleware(): array
-    {
-        return [
-            ExecuteInUnitOfWork::class,
-        ];
-    }
 }
 ```
 
 :::tip
-You'll notice from the example above that our command handlers support [middleware](#middleware). In this example, we
-are ensuring that the handler executes within a [unit of work](#unit-of-work) - i.e. the action is
-performed within a single transaction.
+You'll notice from the example above that our command handlers support [middleware](#middleware) via the `Through`
+attribute. In this example, we are ensuring that the handler executes within a [unit of work](#unit-of-work) - i.e. the
+action is performed within a single transaction.
 
-Middleware is optional - if you do not need to use any middleware specific to the handler, your handler does not need to
-implement the `DispatchThroughMiddleware` interface.
+Middleware is optional.
 :::
 
 ### Results
@@ -128,9 +125,9 @@ Although there is a _generic_ command bus interface, our bounded context needs t
 We do this by defining an interface in our application's driving ports.
 
 ```php
-namespace App\Modules\EventManagement\Application\Ports\Driving;
+namespace App\Modules\EventManagement\Api;
 
-use CloudCreativity\Modules\Application\Ports\Driving\CommandDispatcher;
+use CloudCreativity\Modules\Contracts\Messaging\CommandDispatcher;
 
 interface CommandBus extends CommandDispatcher
 {
@@ -140,115 +137,48 @@ interface CommandBus extends CommandDispatcher
 And then our implementation is as follows:
 
 ```php
-namespace App\Modules\EventManagement\Application\Bus;
+namespace App\Modules\EventManagement\Application\Adapters;
 
-use App\Modules\EventManagement\Application\Ports\Driving\CommandBus as Port;
-use CloudCreativity\Modules\Application\Bus\CommandDispatcher;
+use App\Modules\EventManagement\Api\CommandBus as Port;
+use App\Modules\EventManagement\Api\Input\CancelAttendeeTicketCommand;
+use App\Modules\EventManagement\Application\UseCases\CancelAttendeeTicketHandler;
+use CloudCreativity\Modules\Bus\CommandDispatcher;
+use CloudCreativity\Modules\Bus\Middleware\LogMessageDispatch;
+use CloudCreativity\Modules\Bus\WithCommand;
+use CloudCreativity\Modules\Toolkit\Pipeline\Through;
 
+#[Through(LogMessageDispatch::class)]
+#[WithCommand(CancelAttendeeTicketCommand::class, CancelAttendeeTicketHandler::class)]
 final class CommandBus extends CommandDispatcher implements Port
 {
 }
 ```
 
+Notice that the command dispatcher can have middleware - attached using the `Through` attribute. The `WithCommand`
+attribute is used to map a command from the `Api\Input` namespace to the handler in the `Application\UseCases`
+namespace.
+
 ### Creating a Command Bus
 
-The command dispatcher class that your implementation extends (in the above example) allows you to build a command bus
-specific to your domain. You do this by:
-
-1. Binding command handler factories into the command dispatcher; and
-2. Binding factories for any middleware used by your bounded context; and
-3. Optionally, attaching middleware that runs for all commands dispatched through the command bus.
-
-Factories must always be _lazy_, so that the cost of instantiating command handlers or middleware only occurs if the
-handler or middleware are actually being used.
-
-For example:
+The command dispatcher class that your implementation extends (in the above example) requires you to inject a PSR
+container. This container is then used to resolve any middleware and command handlers that you've attached to the
+dispatcher via the `Through` and `WithCommand` attributes.
 
 ```php
-namespace App\Modules\EventManagement\Application\Bus;
-
-use App\Modules\EventManagement\Application\UsesCases\Commands\{
-    CancelAttendeeTicket\CancelAttendeeTicketCommand,
-    CancelAttendeeTicket\CancelAttendeeTicketHandler,
-};
-use App\Modules\EventManagement\Application\Ports\Driving\CommandBus as CommandBusPort;
-use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;
-use CloudCreativity\Modules\Application\Bus\CommandHandlerContainer;
-use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;
-use CloudCreativity\Modules\Application\Bus\Middleware\LogMessageDispatch;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
-
-final class CommandBusProvider
-{
-    public function __construct(
-        private readonly ExternalDependencies $dependencies,
-    ) {
-    }
-
-    public function getCommandBus(): CommandBusPort
-    {
-        $bus = new CommandBus(
-            handlers: $handlers = new CommandHandlerContainer(),
-            middleware: $middleware = new PipeContainer(),
-        );
-
-        /** Bind commands to handler factories */
-        $handlers->bind(
-            CancelAttendeeTicketCommand::class,
-            fn() => new CancelAttendeeTicketHandler(
-                $this->dependencies->getAttendeeRepository(),
-            ),
-        );
-
-        /** Bind middleware factories */
-        $middleware->bind(
-            ExecuteInUnitOfWork::class,
-            fn () => new ExecuteInUnitOfWork($this->dependencies->getUnitOfWorkManager()),
-        );
-
-        $middleware->bind(
-            LogMessageDispatch::class,
-            fn () => new LogMessageDispatch(
-                $this->dependencies->getLogger(),
-            ),
-        );
-
-        /** Attach middleware that runs for all commands */
-        $bus->through([
-            LogMessageDispatch::class,
-        ]);
-
-        return $bus;
-    }
-}
+$dispatcher = new CommandBus($psrContainer);
 ```
 
-Adapters in the presentation and delivery layer will use the driving ports. Typically this means we need to bind the
-port into a service container. For example, in Laravel:
+So, for example in a Laravel application, you would bind this to the interface as follows in your service provider:
 
 ```php
-namespace App\Providers;
+use App\Modules\EventManagement\Api\CommandBus;
+use App\Modules\EventManagement\Application\Adapters\CommandBusAdapter;
+use Illuminate\Contracts\Foundation\Application;
 
-use App\Modules\EventManagement\Application\{
-    Bus\CommandBusProvider,
-    Ports\Driving\CommandBus,
-};
-use Illuminate\Contracts\Container\Container;
-use Illuminate\Support\ServiceProvider;
-
-final class EventManagementServiceProvider extends ServiceProvider
-{
-    public function register()
-    {
-        $this->app->bind(
-            CommandBus::class,
-            static function (Container $app)  {
-                $provider = $app->make(CommandBusProvider::class);
-                return $provider->getCommandBus();
-            },
-        );
-    }
-}
+$this->app->bind(
+    CommandBus::class,
+    static fn (Application $app) => new CommandBusAdapter($app),
+);
 ```
 
 ### Dispatching Commands
@@ -259,13 +189,13 @@ a single action controller to handle a HTTP request in a Laravel application, we
 ```php
 namespace App\Http\Controllers\Api\Attendees;
 
-use App\Modules\EventManagement\Application\{
-    Ports\Driving\CommandBus,
-    UseCases\Commands\CancelAttendeeTicket\CancelAttendeeTicketCommand,
+use App\Modules\EventManagement\Api\{
+    CommandBus,
+    Input\CancelAttendeeTicketCommand,
+    Input\Enums\CancellationReasonEnum,
 };
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
 use Illuminate\Validation\Rule;
-use VendorName\EventManagement\Shared\Enums\CancellationReasonEnum;
 
 class CancellationController extends Controller
 {
@@ -329,9 +259,9 @@ queuer.
 We do this by defining an interface in our application's driving ports.
 
 ```php
-namespace App\Modules\EventManagement\Application\Ports\Driving;
+namespace App\Modules\EventManagement\Api;
 
-use CloudCreativity\Modules\Application\Ports\Driving\CommandQueuer as ICommandQueuer;
+use CloudCreativity\Modules\Contracts\Bus\CommandQueuer as ICommandQueuer;
 
 interface CommandQueuer extends ICommandQueuer
 {
@@ -341,10 +271,10 @@ interface CommandQueuer extends ICommandQueuer
 And then our implementation is as follows:
 
 ```php
-namespace App\Modules\EventManagement\Application\Bus;
+namespace App\Modules\EventManagement\Api;
 
-use App\Modules\EventManagement\Application\Ports\Driving\CommandQueuer as Port;
-use App\Modules\EventManagement\Application\Ports\Driven\Queue;
+use App\Modules\EventManagement\Application\Ports\Queue;
+use App\Modules\EventManagement\Api\CommandQueuer as Port;
 use CloudCreativity\Modules\Application\Bus\CommandQueuer as Queuer;
 
 final class CommandQueuer extends Queuer implements Port
@@ -367,28 +297,6 @@ See the [Queue chapter](../infrastructure/queues.md) for more information on how
 Creating a command queuer is simple, as it is just a thin wrapper around the queue - i.e. it immediately hands off to a
 driven port. This is because queuing a command is an infrastructure concern.
 
-```php
-namespace App\Modules\EventManagement\Application\Bus;
-
-use App\Modules\EventManagement\Application\Ports\Driving\CommandQueuer as CommandQueuerPort;
-use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;
-
-final class CommandBusProvider
-{
-    public function __construct(
-        private readonly ExternalDependencies $dependencies,
-    ) {
-    }
-
-    public function getCommandQueuer(): CommandQueuerPort
-    {
-        return new CommandQueuer(
-            queue: $this->dependencies->getQueue(),
-        );
-    }
-}
-```
-
 :::tip
 The queue supports middleware to add cross-cutting concerns, such as logging. This means there is no need to add any
 middleware to the command queuer.
@@ -403,13 +311,13 @@ queued:
 ```php
 namespace App\Http\Controllers\Api\Attendees;
 
-use App\Modules\EventManagement\Application\{
-    Ports\Driving\CommandQueuer,
-    UseCases\Commands\CancelAttendeeTicket\CancelAttendeeTicketCommand,
+use App\Modules\EventManagement\Api\{
+    CommandQueuer,
+    Input\CancelAttendeeTicketCommand,
+    Input\Enums\CancellationReasonEnum,
 };
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
 use Illuminate\Validation\Rule;
-use VendorName\EventManagement\Shared\Enums\CancellationReasonEnum;
 
 class CancellationController extends Controller
 {
@@ -444,12 +352,12 @@ transaction management, and so on.
 
 Middleware can be added either to the command bus (so it runs for every command) or to individual command handlers.
 
-To apply middleware to the command bus, you can use the `through()` method on the bus - as shown in the example above.
+To apply middleware to the command bus, you can use the `Through` attribute on the bus - as shown in the examples above.
 Middleware is executed in the order it is added to the bus.
 
-To apply middleware to a specific command handler, the handler must implement the `DispatchThroughMiddleware` interface,
-as shown in the example handler above. The `middleware()` method should return an array of middleware to run, in the
-order they should be executed. Handler middleware are always executed _after_ the bus middleware.
+To apply middleware to a specific command handler, use the `Through` attribute on the handler class - as shown in the
+example handler above. Again, middleware is executed in the order it is added to the handler. Handler middleware will
+run _after_ middleware attached to the command bus.
 
 This package provides a number of command middleware, which are described below. Additionally, you can write your own
 middleware to suit your specific needs.
@@ -463,30 +371,26 @@ This allows you to set up any state and guarantee that the state is cleaned up, 
 command. The primary use case for this is to boostrap [Domain Services](../domain/services) and to garbage collect any
 singleton instances of dependencies.
 
-For example:
+For example, bind an instance of the middleware into your service container:
 
 ```php
 use App\Modules\EventManagement\Domain\Services;
-use CloudCreativity\Modules\Application\Bus\Middleware\SetupBeforeDispatch;
+use CloudCreativity\Modules\Bus\Middleware\SetupBeforeDispatch;
 
-$middleware->bind(
-    SetupBeforeDispatch::class,
-    fn () => new SetupBeforeDispatch(function (): Closure {
+$container->bind(
+    'event-management:setup',
+    fn () => new SetupBeforeDispatch(function () use ($container): Closure {
         // setup domain services
-        Services::setEvents(fn() => $this->getDomainEventDispatcher());
+        Services::setEvents(fn () => $container->get(DomainEventDispatcher::class));
         return function (): void {
-            // clean up a singleton instance of a unit of work manager.
-            $this->unitOfWorkManager = null;
             // teardown the domain services
             Services::tearDown();
         };
     }),
 );
 
-$bus->through([
-    LogMessageDispatch::class,
-    SetupBeforeDispatch::class,
-]);
+// use #[Through('event-management:setup')]
+// on your command bus to apply the middleware.
 ```
 
 Here our setup middleware takes a setup closure as its only constructor argument. This setup closure can optionally
@@ -497,20 +401,17 @@ If you only need to do teardown work, use the `TeardownAfterDispatch` middleware
 closure as its only constructor argument:
 
 ```php
-use CloudCreativity\Modules\Application\Bus\Middleware\TeardownAfterDispatch;
+use CloudCreativity\Modules\Bus\Middleware\TeardownAfterDispatch;
 
-$middleware->bind(
-    TeardownAfterDispatch::class,
+$container->bind(
+    'event:management:teardown',
     fn () => new TeardownAfterDispatch(function (): Closure {
-        // clean up a singleton instance of a unit of work manager.
-        $this->unitOfWorkManager = null;
+        // clean up work goes here.
     }),
 );
 
-$bus->through([
-    LogMessageDispatch::class,
-    TearDownAfterDispatch::class,
-]);
+// use #[Through('event-management:teardown')]
+// on your command bus to apply the middleware.
 ```
 
 ### Unit of Work
@@ -522,19 +423,6 @@ To execute a handler in a unit of work, you will need to use our `ExecuteInUnitO
 implement this as handler middleware - because typically you need it to be the final middleware that runs before a
 handler is invoked. It also makes it clear to developers looking at the command handler that it is expected to run
 in a unit of work. The example `CancelAttendeeTicketHandler` above demonstrates this.
-
-An example binding for this middleware is:
-
-```php
-use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;
-
-$middleware->bind(
-    ExecuteInUnitOfWork::class,
-    fn () => new ExecuteInUnitOfWork(
-        $this->dependencies->getUnitOfWorkManager(),
-    ),
-);
-```
 
 :::warning
 If you're using a unit of work, you should be combining this with our "unit of work domain event dispatcher".
@@ -554,19 +442,6 @@ When using this dispatcher, you will need to use our `FlushDeferredEvents` middl
 implement this as handler middleware - because typically you need it to be the final middleware that runs before a
 handler is invoked. I.e. this is an equivalent middleware to the unit of work middleware.
 
-An example binding for this middleware is:
-
-```php
-use CloudCreativity\Modules\Application\Bus\Middleware\FlushDeferredEvents;
-
-$middleware->bind(
-    FlushDeferredEvents::class,
-    fn () => new FlushDeferredEvents(
-        $this->eventDispatcher,
-    ),
-);
-```
-
 :::warning
 When using this middleware, it is important that you inject it with a singleton instance of the deferred event
 dispatcher. This must be the same instance that is exposed to your domain layer as a service.
@@ -577,18 +452,8 @@ dispatcher. This must be the same instance that is exposed to your domain layer 
 Use our `LogMessageDispatch` middleware to log the dispatch of a command, and the result. The middleware takes a
 [PSR Logger](https://php-fig.org/psr/psr-3/).
 
-```php
-use CloudCreativity\Modules\Application\Bus\Middleware\LogMessageDispatch;
-
-$middleware->bind(
-    LogMessageDispatch::class,
-    fn (): LogMessageDispatch => new LogMessageDispatch(
-        $this->dependencies->getLogger(),
-    ),
-);
-
-$bus->through([LogMessageDispatch::class]);
-```
+> Typically, a service container will know how to resolve a PSR Logger, so if you're using an auto-wiring container (
+> like the Laravel container), you typically will not need to define anything for the container to make this middleware.
 
 The middleware will log a message before executing the command, with a log level of _debug_. It will then log a message
 after the command has executed, with a log level of _info_.
@@ -598,17 +463,16 @@ _info_, and the _dispatched_ message to be _notice_:
 
 ```php
 use Psr\Log\LogLevel;
+use Psr\Log\LoggerInterface;
 
-$middleware->bind(
+$container->bind(
     LogMessageDispatch::class,
     fn (): LogMessageDispatch => new LogMessageDispatch(
-        logger: $this->dependencies->getLogger(),
+        logger: $container->get(LoggerInterface::class),
         dispatchLevel: LogLevel::INFO,
         dispatchedLevel: LogLevel::NOTICE,
     ),
 );
-
-$bus->through([LogMessageDispatch::class]);
 ```
 
 #### Log Context
@@ -620,9 +484,9 @@ However, there may be scenarios where a property should not be logged, e.g. beca
 In this scenario, use the `Sensitive` attribute on the property, and it will not be logged:
 
 ```php
+use CloudCreativity\Modules\Toolkit\Sensitive;
+use CloudCreativity\Modules\Contracts\Messaging\Command;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
-use CloudCreativity\Modules\Toolkit\Loggable\Sensitive;
 
 final readonly class CancelAttendeeTicketCommand implements Command
 {
@@ -635,16 +499,16 @@ final readonly class CancelAttendeeTicketCommand implements Command
 }
 ```
 
-If you need full control over the log context, implement the `ContextProvider` interface on your command message:
+If you need full control over the log context, implement the `Contextual` interface on your command message:
 
 ```php
+use CloudCreativity\Modules\Contracts\Toolkit\Contextual;
+use CloudCreativity\Modules\Contracts\Messaging\Command;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
-use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextProvider;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
 
 final readonly class CancelAttendeeTicketCommand implements
   Command,
-  ContextProvider
+  Contextual
 {
     public function __construct(
         public Identifier $attendeeId,
@@ -668,11 +532,11 @@ You can write your own middleware to suit your specific needs. Middleware is a s
 following signature:
 
 ```php
-namespace App\Modules\EventManagement\Application\Bus\Middleware;
+namespace App\Modules\EventManagement\Application\Adapters\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Contracts\Application\Bus\CommandMiddleware;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
+use CloudCreativity\Modules\Contracts\Bus\Middleware\CommandMiddleware;
+use CloudCreativity\Modules\Contracts\Messaging\Command;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 final class MyMiddleware implements CommandMiddleware
@@ -685,7 +549,7 @@ final class MyMiddleware implements CommandMiddleware
      * @return Result<mixed>
      */
     public function __invoke(
-        Command $command, 
+        Command $command,
         Closure $next,
     ): Result
     {
@@ -710,12 +574,12 @@ If you want to write middleware that can be used with both commands and queries,
 instead:
 
 ```php
-namespace App\Modules\EventManagement\Application\Bus\Middleware;
+namespace App\Modules\EventManagement\Application\Adapters\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Contracts\Application\Bus\BusMiddleware;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Query;
+use CloudCreativity\Modules\Contracts\Bus\Middleware\BusMiddleware;
+use CloudCreativity\Modules\Contracts\Messaging\Command;
+use CloudCreativity\Modules\Contracts\Messaging\Query;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 class MyBusMiddleware implements BusMiddleware
@@ -728,7 +592,7 @@ class MyBusMiddleware implements BusMiddleware
      * @return Result<mixed>
      */
     public function __invoke(
-        Command|Query $message, 
+        Command|Query $message,
         Closure $next,
     ): Result
     {

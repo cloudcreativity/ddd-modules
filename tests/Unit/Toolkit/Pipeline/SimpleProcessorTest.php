@@ -15,7 +15,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Pipeline;
 use CloudCreativity\Modules\Toolkit\Pipeline\SimpleProcessor;
 use PHPUnit\Framework\TestCase;
 
-class SimpleProcessorTest extends TestCase
+final class SimpleProcessorTest extends TestCase
 {
     public function test(): void
     {

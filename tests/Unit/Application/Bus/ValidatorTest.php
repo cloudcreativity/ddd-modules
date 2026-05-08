@@ -12,17 +12,18 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Application\Bus;
 
-use CloudCreativity\Modules\Application\Bus\Validator;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Query;
+use CloudCreativity\Modules\Bus\Validation\Validator;
+use CloudCreativity\Modules\Contracts\Messaging\Command;
+use CloudCreativity\Modules\Contracts\Messaging\Message;
+use CloudCreativity\Modules\Contracts\Messaging\Query;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Toolkit\Result\Error;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
 
-class ValidatorTest extends TestCase
+final class ValidatorTest extends TestCase
 {
     /**
      * @return array<array<class-string>>
@@ -32,33 +33,33 @@ class ValidatorTest extends TestCase
         return [
             [Query::class],
             [Command::class],
+            [Message::class],
         ];
     }
 
     /**
-     * @param class-string<Command|Query> $message
+     * @param class-string<Message> $class
      */
     #[DataProvider('messageProvider')]
-    public function testItValidatesMessage(string $message): void
+    public function testItValidatesMessage(string $class): void
     {
-        /** @var (Command&MockObject)|(MockObject&Query) $query */
-        $query = $this->createMock($message);
+        $message = $this->createStub($class);
         $error1 = new Error(null, 'Message 1');
         $error2 = new Error(null, 'Message 2');
         $error3 = new Error(null, 'Message 3');
 
-        $a = function ($actual) use ($query, $error1): ListOfErrors {
-            $this->assertSame($query, $actual);
+        $a = function ($actual) use ($message, $error1): ListOfErrors {
+            $this->assertSame($message, $actual);
             return new ListOfErrors($error1);
         };
 
-        $b = function ($actual) use ($query): ?ListOfErrors {
-            $this->assertSame($query, $actual);
+        $b = function ($actual) use ($message): ?ListOfErrors {
+            $this->assertSame($message, $actual);
             return null;
         };
 
-        $c = function ($actual) use ($query, $error2, $error3): ListOfErrors {
-            $this->assertSame($query, $actual);
+        $c = function ($actual) use ($message, $error2, $error3): ListOfErrors {
+            $this->assertSame($message, $actual);
             return new ListOfErrors($error2, $error3);
         };
 
@@ -75,29 +76,73 @@ class ValidatorTest extends TestCase
         $validator = new Validator(rules: $rules);
         $actual = $validator
             ->using([$a, 'Rule2', 'Rule3'])
-            ->validate($query);
+            ->validate($message);
 
         $this->assertInstanceOf(ListOfErrors::class, $actual);
         $this->assertSame([$error1, $error2, $error3], $actual->all());
     }
 
     /**
-     * @param class-string<Command|Query> $message
+     * @param class-string<Message> $class
      */
     #[DataProvider('messageProvider')]
-    public function testItStopsOnFirstFailure(string $message): void
+    public function testItValidatesMessageUsingPsrContainer(string $class): void
     {
-        /** @var (Command&MockObject)|(MockObject&Query) $query */
-        $query = $this->createMock($message);
-        $error = new Error(null, 'Message 1');
+        $message = $this->createStub($class);
+        $error1 = new Error(null, 'Message 1');
+        $error2 = new Error(null, 'Message 2');
+        $error3 = new Error(null, 'Message 3');
 
-        $a = function ($actual) use ($query): null {
-            $this->assertSame($query, $actual);
+        $a = function ($actual) use ($message, $error1): Error {
+            $this->assertSame($message, $actual);
+            return $error1;
+        };
+
+        $b = function ($actual) use ($message): ?ListOfErrors {
+            $this->assertSame($message, $actual);
             return null;
         };
 
-        $b = function ($actual) use ($query, $error): ListOfErrors {
-            $this->assertSame($query, $actual);
+        $c = function ($actual) use ($message, $error2, $error3): ListOfErrors {
+            $this->assertSame($message, $actual);
+            return new ListOfErrors($error2, $error3);
+        };
+
+        $rules = $this->createMock(ContainerInterface::class);
+        $rules
+            ->expects($this->exactly(2))
+            ->method('get')
+            ->willReturnCallback(fn (string $name) => match ($name) {
+                'Rule2' => $b,
+                'Rule3' => $c,
+                default => $this->fail('Unexpected rule name: ' . $name),
+            });
+
+        $validator = new Validator(rules: $rules);
+        $actual = $validator
+            ->using([$a, 'Rule2', 'Rule3'])
+            ->validate($message);
+
+        $this->assertInstanceOf(ListOfErrors::class, $actual);
+        $this->assertSame([$error1, $error2, $error3], $actual->all());
+    }
+
+    /**
+     * @param class-string<Message> $class
+     */
+    #[DataProvider('messageProvider')]
+    public function testItStopsOnFirstFailure(string $class): void
+    {
+        $message = $this->createStub($class);
+        $error = new Error(null, 'Message 1');
+
+        $a = function ($actual) use ($message): null {
+            $this->assertSame($message, $actual);
+            return null;
+        };
+
+        $b = function ($actual) use ($message, $error): ListOfErrors {
+            $this->assertSame($message, $actual);
             return new ListOfErrors($error);
         };
 
@@ -109,7 +154,7 @@ class ValidatorTest extends TestCase
         $actual = $validator
             ->using([$a, $b, $c])
             ->stopOnFirstFailure()
-            ->validate($query);
+            ->validate($message);
 
         $this->assertInstanceOf(ListOfErrors::class, $actual);
         $this->assertSame([$error], $actual->all());
@@ -117,7 +162,7 @@ class ValidatorTest extends TestCase
 
     public function testItHasNoRules(): void
     {
-        $query = $this->createMock(Query::class);
+        $query = $this->createStub(Query::class);
         $validator = new Validator();
 
         $this->assertEquals(new ListOfErrors(), $validator->validate($query));

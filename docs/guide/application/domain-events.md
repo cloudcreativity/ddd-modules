@@ -49,222 +49,44 @@ This chapter covers both of these dispatchers.
 To use this dispatcher, create a concrete implementation of your domain layer's dispatcher interface:
 
 ```php
-namespace App\Modules\EventManagement\Application\Internal\DomainEvents;
+namespace App\Modules\EventManagement\Application\Orchestration;
 
-use App\Modules\EventManagement\Domain\Events\DomainEventDispatcher;
+use App\Modules\EventManagement\Domain\Events\DomainEventDispatcher as IDomainEventDispatcher;
 use CloudCreativity\Modules\Application\DomainEventDispatching\UnitOfWorkAwareDispatcher;
+use CloudCreativity\Modules\Application\DomainEventDispatching\ListenTo;
+use CloudCreativity\Modules\Toolkit\Pipeline\Through;
 
-final class DomainEventDispatcherAdapter extends UnitOfWorkAwareDispatcher implements 
-    DomainEventDispatcher
+#[Through(LogDomainEventDispatch::class)]
+#[ListenTo(SomeDomainEvent::class, FooListener::class)]
+#[ListenTo(SomeOtherDomainEvent::class, [BarListener::class, BazListener::class])]
+final class DomainEventDispatcher extends UnitOfWorkAwareDispatcher implements
+    IDomainEventDispatcher
 {
 }
 ```
 
+Notice that middleware is bound to the dispatcher using the `Through` attribute.
+
+Events are mapped to listeners via the `ListenTo` attribute. You can specify a single listener or an array of listeners
+for each event.
+
 ### Creating a Dispatcher
 
-To create a unit of work aware dispatcher, you need to provide it with:
+To create a unit of work aware dispatcher, you need to provide it with a unit of work manager. As described in
+the [unit of work chapter](units-of-work.md), this MUST be a singleton instance. I.e. the instance that is provided to
+your dispatcher must also be the same instance that is provided to unit of work middleware.
 
-1. A unit of work manager. As described in the [unit of work chapter](units-of-work.md), this must be singleton
-   instance. I.e. the instance that is provided to your dispatcher must also be the same instance that is provided to
-   unit of work middleware.
-2. A listener container, that allows you to bind the factories for listeners that the dispatcher will need to
-   instantiate.
-3. Optionally, middleware factories for any middleware your dispatcher uses.
+You also need to provide a PSR container, so that the dispatcher can resolve any listeners and middleware.
 
 For example:
 
 ```php
-namespace App\Modules\EventManagement\Application\Internal\DomainEvents;
-
-use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;
-use App\Modules\EventManagement\Domain\Events\{
-   AttendeeTicketWasCancelled,
-   DomainEventDispatcher,
-};
-use CloudCreativity\Modules\Application\DomainEventDispatching\ListenerContainer;
-use CloudCreativity\Modules\Application\DomainEventDispatching\Middleware\LogDomainEventDispatch;
 use CloudCreativity\Modules\Contracts\Application\UnitOfWork\UnitOfWorkManager;
-use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 
-final readonly class DomainEventDispatcherProvider 
-{
-    /**
-     * @var array<class-string<DomainEvent>, list<class-string>>  
-     */
-    private array $subscriptions = [
-        AttendeeTicketWasCancelled::class => [
-            Listeners\UpdateTicketSalesReport::class,
-            Listeners\QueueTicketCancellationEmail::class,
-        ],
-        // ...other events
-    ];
-
-    public function __construct(
-        private ExternalDependencies $dependencies,
-    ) {
-    }
-    
-    public function getEventDispatcher(UnitOfWorkManager $unitOfWorkManager): DomainEventDispatcher
-    {
-        $dispatcher = new DomainEventDispatcherAdapter(
-            unitOfWorkManager: $unitOfWorkManager,
-            listeners: $listeners = new ListenerContainer(),
-            middleware: $middleware = new PipeContainer(),
-        );
-        
-        /** Bind listener factories */
-        $listeners->bind(
-            Listeners\UpdateTicketSalesReport::class,
-            fn () => new Listeners\UpdateTicketSalesReport(
-                $this->dependencies->getTicketSalesReportRepository(),
-            ),
-        );
-        
-        $listeners->bind(
-            Listeners\QueueTicketCancellationEmail::class,
-            fn () => new Listeners\QueueTicketCancellationEmail(
-                $this->dependencies->getMailer(),
-            ),
-        );
-        
-        /** Subscribe listeners to events */
-        foreach ($this->subscriptions as $event => $listeners) {
-            $dispatcher->listen($event, $listeners);
-        }
-        
-        /** Bind middleware factories */
-        $middleware->bind(
-            LogDomainEventDispatch::class,
-            fn () => new LogDomainEventDispatch(
-                $this->dependencies->getLogger(),
-            ),
-        );
-        
-        /** Attach middleware for all events */
-        $dispatcher->through([
-            LogDomainEventDispatch::class,
-        ]);
-        
-        return $dispatcher;
-    }
-}
-```
-
-### Bootstrapping
-
-We've now got everything we need to use the unit of work aware dispatcher in our application layer. There our however a
-few things we need to do to ensure it is correctly bootstrapped.
-
-For example, when creating a command bus there's a few things we'll need to do:
-
-1. Ensure we have a singleton instance of the unit of work manager.
-2. Inject this instance into the domain event dispatcher.
-3. Ensure that our domain layer can access this dispatcher as a domain service.
-4. Ensure our command handlers are wrapped in a unit of work, by injecting the manager into the unit of work command
-   middleware.
-5. Once a command has been dispatched, reliably tear down the unit of work.
-
-Although this sounds like a lot of work, we provide the tools to make this easy. Here's an example that does all of the
-above:
-
-```php
-namespace App\Modules\EventManagement\Application\Bus;
-
-use App\Modules\EventManagement\Application\Ports\Driving\CommandBus;
-use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;
-use App\Modules\EventManagement\Application\Internal\DomainEvents\DomainEventDispatcher;
-use App\Modules\EventManagement\Application\Internal\DomainEvents\DomainEventDispatcherProvider;
-use App\Modules\EventManagement\Domain\Services as DomainServices;
-use CloudCreativity\Modules\Application\Bus\CommandHandlerContainer;
-use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;
-use CloudCreativity\Modules\Application\Bus\Middleware\SetupBeforeDispatch;
-use CloudCreativity\Modules\Application\UnitOfWork\UnitOfWorkManager;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
-
-final class CommandBusProvider
-{
-    /**
-     * @var UnitOfWorkManager|null 
-     */
-    private ?UnitOfWorkManager $unitOfWorkManager = null;
-    
-    /**
-     * @var DomainEventDispatcher|null 
-     */
-    private ?DomainEventDispatcher $eventDispatcher = null;
-
-    public function __construct(
-        private readonly ExternalDependencies $dependencies,
-        private readonly DomainEventDispatcherProvider $eventDispatcherProvider,
-    ) {
-    }
-
-    public function getCommandBus(): CommandBus
-    {
-        $bus = new CommandBus(
-            handlers: $handlers = new CommandHandlerContainer(),
-            middleware: $middleware = new PipeContainer(),
-        );
-
-        // ...handler bindings.
-        
-        $middleware->bind(
-            SetupBeforeDispatch::class,
-            fn () => new SetupBeforeDispatch(function (): Closure {
-                $this->setUp();
-                return function (): void {
-                    $this->tearDown();
-                };
-            }),
-        );
-        
-        $middleware->bind(
-            ExecuteInUnitOfWork::class,
-            fn () => new ExecuteInUnitOfWork($this->unitOfWorkManager),
-        );
-        
-        $bus->through([
-            SetupBeforeDispatch::class,
-        ]);
-
-        return $bus;
-    }
-    
-    /**
-     * Set up command handling state.
-     * 
-     * @return void 
-     */
-    private function setUp(): void
-    {
-        $this->unitOfWorkManager = new UnitOfWorkManager(
-            $this->dependencies->getUnitOfWork(),
-        );
-        
-        DomainServices::setEvents(function () {
-            if ($this->eventDispatcher) {
-                return $this->eventDispatcher;
-            }
-            
-            return $this->eventDispatcher = $this->eventDispatcherProvider->getEventDispatcher(
-                $this->unitOfWorkManager
-            );
-        });
-    }
-    
-    /**
-     * Tear down command handling state.
-     * 
-     * @return void 
-     */
-    private function tearDown(): void
-    {
-        DomainServices::tearDown();
-        $this->eventDispatcher = null;
-        $this->unitOfWorkManager = null;
-    }
-}
+$dispatcher = new DomainEventDispatcher(
+    $container->get(UnitOfWorkManager::class),
+    $container,
+);
 ```
 
 ### Deferred Events
@@ -295,7 +117,7 @@ As well as implementing your domain layer's dispatcher interface, you also need 
 interface. Combine these two as an interface in your application layer:
 
 ```php
-namespace App\Modules\EventManagement\Application\Internal\DomainEvents;
+namespace App\Modules\EventManagement\Application\Orchestration;
 
 use App\Modules\EventManagement\Domain\Events\DomainEventDispatcher;
 use CloudCreativity\Modules\Contracts\Application\DomainEventDispatching\DeferredDispatcher;
@@ -308,11 +130,11 @@ interface DeferredDomainEventDispatcher extends DomainEventDispatcher, DeferredD
 Then create a concrete implementation of your domain layer's dispatcher interface:
 
 ```php
-namespace App\Modules\EventManagement\Application\Internal\DomainEvents;
+namespace App\Modules\EventManagement\Application\Orchestration;
 
 use CloudCreativity\Modules\Application\DomainEventDispatching\DeferredDispatcher;
 
-final class DomainEventDispatcherAdapter extends DeferredDispatcher implements 
+final class DomainEventDispatcherAdapter extends DeferredDispatcher implements
     DeferredDomainEventDispatcher
 {
 }
@@ -320,174 +142,19 @@ final class DomainEventDispatcherAdapter extends DeferredDispatcher implements
 
 ### Creating a Dispatcher
 
-The following example shows how to create this dispatcher:
+To create a deferred dispatcher, you need to provide a PSR container. This allows the dispatcher to resolve any
+listeners and middleware.
+
+For example:
 
 ```php
-namespace App\Modules\EventManagement\Application\Internal\DomainEvents;
 
-use App\Modules\EventManagement\Domain\Events\{
-    DomainEventDispatcher,
-    AttendeeTicketWasCancelled,
-};
-use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;
-use CloudCreativity\Modules\Application\DomainEventDispatching\ListenerContainer;
-use CloudCreativity\Modules\Application\DomainEventDispatching\Middleware\LogDomainEventDispatch;
-use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
-
-final readonly class DomainEventDispatcherProvider 
-{
-    /**
-     * @var array<class-string<DomainEvent>, list<class-string>>  
-     */
-    private array $subscriptions = [
-        AttendeeTicketWasCancelled::class => [
-            Listeners\UpdateTicketSalesReport::class,
-            Listeners\QueueTicketCancellationEmail::class,
-        ],
-        // ...other events
-    ];
-
-    public function __construct(
-        private ExternalDependencies $dependencies,
-    ) {
-    }
-    
-    public function getEventDispatcher(): DeferredDomainEventDispatcher
-    {
-        $dispatcher = new DomainEventDispatcherAdapter(
-            listeners: $listeners = new ListenerContainer(),
-            middleware: $middleware = new PipeContainer(),
-        );
-        
-        /** Bind listener factories */
-        $listeners->bind(
-            Listeners\UpdateTicketSalesReport::class,
-            fn () => new Listeners\UpdateTicketSalesReport(
-                $this->dependencies->getTicketSalesReportRepository(),
-            ),
-        );
-        
-        $listeners->bind(
-            Listeners\QueueTicketCancellationEmail::class,
-            fn () => new Listeners\QueueTicketCancellationEmail(
-                $this->dependencies->getMailer(),
-            ),
-        );
-        
-        /** Subscribe listeners to events */
-        foreach ($this->subscriptions as $event => $listeners) {
-            $dispatcher->listen($event, $listeners);
-        }
-        
-        /** Bind middleware factories */
-        $middleware->bind(
-            LogDomainEventDispatch::class,
-            fn () => new LogDomainEventDispatch(
-                $this->dependencies->getLogger(),
-            ),
-        );
-        
-        /** Attach middleware for all events */
-        $dispatcher->through([
-            LogDomainEventDispatch::class,
-        ]);
-        
-        return $dispatcher;
-    }
-}
+$dispatcher = new DomainEventDispatcher($container);
 ```
 
-### Bootstrapping
-
-Bootstrapping is simpler for the deferred dispatcher. The main thing you need to ensure is that you keep a singleton
-instance of the dispatcher. Your domain layer will need access to this instance, plus the same instance must be injected
-into the middleware that flushes deferred events.
-
-Here's an example:
-
-```php
-namespace App\Modules\EventManagement\Application\Bus;
-
-use App\Modules\EventManagement\Application\Ports\Driving\CommandBus as CommandBusPort;
-use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;
-use App\Modules\EventManagement\Application\Internal\DomainEvents\DomainEventDispatcher;
-use App\Modules\EventManagement\Application\Internal\DomainEvents\DomainEventDispatcherProvider;
-use App\Modules\EventManagement\Domain\Services as DomainServices;
-use CloudCreativity\Modules\Application\Bus\CommandHandlerContainer;
-use CloudCreativity\Modules\Application\Bus\Middleware\FlushDeferredEvents;
-use CloudCreativity\Modules\Application\Bus\Middleware\SetupBeforeDispatch;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
-
-final class CommandBusProvider
-{
-    /**
-     * @var DomainEventDispatcher|null 
-     */
-    private ?DomainEventDispatcher $eventDispatcher = null;
-
-    public function __construct(
-        private readonly ExternalDependencies $dependencies,
-        private readonly DomainEventDispatcherProvider $eventDispatcherProvider,
-    ) {
-    }
-
-    public function getCommandBus(): CommandBusPort
-    {
-        $bus = new CommandBus(
-            handlers: $handlers = new CommandHandlerContainer(),
-            middleware: $middleware = new PipeContainer(),
-        );
-
-        // ...handler bindings.
-
-        $middleware->bind(
-            FlushDeferredEvents::class,
-            fn () => new ExecuteInUnitOfWork($this->eventDispatcher),
-        );
-        
-        $middleware->bind(
-            SetupBeforeDispatch::class,
-            fn () => new SetupBeforeDispatch(function (): Closure {
-                $this->setUp();
-                return function (): void {
-                    $this->tearDown();
-                };
-            }),
-        );
-        
-        $bus->through([
-            SetupBeforeDispatch::class,
-        ]);
-
-        return $bus;
-    }
-    
-    /**
-     * Set up command handling state.
-     * 
-     * @return void 
-     */
-    private function setUp(): void
-    {
-        $this->eventDispatcher = $this->eventDispatcherProvider
-                ->getEventDispatcher();
-    
-        DomainServices::setEvents(fn () => $this->eventDispatcher);
-    }
-    
-    /**
-     * Tear down command handling state.
-     * 
-     * @return void 
-     */
-    private function tearDown(): void
-    {
-        DomainServices::tearDown();
-        $this->eventDispatcher = null;
-    }
-}
-```
+The main thing you need to ensure is that your instance of this domain event dispatcher is a singleton. This ensures
+that the same instance is used by the domain to dispatch events, plus by middleware to flush the dispatcher at the
+correct moment.
 
 ### Deferred Events
 
@@ -542,9 +209,9 @@ There are several examples in the [Use Cases section of the domain layer chapter
 one such example:
 
 ```php
-namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Listeners;
+namespace App\Modules\EventManagement\Application\Orchestration\Listeners;
 
-use App\Modules\EventManagement\Application\Ports\Driven\Persistence\TicketSalesReportRepository;
+use App\Modules\EventManagement\Application\Ports\Persistence\TicketSalesReportRepository;
 use App\Modules\EventManagement\Domain\Events\AttendeeTicketWasCancelled;
 
 final readonly class UpdateTicketSalesReport
@@ -571,84 +238,20 @@ roots outside the control of the emitting aggregate root, these domain layer sid
 via a driven port.
 :::
 
-Class-based listeners are bound into a listener container that is given to the event dispatcher. This is shown in the
-examples above, but as a reminder:
-
-```php
-$dispatcher = new DomainEventDispatcherAdapter(
-    listeners: $listeners = new ListenerContainer(),
-);
-
-/** Bind listener factories */
-$listeners->bind(
-    Listeners\UpdateTicketSalesReport::class,
-    fn () => new Listeners\UpdateTicketSalesReport(
-        $this->dependencies->getTicketSalesReportRepository(),
-    ),
-);
-
-/** Then subscribe it to events */
-$dispatcher->listen(
-    AttendeeTicketWasCancelled::class,
-    Listeners\UpdateTicketSalesReport::class,
-);
-```
-
-### Closure Listeners
-
-Our implementation also allows you to use closures as listeners. This can be useful for simple side effects that do not
-require a class. However, we recommend using class-based listeners as they are easier to unit test.
-
-Closure listeners are attached to events via the dispatcher, so are not bound into a listener container.
-
-```php
-$dispatcher = new DomainEventDispatcher();
-
-$dispatcher->listen(
-    AttendeeTicketWasCancelled::class,
-    function (AttendeeTicketWasCancelled $event): void {
-        $notifier = $this->dependencies
-            ->getNotifiers()
-            ->getTicketCancellationNotifier();
-        $notifier->notify($event->ticketId);
-    },
-);
-```
+Use the `ListenTo` attribute on the dispatcher class to bind listeners to events.
 
 ## Middleware
 
 Middleware can be attached to the dispatcher to perform actions before and/or after a domain event is emitted. This can
 be useful for cross-cutting concerns, such as logging.
 
-To apply middleware to the event dispatcher, you can use the `through()` method - as shown in the examples earlier in
+To apply middleware to the event dispatcher, you can use the `Through` attribute - as shown in the examples earlier in
 this chapter. Middleware is executed in the order it is added to the dispatcher.
 
 ### Logging
 
 Use our `LogDomainEventDispatch` middleware to log when an aggregate root emits an event. This middleware logs the event
 name when it is dispatched, and when it has been dispatched.
-
-For example:
-
-```php
-use CloudCreativity\Modules\Application\DomainEventDispatching\Middleware\LogDomainEventDispatch;
-
-$dispatcher = new DomainEventDispatcher(
-    listeners: $listeners = new ListenerContainer(),
-    middleware: $middleware = new PipeContainer(),
-);
-
-$middleware->bind(
-    LogDomainEventDispatch::class,
-    fn () => new LogDomainEventDispatch(
-        $this->dependencies->getLogger(),
-    ),
-);
-
-$dispatcher->through([
-    LogDomainEventDispatch::class,
-]);
-```
 
 This works exactly like the logging middleware described in the [commands chapter.](../application/commands#logging)
 You can provide a custom logging level for the before and after dispatch log messages.
@@ -662,7 +265,7 @@ You can write your own middleware to suit your specific needs. Middleware is a s
 following signature:
 
 ```php
-namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Middleware;
+namespace App\Modules\EventManagement\Application\Orchestration\Middleware;
 
 use Closure;
 use CloudCreativity\Modules\Contracts\Application\DomainEventDispatching\DomainEventMiddleware;
@@ -679,7 +282,7 @@ final class MyMiddleware implements DomainEventMiddleware
      * @return void
      */
     public function __invoke(
-        DomainEvent $event, 
+        DomainEvent $event,
         Closure $next,
     ): Result
     {

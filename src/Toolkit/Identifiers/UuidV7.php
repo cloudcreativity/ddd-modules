@@ -13,24 +13,22 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Uuid as IUuid;
 use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Contracts;
 use DateTimeInterface;
-use JsonSerializable;
 use Ramsey\Uuid\Lazy\LazyUuidFromString;
 use Ramsey\Uuid\Rfc4122\UuidV7 as BaseUuidV7;
 use Ramsey\Uuid\Uuid as BaseUuid;
 use Ramsey\Uuid\UuidInterface as IBaseUuid;
 
-final class UuidV7 implements Identifier, JsonSerializable
+final class UuidV7 implements IUuid
 {
     use IsUuid;
 
     public static function make(?DateTimeInterface $date = null): self
     {
-        $uuid = BaseUuid::uuid7($date);
-        assert($uuid instanceof BaseUuidV7 || $uuid instanceof LazyUuidFromString);
-        return new self($uuid);
+        return Uuid::getFactory()->uuid7($date);
     }
 
     public static function from(IBaseUuid|Identifier|string|null $value): self
@@ -44,7 +42,7 @@ final class UuidV7 implements Identifier, JsonSerializable
     {
         $parsed = match (true) {
             $value instanceof self, $value instanceof IBaseUuid => $value,
-            $value instanceof Uuid => $value->value,
+            $value instanceof IUuid => $value->toBase(),
             is_string($value) && BaseUuid::isValid($value) => BaseUuid::getFactory()->fromString($value),
             default => null,
         };
@@ -56,7 +54,7 @@ final class UuidV7 implements Identifier, JsonSerializable
         };
     }
 
-    private function __construct(public readonly BaseUuidV7|LazyUuidFromString $value)
+    public function __construct(public readonly BaseUuidV7|LazyUuidFromString $value)
     {
         if ($this->value instanceof LazyUuidFromString) {
             Contracts::assert($this->value->getVersion() === 7);

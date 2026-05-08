@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Testing;
 
 use ArrayAccess;
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\OutboundEventPublisher;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Application\Ports\OutboundEventPublisher;
+use CloudCreativity\Modules\Contracts\Messaging\IntegrationEvent;
 use Countable;
 use Generator;
 use IteratorAggregate;
@@ -24,7 +24,7 @@ use LogicException;
  * @implements ArrayAccess<int, IntegrationEvent>
  * @implements IteratorAggregate<int, IntegrationEvent>
  */
-class FakeOutboundEventPublisher implements OutboundEventPublisher, Countable, ArrayAccess, IteratorAggregate
+abstract class FakeOutboundEventPublisher implements OutboundEventPublisher, Countable, ArrayAccess, IteratorAggregate
 {
     /**
      * @var list<IntegrationEvent>

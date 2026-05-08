@@ -13,12 +13,12 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\DomainEventDispatching;
 
 use Closure;
+use CloudCreativity\Modules\Bus\PsrPipeContainer;
 use CloudCreativity\Modules\Contracts\Application\DomainEventDispatching\ListenerContainer as IListenerContainer;
 use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 use CloudCreativity\Modules\Contracts\Domain\Events\DomainEventDispatcher;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer as IPipeContainer;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 use CloudCreativity\Modules\Toolkit\Pipeline\Through;
 use Generator;
@@ -26,7 +26,7 @@ use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 
-class Dispatcher implements DomainEventDispatcher
+abstract class Dispatcher implements DomainEventDispatcher
 {
     private readonly IListenerContainer $listeners;
 
@@ -51,7 +51,7 @@ class Dispatcher implements DomainEventDispatcher
             $listeners;
 
         $this->middleware = $middleware === null && $listeners instanceof ContainerInterface ?
-            new PipeContainer($listeners) :
+            new PsrPipeContainer($listeners) :
             $middleware;
 
         $this->autowire();

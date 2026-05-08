@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [6.0.0] - 2026-05-08
+
+### Added
+
+- The `Uuid` interface now has a `compareTo()` method for sorting UUIDs.
+- Bus and infrastructure implementations now allow a PSR container to be injected and wiring (e.g. middleware, handlers,
+  etc.) to be defined via PHP attributes. This is backwards compatible, but is now the recommended way to boostrap a
+  module as it is far simpler. The documentation has been updated to reflect this new approach.
+
+### Changed
+
+- **BREAKING**: There has been a final restructuring of the package; with the main change being bus classes are now in
+  their own `Bus` namespace. Refer to the upgrade guide in the documentation for details.
+- All classes are now either `final` or `abstract`. This should not impact implementations, as you should be extending
+  classes that are now `abstract` to implement your module interfaces. E.g. your specific command bus interface for a
+  module.
+
+### Removed
+
+- Dropped support for PHP 8.2 and 8.3. The minimum supported version is now PHP 8.4.
+- Removed the deprecated `contains()` method from the `ListOfErrors` interface. Use `any()` instead.
+- The `first()` method on the `ListOfErrors` interface no longer accepts arguments. Use `find()` instead.
+
 ## [5.2.0] - 2026-01-05
 
 ### Added
@@ -616,6 +639,8 @@ All notable changes to this project will be documented in this file. This projec
 ## [0.1.0] - 2023-11-18
 
 Initial release.
+
+[6.0.0]: https://github.com/cloudcreativity/php-ddd-modules/compare/v5.2.0...v6.0.0
 
 [5.2.0]: https://github.com/cloudcreativity/php-ddd-modules/compare/v5.1.0...v5.2.0
 

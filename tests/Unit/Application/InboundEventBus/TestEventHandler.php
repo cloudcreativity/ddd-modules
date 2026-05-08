@@ -12,9 +12,9 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Application\InboundEventBus;
 
-use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
+use CloudCreativity\Modules\Contracts\Bus\DispatchThroughMiddleware;
 
-class TestEventHandler implements DispatchThroughMiddleware
+abstract class TestEventHandler implements DispatchThroughMiddleware
 {
     public function handle(TestInboundEvent $command): void
     {

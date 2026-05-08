@@ -17,21 +17,21 @@
         },
         {
             "name": "Christopher Gammie",
-            "email": "contact@gammie.co.uk"
+            "email": "chris@cloudcreativity.co.uk"
         }
     ],
     "require": {
-        "php": "^8.2",
+        "php": "^8.4",
         "ext-json": "*",
         "psr/container": "^2.0",
         "psr/log": "^2.0 || ^3.0",
         "ramsey/uuid": "^4.7",
-        "symfony/polyfill-php84": "^1.33",
         "symfony/polyfill-php85": "^1.33"
     },
     "require-dev": {
         "deptrac/deptrac": "^4.4",
         "laravel/pint": "^1.26",
+        "monolog/monolog": "^3.9",
         "phpstan/phpstan": "^2.1",
         "phpunit/phpunit": "^11.5"
     },
@@ -63,8 +63,8 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-develop": "5.x-dev",
-            "dev-next": "6.x-dev"
+            "dev-develop": "6.x-dev",
+            "dev-next": "7.x-dev"
         }
     },
     "minimum-stability": "stable",

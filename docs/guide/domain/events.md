@@ -54,13 +54,13 @@ final readonly class AttendeeTicketWasCancelled implements
         public Identifier $attendeeId,
         public Identifier $ticketId,
         public CancellationReasonEnum $reason,
-        public \DateTimeImmutable $occurredAt = new \DateTimeImmutable(),
+        public \DateTimeImmutable $cancelledAt = new \DateTimeImmutable(),
     ) {
     }
 
     public function getOccurredAt(): DateTimeImmutable
     {
-        return $this->occurredAt;
+        return $this->cancelledAt;
     }
 }
 ```
@@ -181,7 +181,7 @@ class Attendee implements AggregateRoot
     {
         $ticket = $this->tickets->findOrFail($ticketId);
 
-        if ($ticket->isNotCancelled()) {
+        if ($ticket->cancelled === false) {
             $ticket->markAsCancelled($reason);
 
             Services::getEvents()->dispatch(new AttendeeTicketWasCancelled(
@@ -221,10 +221,10 @@ aggregate to update its state as a side-effect.
 Our listener for this scenario might look like this:
 
 ```php
-namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Listeners;
+namespace App\Modules\EventManagement\Application\Orchestration\Listeners;
 
 use App\Modules\EventManagement\Domain\Events\AttendeeTicketWasCancelled;
-use App\Modules\EventManagement\Application\Ports\Driven\Persistence\TicketSalesReportRepository;
+use App\Modules\EventManagement\Application\Ports\Persistence\TicketSalesReportRepository;
 
 final readonly class UpdateTicketSalesReport
 {
@@ -313,7 +313,7 @@ Our listener to do this might look like this:
 ```php
 namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Listeners;
 
-use App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus\OutboundEventBus;
+use App\Modules\EventManagement\Application\Ports\OutboundEventBus\OutboundEventBus;
 use App\Modules\EventManagement\Domain\Events\AttendeeTicketWasCancelled;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\UuidFactory;
 use VendorName\EventManagement\Shared\IntegrationEvents\V1 as IntegrationEvents;
@@ -372,9 +372,9 @@ class AttendeeTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->dispatcher = new class () extends FakeDomainEventDispatcher implements IDomainEventDispatcher {};
-        
+
         Services::setEvents(fn () => $this->dispatcher);
     }
 

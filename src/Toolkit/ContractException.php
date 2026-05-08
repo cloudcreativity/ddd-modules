@@ -12,8 +12,9 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit;
 
+use CloudCreativity\Modules\Contracts\Toolkit\ContractException as IContractException;
 use LogicException;
 
-class ContractException extends LogicException
+final class ContractException extends LogicException implements IContractException
 {
 }

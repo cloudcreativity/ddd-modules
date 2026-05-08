@@ -12,118 +12,84 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Application\Bus\Middleware;
 
-use CloudCreativity\Modules\Application\Bus\Middleware\LogMessageDispatch;
-use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextFactory;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Message;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Query;
+use CloudCreativity\Modules\Bus\Middleware\LogMessageDispatch;
+use CloudCreativity\Modules\Bus\SanitizedMessage;
+use CloudCreativity\Modules\Contracts\Messaging\Command;
+use CloudCreativity\Modules\Contracts\Messaging\Message;
+use CloudCreativity\Modules\Contracts\Messaging\Query;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 use LogicException;
-use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-class LogMessageDispatchTest extends TestCase
+final class LogMessageDispatchTest extends TestCase
 {
-    private LoggerInterface&MockObject $logger;
-
-    private ContextFactory&MockObject $context;
+    private LoggerInterface&Stub $logger;
 
     private Command $message;
+
+    /**
+     * @var array<int, mixed>
+     */
+    private array $logs = [];
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->logger = $this->createMock(LoggerInterface::class);
-        $this->context = $this->createMock(ContextFactory::class);
+        $this->logger = $this->createStub(LoggerInterface::class);
+        $this->logger
+            ->method('log')
+            ->willReturnCallback(function ($level, $message, $context): bool {
+                $this->logs[] = [$level, $message, $context];
+                return true;
+            });
+
         $this->message = new class () implements Command {};
     }
 
     protected function tearDown(): void
     {
         parent::tearDown();
-        unset($this->logger, $this->context, $this->message);
+        unset($this->logger, $this->message, $this->logs);
     }
 
     public function testWithDefaultLevels(): void
     {
-        $expected = Result::ok()->withMeta(['foobar' => 'bazbat']);
+        $expected = Result::ok();
         $name = $this->message::class;
-        $logs = [];
 
-        $this->logger
-            ->expects($this->exactly(2))
-            ->method('log')
-            ->willReturnCallback(function ($level, $message, $context) use (&$logs): bool {
-                $logs[] = [$level, $message, $context];
-                return true;
-            });
-
-        $context1 = ['message' => 'blah!'];
-        $context2 = ['result' => 'blah!'];
-
-        $this->context
-            ->expects($this->exactly(2))
-            ->method('make')
-            ->willReturnCallback(fn (object $in) => match ($in) {
-                $this->message => $context1,
-                $expected => $context2,
-                default => $this->fail('Unexpected object to convert to context.'),
-            });
-
-        $middleware = new LogMessageDispatch($this->logger, context: $this->context);
+        $middleware = new LogMessageDispatch($this->logger);
         $actual = $middleware($this->message, function (Message $received) use ($expected) {
             $this->assertSame($this->message, $received);
             return $expected;
         });
 
         $this->assertSame($expected, $actual);
-        $this->assertSame([
-            [LogLevel::DEBUG, "Bus dispatching {$name}.", ['command' => $context1]],
-            [LogLevel::INFO, "Bus dispatched {$name}.", ['result' => $context2]],
-        ], $logs);
+        $this->assertEquals([
+            [LogLevel::DEBUG, "Bus dispatching {$name}.", ['command' => new SanitizedMessage($this->message)->context()]],
+            [LogLevel::INFO, "Bus dispatched {$name}.", ['result' => $expected->context()]],
+        ], $this->logs);
     }
 
     public function testWithCustomLevels(): void
     {
         $expected = Result::failed('Something went wrong.');
         $name = $this->message::class;
-        $logs = [];
 
-        $this->logger
-            ->expects($this->exactly(2))
-            ->method('log')
-            ->willReturnCallback(function ($level, $message, $context) use (&$logs): bool {
-                $logs[] = [$level, $message, $context];
-                return true;
-            });
-
-        $context1 = ['message' => 'blah!'];
-        $context2 = ['result' => 'blah!'];
-
-        $this->context
-            ->expects($this->exactly(2))
-            ->method('make')
-            ->willReturnCallback(fn (object $in) => match ($in) {
-                $this->message => $context1,
-                $expected => $context2,
-                default => $this->fail('Unexpected object to convert to context.'),
-            });
-
-
-        $middleware = new LogMessageDispatch($this->logger, LogLevel::NOTICE, LogLevel::WARNING, $this->context);
+        $middleware = new LogMessageDispatch($this->logger, LogLevel::NOTICE, LogLevel::WARNING);
         $actual = $middleware($this->message, function (Message $received) use ($expected) {
             $this->assertSame($this->message, $received);
             return $expected;
         });
 
         $this->assertSame($expected, $actual);
-        $this->assertSame([
-            [LogLevel::NOTICE, "Bus dispatching {$name}.", ['command' => $context1]],
-            [LogLevel::WARNING, "Bus dispatched {$name}.", ['result' => $context2]],
-        ], $logs);
+        $this->assertEquals([
+            [LogLevel::NOTICE, "Bus dispatching {$name}.", ['command' => new SanitizedMessage($this->message)->context()]],
+            [LogLevel::WARNING, "Bus dispatched {$name}.", ['result' => $expected->context()]],
+        ], $this->logs);
     }
 
     public function testItLogsAfterTheNextClosureIsInvoked(): void
@@ -131,19 +97,7 @@ class LogMessageDispatchTest extends TestCase
         $expected = new LogicException();
         $message = $this->createMock(Query::class);
         $name = $message::class;
-
-        $this->context
-            ->expects($this->once())
-            ->method('make')
-            ->with($this->identicalTo($message))
-            ->willReturn($context = ['foo' => 'bar']);
-
-        $this->logger
-            ->expects($this->once())
-            ->method('log')
-            ->with(LogLevel::DEBUG, "Bus dispatching {$name}.", ['query' => $context]);
-
-        $middleware = new LogMessageDispatch($this->logger, context: $this->context);
+        $middleware = new LogMessageDispatch($this->logger);
 
         try {
             $middleware($message, static function () use ($expected) {
@@ -152,6 +106,9 @@ class LogMessageDispatchTest extends TestCase
             $this->fail('No exception thrown.');
         } catch (LogicException $ex) {
             $this->assertSame($expected, $ex);
+            $this->assertEquals([
+                [LogLevel::DEBUG, "Bus dispatching {$name}.", ['query' => new SanitizedMessage($message)->context()]],
+            ], $this->logs);
         }
     }
 }

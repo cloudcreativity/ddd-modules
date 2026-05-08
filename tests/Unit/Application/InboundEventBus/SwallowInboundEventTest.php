@@ -12,13 +12,13 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Application\InboundEventBus;
 
-use CloudCreativity\Modules\Application\InboundEventBus\SwallowInboundEvent;
+use CloudCreativity\Modules\Bus\SwallowInboundEvent;
 use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-class SwallowInboundEventTest extends TestCase
+final class SwallowInboundEventTest extends TestCase
 {
     public function testItDoesNothing(): void
     {

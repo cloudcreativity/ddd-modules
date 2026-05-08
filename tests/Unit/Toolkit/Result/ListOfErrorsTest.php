@@ -21,7 +21,7 @@ use CloudCreativity\Modules\Toolkit\Result\KeyedSetOfErrors;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
 use PHPUnit\Framework\TestCase;
 
-class ListOfErrorsTest extends TestCase
+final class ListOfErrorsTest extends TestCase
 {
     public function test(): void
     {
@@ -96,22 +96,6 @@ class ListOfErrorsTest extends TestCase
         $this->assertSame($a, $errors->first());
     }
 
-    public function testFirstWithMatcher(): void
-    {
-        $errors = new ListOfErrors(
-            new Error(null, 'Message A'),
-            new Error(null, 'Message B'),
-            $c = new Error(null, 'Message C'),
-            new Error(null, 'Message D'),
-            $e = new Error(code: TestUnitEnum::Bat),
-        );
-
-        $this->assertSame($c, $errors->first(fn (IError $error) => 'Message C' === $error->message()));
-        $this->assertSame($e, $errors->first(TestUnitEnum::Bat));
-        $this->assertNull($errors->first(fn (IError $error) => 'Message E' === $error->message()));
-        $this->assertNull($errors->first(TestUnitEnum::Baz));
-    }
-
     public function testFind(): void
     {
         $errors = new ListOfErrors(
@@ -126,21 +110,6 @@ class ListOfErrorsTest extends TestCase
         $this->assertSame($e, $errors->find(TestUnitEnum::Bat));
         $this->assertNull($errors->find(fn (IError $error) => 'Message E' === $error->message()));
         $this->assertNull($errors->find(TestUnitEnum::Baz));
-    }
-
-    public function testContains(): void
-    {
-        $errors = new ListOfErrors(
-            new Error(message: 'Message A'),
-            new Error(message: 'Message B'),
-            new Error(message: 'Message C'),
-            new Error(code: TestUnitEnum::Baz, message: 'Message D'),
-        );
-
-        $this->assertTrue($errors->contains(fn (IError $error) => 'Message C' === $error->message()));
-        $this->assertTrue($errors->contains(TestUnitEnum::Baz));
-        $this->assertFalse($errors->contains(fn (IError $error) => 'Message E' === $error->message()));
-        $this->assertFalse($errors->contains(TestUnitEnum::Bat));
     }
 
     public function testAny(): void

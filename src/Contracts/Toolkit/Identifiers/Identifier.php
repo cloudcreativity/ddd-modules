@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Contracts\Toolkit\Identifiers;
 
-use CloudCreativity\Modules\Contracts\Toolkit\Loggable\Contextual;
+use CloudCreativity\Modules\Contracts\Toolkit\Contextual;
 use Stringable;
 
 interface Identifier extends Stringable, Contextual

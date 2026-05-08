@@ -25,9 +25,9 @@ Here, the domain service can be injected into the handler via constructor depend
 look something like this:
 
 ```php
-namespace App\Modules\BankAccounts\Application\UseCases\Commands\TransferFunds;
+namespace App\Modules\BankAccounts\Application\UseCases;
 
-use App\Modules\BankAccounts\Application\Ports\Driven\Persistence\BankAccountRepository;
+use App\Modules\BankAccounts\Application\Ports\Persistence\BankAccountRepository;
 use App\Modules\BankAccounts\Domain\Services\TransferFundsService;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 
@@ -41,7 +41,7 @@ final readonly class TransferFundsHandler
 
     /**
      * Execute the command.
-     * 
+     *
      * @param TransferFundsCommand $command
      * @return Result<null>
      */
@@ -86,9 +86,9 @@ transfer funds service that we used in the command handler.
 In this case, we can again use constructor dependency injection, with our query handler looking something like this:
 
 ```php
-namespace App\Modules\BankAccounts\Application\UseCases\Queries\CanTransferFunds;
+namespace App\Modules\BankAccounts\Application\UseCases;
 
-use App\Modules\BankAccounts\Application\Ports\Driven\Persistence\BankAccountRepository;
+use App\Modules\BankAccounts\Application\Ports\Persistence\BankAccountRepository;
 use App\Modules\BankAccounts\Domain\Services\TransferFundsService;
 use VendorName\BankAccounts\Shared\ReadModels\V1\CannotTransferFundsModel;
 use CloudCreativity\Modules\Toolkit\Result\Result;

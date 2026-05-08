@@ -3,14 +3,14 @@
 Install the package into your application using Composer:
 
 ```bash
-composer config minimum-stability
-composer require cloudcreativity/ddd-modules:^5.0
+composer require cloudcreativity/ddd-modules:^6.0
 ```
 
 ## Versions
 
 | DDD Modules | PHP    |
 |-------------|--------|
+| `6.x`       | `^8.4` |
 | `5.x`       | `^8.2` |
 | `4.x`       | `^8.2` |
 | `3.x`       | `^8.1` |

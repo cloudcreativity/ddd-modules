@@ -17,7 +17,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
 
-class ModuleBasenameTest extends TestCase
+final class ModuleBasenameTest extends TestCase
 {
     /**
      * @return array<array<string>>

@@ -12,15 +12,15 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Application\InboundEventBus;
 
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
-use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
+use CloudCreativity\Modules\Contracts\Messaging\IntegrationEvent;
+use CloudCreativity\Modules\Toolkit\Identifiers\UuidV4;
 use DateTimeImmutable;
 
-class TestInboundEvent implements IntegrationEvent
+final class TestInboundEvent implements IntegrationEvent
 {
-    public function getUuid(): Uuid
+    public function getUuid(): UuidV4
     {
-        return Uuid::random();
+        return UuidV4::make();
     }
 
     public function getOccurredAt(): DateTimeImmutable

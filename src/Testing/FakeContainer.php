@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Testing;
 
 use Closure;
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\ExceptionReporter;
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\UnitOfWork;
+use CloudCreativity\Modules\Contracts\Application\Ports\ExceptionReporter;
+use CloudCreativity\Modules\Contracts\Application\Ports\UnitOfWork;
 use Exception;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;

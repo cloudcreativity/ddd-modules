@@ -2,32 +2,38 @@ deptrac:
   paths:
     - ./src
   layers:
-    - name: Toolkit
-      collectors:
-        - type: classLike
-          value: CloudCreativity\\Modules\\Contracts\\Toolkit\\*
-        - type: classLike
-          value: CloudCreativity\\Modules\\Toolkit\\*
-        - type: classLike
-          value: Ramsey\\Uuid\\*
-    - name: Domain
-      collectors:
-        - type: classLike
-          value: CloudCreativity\\Modules\\Contracts\\Domain\\*
-        - type: classLike
-          value: CloudCreativity\\Modules\\Domain\\*
     - name: Application
       collectors:
         - type: classLike
           value: CloudCreativity\\Modules\\Contracts\\Application\\*
         - type: classLike
           value: CloudCreativity\\Modules\\Application\\*
+    - name: Bus
+      collectors:
+        - type: classLike
+          value: CloudCreativity\\Modules\\Contracts\\Bus\\*
+        - type: classLike
+          value: CloudCreativity\\Modules\\Bus\\*
+    - name: Domain
+      collectors:
+        - type: classLike
+          value: CloudCreativity\\Modules\\Contracts\\Domain\\*
+        - type: classLike
+          value: CloudCreativity\\Modules\\Domain\\*
     - name: Infrastructure
       collectors:
         - type: classLike
           value: CloudCreativity\\Modules\\Contracts\\Infrastructure\\*
         - type: classLike
           value: CloudCreativity\\Modules\\Infrastructure\\*
+        - type: classLike
+          value: Monolog\\*
+    - name: Messaging
+      collectors:
+        - type: classLike
+          value: CloudCreativity\\Modules\\Contracts\\Messaging\\*
+        - type: classLike
+          value: CloudCreativity\\Modules\\Messaging\\*
     - name: PSR Container
       collectors:
         - type: classLike
@@ -36,27 +42,38 @@ deptrac:
       collectors:
         - type: classLike
           value: Psr\\Log\\*
-    - name: Attributes
+    - name: Toolkit
       collectors:
+        - type: classLike
+          value: CloudCreativity\\Modules\\Contracts\\Toolkit\\*
+        - type: classLike
+          value: CloudCreativity\\Modules\\Toolkit\\*
+        - type: classLike
+          value: Ramsey\\Uuid\\*
         - type: classLike
           value: ^Deprecated$
   ruleset:
-    Toolkit:
-      - Attributes
+    Application:
+      - Bus
+      - Domain
+      - Messaging
       - PSR Container
+      - PSR Log
+      - Toolkit
+    Bus:
+      - Messaging
+      - PSR Container
+      - PSR Log
+      - Toolkit
     Domain:
       - Toolkit
-      - Attributes
-    Application:
-      - Toolkit
-      - Domain
-      - PSR Container
-      - PSR Log
-      - Attributes
     Infrastructure:
-      - Toolkit
-      - Domain
       - Application
+      - Bus
+      - Messaging
       - PSR Container
       - PSR Log
-      - Attributes
+      - Toolkit
+    Messaging:
+      - Toolkit
+    Toolkit:

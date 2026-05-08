@@ -68,26 +68,18 @@ The application layer of a bounded context defines its uses cases. These are the
 dispatched to the bounded context, and the _integration events_ that the bounded context consumes.
 
 We follow a hexagonal architecture, where the application layer defines the _driving ports_ that it exposes to the
-outside world.
+outside world. We place these in the module's `Api` namespace, as these define the public interface of the bounded context.
 
 This means your bounded context's interface could be expressed as follows:
 
 ```php
-namespace App\Modules\EventManagement\Application\Ports\Driving;
+namespace App\Modules\Ticketing\Api;
 
-use App\Modules\EventManagement\Application\Ports\Driving\{
-    CommandBus\CommandBus,
-    InboundEventBus\EventBus,
-    QueryBus\QueryBus,
-};
-
-interface Application
+interface Ticketing
 {
     public function getCommandBus(): CommandBus;
-
     public function getQueryBus(): QueryBus;
-
-    public function getEventBus(): EventBus;
+    public function getInboundEventBus(): InboundEventBus;
 }
 ```
 
@@ -99,16 +91,16 @@ handle. Everything else - e.g. domain entities containing business logic, coordi
 etc - is hidden as an internal implementation detail of your bounded context.
 
 :::tip
-In the above example interface, it is important to note that there is a specific interface for the event management's
+In the above example interface, it is important to note that there is a specific interface for the ticketing module's
 command, query and event buses. This is intentional. Although there are _generic_ command, query and event bus
-interfaces, the purpose of the event management application is to expose the _specific_ buses for the event management
-bounded context. Therefore, there are _specific_ event management bus interfaces.
+interfaces, the purpose of the ticketing module is to expose the _specific_ buses for the ticketing
+bounded context. Therefore, there are _specific_ ticketing bus interfaces.
 :::
 
 ## Coupling
 
 Although bounded contexts are encapsulated, there are times when context-to-context communication is required. For
-example, our "event management" bounded context may need to amend its attendee totals when a customer completes an
+example, our "ticketing" bounded context may need to amend its attendee totals when a customer completes an
 order. However, completing orders is a concern of the "ordering" bounded context.
 
 Bounded contexts should have clear _boundaries_ that define how they communicate with other contexts. This is
@@ -117,7 +109,7 @@ achieved either by _loose_ or _direct_ coupling - with _loose_ coupling being th
 ### Loose Coupling
 
 Bounded contexts are loosely coupled via integration events, as described above. These events allow loose coupling
-because all a bounded context needs to do is publish the event to an event bus. What happens as a result of this
+because all a bounded context needs to do is publish the event to an outbound event bus. What happens as a result of this
 publishing is not the concern of the bounded context - it is the concern of the other bounded contexts that _consume_
 that event by subscribing to it.
 

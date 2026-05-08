@@ -25,7 +25,7 @@ use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class UnitOfWorkAwareDispatcherTest extends TestCase
+final class UnitOfWorkAwareDispatcherTest extends TestCase
 {
     private ListenerContainer&MockObject $listeners;
 
@@ -42,11 +42,11 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
     {
         parent::setUp();
 
-        $this->dispatcher = new UnitOfWorkAwareDispatcher(
+        $this->dispatcher = new class (
             unitOfWorkManager: $this->unitOfWorkManager = $this->createMock(UnitOfWorkManager::class),
             listeners: $this->listeners = $this->createMock(ListenerContainer::class),
             middleware: $this->middleware = $this->createMock(PipeContainer::class),
-        );
+        ) extends UnitOfWorkAwareDispatcher {};
     }
 
     public function testItDispatchesImmediately(): void
@@ -179,7 +179,7 @@ class UnitOfWorkAwareDispatcherTest extends TestCase
     #[Depends('testItDoesNotDispatchImmediately')]
     public function testItDispatchesEventInBeforeCommitCallback(): void
     {
-        $event = new TestDomainEvent();
+        $event = new class () extends TestDomainEvent {};
 
         $listener1 = $this->createMock(TestListener::class);
         $listener2 = $this->createMock(TestListener::class);
