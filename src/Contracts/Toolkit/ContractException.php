@@ -10,11 +10,10 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Toolkit;
+namespace CloudCreativity\Modules\Contracts\Toolkit;
 
-use CloudCreativity\Modules\Contracts\Toolkit\ContractException as IContractException;
-use LogicException;
+use Throwable;
 
-final class ContractException extends LogicException implements IContractException
+interface ContractException extends Throwable
 {
 }

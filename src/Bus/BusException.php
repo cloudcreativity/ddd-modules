@@ -12,8 +12,9 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Bus;
 
+use CloudCreativity\Modules\Contracts\Bus\BusException as IBusException;
 use RuntimeException;
 
-final class BusException extends RuntimeException
+final class BusException extends RuntimeException implements IBusException
 {
 }

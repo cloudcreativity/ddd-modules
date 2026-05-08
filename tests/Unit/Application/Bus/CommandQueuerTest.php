@@ -27,9 +27,9 @@ final class CommandQueuerTest extends TestCase
     {
         parent::setUp();
 
-        $this->queuer = new CommandQueuer(
+        $this->queuer = new class (
             $this->queue = $this->createMock(Queue::class),
-        );
+        ) extends CommandQueuer {};
     }
 
     protected function tearDown(): void
