@@ -23,7 +23,7 @@ use CloudCreativity\Modules\Toolkit\Pipeline\Through;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 
-class CommandDispatcher implements ICommandDispatcher
+abstract class CommandDispatcher implements ICommandDispatcher
 {
     private readonly ICommandHandlerContainer $handlers;
 

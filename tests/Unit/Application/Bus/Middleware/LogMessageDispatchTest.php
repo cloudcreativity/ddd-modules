@@ -24,7 +24,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-class LogMessageDispatchTest extends TestCase
+final class LogMessageDispatchTest extends TestCase
 {
     private LoggerInterface&Stub $logger;
 

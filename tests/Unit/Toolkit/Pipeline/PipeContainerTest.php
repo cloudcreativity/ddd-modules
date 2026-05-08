@@ -15,7 +15,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Pipeline;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 use PHPUnit\Framework\TestCase;
 
-class PipeContainerTest extends TestCase
+final class PipeContainerTest extends TestCase
 {
     public function testItResolvesBoundPipes(): void
     {

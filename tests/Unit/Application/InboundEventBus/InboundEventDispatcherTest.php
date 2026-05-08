@@ -20,7 +20,7 @@ use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class InboundEventDispatcherTest extends TestCase
+final class InboundEventDispatcherTest extends TestCase
 {
     private EventHandlerContainer&MockObject $handlers;
 
@@ -37,10 +37,10 @@ class InboundEventDispatcherTest extends TestCase
     {
         parent::setUp();
 
-        $this->dispatcher = new InboundEventDispatcher(
+        $this->dispatcher = new class (
             handlers: $this->handlers = $this->createMock(EventHandlerContainer::class),
             middleware: $this->middleware = $this->createMock(PipeContainer::class),
-        );
+        ) extends InboundEventDispatcher {};
     }
 
     protected function tearDown(): void

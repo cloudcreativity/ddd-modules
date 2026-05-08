@@ -19,11 +19,11 @@ use CloudCreativity\Modules\Contracts\Messaging\Command;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
-class CommandHandlerContainerTest extends TestCase
+final class CommandHandlerContainerTest extends TestCase
 {
     public function testItResolvesUsingClosureBindings(): void
     {
-        $a = new TestCommandHandler();
+        $a = new class () extends TestCommandHandler {};
         $b = $this->createStub(TestCommandHandler::class);
 
         $command1 = new class () implements Command {};
@@ -45,7 +45,7 @@ class CommandHandlerContainerTest extends TestCase
 
     public function testItResolvesViaPsrContainer(): void
     {
-        $a = new TestCommandHandler();
+        $a = new class () extends TestCommandHandler {};
         $b = $this->createStub(TestCommandHandler::class);
 
         $command1 = new class () implements Command {};

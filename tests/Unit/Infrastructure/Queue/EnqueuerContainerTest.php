@@ -19,14 +19,14 @@ use CloudCreativity\Modules\Tests\Unit\Application\Bus\TestCommand;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
-class EnqueuerContainerTest extends TestCase
+final class EnqueuerContainerTest extends TestCase
 {
     public function testItUsesBindings(): void
     {
         $command1 = new class () implements Command {};
         $command2 = new class () implements Command {};
 
-        $a = new TestEnqueuer();
+        $a = new class () extends TestEnqueuer {};
         $b = $this->createStub(TestEnqueuer::class);
         $default = $this->createStub(TestEnqueuer::class);
 
@@ -44,7 +44,7 @@ class EnqueuerContainerTest extends TestCase
         $command1 = new class () implements Command {};
         $command2 = new class () implements Command {};
 
-        $a = new TestEnqueuer();
+        $a = new class () extends TestEnqueuer {};
         $b = $this->createStub(TestEnqueuer::class);
         $default = $this->createStub(TestEnqueuer::class);
 

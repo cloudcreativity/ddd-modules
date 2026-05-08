@@ -21,7 +21,7 @@ use UnitEnum;
 
 use function CloudCreativity\Modules\Toolkit\enum_string;
 
-class EnumStringTest extends TestCase
+final class EnumStringTest extends TestCase
 {
     /**
      * @return array<string, array{0: int|string|UnitEnum, 1: string}>

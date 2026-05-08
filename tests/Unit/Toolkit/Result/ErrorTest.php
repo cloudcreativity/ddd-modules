@@ -19,7 +19,7 @@ use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Result\Error;
 use PHPUnit\Framework\TestCase;
 
-class ErrorTest extends TestCase
+final class ErrorTest extends TestCase
 {
     public function test(): void
     {

@@ -23,7 +23,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid as RamseyUuid;
 
-class UuidTest extends TestCase
+final class UuidTest extends TestCase
 {
     protected function tearDown(): void
     {

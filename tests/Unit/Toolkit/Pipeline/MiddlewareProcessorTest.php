@@ -16,7 +16,7 @@ use Closure;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use PHPUnit\Framework\TestCase;
 
-class MiddlewareProcessorTest extends TestCase
+final class MiddlewareProcessorTest extends TestCase
 {
     public function test(): void
     {

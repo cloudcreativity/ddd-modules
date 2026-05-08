@@ -18,7 +18,7 @@ use CloudCreativity\Modules\Infrastructure\OutboundEventBus\ClosurePublisher;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
-class ClosurePublisherTest extends TestCase
+final class ClosurePublisherTest extends TestCase
 {
     /**
      * @var array<IntegrationEvent>
@@ -119,7 +119,7 @@ class ClosurePublisherTest extends TestCase
 
     public function testWithAlternativeHandlers(): void
     {
-        $expected = new TestOutboundEvent();
+        $expected = new class () extends TestOutboundEvent {};
         $stub = $this->createStub(IntegrationEvent::class);
         $actual = null;
 
@@ -130,7 +130,7 @@ class ClosurePublisherTest extends TestCase
         });
 
         $publisher->bind(
-            TestOutboundEvent::class,
+            $expected::class,
             function (TestOutboundEvent $in) use (&$actual) {
                 $actual = $in;
             },
@@ -144,11 +144,11 @@ class ClosurePublisherTest extends TestCase
 
     private function createPublisher(ContainerInterface|IPipeContainer|null $middleware = null): ClosurePublisher
     {
-        return new ClosurePublisher(
+        return new class (
             function (IntegrationEvent $event): void {
                 $this->actual[] = $event;
             },
             $middleware,
-        );
+        ) extends ClosurePublisher {};
     }
 }

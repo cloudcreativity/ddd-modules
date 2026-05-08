@@ -19,7 +19,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-class PsrLogExceptionReporterTest extends TestCase
+final class PsrLogExceptionReporterTest extends TestCase
 {
     private LoggerInterface&MockObject $logger;
 

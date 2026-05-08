@@ -16,7 +16,7 @@ use CloudCreativity\Modules\Contracts\Application\Ports\Queue;
 use CloudCreativity\Modules\Contracts\Bus\CommandQueuer as ICommandQueuer;
 use CloudCreativity\Modules\Contracts\Messaging\Command;
 
-class CommandQueuer implements ICommandQueuer
+abstract class CommandQueuer implements ICommandQueuer
 {
     public function __construct(private readonly Queue $queue)
     {

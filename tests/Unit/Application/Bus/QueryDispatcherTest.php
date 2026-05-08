@@ -21,7 +21,7 @@ use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class QueryDispatcherTest extends TestCase
+final class QueryDispatcherTest extends TestCase
 {
     /**
      * @var MockObject&QueryHandlerContainer
@@ -44,10 +44,10 @@ class QueryDispatcherTest extends TestCase
     {
         parent::setUp();
 
-        $this->dispatcher = new QueryDispatcher(
+        $this->dispatcher = new class (
             handlers: $this->handlers = $this->createMock(QueryHandlerContainer::class),
             middleware: $this->middleware = $this->createMock(PipeContainer::class),
-        );
+        ) extends QueryDispatcher {};
     }
 
     protected function tearDown(): void

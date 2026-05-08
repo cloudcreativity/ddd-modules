@@ -21,7 +21,7 @@ use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class DeferredDispatcherTest extends TestCase
+final class DeferredDispatcherTest extends TestCase
 {
     private ListenerContainer&MockObject $listeners;
 
@@ -36,10 +36,10 @@ class DeferredDispatcherTest extends TestCase
     {
         parent::setUp();
 
-        $this->dispatcher = new DeferredDispatcher(
+        $this->dispatcher = new class (
             listeners: $this->listeners = $this->createMock(ListenerContainer::class),
             middleware: $this->middleware = $this->createMock(PipeContainer::class),
-        );
+        ) extends DeferredDispatcher {};
     }
 
     public function testItDispatchesImmediately(): void
@@ -108,7 +108,7 @@ class DeferredDispatcherTest extends TestCase
     public function testItFlushesDeferredEvents(): void
     {
         $sequence = [];
-        $event1 = new TestDomainEvent();
+        $event1 = new class () extends TestDomainEvent {};
         $event2 = $this->createMock(DomainEvent::class);
 
         $listener1 = $this->createMock(TestListener::class);
@@ -179,7 +179,7 @@ class DeferredDispatcherTest extends TestCase
     public function testItFlushesDeferredEventsIncludingEventsDispatchedByListeners(): void
     {
         $sequence = [];
-        $event1 = new TestDomainEvent();
+        $event1 = new class () extends TestDomainEvent {};
         $event2 = $this->createMock(DomainEvent::class);
 
         $listener1 = $this->createMock(TestListener::class);
@@ -235,7 +235,7 @@ class DeferredDispatcherTest extends TestCase
     public function testItForgetsDeferredEvents(): void
     {
         $sequence = [];
-        $deferred = new TestDomainEvent();
+        $deferred = new class () extends TestDomainEvent {};
         $immediate = new TestImmediateDomainEvent();
 
         $listener1 = $this->createMock(TestListener::class);
@@ -296,7 +296,7 @@ class DeferredDispatcherTest extends TestCase
     public function testItForgetsDeferredEventsAfterException(): void
     {
         $sequence = [];
-        $event1 = new TestDomainEvent();
+        $event1 = new class () extends TestDomainEvent {};
         $event2 = $this->createMock(DomainEvent::class);
         $expected = new \LogicException('Boom!');
 

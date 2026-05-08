@@ -17,7 +17,7 @@ use CloudCreativity\Modules\Contracts\Messaging\IntegrationEvent;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-class TearDownAfterEventTest extends TestCase
+final class TearDownAfterEventTest extends TestCase
 {
     public function testItInvokesCallbackAfterSuccess(): void
     {

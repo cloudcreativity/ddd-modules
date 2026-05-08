@@ -19,7 +19,7 @@ use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class FlushDeferredEventsTest extends TestCase
+final class FlushDeferredEventsTest extends TestCase
 {
     private DeferredDispatcher&MockObject $dispatcher;
 

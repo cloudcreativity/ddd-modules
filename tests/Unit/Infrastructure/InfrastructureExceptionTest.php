@@ -16,7 +16,7 @@ use CloudCreativity\Modules\Infrastructure\InfrastructureException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-class InfrastructureExceptionTest extends TestCase
+final class InfrastructureExceptionTest extends TestCase
 {
     public function test(): void
     {

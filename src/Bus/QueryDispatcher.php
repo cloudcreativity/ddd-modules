@@ -23,7 +23,7 @@ use CloudCreativity\Modules\Toolkit\Pipeline\Through;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 
-class QueryDispatcher implements IQueryDispatcher
+abstract class QueryDispatcher implements IQueryDispatcher
 {
     private readonly IQueryHandlerContainer $handlers;
 

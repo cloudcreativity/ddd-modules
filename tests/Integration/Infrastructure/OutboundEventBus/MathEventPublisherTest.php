@@ -19,7 +19,7 @@ use CloudCreativity\Modules\Tests\Integration\Bus\NumbersDivided;
 use CloudCreativity\Modules\Tests\Integration\Bus\NumbersSubtracted;
 use PHPUnit\Framework\TestCase;
 
-class MathEventPublisherTest extends TestCase
+final class MathEventPublisherTest extends TestCase
 {
     public function test(): void
     {

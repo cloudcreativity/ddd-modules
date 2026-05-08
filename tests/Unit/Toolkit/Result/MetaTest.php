@@ -15,7 +15,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Result;
 use CloudCreativity\Modules\Toolkit\Result\Meta;
 use PHPUnit\Framework\TestCase;
 
-class MetaTest extends TestCase
+final class MetaTest extends TestCase
 {
     public function test(): void
     {

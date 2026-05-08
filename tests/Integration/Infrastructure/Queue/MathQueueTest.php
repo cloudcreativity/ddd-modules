@@ -19,7 +19,7 @@ use CloudCreativity\Modules\Tests\Integration\Bus\FloorCommand;
 use CloudCreativity\Modules\Tests\Integration\Bus\MultiplyCommand;
 use PHPUnit\Framework\TestCase;
 
-class MathQueueTest extends TestCase
+final class MathQueueTest extends TestCase
 {
     public function test(): void
     {

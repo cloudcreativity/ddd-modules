@@ -24,7 +24,7 @@ use LogicException;
  * @implements ArrayAccess<int, DomainEvent>
  * @implements IteratorAggregate<int, DomainEvent>
  */
-class FakeDomainEventDispatcher implements DomainEventDispatcher, Countable, ArrayAccess, IteratorAggregate
+abstract class FakeDomainEventDispatcher implements DomainEventDispatcher, Countable, ArrayAccess, IteratorAggregate
 {
     /**
      * @var list<DomainEvent>

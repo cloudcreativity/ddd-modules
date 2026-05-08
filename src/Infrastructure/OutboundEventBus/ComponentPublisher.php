@@ -23,7 +23,7 @@ use CloudCreativity\Modules\Toolkit\Pipeline\Through;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 
-class ComponentPublisher implements OutboundEventPublisher
+abstract class ComponentPublisher implements OutboundEventPublisher
 {
     private readonly IPublisherHandlerContainer $handlers;
 

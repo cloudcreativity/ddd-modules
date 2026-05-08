@@ -16,7 +16,7 @@ use CloudCreativity\Modules\Bus\QueryHandler;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\TestCase;
 
-class QueryHandlerTest extends TestCase
+final class QueryHandlerTest extends TestCase
 {
     public function test(): void
     {

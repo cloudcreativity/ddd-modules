@@ -24,7 +24,7 @@ use LogicException;
  * @implements ArrayAccess<int, Command>
  * @implements IteratorAggregate<int, Command>
  */
-class FakeQueue implements Queue, Countable, ArrayAccess, IteratorAggregate
+abstract class FakeQueue implements Queue, Countable, ArrayAccess, IteratorAggregate
 {
     /**
      * @var list<Command>

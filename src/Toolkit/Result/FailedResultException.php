@@ -12,13 +12,14 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Toolkit\Result;
 
+use CloudCreativity\Modules\Contracts\Toolkit\Result\FailedResultException as IFailedResultException;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 use RuntimeException;
 use Throwable;
 
 use function CloudCreativity\Modules\Toolkit\enum_string;
 
-class FailedResultException extends RuntimeException
+final class FailedResultException extends RuntimeException implements IFailedResultException
 {
     /**
      * @param Result<mixed> $result

@@ -18,7 +18,7 @@ use CloudCreativity\Modules\Bus\Middleware\LogMessageDispatch;
 use CloudCreativity\Modules\Testing\FakeContainer;
 use PHPUnit\Framework\TestCase;
 
-class MathCommandBusTest extends TestCase
+final class MathCommandBusTest extends TestCase
 {
     public function test(): void
     {

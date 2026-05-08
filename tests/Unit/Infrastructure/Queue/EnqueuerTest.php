@@ -16,7 +16,7 @@ use CloudCreativity\Modules\Contracts\Messaging\Command;
 use CloudCreativity\Modules\Infrastructure\Queue\Enqueuer;
 use PHPUnit\Framework\TestCase;
 
-class EnqueuerTest extends TestCase
+final class EnqueuerTest extends TestCase
 {
     public function test(): void
     {

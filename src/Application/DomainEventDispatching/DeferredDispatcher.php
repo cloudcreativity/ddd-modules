@@ -16,7 +16,7 @@ use CloudCreativity\Modules\Contracts\Application\DomainEventDispatching\Deferre
 use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 use CloudCreativity\Modules\Contracts\Domain\Events\OccursImmediately;
 
-class DeferredDispatcher extends Dispatcher implements IDeferredDispatcher
+abstract class DeferredDispatcher extends Dispatcher implements IDeferredDispatcher
 {
     /**
      * @var array<DomainEvent>

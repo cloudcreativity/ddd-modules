@@ -10,13 +10,10 @@
 
 declare(strict_types=1);
 
-namespace CloudCreativity\Modules\Tests\Unit\Application\Bus;
+namespace CloudCreativity\Modules\Contracts\Toolkit;
 
-use CloudCreativity\Modules\Contracts\Messaging\Command;
+use Throwable;
 
-final class TestCommand implements Command
+interface ContractException extends Throwable
 {
-    public function __construct(public bool $fail = false)
-    {
-    }
 }

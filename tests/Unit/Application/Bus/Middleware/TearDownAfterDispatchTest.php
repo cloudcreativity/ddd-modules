@@ -19,7 +19,7 @@ use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-class TearDownAfterDispatchTest extends TestCase
+final class TearDownAfterDispatchTest extends TestCase
 {
     public function testItInvokesCallbackAfterSuccess(): void
     {

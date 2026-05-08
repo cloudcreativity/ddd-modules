@@ -18,7 +18,7 @@ use CloudCreativity\Modules\Toolkit\Pipeline\LazyPipe;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class LazyPipeTest extends TestCase
+final class LazyPipeTest extends TestCase
 {
     /**
      * @var MockObject&PipeContainer

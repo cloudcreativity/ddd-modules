@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\OutboundEventBus;
 
-class TestPublisher
+abstract class TestPublisher
 {
     /**
      * Publish the integration event.

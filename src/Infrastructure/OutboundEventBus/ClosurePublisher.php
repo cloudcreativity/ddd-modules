@@ -23,7 +23,7 @@ use CloudCreativity\Modules\Toolkit\Pipeline\Through;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 
-class ClosurePublisher implements OutboundEventPublisher
+abstract class ClosurePublisher implements OutboundEventPublisher
 {
     private readonly ?IPipeContainer $middleware;
 

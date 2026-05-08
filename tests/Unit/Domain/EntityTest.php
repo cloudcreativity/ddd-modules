@@ -19,7 +19,7 @@ use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
 use PHPUnit\Framework\TestCase;
 
-class EntityTest extends TestCase
+final class EntityTest extends TestCase
 {
     public function test(): void
     {

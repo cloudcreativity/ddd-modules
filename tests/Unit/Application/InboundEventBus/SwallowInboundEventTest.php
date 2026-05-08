@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-class SwallowInboundEventTest extends TestCase
+final class SwallowInboundEventTest extends TestCase
 {
     public function testItDoesNothing(): void
     {

@@ -21,7 +21,7 @@ use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 use CloudCreativity\Modules\Toolkit\Pipeline\Through;
 use Psr\Container\ContainerInterface;
 
-class InboundEventDispatcher implements IInboundEventDispatcher
+abstract class InboundEventDispatcher implements IInboundEventDispatcher
 {
     private readonly IEventHandlerContainer $handlers;
 

@@ -15,7 +15,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Application\Bus;
 use CloudCreativity\Modules\Contracts\Bus\DispatchThroughMiddleware;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 
-class TestQueryHandler implements DispatchThroughMiddleware
+abstract class TestQueryHandler implements DispatchThroughMiddleware
 {
     /**
      * Execute the query.

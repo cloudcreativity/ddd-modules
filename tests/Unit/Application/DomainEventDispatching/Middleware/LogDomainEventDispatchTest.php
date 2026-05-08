@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-class LogDomainEventDispatchTest extends TestCase
+final class LogDomainEventDispatchTest extends TestCase
 {
     /**
      * @var LoggerInterface&MockObject

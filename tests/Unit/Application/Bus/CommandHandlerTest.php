@@ -16,7 +16,7 @@ use CloudCreativity\Modules\Bus\CommandHandler;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\TestCase;
 
-class CommandHandlerTest extends TestCase
+final class CommandHandlerTest extends TestCase
 {
     public function test(): void
     {

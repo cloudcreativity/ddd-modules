@@ -24,7 +24,7 @@ use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class ValidateMessageTest extends TestCase
+final class ValidateMessageTest extends TestCase
 {
     /**
      * @var MockObject&Validator

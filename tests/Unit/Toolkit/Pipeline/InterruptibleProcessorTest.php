@@ -15,7 +15,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Pipeline;
 use CloudCreativity\Modules\Toolkit\Pipeline\InterruptibleProcessor;
 use PHPUnit\Framework\TestCase;
 
-class InterruptibleProcessorTest extends TestCase
+final class InterruptibleProcessorTest extends TestCase
 {
     public function test(): void
     {
