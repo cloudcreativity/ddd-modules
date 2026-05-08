@@ -18,11 +18,11 @@ use CloudCreativity\Modules\Testing\FakeDomainEventDispatcher;
 use LogicException;
 use PHPUnit\Framework\TestCase;
 
-class FakeDomainEventDispatcherTest extends TestCase
+final class FakeDomainEventDispatcherTest extends TestCase
 {
     public function testItPublishesEvents(): void
     {
-        $dispatcher = new FakeDomainEventDispatcher();
+        $dispatcher = new class () extends FakeDomainEventDispatcher {};
 
         $event1 = $this->createMock(DomainEvent::class);
         $event2 = $this->createMock(DomainEvent::class);
@@ -42,7 +42,7 @@ class FakeDomainEventDispatcherTest extends TestCase
 
     public function testItReturnsSoleEvent(): void
     {
-        $dispatcher = new FakeDomainEventDispatcher();
+        $dispatcher = new class () extends FakeDomainEventDispatcher {};
         $event = $this->createMock(DomainEvent::class);
 
         $dispatcher->dispatch($event);
@@ -52,7 +52,7 @@ class FakeDomainEventDispatcherTest extends TestCase
 
     public function testItThrowsExceptionIfNoEvents(): void
     {
-        $dispatcher = new FakeDomainEventDispatcher();
+        $dispatcher = new class () extends FakeDomainEventDispatcher {};
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Expected one event to be dispatched but there are 0 events.');
@@ -62,7 +62,7 @@ class FakeDomainEventDispatcherTest extends TestCase
 
     public function testItThrowsExceptionIfMultipleEvents(): void
     {
-        $dispatcher = new FakeDomainEventDispatcher();
+        $dispatcher = new class () extends FakeDomainEventDispatcher {};
         $event1 = $this->createMock(DomainEvent::class);
         $event2 = $this->createMock(DomainEvent::class);
 
@@ -73,12 +73,5 @@ class FakeDomainEventDispatcherTest extends TestCase
         $this->expectExceptionMessage('Expected one event to be dispatched but there are 2 events.');
 
         $dispatcher->sole();
-    }
-
-    public function testItCanBeExtended(): void
-    {
-        $dispatcher = new class () extends FakeDomainEventDispatcher {};
-        $dispatcher->dispatch($this->createMock(DomainEvent::class));
-        $this->assertCount(1, $dispatcher->events);
     }
 }

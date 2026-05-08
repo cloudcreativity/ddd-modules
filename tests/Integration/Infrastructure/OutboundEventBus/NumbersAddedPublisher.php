@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Integration\Infrastructure\OutboundEventBus;
 
-use CloudCreativity\Modules\Tests\Integration\Application\InboundEventBus\NumbersAdded;
+use CloudCreativity\Modules\Tests\Integration\Bus\NumbersAdded;
 
 final class NumbersAddedPublisher
 {

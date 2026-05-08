@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Testing;
 
 use ArrayAccess;
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
+use CloudCreativity\Modules\Contracts\Application\Ports\Queue;
+use CloudCreativity\Modules\Contracts\Messaging\Command;
 use Countable;
 use Generator;
 use IteratorAggregate;
@@ -24,7 +24,7 @@ use LogicException;
  * @implements ArrayAccess<int, Command>
  * @implements IteratorAggregate<int, Command>
  */
-class FakeQueue implements Queue, Countable, ArrayAccess, IteratorAggregate
+abstract class FakeQueue implements Queue, Countable, ArrayAccess, IteratorAggregate
 {
     /**
      * @var list<Command>

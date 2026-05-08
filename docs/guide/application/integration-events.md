@@ -36,12 +36,9 @@ For example:
 ```php
 namespace VendorName\EventManagement\Shared\IntegrationEvents\V1;
 
-use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
-use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
-use VendorName\EventManagement\Shared\Enums\CancellationReasonEnum;
+use CloudCreativity\Modules\Contracts\Messaging\IntegrationEvent;use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;use VendorName\EventManagement\Shared\Enums\CancellationReasonEnum;
 
-final readonly class AttendeeTicketWasCancelled implements 
+final readonly class AttendeeTicketWasCancelled implements
     IntegrationEvent
 {
     public function __construct(
@@ -97,7 +94,7 @@ This can be expressed via an interface. To illustrate the point, a JSON serializ
 ```php
 namespace VendorName\Ordering\Shared\IntegrationEvents\V1\Serializers;
 
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Messaging\IntegrationEvent;
 
 interface JsonSerializer
 {
@@ -151,7 +148,7 @@ Your application layer should define the driven port:
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driven\OutboundEventBus;
 
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\OutboundEventPublisher;
+use CloudCreativity\Modules\Contracts\Application\Ports\OutboundEventPublisher;
 
 interface OutboundEventBus extends OutboundEventPublisher
 {
@@ -356,11 +353,7 @@ side effects are triggered.
 ```php
 namespace App\Modules\EventManagement\Application\UseCases\InboundEvents;
 
-use App\Modules\EventManagement\Domain\Events\DomainEventDispatcher;
-use App\Modules\EventManagement\Domain\Events\SalesAtEventDidChange;
-use CloudCreativity\Modules\Application\InboundEventBus\Middleware\HandleInUnitOfWork;
-use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
-use VendorName\Ordering\Shared\IntegrationEvents\V1\OrderWasFulfilled;
+use App\Modules\EventManagement\Domain\Events\DomainEventDispatcher;use App\Modules\EventManagement\Domain\Events\SalesAtEventDidChange;use CloudCreativity\Modules\Application\InboundEventBus\Middleware\HandleInUnitOfWork;use CloudCreativity\Modules\Contracts\Bus\DispatchThroughMiddleware;use VendorName\Ordering\Shared\IntegrationEvents\V1\OrderWasFulfilled;
 
 final readonly class OrderWasFulfilledHandler implements
     DispatchThroughMiddleware
@@ -403,7 +396,7 @@ We do this by defining an interface in our application's driving ports:
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driving;
 
-use CloudCreativity\Modules\Contracts\Application\Ports\Driving\InboundEventDispatcher;
+use CloudCreativity\Modules\Contracts\Messaging\InboundEventDispatcher;
 
 interface InboundEventBus extends InboundEventDispatcher
 {
@@ -415,8 +408,7 @@ And then our implementation is as follows:
 ```php
 namespace App\Modules\EventManagement\Application\Bus;
 
-use App\Modules\EventManagement\Application\Ports\Driving\InboundEventBus as Port;
-use CloudCreativity\Modules\Application\InboundEventBus\InboundEventDispatcher;
+use App\Modules\EventManagement\Application\Ports\Driving\InboundEventBus as Port;use CloudCreativity\Modules\Bus\InboundEventDispatcher;
 
 final class InboundEventBus extends InboundEventDispatcher implements Port
 {
@@ -440,15 +432,7 @@ For example:
 ```php
 namespace App\Modules\EventManagement\Application\Bus;
 
-use App\Modules\EventManagement\Application\Bus\CommandBusProvider;
-use App\Modules\EventManagement\Application\UsesCases\InboundEvents\OrderWasFulfilledHandler;
-use App\Modules\EventManagement\Application\Ports\Driving\InboundEventBus as InboundEventBusPort;
-use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;
-use CloudCreativity\Modules\Application\InboundEventBus\EventHandlerContainer;
-use CloudCreativity\Modules\Application\InboundEventBus\Middleware\HandleInUnitOfWork;
-use CloudCreativity\Modules\Application\InboundEventBus\Middleware\LogInboundEvent;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
-use VendorName\Ordering\Shared\IntegrationEvents\V1\OrderWasFulfilled;
+use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;use App\Modules\EventManagement\Application\Ports\Driving\InboundEventBus as InboundEventBusPort;use App\Modules\EventManagement\Application\UsesCases\InboundEvents\OrderWasFulfilledHandler;use CloudCreativity\Modules\Application\InboundEventBus\Middleware\HandleInUnitOfWork;use CloudCreativity\Modules\Bus\EventHandlerContainer;use CloudCreativity\Modules\Bus\Middleware\LogInboundEvent;use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;use VendorName\Ordering\Shared\IntegrationEvents\V1\OrderWasFulfilled;
 
 final class InboundEventBusProvider
 {
@@ -539,9 +523,7 @@ Here is an example controller from a Laravel application to demonstrate the patt
 ```php
 namespace App\Http\Controllers\Api\PubSub;
 
-use App\Modules\EventManagement\Application\Ports\Driving\InboundEventBus;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
-use VendorName\Ordering\Shared\IntegrationEvents\V1\Serializers\JsonSerializer;
+use App\Modules\EventManagement\Application\Ports\Driving\InboundEventBus;use CloudCreativity\Modules\Contracts\Messaging\IntegrationEvent;use VendorName\Ordering\Shared\IntegrationEvents\V1\Serializers\JsonSerializer;
 
 class InboundEventController extends Controller
 {
@@ -590,8 +572,7 @@ To do this, we configure a default handler on the handler container that is give
 the `SwallowInboundEvent` handler for this purpose:
 
 ```php
-use CloudCreativity\Modules\Application\InboundEventBus\EventHandlerContainer;
-use CloudCreativity\Modules\Application\InboundEventBus\SwallowInboundEvent;
+use CloudCreativity\Modules\Bus\EventHandlerContainer;use CloudCreativity\Modules\Bus\SwallowInboundEvent;
 
 $bus = new InboundEventBus(
     handlers: $handlers = new EventHandlerContainer(
@@ -605,9 +586,7 @@ the `SwallowInboundEvent` handler will do nothing with the event. You can also p
 the `SwallowInboundEvent` handler, so that it logs that the event was swallowed:
 
 ```php
-use CloudCreativity\Modules\Application\InboundEventBus\EventHandlerContainer;
-use CloudCreativity\Modules\Application\InboundEventBus\SwallowInboundEvent;
-use Psr\Log\LogLevel;
+use CloudCreativity\Modules\Bus\EventHandlerContainer;use CloudCreativity\Modules\Bus\SwallowInboundEvent;use Psr\Log\LogLevel;
 
 $bus = new InboundEventBus(
     handlers: $handlers = new EventHandlerContainer(
@@ -648,7 +627,7 @@ example:
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driving;
 
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Messaging\IntegrationEvent;
 
 interface Inbox
 {
@@ -663,12 +642,12 @@ might look like this:
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driven\Inbox;
 
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Messaging\IntegrationEvent;
 
 interface InboxRepository
 {
     public function exists(IntegrationEvent $event): bool;
-    
+
     public function store(IntegrationEvent $event): void;
 }
 ```
@@ -682,9 +661,7 @@ This means we can now update the previous controller example to use the inbox in
 ```php
 namespace App\Http\Controllers\Api\PubSub;
 
-use App\Modules\EventManagement\Application\Ports\Driving\InboundEvents\Inbox;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
-use VendorName\Ordering\Shared\IntegrationEvents\V1\Serializers\JsonSerializer;
+use App\Modules\EventManagement\Application\Ports\Driving\InboundEvents\Inbox;use CloudCreativity\Modules\Contracts\Messaging\IntegrationEvent;use VendorName\Ordering\Shared\IntegrationEvents\V1\Serializers\JsonSerializer;
 
 class InboundEventController extends Controller
 {
@@ -753,7 +730,7 @@ whether the notifying or publishing completes or throws an exception.
 For example:
 
 ```php
-use CloudCreativity\Modules\Application\InboundEventBus\Middleware\SetupBeforeEvent;
+use CloudCreativity\Modules\Bus\Middleware\SetupBeforeEvent;
 
 $middleware->bind(
     SetupBeforeEvent::class,
@@ -780,7 +757,7 @@ If you only need to do any teardown work, use the `TeardownAfterEvent` middlewar
 closure as its only constructor argument:
 
 ```php
-use CloudCreativity\Modules\Application\InboundEventBus\Middleware\TearDownAfterEvent;
+use CloudCreativity\Modules\Bus\Middleware\TearDownAfterEvent;
 
 $middleware->bind(
     TearDownAfterEvent::class,
@@ -863,7 +840,7 @@ Use our `LogInboundEvent` middleware to log when an integration event is consume
 a [PSR Logger](https://php-fig.org/psr/psr-3/).
 
 ```php
-use CloudCreativity\Modules\Application\InboundEventBus\Middleware\LogInboundEvent;
+use CloudCreativity\Modules\Bus\Middleware\LogInboundEvent;
 
 $middleware->bind(
     LogInboundEvent::class,
@@ -888,11 +865,9 @@ following signature:
 ```php
 namespace App\Modules\EventManagement\Application\Bus\Middleware;
 
-use Closure;
-use CloudCreativity\Modules\Contracts\Application\InboundEventBus\InboundEventMiddleware;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
+use Closure;use CloudCreativity\Modules\Contracts\Bus\Middleware\IntegrationEventMiddleware;use CloudCreativity\Modules\Contracts\Messaging\IntegrationEvent;
 
-final class MyMiddleware implements InboundEventMiddleware
+final class MyMiddleware implements IntegrationEventMiddleware
 {
     /**
      * Execute the middleware.

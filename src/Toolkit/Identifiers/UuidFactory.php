@@ -16,12 +16,16 @@ use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\UuidFactory as IUuidFactory;
 use CloudCreativity\Modules\Toolkit\ContractException;
 use DateTimeInterface;
+use Ramsey\Uuid\Lazy\LazyUuidFromString;
+use Ramsey\Uuid\Rfc4122\UuidV4 as BaseUuidV4;
+use Ramsey\Uuid\Rfc4122\UuidV7 as BaseUuidV7;
 use Ramsey\Uuid\Type\Hexadecimal;
 use Ramsey\Uuid\Type\Integer as IntegerObject;
 use Ramsey\Uuid\Uuid as BaseUuid;
 use Ramsey\Uuid\UuidFactoryInterface as BaseUuidFactory;
 use Ramsey\Uuid\UuidInterface;
 use RuntimeException;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Uuid as IUuid;
 
 final readonly class UuidFactory implements IUuidFactory
 {
@@ -32,10 +36,10 @@ final readonly class UuidFactory implements IUuidFactory
         $this->baseFactory = $factory ?? BaseUuid::getFactory();
     }
 
-    public function from(Identifier|UuidInterface $uuid): Uuid
+    public function from(Identifier|UuidInterface $uuid): IUuid
     {
         return match(true) {
-            $uuid instanceof Uuid => $uuid,
+            $uuid instanceof IUuid => $uuid,
             $uuid instanceof UuidInterface => new Uuid($uuid),
             default => throw new ContractException(
                 'Unexpected identifier type, received: ' . get_debug_type($uuid),
@@ -84,9 +88,11 @@ final readonly class UuidFactory implements IUuidFactory
         return new Uuid($this->baseFactory->uuid3($ns, $name));
     }
 
-    public function uuid4(): Uuid
+    public function uuid4(): UuidV4
     {
-        return new Uuid($this->baseFactory->uuid4());
+        $base = $this->baseFactory->uuid4();
+        assert($base instanceof BaseUuidV4 || $base instanceof LazyUuidFromString);
+        return new UuidV4($base);
     }
 
     public function uuid5(string|UuidInterface $ns, string $name): Uuid
@@ -99,12 +105,12 @@ final readonly class UuidFactory implements IUuidFactory
         return new Uuid($this->baseFactory->uuid6($node, $clockSeq));
     }
 
-    public function uuid7(?DateTimeInterface $dateTime = null): Uuid
+    public function uuid7(?DateTimeInterface $dateTime = null): UuidV7
     {
         if (method_exists($this->baseFactory, 'uuid7')) {
             $base = $this->baseFactory->uuid7($dateTime);
-            assert($base instanceof UuidInterface);
-            return new Uuid($base);
+            assert($base instanceof BaseUuidV7 || $base instanceof LazyUuidFromString);
+            return new UuidV7($base);
         }
 
         throw new RuntimeException('UUID version 7 is not supported by the underlying factory.');

@@ -13,21 +13,19 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Infrastructure\OutboundEventBus\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Contracts\Infrastructure\OutboundEventBus\OutboundEventMiddleware;
-use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextFactory;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
-use CloudCreativity\Modules\Toolkit\Loggable\SimpleContextFactory;
+use CloudCreativity\Modules\Bus\SanitizedMessage;
+use CloudCreativity\Modules\Contracts\Bus\Middleware\IntegrationEventMiddleware;
+use CloudCreativity\Modules\Contracts\Messaging\IntegrationEvent;
 use CloudCreativity\Modules\Toolkit\ModuleBasename;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-final readonly class LogOutboundEvent implements OutboundEventMiddleware
+final readonly class LogOutboundEvent implements IntegrationEventMiddleware
 {
     public function __construct(
         private LoggerInterface $log,
         private string $publishLevel = LogLevel::DEBUG,
         private string $publishedLevel = LogLevel::INFO,
-        private ContextFactory $context = new SimpleContextFactory(),
     ) {
     }
 
@@ -38,7 +36,7 @@ final readonly class LogOutboundEvent implements OutboundEventMiddleware
         $this->log->log(
             $this->publishLevel,
             "Publishing integration event {$name}.",
-            $context = ['event' => $this->context->make($event)],
+            $context = ['event' => new SanitizedMessage($event)->context()],
         );
 
         $next($event);

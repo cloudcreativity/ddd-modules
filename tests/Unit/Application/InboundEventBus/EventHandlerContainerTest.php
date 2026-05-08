@@ -12,18 +12,18 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Application\InboundEventBus;
 
-use CloudCreativity\Modules\Application\ApplicationException;
-use CloudCreativity\Modules\Application\InboundEventBus\EventHandler;
-use CloudCreativity\Modules\Application\InboundEventBus\EventHandlerContainer;
+use CloudCreativity\Modules\Bus\BusException;
+use CloudCreativity\Modules\Bus\EventHandler;
+use CloudCreativity\Modules\Bus\EventHandlerContainer;
 use CloudCreativity\Modules\Tests\Unit\Infrastructure\OutboundEventBus\TestOutboundEvent;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
-class EventHandlerContainerTest extends TestCase
+final class EventHandlerContainerTest extends TestCase
 {
     public function testItHasHandlerBindings(): void
     {
-        $a = new TestEventHandler();
+        $a = new class () extends TestEventHandler {};
         $b = $this->createStub(TestEventHandler::class);
 
         $container = new EventHandlerContainer();
@@ -36,7 +36,7 @@ class EventHandlerContainerTest extends TestCase
 
     public function testItUsesPsrContainer(): void
     {
-        $a = new TestEventHandler();
+        $a = new class () extends TestEventHandler {};
         $b = $this->createStub(TestEventHandler::class);
 
         $psrContainer = $this->createMock(ContainerInterface::class);
@@ -59,7 +59,7 @@ class EventHandlerContainerTest extends TestCase
 
     public function testItHasBoundDefaultHandler(): void
     {
-        $a = new TestEventHandler();
+        $a = new class () extends TestEventHandler {};
         $b = $this->createStub(TestEventHandler::class);
 
         $container = new EventHandlerContainer(default: fn () => $b);
@@ -71,7 +71,7 @@ class EventHandlerContainerTest extends TestCase
 
     public function testItHasDefaultHandlerInPsrContainer(): void
     {
-        $a = new TestEventHandler();
+        $a = new class () extends TestEventHandler {};
         $b = $this->createStub(TestEventHandler::class);
 
         $psrContainer = $this->createMock(ContainerInterface::class);
@@ -92,9 +92,9 @@ class EventHandlerContainerTest extends TestCase
     public function testItDoesNotHaveHandler(): void
     {
         $container = new EventHandlerContainer();
-        $container->bind(TestInboundEvent::class, fn () => new TestEventHandler());
+        $container->bind(TestInboundEvent::class, fn () => new class () extends TestEventHandler {});
 
-        $this->expectException(ApplicationException::class);
+        $this->expectException(BusException::class);
         $this->expectExceptionMessage(
             'No handler bound for integration event: ' . TestOutboundEvent::class,
         );

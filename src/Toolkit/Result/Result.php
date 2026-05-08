@@ -157,4 +157,12 @@ final readonly class Result implements IResult
             meta: $this->meta->merge($meta),
         );
     }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function context(): array
+    {
+        return new ContextualResult($this)->context();
+    }
 }

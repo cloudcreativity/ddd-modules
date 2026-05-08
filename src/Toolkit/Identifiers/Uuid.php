@@ -13,13 +13,13 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Uuid as IUuid;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\UuidFactory as IUuidFactory;
 use CloudCreativity\Modules\Toolkit\ContractException;
-use JsonSerializable;
 use Ramsey\Uuid\Uuid as BaseUuid;
 use Ramsey\Uuid\UuidInterface as IBaseUuid;
 
-final class Uuid implements Identifier, JsonSerializable
+final class Uuid implements IUuid
 {
     use IsUuid;
 
@@ -39,7 +39,7 @@ final class Uuid implements Identifier, JsonSerializable
         return self::$factory = new UuidFactory();
     }
 
-    public static function from(IBaseUuid|Identifier|string|null $value): self
+    public static function from(IBaseUuid|Identifier|string|null $value): IUuid
     {
         $factory = self::getFactory();
 
@@ -50,10 +50,10 @@ final class Uuid implements Identifier, JsonSerializable
         };
     }
 
-    public static function tryFrom(IBaseUuid|Identifier|string|null $value): ?self
+    public static function tryFrom(IBaseUuid|Identifier|string|null $value): ?IUuid
     {
         return match(true) {
-            $value instanceof self => $value,
+            $value instanceof IUuid => $value,
             $value instanceof IBaseUuid => self::getFactory()->from($value),
             is_string($value) && BaseUuid::isValid($value) => self::getFactory()->fromString($value),
             default => null,
@@ -63,7 +63,7 @@ final class Uuid implements Identifier, JsonSerializable
     /**
      * Generate a random UUID, useful in tests.
      */
-    public static function random(): self
+    public static function random(): UuidV4
     {
         return self::getFactory()->uuid4();
     }
@@ -71,7 +71,7 @@ final class Uuid implements Identifier, JsonSerializable
     /**
      * Create a nil UUID.
      */
-    public static function nil(): self
+    public static function nil(): IUuid
     {
         return self::from(BaseUuid::NIL);
     }

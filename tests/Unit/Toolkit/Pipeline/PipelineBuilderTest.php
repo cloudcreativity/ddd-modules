@@ -19,7 +19,7 @@ use CloudCreativity\Modules\Toolkit\Pipeline\Pipeline;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 use PHPUnit\Framework\TestCase;
 
-class PipelineBuilderTest extends TestCase
+final class PipelineBuilderTest extends TestCase
 {
     public function test(): void
     {
@@ -28,7 +28,7 @@ class PipelineBuilderTest extends TestCase
             $stages = ['strtoupper', 'strtolower'],
         );
 
-        $actual = (new PipelineBuilder())
+        $actual = new PipelineBuilder()
             ->add($stages[0])
             ->add($stages[1])
             ->build($processor);
@@ -47,7 +47,7 @@ class PipelineBuilderTest extends TestCase
             'strtolower',
         ]);
 
-        $actual = (new PipelineBuilder($container))
+        $actual = new PipelineBuilder($container)
             ->through(['strtoupper', 'SomeService', 'strtolower'])
             ->build($processor);
 
@@ -61,7 +61,7 @@ class PipelineBuilderTest extends TestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Cannot use a string pipe name without a pipe container.');
 
-        (new PipelineBuilder())
+        new PipelineBuilder()
             ->add('strtoupper')
             ->add('SomeService')
             ->add('strtolower')

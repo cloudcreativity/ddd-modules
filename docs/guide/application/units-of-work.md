@@ -125,10 +125,7 @@ Our previous example can be updated to add a unit of work that wraps the command
 ```php
 namespace App\Modules\EventManagement\Application\UseCases\Commands\CancelAttendeeTicket;
 
-use App\Modules\EventManagement\Application\Ports\Driven\Persistence\AttendeeRepository;
-use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;
-use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
-use CloudCreativity\Modules\Toolkit\Results\Result;
+use App\Modules\EventManagement\Application\Ports\Driven\Persistence\AttendeeRepository;use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;use CloudCreativity\Modules\Contracts\Bus\DispatchThroughMiddleware;use CloudCreativity\Modules\Toolkit\Results\Result;
 
 final readonly class CancelAttendeeTicketHandler implements
     DispatchThroughMiddleware
@@ -151,7 +148,7 @@ final readonly class CancelAttendeeTicketHandler implements
 
         return Result::ok();
     }
-    
+
     public function middleware(): array
     {
         return [
@@ -176,7 +173,7 @@ interface UnitOfWork
      *
      * @param \Closure $callback
      * @param int $attempts
-     * @return mixed 
+     * @return mixed
      */
     public function execute(Closure $callback, int $attempts = 1): mixed;
 }
@@ -188,9 +185,7 @@ implementation for Laravel could look like this:
 ```php
 namespace App\Modules\Shared\Infrastructure;
 
-use Closure;
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\UnitOfWork;
-use Illuminate\Database\ConnectionInterface;
+use Closure;use CloudCreativity\Modules\Contracts\Application\Ports\UnitOfWork;use Illuminate\Database\ConnectionInterface;
 
 final readonly class IlluminateUnitOfWork implements UnitOfWork
 {
@@ -201,7 +196,7 @@ final readonly class IlluminateUnitOfWork implements UnitOfWork
     public function execute(Closure $callback, int $attempts = 1): mixed
     {
         return $this->db->transaction(
-            static fn () => $callback(), 
+            static fn () => $callback(),
             $attempts,
       );
     }
@@ -245,7 +240,7 @@ allows you to setup and tear down the unit of work manager for each operation.
 For example, we can use the setup before dispatch middleware on our command bus:
 
 ```php
-use CloudCreativity\Modules\Application\Bus\Middleware\SetupBeforeDispatch;
+use CloudCreativity\Modules\Bus\Middleware\SetupBeforeDispatch;
 
 $middleware->bind(
     SetupBeforeDispatch::class,
@@ -405,10 +400,7 @@ Use the `ExecuteInUnitOfWork` middleware to wrap command handlers in a unit of w
 ```php
 namespace App\Modules\EventManagement\Application\UseCases\Commands\CancelAttendeeTicket;
 
-use App\Modules\EventManagement\Application\Ports\Driven\Persistence\AttendeeRepository;
-use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;
-use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
-use CloudCreativity\Modules\Toolkit\Results\Result;
+use App\Modules\EventManagement\Application\Ports\Driven\Persistence\AttendeeRepository;use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;use CloudCreativity\Modules\Contracts\Bus\DispatchThroughMiddleware;use CloudCreativity\Modules\Toolkit\Results\Result;
 
 final readonly class CancelAttendeeTicketHandler implements
     DispatchThroughMiddleware
@@ -431,7 +423,7 @@ final readonly class CancelAttendeeTicketHandler implements
 
         return Result::ok();
     }
-    
+
     public function middleware(): array
     {
         return [
@@ -460,11 +452,7 @@ This can be achieved via the `HandleInUnitOfWork` middleware on the inbound even
 ```php
 namespace App\Modules\EventManagement\Application\UseCases\InboundEvents;
 
-use App\Modules\EventManagement\Domain\Events\DomainEventDispatcher;
-use App\Modules\EventManagement\Domain\Events\SalesAtEventDidChange;
-use CloudCreativity\Modules\Application\InboundEventBus\Middleware\HandleInUnitOfWork;
-use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
-use VendorName\Ordering\Shared\IntegrationEvents\V1\OrderWasFulfilled;
+use App\Modules\EventManagement\Domain\Events\DomainEventDispatcher;use App\Modules\EventManagement\Domain\Events\SalesAtEventDidChange;use CloudCreativity\Modules\Application\InboundEventBus\Middleware\HandleInUnitOfWork;use CloudCreativity\Modules\Contracts\Bus\DispatchThroughMiddleware;use VendorName\Ordering\Shared\IntegrationEvents\V1\OrderWasFulfilled;
 
 final readonly class OrderWasFulfilledHandler implements
     DispatchThroughMiddleware
@@ -511,7 +499,7 @@ $unitOfWork = new FakeUnitOfWork();
 // execute work that uses the unit of work
 
 $this->assertSame(
-    ['attempt:1', 'rollback:1', 'attempt:2', 'commit:2'], 
+    ['attempt:1', 'rollback:1', 'attempt:2', 'commit:2'],
     $unitOfWork->sequence,
 );
 ```

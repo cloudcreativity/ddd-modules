@@ -12,7 +12,8 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Contracts\Toolkit\Identifiers;
 
-use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
+use CloudCreativity\Modules\Toolkit\Identifiers\UuidV4;
+use CloudCreativity\Modules\Toolkit\Identifiers\UuidV7;
 use DateTimeInterface;
 use Ramsey\Uuid\Type\Hexadecimal;
 use Ramsey\Uuid\Type\Integer as IntegerObject;
@@ -123,9 +124,9 @@ interface UuidFactory
     /**
      * Returns a version 4 (random) UUID.
      *
-     * @return Uuid A UUID instance that represents a version 4 UUID
+     * @return UuidV4 A UUID instance that represents a version 4 UUID
      */
-    public function uuid4(): Uuid;
+    public function uuid4(): UuidV4;
 
     /**
      * Returns a version 5 (name-based) UUID based on the SHA-1 hash of a
@@ -156,9 +157,9 @@ interface UuidFactory
      * @param DateTimeInterface|null $dateTime An optional date/time from which
      *     to create the version 7 UUID. If not provided, the UUID is generated
      *     using the current date/time.
-     * @return Uuid A UUID instance that represents a version 7 UUID
+     * @return UuidV7 A UUID instance that represents a version 7 UUID
      */
-    public function uuid7(?DateTimeInterface $dateTime = null): Uuid;
+    public function uuid7(?DateTimeInterface $dateTime = null): UuidV7;
 
     /**
      * Returns a version 8 (Custom) UUID.

@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Testing;
 
 use ArrayAccess;
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\ExceptionReporter;
+use CloudCreativity\Modules\Contracts\Application\Ports\ExceptionReporter;
 use Countable;
 use Generator;
 use IteratorAggregate;

@@ -93,11 +93,9 @@ implementation looks like this:
 ```php
 namespace App\Modules\Shared\Infrastructure\Exceptions;
 
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\ExceptionReporter;
-use Illuminate\Contracts\Debug\ExceptionHandler;
-use Throwable;
+use CloudCreativity\Modules\Contracts\Application\Ports\ExceptionReporter;use Illuminate\Contracts\Debug\ExceptionHandler;use Throwable;
 
-final readonly class ExceptionReporterAdapter implements 
+final readonly class ExceptionReporterAdapter implements
     ExceptionReporter
 {
     public function __construct(private ExceptionHandler $handler)

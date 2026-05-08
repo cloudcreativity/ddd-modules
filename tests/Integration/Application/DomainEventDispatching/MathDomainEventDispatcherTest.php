@@ -17,7 +17,7 @@ use CloudCreativity\Modules\Application\UnitOfWork\UnitOfWorkManager;
 use CloudCreativity\Modules\Testing\FakeContainer;
 use PHPUnit\Framework\TestCase;
 
-class MathDomainEventDispatcherTest extends TestCase
+final class MathDomainEventDispatcherTest extends TestCase
 {
     public function test(): void
     {

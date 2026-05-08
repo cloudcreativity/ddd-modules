@@ -12,16 +12,16 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Application\Bus;
 
-use CloudCreativity\Modules\Application\Bus\CommandDispatcher;
-use CloudCreativity\Modules\Contracts\Application\Bus\CommandHandler;
-use CloudCreativity\Modules\Contracts\Application\Bus\CommandHandlerContainer;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
+use CloudCreativity\Modules\Bus\CommandDispatcher;
+use CloudCreativity\Modules\Contracts\Bus\CommandHandler;
+use CloudCreativity\Modules\Contracts\Bus\CommandHandlerContainer;
+use CloudCreativity\Modules\Contracts\Messaging\Command;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class CommandDispatcherTest extends TestCase
+final class CommandDispatcherTest extends TestCase
 {
     private CommandHandlerContainer&MockObject $handlers;
 
@@ -38,10 +38,10 @@ class CommandDispatcherTest extends TestCase
     {
         parent::setUp();
 
-        $this->dispatcher = new CommandDispatcher(
+        $this->dispatcher = new class (
             handlers: $this->handlers = $this->createMock(CommandHandlerContainer::class),
             middleware: $this->middleware = $this->createMock(PipeContainer::class),
-        );
+        ) extends CommandDispatcher {};
     }
 
     protected function tearDown(): void

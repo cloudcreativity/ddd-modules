@@ -15,14 +15,14 @@ namespace CloudCreativity\Modules\Tests\Unit\Application\DomainEventDispatching;
 use CloudCreativity\Modules\Application\DomainEventDispatching\ListenerContainer;
 use PHPUnit\Framework\TestCase;
 
-class ListenerContainerTest extends TestCase
+final class ListenerContainerTest extends TestCase
 {
     public function testItCreatesListener(): void
     {
         $container = new ListenerContainer();
-        $listener = new TestListener();
+        $listener = new class () extends TestListener {};
 
-        $container->bind('bar', fn () => new TestListener());
+        $container->bind('bar', fn () => new class () extends TestListener {});
         $container->bind('foo', fn () => $listener);
 
         $this->assertSame($listener, $container->get('foo'));

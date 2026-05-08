@@ -27,7 +27,7 @@ use UnitEnum;
 
 use function CloudCreativity\Modules\Toolkit\enum_string;
 
-class ResultTest extends TestCase
+final class ResultTest extends TestCase
 {
     public function testOk(): void
     {

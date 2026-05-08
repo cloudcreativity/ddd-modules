@@ -18,6 +18,7 @@ use CloudCreativity\Modules\Toolkit\Contracts;
 use Ramsey\Uuid\Uuid as RamseyUuid;
 use Ramsey\Uuid\UuidInterface;
 use UnitEnum;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Uuid as IUuid;
 
 use function CloudCreativity\Modules\Toolkit\enum_string;
 
@@ -62,7 +63,7 @@ final readonly class Guid implements Identifier
     /**
      * Create a GUID for a UUID.
      */
-    public static function fromUuid(string|UnitEnum $type, string|Uuid|UuidInterface $uuid): self
+    public static function fromUuid(string|UnitEnum $type, IUuid|string|UuidInterface $uuid): self
     {
         return new self($type, Uuid::from($uuid));
     }
@@ -70,10 +71,10 @@ final readonly class Guid implements Identifier
     /**
      * Create a GUID.
      */
-    public static function make(string|UnitEnum $type, int|string|Uuid|UuidInterface $id): self
+    public static function make(string|UnitEnum $type, int|IUuid|string|UuidInterface $id): self
     {
         return match (true) {
-            $id instanceof Uuid, $id instanceof UuidInterface, is_string($id) && RamseyUuid::isValid($id)
+            $id instanceof IUuid, $id instanceof UuidInterface, is_string($id) && RamseyUuid::isValid($id)
             => self::fromUuid($type, $id),
             is_string($id) => self::fromString($type, $id),
             is_int($id) => self::fromInteger($type, $id),
@@ -82,7 +83,7 @@ final readonly class Guid implements Identifier
 
     public function __construct(
         public string|UnitEnum $type,
-        public IntegerId|StringId|Uuid $id,
+        public IntegerId|IUuid|StringId $id,
     ) {
         Contracts::assert(!empty($this->type), 'Type must be a non-empty string.');
     }
@@ -129,8 +130,9 @@ final readonly class Guid implements Identifier
     public function toString(string $glue = ':'): string
     {
         $type = enum_string($this->type);
+        $id = $this->id->toString();
 
-        return "{$type}{$glue}{$this->id->value}";
+        return "{$type}{$glue}{$id}";
     }
 
     public function key(): string

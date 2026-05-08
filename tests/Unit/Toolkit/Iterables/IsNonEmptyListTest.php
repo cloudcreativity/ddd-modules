@@ -16,7 +16,7 @@ use CloudCreativity\Modules\Contracts\Toolkit\Iterables\NonEmptyList;
 use CloudCreativity\Modules\Toolkit\Iterables\IsNonEmptyList;
 use PHPUnit\Framework\TestCase;
 
-class IsNonEmptyListTest extends TestCase
+final class IsNonEmptyListTest extends TestCase
 {
     public function test(): void
     {

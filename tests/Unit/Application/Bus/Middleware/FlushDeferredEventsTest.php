@@ -14,12 +14,12 @@ namespace CloudCreativity\Modules\Tests\Unit\Application\Bus\Middleware;
 
 use CloudCreativity\Modules\Application\Bus\Middleware\FlushDeferredEvents;
 use CloudCreativity\Modules\Contracts\Application\DomainEventDispatching\DeferredDispatcher;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
+use CloudCreativity\Modules\Contracts\Messaging\Command;
 use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class FlushDeferredEventsTest extends TestCase
+final class FlushDeferredEventsTest extends TestCase
 {
     private DeferredDispatcher&MockObject $dispatcher;
 

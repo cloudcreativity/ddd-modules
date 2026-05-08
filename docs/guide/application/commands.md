@@ -18,9 +18,7 @@ For example:
 ```php
 namespace App\Modules\EventManagement\Application\UseCases\Commands\CancelAttendeeTicket;
 
-use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
-use VendorName\EventManagement\Shared\Enums\CancellationReasonEnum;
+use CloudCreativity\Modules\Contracts\Messaging\Command;use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;use VendorName\EventManagement\Shared\Enums\CancellationReasonEnum;
 
 final readonly class CancelAttendeeTicketCommand implements Command
 {
@@ -52,10 +50,7 @@ For example:
 ```php
 namespace App\Modules\EventManagement\Application\UseCases\Commands\CancelAttendeeTicket;
 
-use App\Modules\EventManagement\Application\Ports\Driven\Persistence\AttendeeRepository;
-use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;
-use CloudCreativity\Modules\Contracts\Application\Messages\DispatchThroughMiddleware;
-use CloudCreativity\Modules\Toolkit\Results\Result;
+use App\Modules\EventManagement\Application\Ports\Driven\Persistence\AttendeeRepository;use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;use CloudCreativity\Modules\Contracts\Bus\DispatchThroughMiddleware;use CloudCreativity\Modules\Toolkit\Results\Result;
 
 final readonly class CancelAttendeeTicketHandler implements
     DispatchThroughMiddleware
@@ -142,8 +137,7 @@ And then our implementation is as follows:
 ```php
 namespace App\Modules\EventManagement\Application\Bus;
 
-use App\Modules\EventManagement\Application\Ports\Driving\CommandBus as Port;
-use CloudCreativity\Modules\Application\Bus\CommandDispatcher;
+use App\Modules\EventManagement\Application\Ports\Driving\CommandBus as Port;use CloudCreativity\Modules\Bus\CommandDispatcher;
 
 final class CommandBus extends CommandDispatcher implements Port
 {
@@ -167,16 +161,7 @@ For example:
 ```php
 namespace App\Modules\EventManagement\Application\Bus;
 
-use App\Modules\EventManagement\Application\UsesCases\Commands\{
-    CancelAttendeeTicket\CancelAttendeeTicketCommand,
-    CancelAttendeeTicket\CancelAttendeeTicketHandler,
-};
-use App\Modules\EventManagement\Application\Ports\Driving\CommandBus as CommandBusPort;
-use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;
-use CloudCreativity\Modules\Application\Bus\CommandHandlerContainer;
-use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;
-use CloudCreativity\Modules\Application\Bus\Middleware\LogMessageDispatch;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
+use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;use App\Modules\EventManagement\Application\Ports\Driving\CommandBus as CommandBusPort;use App\Modules\EventManagement\Application\UsesCases\Commands\{CancelAttendeeTicket\CancelAttendeeTicketCommand,CancelAttendeeTicket\CancelAttendeeTicketHandler,};use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;use CloudCreativity\Modules\Bus\CommandHandlerContainer;use CloudCreativity\Modules\Bus\Middleware\LogMessageDispatch;use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 
 final class CommandBusProvider
 {
@@ -343,9 +328,7 @@ And then our implementation is as follows:
 ```php
 namespace App\Modules\EventManagement\Application\Bus;
 
-use App\Modules\EventManagement\Application\Ports\Driving\CommandQueuer as Port;
-use App\Modules\EventManagement\Application\Ports\Driven\Queue;
-use CloudCreativity\Modules\Application\Bus\CommandQueuer as Queuer;
+use App\Modules\EventManagement\Application\Ports\Driven\Queue;use App\Modules\EventManagement\Application\Ports\Driving\CommandQueuer as Port;use CloudCreativity\Modules\Application\Bus\CommandQueuer as Queuer;
 
 final class CommandQueuer extends Queuer implements Port
 {
@@ -466,8 +449,7 @@ singleton instances of dependencies.
 For example:
 
 ```php
-use App\Modules\EventManagement\Domain\Services;
-use CloudCreativity\Modules\Application\Bus\Middleware\SetupBeforeDispatch;
+use App\Modules\EventManagement\Domain\Services;use CloudCreativity\Modules\Bus\Middleware\SetupBeforeDispatch;
 
 $middleware->bind(
     SetupBeforeDispatch::class,
@@ -497,7 +479,7 @@ If you only need to do teardown work, use the `TeardownAfterDispatch` middleware
 closure as its only constructor argument:
 
 ```php
-use CloudCreativity\Modules\Application\Bus\Middleware\TeardownAfterDispatch;
+use CloudCreativity\Modules\Bus\Middleware\TeardownAfterDispatch;
 
 $middleware->bind(
     TeardownAfterDispatch::class,
@@ -578,7 +560,7 @@ Use our `LogMessageDispatch` middleware to log the dispatch of a command, and th
 [PSR Logger](https://php-fig.org/psr/psr-3/).
 
 ```php
-use CloudCreativity\Modules\Application\Bus\Middleware\LogMessageDispatch;
+use CloudCreativity\Modules\Bus\Middleware\LogMessageDispatch;
 
 $middleware->bind(
     LogMessageDispatch::class,
@@ -620,9 +602,7 @@ However, there may be scenarios where a property should not be logged, e.g. beca
 In this scenario, use the `Sensitive` attribute on the property, and it will not be logged:
 
 ```php
-use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
-use CloudCreativity\Modules\Toolkit\Loggable\Sensitive;
+use CloudCreativity\Modules\Toolkit\Sensitive;use CloudCreativity\Modules\Contracts\Messaging\Command;use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 
 final readonly class CancelAttendeeTicketCommand implements Command
 {
@@ -638,9 +618,7 @@ final readonly class CancelAttendeeTicketCommand implements Command
 If you need full control over the log context, implement the `ContextProvider` interface on your command message:
 
 ```php
-use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
-use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextProvider;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
+use CloudCreativity\Modules\Contracts\Bus\Loggable\ContextProvider;use CloudCreativity\Modules\Contracts\Messaging\Command;use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 
 final readonly class CancelAttendeeTicketCommand implements
   Command,
@@ -670,10 +648,7 @@ following signature:
 ```php
 namespace App\Modules\EventManagement\Application\Bus\Middleware;
 
-use Closure;
-use CloudCreativity\Modules\Contracts\Application\Bus\CommandMiddleware;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
-use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
+use Closure;use CloudCreativity\Modules\Contracts\Bus\Middleware\CommandMiddleware;use CloudCreativity\Modules\Contracts\Messaging\Command;use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 final class MyMiddleware implements CommandMiddleware
 {
@@ -685,7 +660,7 @@ final class MyMiddleware implements CommandMiddleware
      * @return Result<mixed>
      */
     public function __invoke(
-        Command $command, 
+        Command $command,
         Closure $next,
     ): Result
     {
@@ -712,11 +687,7 @@ instead:
 ```php
 namespace App\Modules\EventManagement\Application\Bus\Middleware;
 
-use Closure;
-use CloudCreativity\Modules\Contracts\Application\Bus\BusMiddleware;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Query;
-use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
+use Closure;use CloudCreativity\Modules\Contracts\Bus\Middleware\BusMiddleware;use CloudCreativity\Modules\Contracts\Messaging\Command;use CloudCreativity\Modules\Contracts\Messaging\Query;use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 class MyBusMiddleware implements BusMiddleware
 {
@@ -728,7 +699,7 @@ class MyBusMiddleware implements BusMiddleware
      * @return Result<mixed>
      */
     public function __invoke(
-        Command|Query $message, 
+        Command|Query $message,
         Closure $next,
     ): Result
     {

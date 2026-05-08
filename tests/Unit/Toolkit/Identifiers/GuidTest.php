@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Identifiers;
 
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Uuid as IUuid;
 use CloudCreativity\Modules\Tests\TestBackedEnum;
 use CloudCreativity\Modules\Tests\TestUnitEnum;
 use CloudCreativity\Modules\Toolkit\ContractException;
@@ -20,13 +21,14 @@ use CloudCreativity\Modules\Toolkit\Identifiers\Guid;
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
 use CloudCreativity\Modules\Toolkit\Identifiers\StringId;
 use CloudCreativity\Modules\Toolkit\Identifiers\Uuid;
+use CloudCreativity\Modules\Toolkit\Identifiers\UuidV4;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid as BaseUuid;
 use Ramsey\Uuid\UuidInterface;
 use UnitEnum;
 
-class GuidTest extends TestCase
+final class GuidTest extends TestCase
 {
     /**
      * @return array<string, array<int, mixed>>
@@ -115,7 +117,7 @@ class GuidTest extends TestCase
         $guid = Guid::fromUuid($type, $uuid->value);
 
         $this->assertSame($type, $guid->type);
-        $this->assertObjectEquals($uuid, $guid->id);
+        $this->assertTrue($uuid->is($guid->id));
         $this->assertObjectEquals($guid, Guid::fromUuid($type, $uuid));
         $this->assertSame($value . ':' . $uuid->toString(), $guid->toString());
         $this->assertSame($value . ':' . $uuid->toString(), (string) $guid);
@@ -132,11 +134,11 @@ class GuidTest extends TestCase
     }
 
     /**
-     * @return array<string, array{0: int|string|Uuid|UuidInterface, 1: Identifier}>
+     * @return array<string, array{0: int|string|UuidInterface|UuidV4, 1: Identifier}>
      */
     public static function makeProvider(): array
     {
-        $uuid = Uuid::random();
+        $uuid = UuidV4::make();
 
         return [
             'integer' => [123, new IntegerId(123)],
@@ -148,10 +150,10 @@ class GuidTest extends TestCase
     }
 
     #[DataProvider('makeProvider')]
-    public function testItMakesGuid(int|string|Uuid|UuidInterface $value, Identifier $expected): void
+    public function testItMakesGuid(int|IUuid|string|UuidInterface $value, Identifier $expected): void
     {
         $guid = Guid::make('SomeType', $value);
-        $this->assertObjectEquals($expected, $guid->id);
+        $this->assertTrue($expected->is($guid->id));
         $this->assertSame($guid, Guid::from($guid));
         $this->assertSame($guid, Guid::tryFrom($guid));
     }

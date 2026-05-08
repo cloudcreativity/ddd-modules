@@ -16,7 +16,6 @@ use Closure;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Error as IError;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\ListOfErrors as IListOfErrors;
 use CloudCreativity\Modules\Toolkit\Iterables\IsList;
-use Deprecated;
 use LogicException;
 use UnitEnum;
 
@@ -46,18 +45,9 @@ final class ListOfErrors implements IListOfErrors
         $this->stack = array_values($errors);
     }
 
-    public function first(Closure|UnitEnum|null $matcher = null): ?IError
+    public function first(): ?IError
     {
-        if ($matcher === null) {
-            return $this->stack[0] ?? null;
-        }
-
-        trigger_error(
-            'Calling first() with a matcher is deprecated and will be removed in 6.0; use find() instead.',
-            E_USER_DEPRECATED,
-        );
-
-        return $this->find($matcher);
+        return $this->stack[0] ?? null;
     }
 
     public function find(Closure|UnitEnum $matcher): ?IError
@@ -83,12 +73,6 @@ final class ListOfErrors implements IListOfErrors
             },
             count($errors->stack),
         ));
-    }
-
-    #[Deprecated(message: 'use any() instead', since: '5.0.0-rc.2')]
-    public function contains(Closure|UnitEnum $matcher): bool
-    {
-        return $this->any($matcher);
     }
 
     public function any(Closure|UnitEnum $matcher): bool

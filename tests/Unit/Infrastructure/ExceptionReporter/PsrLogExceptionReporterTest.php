@@ -12,15 +12,14 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\ExceptionReporter;
 
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\ExceptionReporter;
-use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextProvider;
+use CloudCreativity\Modules\Contracts\Application\Ports\ExceptionReporter;
 use CloudCreativity\Modules\Infrastructure\ExceptionReporter\PsrLogExceptionReporter;
 use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-class PsrLogExceptionReporterTest extends TestCase
+final class PsrLogExceptionReporterTest extends TestCase
 {
     private LoggerInterface&MockObject $logger;
 
@@ -73,7 +72,10 @@ class PsrLogExceptionReporterTest extends TestCase
 
     public function testItLogsContextForExceptionThatImplementsContextProvider(): void
     {
-        $exception = new class ('Boom!') extends LogicException implements ContextProvider {
+        $exception = new class ('Boom!') extends LogicException {
+            /**
+             * @return array<string, mixed>
+             */
             public function context(): array
             {
                 return ['foo' => 'bar', 'exception' => null];

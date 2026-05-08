@@ -2,7 +2,7 @@
 
 As described in the [Asynchronous Processing chapter](../application/asynchronous-processing), your application layer
 can allow commands to be queued via a command queuer driving port. Additionally, it may also choose to implement some
-internal processes as internal commands that are executed asynchronously. 
+internal processes as internal commands that are executed asynchronously.
 
 To do either (or both!), you need to define a queue driven port. The adapter implementation then handles pushing commands onto a queue, and dispatching the command when it is pulled from the queue.
 
@@ -19,14 +19,14 @@ We do this by defining an interface in our application's driven ports:
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driven\Queue;
 
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue as Port;
+use CloudCreativity\Modules\Contracts\Application\Ports\Queue as Port;
 
 interface Queue extends Port
 {
 }
 ```
 
-If you have a command queuer driving port, you will need to inject your queue adapter into the command queuer. See the [command queuer documentation](../application/commands.md#command-queuer) for examples. 
+If you have a command queuer driving port, you will need to inject your queue adapter into the command queuer. See the [command queuer documentation](../application/commands.md#command-queuer) for examples.
 
 This allows the presentation and delivery layer to asynchronously dispatch commands. When pulling commands from the queue, your queue adapter will need to dispatch the command to the command bus.
 
@@ -46,7 +46,7 @@ In this scenario, define another driven port:
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driven\Queue;
 
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue as Port;
+use CloudCreativity\Modules\Contracts\Application\Ports\Queue as Port;
 
 interface InternalQueue extends Port
 {
@@ -79,10 +79,7 @@ Then you can create the adapter by providing it with the default closure for que
 ```php
 namespace App\Modules\EventManagement\Infrastructure\Queue;
 
-use App\Modules\EventManagement\Application\Ports\Driven\Queue\Queue;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
-use CloudCreativity\Modules\Infrastructure\Queue\Middleware\LogPushedToQueue;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
+use App\Modules\EventManagement\Application\Ports\Driven\Queue\Queue;use CloudCreativity\Modules\Contracts\Messaging\Command;use CloudCreativity\Modules\Infrastructure\Queue\Middleware\LogPushedToQueue;use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 
 final class QueueAdapterProvider
 {
@@ -95,7 +92,7 @@ final class QueueAdapterProvider
     {
         $adapter = new QueueAdapter(
             fn: function (Command $command): void {
-                DispatchCommandJob::dispatch($command);    
+                DispatchCommandJob::dispatch($command);
             },
             middleware: $middleware = new PipeContainer(),
         );
@@ -104,9 +101,9 @@ final class QueueAdapterProvider
             LogPushedToQueue::class,
             fn () => new LogPushedToQueue($this->logger),
         );
-        
+
         $queue->through([LogPushedToQueue::class]);
-        
+
         return $adapter;
     }
 }
@@ -121,7 +118,7 @@ This default closure will be used for all commands, unless you register closures
 ```php
 $queue = new QueueAdapter(
     fn: function (Command $command): void {
-        DispatchCommandJob::dispatch($command);    
+        DispatchCommandJob::dispatch($command);
     },
 );
 
@@ -129,7 +126,7 @@ $queue->bind(
     RecalculateSalesAtEventCommand::class,
     function (RecalculateSalesAtEventCommand $command): void {
         DispatchCommandJob::dispatch($command)
-            ->onQueue('reporting');    
+            ->onQueue('reporting');
     },
 );
 ```
@@ -186,9 +183,9 @@ final class QueueAdapterProvider
             LogPushedToQueue::class,
             fn () => new LogPushedToQueue($this->logger),
         );
-        
+
         $queue->through([LogPushedToQueue::class]);
-        
+
         return $adapter;
     }
 }
@@ -220,7 +217,7 @@ example:
 ```php
 namespace App\Modules\EventManagement\Infrastructure\Queue;
 
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
+use CloudCreativity\Modules\Contracts\Messaging\Command;
 
 final class DefaultEnqueuer
 {
@@ -247,7 +244,7 @@ implements the port interface that is extended in your application layer:
 ```php
 namespace CloudCreativity\Modules\Application\Ports\Driven\Queue;
 
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
+use CloudCreativity\Modules\Contracts\Messaging\Command;
 
 interface Queue
 {
@@ -282,29 +279,23 @@ For example, a default Laravel job for queuing and dispatching commands would be
 ```php
 namespace App\Modules\EventManagement\Infrastructure\Queue;
 
-use App\Modules\EventManagement\Application\Ports\Driving\CommandBus;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
-use CloudCreativity\Modules\Toolkit\Result\FailedResultException;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
+use App\Modules\EventManagement\Application\Ports\Driving\CommandBus;use CloudCreativity\Modules\Contracts\Messaging\Command;use CloudCreativity\Modules\Toolkit\Result\FailedResultException;use Illuminate\Bus\Queueable;use Illuminate\Contracts\Queue\ShouldQueue;use Illuminate\Foundation\Bus\Dispatchable;use Illuminate\Queue\InteractsWithQueue;
 
 class DispatchCommandJob implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
-    
+
     public function __construct(
         public readonly Command $command
     ) {
     }
-    
+
     public function handle(CommandBus $bus): void
     {
         $result = $bus->dispatch($this->command);
-        
+
         if ($result->didFail()) {
             throw new FailedResultException($result);
         }
@@ -340,27 +331,27 @@ class QueueRecalculateSalesAtEventJob implements ShouldQueue
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
-    
+
     public function __construct(
         public readonly RecalculateSalesAtEventCommand $command
     ) {
     }
-    
+
     public function handle(CommandBus $bus): void
     {
         $result = $bus->dispatch($this->command);
         $errors = $result->errors();
-        
+
         if ($errors->contains(ErrorCodeEnum::TemporaryFailure)) {
             $this->release(now()->addSeconds(30));
             return;
         }
-        
+
         if ($result->didFail()) {
             throw new FailedResultException($result);
         }
     }
-    
+
     public function middleware(): array
     {
         return [
@@ -390,7 +381,7 @@ example, to create the queue that is injected into our command bus:
 // default command queuing
 $queue = new QueueAdapter(
     fn: function (Command $command): void {
-        DispatchCommandJob::dispatch($command);    
+        DispatchCommandJob::dispatch($command);
     },
 );
 
@@ -463,9 +454,7 @@ following signature:
 ```php
 namespace App\Modules\Shared\Infrastructure\Queue\Middleware;
 
-use Closure;
-use CloudCreativity\Modules\Contracts\Infrastructure\Queue\QueueMiddleware;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
+use Closure;use CloudCreativity\Modules\Contracts\Infrastructure\Queue\QueueMiddleware;use CloudCreativity\Modules\Contracts\Messaging\Command;
 
 final class MyQueueMiddleware implements QueueMiddleware
 {
@@ -477,7 +466,7 @@ final class MyQueueMiddleware implements QueueMiddleware
      * @return void
      */
     public function __invoke(
-        Command $command, 
+        Command $command,
         Closure $next,
     ): void
     {

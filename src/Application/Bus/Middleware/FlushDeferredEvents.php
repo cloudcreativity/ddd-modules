@@ -13,31 +13,31 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Application\Bus\Middleware;
 
 use Closure;
-use CloudCreativity\Modules\Contracts\Application\Bus\CommandMiddleware;
 use CloudCreativity\Modules\Contracts\Application\DomainEventDispatching\DeferredDispatcher;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
+use CloudCreativity\Modules\Contracts\Bus\Middleware\BusMiddleware;
+use CloudCreativity\Modules\Contracts\Messaging\Message;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 use Throwable;
 
-final readonly class FlushDeferredEvents implements CommandMiddleware
+final readonly class FlushDeferredEvents implements BusMiddleware
 {
     public function __construct(private DeferredDispatcher $dispatcher)
     {
     }
 
-    public function __invoke(Command $command, Closure $next): Result
+    public function __invoke(Message $message, Closure $next): ?Result
     {
         try {
-            $result = $next($command);
+            $result = $next($message);
         } catch (Throwable $ex) {
             $this->dispatcher->forget();
             throw $ex;
         }
 
-        if ($result->didSucceed()) {
-            $this->dispatcher->flush();
-        } else {
+        if ($result?->didFail()) {
             $this->dispatcher->forget();
+        } else {
+            $this->dispatcher->flush();
         }
 
         return $result;

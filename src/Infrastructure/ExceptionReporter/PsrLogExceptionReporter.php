@@ -12,8 +12,7 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\ExceptionReporter;
 
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\ExceptionReporter;
-use CloudCreativity\Modules\Contracts\Toolkit\Loggable\ContextProvider;
+use CloudCreativity\Modules\Contracts\Application\Ports\ExceptionReporter;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -36,10 +35,6 @@ final readonly class PsrLogExceptionReporter implements ExceptionReporter
      */
     private function context(Throwable $ex): array
     {
-        if ($ex instanceof ContextProvider) {
-            return $ex->context();
-        }
-
         if (method_exists($ex, 'context')) {
             $context = $ex->context();
             return is_array($context) ? $context : [];

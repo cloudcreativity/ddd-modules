@@ -18,11 +18,11 @@ use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
 
-class PublisherHandlerContainerTest extends TestCase
+final class PublisherHandlerContainerTest extends TestCase
 {
     public function testItPublishesViaBindingsWithoutDefaultHandler(): void
     {
-        $a = new TestPublisher();
+        $a = new class () extends TestPublisher {};
         $b = $this->createStub(TestPublisher::class);
 
         $event1 = new class () extends TestOutboundEvent {};
@@ -44,7 +44,7 @@ class PublisherHandlerContainerTest extends TestCase
 
     public function testItPublishesViaBindingsWithDefaultHandler(): void
     {
-        $a = new TestPublisher();
+        $a = new class () extends TestPublisher {};
         $b = $this->createStub(TestPublisher::class);
 
         $event1 = new class () extends TestOutboundEvent {};
@@ -61,7 +61,7 @@ class PublisherHandlerContainerTest extends TestCase
 
     public function testItPublishesViaPsrContainerWithoutDefaultHandler(): void
     {
-        $a = new TestPublisher();
+        $a = new class () extends TestPublisher {};
         $b = $this->createStub(TestPublisher::class);
 
         $event1 = new class () extends TestOutboundEvent {};
@@ -93,7 +93,7 @@ class PublisherHandlerContainerTest extends TestCase
 
     public function testItPublishesViaPsrContainerWithDefaultHandler(): void
     {
-        $a = new TestPublisher();
+        $a = new class () extends TestPublisher {};
         $b = $this->createStub(TestPublisher::class);
 
         $event1 = new class () extends TestOutboundEvent {};

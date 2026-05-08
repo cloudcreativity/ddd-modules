@@ -54,7 +54,7 @@ namespace App\Modules\EventManagement\Application\Internal\DomainEvents;
 use App\Modules\EventManagement\Domain\Events\DomainEventDispatcher;
 use CloudCreativity\Modules\Application\DomainEventDispatching\UnitOfWorkAwareDispatcher;
 
-final class DomainEventDispatcherAdapter extends UnitOfWorkAwareDispatcher implements 
+final class DomainEventDispatcherAdapter extends UnitOfWorkAwareDispatcher implements
     DomainEventDispatcher
 {
 }
@@ -87,10 +87,10 @@ use CloudCreativity\Modules\Contracts\Application\UnitOfWork\UnitOfWorkManager;
 use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 
-final readonly class DomainEventDispatcherProvider 
+final readonly class DomainEventDispatcherProvider
 {
     /**
-     * @var array<class-string<DomainEvent>, list<class-string>>  
+     * @var array<class-string<DomainEvent>, list<class-string>>
      */
     private array $subscriptions = [
         AttendeeTicketWasCancelled::class => [
@@ -104,7 +104,7 @@ final readonly class DomainEventDispatcherProvider
         private ExternalDependencies $dependencies,
     ) {
     }
-    
+
     public function getEventDispatcher(UnitOfWorkManager $unitOfWorkManager): DomainEventDispatcher
     {
         $dispatcher = new DomainEventDispatcherAdapter(
@@ -112,7 +112,7 @@ final readonly class DomainEventDispatcherProvider
             listeners: $listeners = new ListenerContainer(),
             middleware: $middleware = new PipeContainer(),
         );
-        
+
         /** Bind listener factories */
         $listeners->bind(
             Listeners\UpdateTicketSalesReport::class,
@@ -120,19 +120,19 @@ final readonly class DomainEventDispatcherProvider
                 $this->dependencies->getTicketSalesReportRepository(),
             ),
         );
-        
+
         $listeners->bind(
             Listeners\QueueTicketCancellationEmail::class,
             fn () => new Listeners\QueueTicketCancellationEmail(
                 $this->dependencies->getMailer(),
             ),
         );
-        
+
         /** Subscribe listeners to events */
         foreach ($this->subscriptions as $event => $listeners) {
             $dispatcher->listen($event, $listeners);
         }
-        
+
         /** Bind middleware factories */
         $middleware->bind(
             LogDomainEventDispatch::class,
@@ -140,12 +140,12 @@ final readonly class DomainEventDispatcherProvider
                 $this->dependencies->getLogger(),
             ),
         );
-        
+
         /** Attach middleware for all events */
         $dispatcher->through([
             LogDomainEventDispatch::class,
         ]);
-        
+
         return $dispatcher;
     }
 }
@@ -171,26 +171,17 @@ above:
 ```php
 namespace App\Modules\EventManagement\Application\Bus;
 
-use App\Modules\EventManagement\Application\Ports\Driving\CommandBus;
-use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;
-use App\Modules\EventManagement\Application\Internal\DomainEvents\DomainEventDispatcher;
-use App\Modules\EventManagement\Application\Internal\DomainEvents\DomainEventDispatcherProvider;
-use App\Modules\EventManagement\Domain\Services as DomainServices;
-use CloudCreativity\Modules\Application\Bus\CommandHandlerContainer;
-use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;
-use CloudCreativity\Modules\Application\Bus\Middleware\SetupBeforeDispatch;
-use CloudCreativity\Modules\Application\UnitOfWork\UnitOfWorkManager;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
+use App\Modules\EventManagement\Application\Internal\DomainEvents\DomainEventDispatcher;use App\Modules\EventManagement\Application\Internal\DomainEvents\DomainEventDispatcherProvider;use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;use App\Modules\EventManagement\Application\Ports\Driving\CommandBus;use App\Modules\EventManagement\Domain\Services as DomainServices;use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;use CloudCreativity\Modules\Application\UnitOfWork\UnitOfWorkManager;use CloudCreativity\Modules\Bus\CommandHandlerContainer;use CloudCreativity\Modules\Bus\Middleware\SetupBeforeDispatch;use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 
 final class CommandBusProvider
 {
     /**
-     * @var UnitOfWorkManager|null 
+     * @var UnitOfWorkManager|null
      */
     private ?UnitOfWorkManager $unitOfWorkManager = null;
-    
+
     /**
-     * @var DomainEventDispatcher|null 
+     * @var DomainEventDispatcher|null
      */
     private ?DomainEventDispatcher $eventDispatcher = null;
 
@@ -208,7 +199,7 @@ final class CommandBusProvider
         );
 
         // ...handler bindings.
-        
+
         $middleware->bind(
             SetupBeforeDispatch::class,
             fn () => new SetupBeforeDispatch(function (): Closure {
@@ -218,45 +209,45 @@ final class CommandBusProvider
                 };
             }),
         );
-        
+
         $middleware->bind(
             ExecuteInUnitOfWork::class,
             fn () => new ExecuteInUnitOfWork($this->unitOfWorkManager),
         );
-        
+
         $bus->through([
             SetupBeforeDispatch::class,
         ]);
 
         return $bus;
     }
-    
+
     /**
      * Set up command handling state.
-     * 
-     * @return void 
+     *
+     * @return void
      */
     private function setUp(): void
     {
         $this->unitOfWorkManager = new UnitOfWorkManager(
             $this->dependencies->getUnitOfWork(),
         );
-        
+
         DomainServices::setEvents(function () {
             if ($this->eventDispatcher) {
                 return $this->eventDispatcher;
             }
-            
+
             return $this->eventDispatcher = $this->eventDispatcherProvider->getEventDispatcher(
                 $this->unitOfWorkManager
             );
         });
     }
-    
+
     /**
      * Tear down command handling state.
-     * 
-     * @return void 
+     *
+     * @return void
      */
     private function tearDown(): void
     {
@@ -312,7 +303,7 @@ namespace App\Modules\EventManagement\Application\Internal\DomainEvents;
 
 use CloudCreativity\Modules\Application\DomainEventDispatching\DeferredDispatcher;
 
-final class DomainEventDispatcherAdapter extends DeferredDispatcher implements 
+final class DomainEventDispatcherAdapter extends DeferredDispatcher implements
     DeferredDomainEventDispatcher
 {
 }
@@ -335,10 +326,10 @@ use CloudCreativity\Modules\Application\DomainEventDispatching\Middleware\LogDom
 use CloudCreativity\Modules\Contracts\Domain\Events\DomainEvent;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 
-final readonly class DomainEventDispatcherProvider 
+final readonly class DomainEventDispatcherProvider
 {
     /**
-     * @var array<class-string<DomainEvent>, list<class-string>>  
+     * @var array<class-string<DomainEvent>, list<class-string>>
      */
     private array $subscriptions = [
         AttendeeTicketWasCancelled::class => [
@@ -352,14 +343,14 @@ final readonly class DomainEventDispatcherProvider
         private ExternalDependencies $dependencies,
     ) {
     }
-    
+
     public function getEventDispatcher(): DeferredDomainEventDispatcher
     {
         $dispatcher = new DomainEventDispatcherAdapter(
             listeners: $listeners = new ListenerContainer(),
             middleware: $middleware = new PipeContainer(),
         );
-        
+
         /** Bind listener factories */
         $listeners->bind(
             Listeners\UpdateTicketSalesReport::class,
@@ -367,19 +358,19 @@ final readonly class DomainEventDispatcherProvider
                 $this->dependencies->getTicketSalesReportRepository(),
             ),
         );
-        
+
         $listeners->bind(
             Listeners\QueueTicketCancellationEmail::class,
             fn () => new Listeners\QueueTicketCancellationEmail(
                 $this->dependencies->getMailer(),
             ),
         );
-        
+
         /** Subscribe listeners to events */
         foreach ($this->subscriptions as $event => $listeners) {
             $dispatcher->listen($event, $listeners);
         }
-        
+
         /** Bind middleware factories */
         $middleware->bind(
             LogDomainEventDispatch::class,
@@ -387,12 +378,12 @@ final readonly class DomainEventDispatcherProvider
                 $this->dependencies->getLogger(),
             ),
         );
-        
+
         /** Attach middleware for all events */
         $dispatcher->through([
             LogDomainEventDispatch::class,
         ]);
-        
+
         return $dispatcher;
     }
 }
@@ -409,20 +400,12 @@ Here's an example:
 ```php
 namespace App\Modules\EventManagement\Application\Bus;
 
-use App\Modules\EventManagement\Application\Ports\Driving\CommandBus as CommandBusPort;
-use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;
-use App\Modules\EventManagement\Application\Internal\DomainEvents\DomainEventDispatcher;
-use App\Modules\EventManagement\Application\Internal\DomainEvents\DomainEventDispatcherProvider;
-use App\Modules\EventManagement\Domain\Services as DomainServices;
-use CloudCreativity\Modules\Application\Bus\CommandHandlerContainer;
-use CloudCreativity\Modules\Application\Bus\Middleware\FlushDeferredEvents;
-use CloudCreativity\Modules\Application\Bus\Middleware\SetupBeforeDispatch;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
+use App\Modules\EventManagement\Application\Internal\DomainEvents\DomainEventDispatcher;use App\Modules\EventManagement\Application\Internal\DomainEvents\DomainEventDispatcherProvider;use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;use App\Modules\EventManagement\Application\Ports\Driving\CommandBus as CommandBusPort;use App\Modules\EventManagement\Domain\Services as DomainServices;use CloudCreativity\Modules\Application\Bus\Middleware\FlushDeferredEvents;use CloudCreativity\Modules\Bus\CommandHandlerContainer;use CloudCreativity\Modules\Bus\Middleware\SetupBeforeDispatch;use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 
 final class CommandBusProvider
 {
     /**
-     * @var DomainEventDispatcher|null 
+     * @var DomainEventDispatcher|null
      */
     private ?DomainEventDispatcher $eventDispatcher = null;
 
@@ -445,7 +428,7 @@ final class CommandBusProvider
             FlushDeferredEvents::class,
             fn () => new ExecuteInUnitOfWork($this->eventDispatcher),
         );
-        
+
         $middleware->bind(
             SetupBeforeDispatch::class,
             fn () => new SetupBeforeDispatch(function (): Closure {
@@ -455,31 +438,31 @@ final class CommandBusProvider
                 };
             }),
         );
-        
+
         $bus->through([
             SetupBeforeDispatch::class,
         ]);
 
         return $bus;
     }
-    
+
     /**
      * Set up command handling state.
-     * 
-     * @return void 
+     *
+     * @return void
      */
     private function setUp(): void
     {
         $this->eventDispatcher = $this->eventDispatcherProvider
                 ->getEventDispatcher();
-    
+
         DomainServices::setEvents(fn () => $this->eventDispatcher);
     }
-    
+
     /**
      * Tear down command handling state.
-     * 
-     * @return void 
+     *
+     * @return void
      */
     private function tearDown(): void
     {
@@ -679,7 +662,7 @@ final class MyMiddleware implements DomainEventMiddleware
      * @return void
      */
     public function __invoke(
-        DomainEvent $event, 
+        DomainEvent $event,
         Closure $next,
     ): Result
     {

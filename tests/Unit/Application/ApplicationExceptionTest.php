@@ -16,7 +16,7 @@ use CloudCreativity\Modules\Application\ApplicationException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-class ApplicationExceptionTest extends TestCase
+final class ApplicationExceptionTest extends TestCase
 {
     public function test(): void
     {

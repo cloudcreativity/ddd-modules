@@ -14,12 +14,12 @@ namespace CloudCreativity\Modules\Tests\Integration\Infrastructure\Queue;
 
 use CloudCreativity\Modules\Infrastructure\Queue\Middleware\LogPushedToQueue;
 use CloudCreativity\Modules\Testing\FakeContainer;
-use CloudCreativity\Modules\Tests\Integration\Application\Bus\AddCommand;
-use CloudCreativity\Modules\Tests\Integration\Application\Bus\FloorCommand;
-use CloudCreativity\Modules\Tests\Integration\Application\Bus\MultiplyCommand;
+use CloudCreativity\Modules\Tests\Integration\Bus\AddCommand;
+use CloudCreativity\Modules\Tests\Integration\Bus\FloorCommand;
+use CloudCreativity\Modules\Tests\Integration\Bus\MultiplyCommand;
 use PHPUnit\Framework\TestCase;
 
-class MathQueueTest extends TestCase
+final class MathQueueTest extends TestCase
 {
     public function test(): void
     {

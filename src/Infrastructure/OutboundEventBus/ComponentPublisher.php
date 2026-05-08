@@ -12,18 +12,18 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Infrastructure\OutboundEventBus;
 
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\OutboundEventPublisher;
+use CloudCreativity\Modules\Bus\PsrPipeContainer;
+use CloudCreativity\Modules\Contracts\Application\Ports\OutboundEventPublisher;
 use CloudCreativity\Modules\Contracts\Infrastructure\OutboundEventBus\PublisherHandlerContainer as IPublisherHandlerContainer;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Messaging\IntegrationEvent;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer as IPipeContainer;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 use CloudCreativity\Modules\Toolkit\Pipeline\Through;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 
-class ComponentPublisher implements OutboundEventPublisher
+abstract class ComponentPublisher implements OutboundEventPublisher
 {
     private readonly IPublisherHandlerContainer $handlers;
 
@@ -43,7 +43,7 @@ class ComponentPublisher implements OutboundEventPublisher
             $handlers;
 
         $this->middleware = $middleware === null && $handlers instanceof ContainerInterface ?
-            new PipeContainer(container: $handlers) :
+            new PsrPipeContainer(container: $handlers) :
             $middleware;
 
         $this->autowire();

@@ -15,7 +15,7 @@ namespace CloudCreativity\Modules\Tests\Unit\Toolkit\Pipeline;
 use CloudCreativity\Modules\Toolkit\Pipeline\AccumulationProcessor;
 use PHPUnit\Framework\TestCase;
 
-class AccumulationProcessorTest extends TestCase
+final class AccumulationProcessorTest extends TestCase
 {
     public function test(): void
     {

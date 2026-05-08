@@ -18,8 +18,7 @@ For example:
 ```php
 namespace App\Modules\EventManagement\Application\UseCases\Queries\GetAttendeeTickets;
 
-use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Query;
+use CloudCreativity\Modules\Contracts\Messaging\Query;use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
 
 final readonly class GetAttendeeTicketsQuery implements Query
 {
@@ -54,7 +53,7 @@ final readonly class GetAttendeeTicketsHandler
 
     /**
      * Execute the query.
-     * 
+     *
      * @param GetAttendeeTicketsQuery $query
      * @return Result<list<TicketModel>>
      */
@@ -106,7 +105,7 @@ We do this by defining an interface in our application's driving ports:
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driving;
 
-use CloudCreativity\Modules\Contracts\Application\Ports\Driving\QueryDispatcher;
+use CloudCreativity\Modules\Contracts\Messaging\QueryDispatcher;
 
 interface QueryBus extends QueryDispatcher
 {
@@ -118,8 +117,7 @@ And then our implementation is as follows:
 ```php
 namespace App\Modules\EventManagement\Application\Bus;
 
-use App\Modules\EventManagement\Application\Ports\Driving\QueryBus as Port;
-use CloudCreativity\Modules\Application\Bus\QueryDispatcher;
+use App\Modules\EventManagement\Application\Ports\Driving\QueryBus as Port;use CloudCreativity\Modules\Bus\QueryDispatcher;
 
 final class QueryBus extends QueryDispatcher implements Port
 {
@@ -143,15 +141,7 @@ For example:
 ```php
 namespace App\Modules\EventManagement\Application\Bus;
 
-use App\Modules\EventManagement\Application\UseCases\Queries\{
-    GetAttendeeTickets\GetAttendeeTicketsQuery,
-    GetAttendeeTickets\GetAttendeeTicketsHandler,
-};
-use App\Modules\EventManagement\Application\Ports\Driving\QueryBus as QueryBusPort;
-use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;
-use CloudCreativity\Modules\Application\Bus\QueryHandlerContainer;
-use CloudCreativity\Modules\Application\Bus\Middleware\LogMessageDispatch;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
+use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;use App\Modules\EventManagement\Application\Ports\Driving\QueryBus as QueryBusPort;use App\Modules\EventManagement\Application\UseCases\Queries\{GetAttendeeTickets\GetAttendeeTicketsHandler,GetAttendeeTickets\GetAttendeeTicketsQuery,};use CloudCreativity\Modules\Bus\Middleware\LogMessageDispatch;use CloudCreativity\Modules\Bus\QueryHandlerContainer;use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 
 final class QueryBusProvider
 {
@@ -376,7 +366,7 @@ Use our `LogMessageDispatch` middleware to log the dispatch of a query, and the 
 [PSR Logger](https://php-fig.org/psr/psr-3/).
 
 ```php
-use CloudCreativity\Modules\Application\Bus\Middleware\LogMessageDispatch;
+use CloudCreativity\Modules\Bus\Middleware\LogMessageDispatch;
 
 $middleware->bind(
     LogMessageDispatch::class,
@@ -401,10 +391,7 @@ following signature:
 ```php
 namespace App\Modules\EventManagement\Application\Bus\Middleware;
 
-use Closure;
-use CloudCreativity\Modules\Contracts\Application\Bus\QueryMiddleware;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Query;
-use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
+use Closure;use CloudCreativity\Modules\Contracts\Bus\Middleware\QueryMiddleware;use CloudCreativity\Modules\Contracts\Messaging\Query;use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 final class MyMiddleware implements QueryMiddleware
 {
@@ -443,11 +430,7 @@ instead:
 ```php
 namespace App\Modules\EventManagement\Application\Bus\Middleware;
 
-use Closure;
-use CloudCreativity\Modules\Contracts\Application\Bus\BusMiddleware;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Query;
-use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
+use Closure;use CloudCreativity\Modules\Contracts\Bus\Middleware\BusMiddleware;use CloudCreativity\Modules\Contracts\Messaging\Command;use CloudCreativity\Modules\Contracts\Messaging\Query;use CloudCreativity\Modules\Contracts\Toolkit\Result\Result;
 
 class MyBusMiddleware implements BusMiddleware
 {
@@ -459,7 +442,7 @@ class MyBusMiddleware implements BusMiddleware
      * @return Result<mixed>
      */
     public function __invoke(
-        Command|Query $message, 
+        Command|Query $message,
         Closure $next,
     ): Result
     {

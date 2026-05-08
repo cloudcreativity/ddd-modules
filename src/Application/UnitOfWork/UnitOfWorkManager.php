@@ -14,8 +14,8 @@ namespace CloudCreativity\Modules\Application\UnitOfWork;
 
 use Closure;
 use CloudCreativity\Modules\Application\ApplicationException;
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\ExceptionReporter;
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\UnitOfWork;
+use CloudCreativity\Modules\Contracts\Application\Ports\ExceptionReporter;
+use CloudCreativity\Modules\Contracts\Application\Ports\UnitOfWork;
 use CloudCreativity\Modules\Contracts\Application\UnitOfWork\UnitOfWorkManager as IUnitOfWorkManager;
 use Throwable;
 

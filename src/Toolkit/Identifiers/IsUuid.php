@@ -13,6 +13,8 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Uuid as IUuid;
+use Ramsey\Uuid\UuidInterface;
 
 trait IsUuid
 {
@@ -35,11 +37,16 @@ trait IsUuid
 
     public function is(?Identifier $other): bool
     {
-        if ($other instanceof self) {
-            return $this->equals($other);
+        if ($other instanceof IUuid) {
+            return $this->value->equals($other->toBase());
         }
 
         return false;
+    }
+
+    public function compareTo(IUuid $other): int
+    {
+        return $this->value->compareTo($other->toBase());
     }
 
     public function equals(self $other): bool
@@ -60,5 +67,10 @@ trait IsUuid
     public function jsonSerialize(): string
     {
         return $this->value->toString();
+    }
+
+    public function toBase(): UuidInterface
+    {
+        return $this->value;
     }
 }

@@ -53,11 +53,11 @@ use Psr\Log\LoggerInterface;
 interface ExternalDependencies
 {
     public function getLogger(): LoggerInterface;
-    
+
     public function getQueue(): Queue;
-    
+
     public function getAttendeeRepository(): AttendeeRepository;
-    
+
     // ...other methods
 }
 ```
@@ -68,16 +68,7 @@ creating a command bus:
 ```php
 namespace App\Modules\EventManagement\Application\Bus;
 
-use App\Modules\EventManagement\Application\UsesCases\Commands\{
-    CancelAttendeeTicket\CancelAttendeeTicketCommand,
-    CancelAttendeeTicket\CancelAttendeeTicketHandler,
-};
-use App\Modules\EventManagement\Application\Ports\Driving\CommandBus as CommandBusPort;
-use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;
-use CloudCreativity\Modules\Application\Bus\CommandHandlerContainer;
-use CloudCreativity\Modules\Application\Bus\Middleware\ExecuteInUnitOfWork;
-use CloudCreativity\Modules\Application\Bus\Middleware\LogMessageDispatch;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
+use App\Modules\EventManagement\Application\Ports\Driven\DependencyInjection\ExternalDependencies;use App\Modules\EventManagement\Application\Ports\Driving\CommandBus as CommandBusPort;use App\Modules\EventManagement\Application\UsesCases\Commands\{CancelAttendeeTicket\CancelAttendeeTicketCommand,CancelAttendeeTicket\CancelAttendeeTicketHandler,};use CloudCreativity\Modules\Bus\CommandHandlerContainer;use CloudCreativity\Modules\Bus\Middleware\LogMessageDispatch;use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 
 final class CommandBusProvider
 {
@@ -137,9 +128,9 @@ use Psr\Log\LoggerInterface;
 interface ExternalDependencies
 {
     public function getLogger(): LoggerInterface;
-    
+
     public function getQueue(): Queue;
-    
+
     public function getRepositories(): RepositoryProvider;
 }
 ```
@@ -152,9 +143,9 @@ namespace App\Modules\EventManagement\Application\Ports\Driven\Persistence;
 interface RepositoryProvider
 {
     public function getAttendees(): AttendeeRepository;
-    
+
     public function getSalesReports(): SalesReportRepository;
-    
+
     // ...other repositories
 }
 ```

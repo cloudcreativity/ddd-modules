@@ -22,7 +22,7 @@ use LogicException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-class IntegerIdTest extends TestCase
+final class IntegerIdTest extends TestCase
 {
     public function test(): void
     {

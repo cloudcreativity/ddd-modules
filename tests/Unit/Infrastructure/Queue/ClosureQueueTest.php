@@ -12,14 +12,14 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Infrastructure\Queue;
 
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
+use CloudCreativity\Modules\Contracts\Messaging\Command;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use CloudCreativity\Modules\Infrastructure\Queue\ClosureQueue;
 use CloudCreativity\Modules\Tests\Unit\Application\Bus\TestCommand;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class ClosureQueueTest extends TestCase
+final class ClosureQueueTest extends TestCase
 {
     private MockObject&PipeContainer $middleware;
 
@@ -34,12 +34,12 @@ class ClosureQueueTest extends TestCase
     {
         parent::setUp();
 
-        $this->queue = new ClosureQueue(
+        $this->queue = new class (
             function (Command $command): void {
                 $this->actual[] = $command;
             },
             $this->middleware = $this->createMock(PipeContainer::class),
-        );
+        ) extends ClosureQueue {};
     }
 
     protected function tearDown(): void

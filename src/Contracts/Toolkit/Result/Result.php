@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Contracts\Toolkit\Result;
 
 use Closure;
+use CloudCreativity\Modules\Contracts\Toolkit\Contextual;
 use CloudCreativity\Modules\Contracts\Toolkit\Result\ListOfErrors as IListOfErrors;
 use CloudCreativity\Modules\Toolkit\Result\FailedResultException;
 use CloudCreativity\Modules\Toolkit\Result\Meta;
@@ -21,7 +22,7 @@ use UnitEnum;
 /**
  * @template-covariant TValue
  */
-interface Result
+interface Result extends Contextual
 {
     /**
      * Is the result a success?

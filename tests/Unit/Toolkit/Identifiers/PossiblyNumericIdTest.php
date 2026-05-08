@@ -18,7 +18,7 @@ use CloudCreativity\Modules\Toolkit\Identifiers\StringId;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-class PossiblyNumericIdTest extends TestCase
+final class PossiblyNumericIdTest extends TestCase
 {
     /**
      * @return array<array<int, mixed>>

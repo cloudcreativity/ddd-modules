@@ -13,11 +13,11 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Tests\Integration\Infrastructure\OutboundEventBus;
 
 use CloudCreativity\Modules\Infrastructure\OutboundEventBus\ComponentPublisher;
+use CloudCreativity\Modules\Infrastructure\OutboundEventBus\DefaultPublisher;
 use CloudCreativity\Modules\Infrastructure\OutboundEventBus\Middleware\LogOutboundEvent;
 use CloudCreativity\Modules\Infrastructure\OutboundEventBus\Publishes;
-use CloudCreativity\Modules\Infrastructure\OutboundEventBus\DefaultPublisher;
-use CloudCreativity\Modules\Tests\Integration\Application\InboundEventBus\NumbersAdded;
-use CloudCreativity\Modules\Tests\Integration\Application\InboundEventBus\NumbersSubtracted;
+use CloudCreativity\Modules\Tests\Integration\Bus\NumbersAdded;
+use CloudCreativity\Modules\Tests\Integration\Bus\NumbersSubtracted;
 use CloudCreativity\Modules\Toolkit\Pipeline\Through;
 
 #[DefaultPublisher(TestDefaultPublisher::class)]

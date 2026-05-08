@@ -24,7 +24,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid as RamseyUuid;
 
-class UuidV4Test extends TestCase
+final class UuidV4Test extends TestCase
 {
     public function test(): void
     {
@@ -46,22 +46,23 @@ class UuidV4Test extends TestCase
     public function testItIsEquals(): void
     {
         $base = RamseyUuid::uuid4();
+        $id = UuidV4::from($base);
 
-        $this->assertObjectEquals($id = UuidV4::from($base), $other = UuidV4::from($base));
+        $this->assertTrue($id->is($other = UuidV4::from($base)));
         $this->assertSame($id, UuidV4::from($id));
         $this->assertTrue($id->is($other));
         $this->assertTrue($id->any(null, UuidV4::make(), $other));
         $this->assertEquals($id, UuidV4::tryFrom($base));
         $this->assertSame($id, UuidV4::tryFrom($id));
+        $this->assertTrue($id->is(new Uuid($base)));
     }
 
     public function testItIsNotEqual(): void
     {
-        $id = UuidV4::from($base = RamseyUuid::fromString('6dcbad65-ed92-4e60-973b-9ba58a022816'));
-        $this->assertFalse($id->equals($other = UuidV4::from(
+        $id = UuidV4::from(RamseyUuid::fromString('6dcbad65-ed92-4e60-973b-9ba58a022816'));
+        $this->assertFalse($id->is($other = UuidV4::from(
             RamseyUuid::fromString('38c7be26-6887-4742-8b6b-7d07b30ca596'),
         )));
-        $this->assertFalse($id->is(new Uuid($base))); // not equal as not specifically UuidV4
         $this->assertFalse($id->is($other));
         $this->assertFalse($id->any(null, UuidV4::make(), $other));
     }
@@ -109,7 +110,7 @@ class UuidV4Test extends TestCase
     {
         $base = RamseyUuid::fromString('6dcbad65-ed92-4e60-973b-9ba58a022816');
 
-        $this->assertObjectEquals(UuidV4::from($base), UuidV4::from($base->toString()));
+        $this->assertTrue(UuidV4::from($base)->is(UuidV4::from($base->toString())));
     }
 
     public function testTryFromWithString(): void
@@ -123,5 +124,21 @@ class UuidV4Test extends TestCase
     public function testTryFromWithNull(): void
     {
         $this->assertNull(Uuid::tryFrom(null));
+    }
+
+    public function testCompareTo(): void
+    {
+        $uuid1 = UuidV4::make();
+        $uuid2 = UuidV4::make();
+        $uuid3 = UuidV4::make();
+
+        $expected = [$uuid3->value, $uuid1->value, $uuid2->value];
+        usort($expected, fn ($a, $b) => $a->compareTo($b));
+
+        $actual = [$uuid2, $uuid1, $uuid3];
+        usort($actual, fn ($a, $b) => $a->compareTo($b));
+        $actual = array_map(fn ($id) => $id->value, $actual);
+
+        $this->assertSame($expected, $actual);
     }
 }

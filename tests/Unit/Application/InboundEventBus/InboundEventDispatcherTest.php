@@ -12,15 +12,15 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Tests\Unit\Application\InboundEventBus;
 
-use CloudCreativity\Modules\Application\InboundEventBus\InboundEventDispatcher;
-use CloudCreativity\Modules\Contracts\Application\InboundEventBus\EventHandler;
-use CloudCreativity\Modules\Contracts\Application\InboundEventBus\EventHandlerContainer;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
+use CloudCreativity\Modules\Bus\InboundEventDispatcher;
+use CloudCreativity\Modules\Contracts\Bus\EventHandler;
+use CloudCreativity\Modules\Contracts\Bus\EventHandlerContainer;
+use CloudCreativity\Modules\Contracts\Messaging\IntegrationEvent;
 use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class InboundEventDispatcherTest extends TestCase
+final class InboundEventDispatcherTest extends TestCase
 {
     private EventHandlerContainer&MockObject $handlers;
 
@@ -37,10 +37,10 @@ class InboundEventDispatcherTest extends TestCase
     {
         parent::setUp();
 
-        $this->dispatcher = new InboundEventDispatcher(
+        $this->dispatcher = new class (
             handlers: $this->handlers = $this->createMock(EventHandlerContainer::class),
             middleware: $this->middleware = $this->createMock(PipeContainer::class),
-        );
+        ) extends InboundEventDispatcher {};
     }
 
     protected function tearDown(): void

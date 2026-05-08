@@ -13,17 +13,20 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Infrastructure\OutboundEventBus;
 
 use Closure;
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\OutboundEventPublisher;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\IntegrationEvent;
-use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer;
+use CloudCreativity\Modules\Bus\PsrPipeContainer;
+use CloudCreativity\Modules\Contracts\Application\Ports\OutboundEventPublisher;
+use CloudCreativity\Modules\Contracts\Messaging\IntegrationEvent;
+use CloudCreativity\Modules\Contracts\Toolkit\Pipeline\PipeContainer as IPipeContainer;
 use CloudCreativity\Modules\Toolkit\Pipeline\MiddlewareProcessor;
 use CloudCreativity\Modules\Toolkit\Pipeline\PipelineBuilder;
 use CloudCreativity\Modules\Toolkit\Pipeline\Through;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 
-class ClosurePublisher implements OutboundEventPublisher
+abstract class ClosurePublisher implements OutboundEventPublisher
 {
+    private readonly ?IPipeContainer $middleware;
+
     /**
      * @var array<class-string<IntegrationEvent>, Closure>
      */
@@ -36,8 +39,11 @@ class ClosurePublisher implements OutboundEventPublisher
 
     public function __construct(
         private readonly Closure $fn,
-        private readonly ContainerInterface|PipeContainer|null $middleware = null,
+        ContainerInterface|IPipeContainer|null $middleware = null,
     ) {
+        $this->middleware = $middleware instanceof ContainerInterface ?
+            new PsrPipeContainer($middleware) : $middleware;
+
         $this->autowire();
     }
 

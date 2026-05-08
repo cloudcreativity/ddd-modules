@@ -197,8 +197,7 @@ And then our port adapter is as follows:
 ```php
 namespace App\Modules\EventManagement\Application\Bus;
 
-use App\Modules\EventManagement\Application\Ports\Driven\Queue\InternalCommandBus;
-use CloudCreativity\Modules\Application\Bus\CommandDispatcher;
+use App\Modules\EventManagement\Application\Ports\Driven\Queue\InternalCommandBus;use CloudCreativity\Modules\Bus\CommandDispatcher;
 
 final class InternalCommandBusAdapter extends CommandDispatcher implements
     InternalCommandBus
@@ -221,7 +220,7 @@ public commands. I.e.:
 ```php
 namespace App\Modules\EventManagement\Application\Ports\Driven\Queue;
 
-use CloudCreativity\Modules\Contracts\Application\Ports\Driven\Queue as Port;
+use CloudCreativity\Modules\Contracts\Application\Ports\Queue as Port;
 
 // injected into the command queuer for queuing public commands
 interface Queue extends Port

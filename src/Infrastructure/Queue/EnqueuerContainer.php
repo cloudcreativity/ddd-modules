@@ -14,7 +14,7 @@ namespace CloudCreativity\Modules\Infrastructure\Queue;
 
 use Closure;
 use CloudCreativity\Modules\Contracts\Infrastructure\Queue\EnqueuerContainer as IEnqueuerContainer;
-use CloudCreativity\Modules\Contracts\Toolkit\Messages\Command;
+use CloudCreativity\Modules\Contracts\Messaging\Command;
 use CloudCreativity\Modules\Infrastructure\InfrastructureException;
 use Psr\Container\ContainerInterface;
 
@@ -42,12 +42,18 @@ final class EnqueuerContainer implements IEnqueuerContainer
     /**
      * Bind an enqueuer factory into the container.
      *
-     * @param class-string<Command> $queueableName
+     * @param array<class-string<Command>>|class-string<Command> $queueableName
      * @param (Closure(): object)|string $binding
      */
-    public function bind(string $queueableName, Closure|string $binding): void
+    public function bind(array|string $queueableName, Closure|string $binding): void
     {
-        $this->bindings[$queueableName] = $binding;
+        if (is_string($queueableName)) {
+            $queueableName = [$queueableName];
+        }
+
+        foreach ($queueableName as $queueable) {
+            $this->bindings[$queueable] = $binding;
+        }
     }
 
     public function withDefault(Closure|string $binding): void
