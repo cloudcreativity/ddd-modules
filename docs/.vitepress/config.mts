@@ -62,7 +62,6 @@ export default defineConfig({
                     text: 'Infrastructure Layer',
                     collapsed: false,
                     items: [
-                        {text: 'Dependency Injection', link: '/guide/infrastructure/dependency-injection'},
                         {text: 'Exception Reporting', link: '/guide/infrastructure/exception-reporting'},
                         {text: 'Persistence', link: '/guide/infrastructure/persistence'},
                         {text: 'Publishing Events', link: '/guide/infrastructure/publishing-events'},

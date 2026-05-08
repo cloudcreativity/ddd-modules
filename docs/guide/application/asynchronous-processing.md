@@ -49,9 +49,9 @@ For example, an endpoint that triggers a recalculation of our sales report:
 ```php
 namespace App\Http\Controllers\Api\AttendanceReport;
 
-use App\Modules\EventManagement\Application\{
-    Ports\Driving\CommandQueuer,
-    UsesCases\Commands\RecalculateSalesAtEvent\RecalculateSalesAtEventCommand,
+use App\Modules\EventManagement\Api\{
+    CommandQueuer,
+    Input\RecalculateSalesAtEventCommand,
 };
 use CloudCreativity\Modules\Toolkit\Identifiers\IntegerId;
 use Illuminate\Validation\Rule;
@@ -115,12 +115,10 @@ i.e. derived data can be out-of-date for a short amount of time, as long as it i
 We could push this internal work to a queue via a domain event listener:
 
 ```php
-namespace App\Modules\EventManagement\Application\Internal\DomainEvents\Listeners;
+namespace App\Modules\EventManagement\Application\Orchestration\Listeners;
 
-use App\Modules\EventManagement\Application\Ports\Driven\Queue\{
-    InternalQueue,
-    Commands\RecalculateSalesAtEventCommand,
-};
+use App\Modules\EventManagement\Application\Ports\InternalQueue;
+use App\Modules\EventManagement\Application\Internal\RecalculateSalesAtEventCommand;
 use App\Modules\EventManagement\Domain\Events\AttendeeTicketWasCancelled;
 
 final readonly class QueueTicketSalesReportRecalculation
@@ -137,11 +135,6 @@ final readonly class QueueTicketSalesReportRecalculation
     }
 }
 ```
-
-:::tip
-Notice that as this is an internal command, the command class is defined in the queue driven port namespace. This is to
-ensure that the command is not exposed to the outside world.
-:::
 
 ### Workflow Orchestration
 
@@ -174,16 +167,13 @@ commands that could cancel or retry the workflow.
 ### Internal Command Bus
 
 If you are implementing internal commands, you will need an internal command bus that is separate from your _driving_
-port command bus.
-
-We deal with this by defining the internal command bus as a _driven_ port. This is technically correct, as commands
-cannot be queued unless we have infrastructure to support queuing messages. Therefore, the internal command bus works
-nicely as a driven port.
+port command bus. As this is not defined in the `Api` namespace, this signals that it cannot be used by the outside
+world - it is an internal implementation detail of the module's application layer.
 
 Define the internal command bus as follows:
 
 ```php
-namespace App\Modules\EventManagement\Application\Ports\Driven\Queue;
+namespace App\Modules\EventManagement\Application\Internal;
 
 use CloudCreativity\Modules\Application\Ports\Driving\CommandBus\CommandDispatcher;
 
@@ -195,9 +185,9 @@ interface InternalCommandBus extends CommandDispatcher
 And then our port adapter is as follows:
 
 ```php
-namespace App\Modules\EventManagement\Application\Bus;
+namespace App\Modules\EventManagement\Application\Internal;
 
-use App\Modules\EventManagement\Application\Ports\Driven\Queue\InternalCommandBus;use CloudCreativity\Modules\Bus\CommandDispatcher;
+use CloudCreativity\Modules\Bus\CommandDispatcher;
 
 final class InternalCommandBusAdapter extends CommandDispatcher implements
     InternalCommandBus
@@ -207,7 +197,7 @@ final class InternalCommandBusAdapter extends CommandDispatcher implements
 
 :::info
 See the [commands chapter](./commands) for details on how to create the adapter. This covers binding command handlers
-and middleware into the command bus.
+and middleware into the command bus via PHP attributes.
 :::
 
 You will also need a queue driven port that allows you to queue these internal commands. This means there must also be a
@@ -218,7 +208,7 @@ One approach is to define a port specifically for queuing internal commands - ra
 public commands. I.e.:
 
 ```php
-namespace App\Modules\EventManagement\Application\Ports\Driven\Queue;
+namespace App\Modules\EventManagement\Application\Ports\Queue;
 
 use CloudCreativity\Modules\Contracts\Application\Ports\Queue as Port;
 

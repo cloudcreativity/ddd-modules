@@ -1,11 +1,61 @@
 # Upgrade Guide
 
+## 5.x to 6.x
+
+Upgrade using Composer:
+
+```bash
+composer require cloudcreativity/ddd-modules:^6.0
+```
+
+This refactor finalises our approach to structing modules, and makes some final alterations to the namespacing of
+classes provided by this package.
+
+### PSR Container Usage and PHP Attributes
+
+The main exciting change in this release is we've massively simplified wiring up dispatchers and infrastructure
+components. All of the existing classes can now be injected with a PSR container, which is then used to resolve things
+like middleware and handlers. Handlers and middleware are bound to the concrete implementation via PHP attributes, e.g.
+`Through` for middleware.
+
+This has been implemented in a backwards-compatible way, so you do not need to immediately switch to using this new
+approach. However, we recommend this approach going forward, and the documentation has been updated accordingly.
+
+### Bus Namespace
+
+We've moved bus contracts and implementations to the `Contracts\Bus` and `Bus` namespaces respectively. This is to make
+it clearer that these are part of the bus implementation, not the application layer. While the application layer makes
+heavy use of these buses, messaging via buses is not an approach that needs to be confined to the application layer. For
+instance, you could have an infrastructure component that uses message.
+
+Moving these classes to their own `Bus` namespace makes this clearer.
+
+### Driven Ports
+
+All driven ports are now in the `Contracts\Application\Ports` namespace, i.e. no longer have a `Driven` sub-namespace.
+This is because we've moved driving ports to an `Api` namespace - as shown throughout the updated docs. The only ports
+that are defined in the application namespace are these driven ports; hence tidying up that namespace.
+
+### Event Buses
+
+Separate middleware interfaces for the inbound and event buses, like `InboundEventMiddleware`, `OutboundEventMiddleware`
+and `EventBusMiddleware` have been removed. These are now consolidated in an `IntegrationEventMiddleware` interface.
+
+Also, some middleware `HandleInUnitOfWork` and `LogInboundEvent` have been removed. Instead you should use the existing
+generic message middleware alternatives, e.g. `ExecuteInUnitOfWork` and `LogMessageDispatch`.
+
+This removes duplication and simplifies some of the middleware to work with any type of message.
+
+### Other Changes
+
+You might find other interfaces have moved - generally a search for the same interface name will result in you finding
+the new location.
+
 ## 4.x to 5.x
 
 Upgrade using Composer:
 
 ```bash
-composer config minimum-stability
 composer require cloudcreativity/ddd-modules:^5.0
 ```
 

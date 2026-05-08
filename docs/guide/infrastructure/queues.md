@@ -4,7 +4,8 @@ As described in the [Asynchronous Processing chapter](../application/asynchronou
 can allow commands to be queued via a command queuer driving port. Additionally, it may also choose to implement some
 internal processes as internal commands that are executed asynchronously.
 
-To do either (or both!), you need to define a queue driven port. The adapter implementation then handles pushing commands onto a queue, and dispatching the command when it is pulled from the queue.
+To do either (or both!), you need to define a queue driven port. The adapter implementation then handles pushing
+commands onto a queue, and dispatching the command when it is pulled from the queue.
 
 We provide several queue adapters that you can use. These are designed to be simple to use and allow you to plug into
 any PHP queue implementation that you choose to use. This chapter describes these queue implementations.
@@ -17,7 +18,7 @@ queue interface, our bounded context needs to expose its specific queue interfac
 We do this by defining an interface in our application's driven ports:
 
 ```php
-namespace App\Modules\EventManagement\Application\Ports\Driven\Queue;
+namespace App\Modules\EventManagement\Application\Ports\Queue;
 
 use CloudCreativity\Modules\Contracts\Application\Ports\Queue as Port;
 
@@ -26,9 +27,11 @@ interface Queue extends Port
 }
 ```
 
-If you have a command queuer driving port, you will need to inject your queue adapter into the command queuer. See the [command queuer documentation](../application/commands.md#command-queuer) for examples.
+If you have a command queuer driving port, you will need to inject your queue adapter into the command queuer. See
+the [command queuer documentation](../application/commands.md#command-queuer) for examples.
 
-This allows the presentation and delivery layer to asynchronously dispatch commands. When pulling commands from the queue, your queue adapter will need to dispatch the command to the command bus.
+This allows the presentation and delivery layer to asynchronously dispatch commands. When pulling commands from the
+queue, your queue adapter will need to dispatch the command to the command bus.
 
 We provide two concrete classes that allow you to push work onto a queue via your preferred PHP implementation. If
 neither of these work for you, you can instead write a queue that implements the above interface.
@@ -39,12 +42,14 @@ The [asynchronous processing chapter](../application/asynchronous-processing) in
 commands. These are commands that are not exposed as use cases of your bounded context. Instead they are used to split
 long-running or complex work up into smaller write operations (commands) that are sequenced via a workflow.
 
-If you have an internal command bus, you can provide a separate queue port for these commands. This segregates internal commands to a separate queue, which is advantageous to separate the concerns of commands that are use cases of your bounded context (driving ports) or internal to the application layer.
+If you have an internal command bus, you can provide a separate queue port for these commands. This segregates internal
+commands to a separate queue, which is advantageous to separate the concerns of commands that are use cases of your
+bounded context (driving ports) or internal to the application layer.
 
 In this scenario, define another driven port:
 
 ```php
-namespace App\Modules\EventManagement\Application\Ports\Driven\Queue;
+namespace App\Modules\EventManagement\Application\Ports\Queue;
 
 use CloudCreativity\Modules\Contracts\Application\Ports\Queue as Port;
 
@@ -65,7 +70,7 @@ Define a queue adapter by extending this class:
 ```php
 namespace App\Modules\EventManagement\Infrastructure\Queue;
 
-use App\Modules\EventManagement\Application\Ports\Driven\Queue\Queue;
+use App\Modules\EventManagement\Application\Ports\Queue\Queue;
 use CloudCreativity\Modules\Infrastructure\Queue\ClosureQueue;
 
 final class QueueAdapter extends ClosureQueue
@@ -79,7 +84,10 @@ Then you can create the adapter by providing it with the default closure for que
 ```php
 namespace App\Modules\EventManagement\Infrastructure\Queue;
 
-use App\Modules\EventManagement\Application\Ports\Driven\Queue\Queue;use CloudCreativity\Modules\Contracts\Messaging\Command;use CloudCreativity\Modules\Infrastructure\Queue\Middleware\LogPushedToQueue;use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
+use App\Modules\EventManagement\Application\Ports\Queue\Queue;
+use CloudCreativity\Modules\Contracts\Messaging\Command;
+use CloudCreativity\Modules\Infrastructure\Queue\Middleware\LogPushedToQueue;
+use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
 
 final class QueueAdapterProvider
 {
@@ -145,73 +153,26 @@ Define a queue adapter by extending this class:
 ```php
 namespace App\Modules\EventManagement\Infrastructure\Queue;
 
-use App\Modules\EventManagement\Application\Ports\Driven\Queue\Queue;
+use App\Modules\EventManagement\Application\Ports\Queue\Queue;
 use CloudCreativity\Modules\Infrastructure\Queue\ComponentQueue;
+use CloudCreativity\Modules\Infrastructure\Queue\Middleware\LogPushedToQueue;
+use CloudCreativity\Modules\Toolkit\Pipeline\Through;
+use CloudCreativity\Modules\Infrastructure\Queue\DefaultEnqueuer;
+use CloudCreativity\Modules\Infrastructure\Queue\Queues;
 
+#[DefaultEnqueuer(MyDefaultEnqueuer::class)]
+#[Queues(SomeCommand::class, SomeCommandEnqueuer::class)]
+#[Queues([SomeOtherCommand::class, YetAnotherCommand::class], SomeOtherCommandEnqueuer::class)]
+#[Through(LogPushedToQueue::class)]
 final class QueueAdapter extends ComponentQueue
     implements Queue
 {
 }
 ```
 
-Then you can create the adapter by providing it with a default enqueuer for queuing commands. For example:
+Notice that the default enqueuer, specific enqueuers and middleware can be registered via attributes on the class.
 
-```php
-namespace App\Modules\EventManagement\Infrastructure\Queue;
-
-use App\Modules\EventManagement\Application\Ports\Driven\Queue\Queue;
-use CloudCreativity\Modules\Infrastructure\Queue\Middleware\LogPushedToQueue;
-use CloudCreativity\Modules\Infrastructure\Queue\EnqueuerContainer;
-use CloudCreativity\Modules\Toolkit\Pipeline\PipeContainer;
-
-final class QueueAdapterProvider
-{
-    public function __construct(
-        private readonly LoggerInterface $logger,
-    ) {
-    }
-
-    public function getQueue(): Queue
-    {
-        $queue = new QueueAdapter(
-            enqueuers: new EnqueuerContainer(
-                fn () => new DefaultEnqueuer(),
-            ),
-        );
-
-        $middleware->bind(
-            LogPushedToQueue::class,
-            fn () => new LogPushedToQueue($this->logger),
-        );
-
-        $queue->through([LogPushedToQueue::class]);
-
-        return $adapter;
-    }
-}
-```
-
-:::tip
-As shown, the queue adapter can be configured with [queue middleware.](#middleware)
-:::
-
-The closure provided to the adapter's constructor is the default enqueuer factory that will be used for all work that is
-being queued. You can bind alternative enqueuers for specific commands as follows:
-
-```php
-$queue = new QueueAdapter(
-    enqueuers: $enqueuers = new EnqueuerContainer(
-        fn () => new DefaultEnqueuer(),
-    ),
-);
-
-$enqueuers->bind(
-    RecalculateSalesAtEventCommand::class,
-    fn () => new ReportingEnqueuer(),
-);
-```
-
-The enqueuer class can be implemented as you need. All it needs is a `push()` method that queues the given command. For
+Each enqueuer class can be implemented as you need. All it needs is a `push()` method that queues the given command. For
 example:
 
 ```php
@@ -242,7 +203,7 @@ If neither of these two queue adapters work for you, you can write your own queu
 implements the port interface that is extended in your application layer:
 
 ```php
-namespace CloudCreativity\Modules\Application\Ports\Driven\Queue;
+namespace CloudCreativity\Modules\Application\Ports\Queue;
 
 use CloudCreativity\Modules\Contracts\Messaging\Command;
 
@@ -279,7 +240,13 @@ For example, a default Laravel job for queuing and dispatching commands would be
 ```php
 namespace App\Modules\EventManagement\Infrastructure\Queue;
 
-use App\Modules\EventManagement\Application\Ports\Driving\CommandBus;use CloudCreativity\Modules\Contracts\Messaging\Command;use CloudCreativity\Modules\Toolkit\Result\FailedResultException;use Illuminate\Bus\Queueable;use Illuminate\Contracts\Queue\ShouldQueue;use Illuminate\Foundation\Bus\Dispatchable;use Illuminate\Queue\InteractsWithQueue;
+use App\Modules\EventManagement\Application\Ports\Driving\CommandBus;
+use CloudCreativity\Modules\Contracts\Messaging\Command;
+use CloudCreativity\Modules\Toolkit\Result\FailedResultException;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
 
 class DispatchCommandJob implements ShouldQueue
 {
@@ -454,7 +421,9 @@ following signature:
 ```php
 namespace App\Modules\Shared\Infrastructure\Queue\Middleware;
 
-use Closure;use CloudCreativity\Modules\Contracts\Infrastructure\Queue\QueueMiddleware;use CloudCreativity\Modules\Contracts\Messaging\Command;
+use Closure;
+use CloudCreativity\Modules\Contracts\Infrastructure\Queue\QueueMiddleware;
+use CloudCreativity\Modules\Contracts\Messaging\Command;
 
 final class MyQueueMiddleware implements QueueMiddleware
 {
@@ -492,7 +461,7 @@ We provide a fake queue that you can use in tests. This is the `CloudCreativity\
 You can access any queued commands via the `$commands` property:
 
 ```php
-use App\Modules\EventManagement\Application\Ports\Driven\Queue\Queue as Port;
+use App\Modules\EventManagement\Application\Ports\Queue\Queue as Port;
 use CloudCreativity\Modules\Testing\FakeQueue;
 
 $queue = new class () extends FakeQueue implements Port {};

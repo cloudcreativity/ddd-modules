@@ -3,7 +3,6 @@
 Install the package into your application using Composer:
 
 ```bash
-composer config minimum-stability dev
 composer require cloudcreativity/ddd-modules:^6.0
 ```
 
