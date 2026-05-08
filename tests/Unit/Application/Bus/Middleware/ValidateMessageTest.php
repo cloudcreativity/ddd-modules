@@ -18,9 +18,9 @@ use CloudCreativity\Modules\Contracts\Bus\Validation\Validator;
 use CloudCreativity\Modules\Contracts\Messaging\Command;
 use CloudCreativity\Modules\Contracts\Messaging\Message;
 use CloudCreativity\Modules\Contracts\Messaging\Query;
-use CloudCreativity\Modules\Toolkit\Result\Result;
 use CloudCreativity\Modules\Toolkit\Result\Error;
 use CloudCreativity\Modules\Toolkit\Result\ListOfErrors;
+use CloudCreativity\Modules\Toolkit\Result\Result;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

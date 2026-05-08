@@ -13,12 +13,12 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Uuid as IUuid;
 use CloudCreativity\Modules\Toolkit\ContractException;
 use CloudCreativity\Modules\Toolkit\Contracts;
 use Ramsey\Uuid\Uuid as RamseyUuid;
 use Ramsey\Uuid\UuidInterface;
 use UnitEnum;
-use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Uuid as IUuid;
 
 use function CloudCreativity\Modules\Toolkit\enum_string;
 

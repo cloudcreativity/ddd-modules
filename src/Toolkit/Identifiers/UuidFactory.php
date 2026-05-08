@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace CloudCreativity\Modules\Toolkit\Identifiers;
 
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Identifier;
+use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Uuid as IUuid;
 use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\UuidFactory as IUuidFactory;
 use CloudCreativity\Modules\Toolkit\ContractException;
 use DateTimeInterface;
@@ -25,7 +26,6 @@ use Ramsey\Uuid\Uuid as BaseUuid;
 use Ramsey\Uuid\UuidFactoryInterface as BaseUuidFactory;
 use Ramsey\Uuid\UuidInterface;
 use RuntimeException;
-use CloudCreativity\Modules\Contracts\Toolkit\Identifiers\Uuid as IUuid;
 
 final readonly class UuidFactory implements IUuidFactory
 {
