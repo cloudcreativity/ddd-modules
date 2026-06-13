@@ -261,7 +261,7 @@ We do this by defining an interface in our application's driving ports.
 ```php
 namespace App\Modules\EventManagement\Api;
 
-use CloudCreativity\Modules\Contracts\Bus\CommandQueuer as ICommandQueuer;
+use CloudCreativity\Modules\Contracts\Messaging\CommandQueuer as ICommandQueuer;
 
 interface CommandQueuer extends ICommandQueuer
 {
@@ -271,13 +271,13 @@ interface CommandQueuer extends ICommandQueuer
 And then our implementation is as follows:
 
 ```php
-namespace App\Modules\EventManagement\Api;
+namespace App\Modules\EventManagement\Application\Adapters;
 
 use App\Modules\EventManagement\Application\Ports\Queue;
 use App\Modules\EventManagement\Api\CommandQueuer as Port;
 use CloudCreativity\Modules\Application\Bus\CommandQueuer as Queuer;
 
-final class CommandQueuer extends Queuer implements Port
+final class CommandQueuerAdapter extends Queuer implements Port
 {
     public function __construct(Queue $queue)
     {

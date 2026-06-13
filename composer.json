@@ -29,10 +29,10 @@
         "symfony/polyfill-php85": "^1.33"
     },
     "require-dev": {
-        "deptrac/deptrac": "^4.4",
-        "laravel/pint": "^1.26",
-        "monolog/monolog": "^3.9",
-        "phpstan/phpstan": "^2.1",
+        "deptrac/deptrac": "^4.6",
+        "laravel/pint": "^1.29",
+        "monolog/monolog": "^3.10",
+        "phpstan/phpstan": "^2.2",
         "phpunit/phpunit": "^11.5"
     },
     "autoload": {

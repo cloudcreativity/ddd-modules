@@ -12,12 +12,11 @@ declare(strict_types=1);
 
 namespace CloudCreativity\Modules\Contracts\Bus;
 
-use CloudCreativity\Modules\Contracts\Messaging\Command;
+use CloudCreativity\Modules\Contracts\Messaging\CommandQueuer as BaseQueuer;
 
-interface CommandQueuer
+/**
+ * @deprecated 7.0.0 use the command queuer from the messaging namespace instead.
+ */
+interface CommandQueuer extends BaseQueuer
 {
-    /**
-     * Queue a command for asynchronous dispatching.
-     */
-    public function queue(Command $command): void;
 }
