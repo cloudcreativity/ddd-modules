@@ -56,12 +56,12 @@ final class PipelineBuilderTest extends TestCase
 
     public function testServiceStringWithoutContainer(): void
     {
-        $processor = $this->createMock(Processor::class);
+        $processor = $this->createStub(Processor::class);
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Cannot use a string pipe name without a pipe container.');
 
-        new PipelineBuilder()
+        $pipeline = new PipelineBuilder()
             ->add('strtoupper')
             ->add('SomeService')
             ->add('strtolower')
