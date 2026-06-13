@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [6.0.1] - 2026-06-13
+
+### Fixed
+
+- Placed the `CommandQueuer` interface in the `Messaging` namespace. As it simply represents a way of sending a message
+  in a non-blocking way, it should have been in the messaging namespace. The previous interface (in the `Bus` namespace)
+  is kept for backwards-compatibility. It now extends the correct interface and is marked as deprecated.
+
+### Deprecated
+
+- The incorrect `Contracts\Bus\CommandQueuer` interface is deprecated and will be removed in 7.0. Use the interface in
+  the `Contracts\Messaging` namespace instead.
+
 ## [6.0.0] - 2026-05-08
 
 ### Added
